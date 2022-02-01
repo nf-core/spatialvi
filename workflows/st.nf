@@ -11,7 +11,16 @@ WorkflowSt.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+log.info """\
+         Species:            ${params.species}
+         ST input data:      ${params.st_data_dir}
+         SC input data:      ${params.sc_data_dir}
+         Project directory:  ${projectDir}
+         """
+         .stripIndent()
+         
+
+def checkPathParamList = [ params.input, params.multiqc_config ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -37,6 +46,11 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 
+include { ST_PREPARE_DATA          } from '../subworkflows/local/stPrepareData'
+include { ST_LOAD_PREPROCESS_DATA  } from '../subworkflows/local/stLoadPreprocessData'
+include { ST_MISCELLANEOUS_TOOLS   } from '../subworkflows/local/stMiscellaneousTools'
+include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessing'
+
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -46,9 +60,9 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
-include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+//include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
+//include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
+//include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
 ========================================================================================
@@ -59,7 +73,33 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // Info required for completion email and summary
 def multiqc_report = []
 
+data_path = "${projectDir}/${params.data_path}"
+outdir = "${projectDir}/${params.outdir}"
+
 workflow ST {
+
+    ST_PREPARE_DATA( params.species, 
+                     params.mito_url, 
+                     data_path )
+                     
+    ST_LOAD_PREPROCESS_DATA( ST_PREPARE_DATA.out, 
+                            outdir, 
+                            params.st_data_dir, 
+                            params.sc_data_dir,  
+                            data_path, 
+                            params.mito_url )
+                          
+    ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,
+                            outdir, 
+                            params.st_data_dir )
+    
+    ST_POSTPROCESSING( ST_MISCELLANEOUS_TOOLS.out, 
+                      outdir )
+    
+}
+
+
+workflow ST_PROPER {
 
     ch_versions = Channel.empty()
 
