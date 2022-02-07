@@ -23,8 +23,6 @@ print(f_temp.shape)
 st_adata = sc.read(sys.argv[1] + '/' + sys.argv[3])
 print(st_adata.shape)
 
-#np.array(st_adata[st_adata.obs['in_tissue']==1].X.todense()).T
-
 st_adata.obs['norm_factors'] = pd.Series(index=st_adata.obs[st_adata.obs['in_tissue']==1].index, data=f_temp).reindex(st_adata.obs.index)
 
 mito = pd.read_csv(sys.argv[4], index_col=['Symbol', 'MCARTA2_LIST'], delimiter='\t')['EnsemblGeneID']
@@ -37,11 +35,11 @@ sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt"], inplace=True)
 plt.rcParams["figure.figsize"] = (6, 6)
 
 keys = ["in_tissue", "pct_counts_mt", "total_counts", "n_genes_by_counts"]
-st_adata_in = st_adata[st_adata.obs['in_tissue']==1]
+st_adata_in = st_adata[st_adata.obs['in_tissue']==1].copy()
 sc.pl.spatial(st_adata_in, img_key="hires", color=keys, save='/st_QC_in.png')
 
 keys = ["pct_counts_mt", "total_counts", "n_genes_by_counts"]
-st_adata_out = st_adata[st_adata.obs['in_tissue']!=1]
+st_adata_out = st_adata[st_adata.obs['in_tissue']!=1].copy()
 sc.pp.filter_cells(st_adata_out, min_counts=500)
 sc.pp.filter_cells(st_adata_out, min_genes=250)
 sc.pp.filter_genes(st_adata_out, min_cells=1)
@@ -80,7 +78,22 @@ plt.close(fig)
 
 # Remove spots outside tissue
 st_adata = st_adata[st_adata.obs['in_tissue']==1]
-print(st_adata.shape)
+print('Filtered out spots outside tissue:', st_adata.shape)
+
+# Save to open in R
+st_adata_R = st_adata.copy()
+print(st_adata_R)
+st_adata_R.X = csr_matrix(st_adata_R.X / st_adata_R.obs['norm_factors'].values[:, None])
+sc.pp.log1p(st_adata_R)
+np.savez_compressed(sys.argv[1] + '/st_adata_X.npz', st_adata_R.X.T.todense())
+st_adata_R.var.to_csv(sys.argv[1] + '/st_adata.var.csv')
+st_adata_R.obs.to_csv(sys.argv[1] + '/st_adata.obs.csv')
+
+
+sc.pp.filter_cells(st_adata, min_counts=500)
+sc.pp.filter_cells(st_adata, min_genes=250)
+sc.pp.filter_genes(st_adata, min_cells=1)
+print('Filtered spots and genes:', st_adata.shape)
 
 # Effect of normalization by size factors
 fig, ax = plt.subplots(figsize=(5, 5))
@@ -107,8 +120,3 @@ st_adata.write(sys.argv[1] + '/st_adata_plain.h5ad')
 st_adata.X = csr_matrix(st_adata.X / st_adata.obs['norm_factors'].values[:, None])
 sc.pp.log1p(st_adata)
 st_adata.write(sys.argv[1] + '/st_adata_norm.h5ad')
-
-# Save to open in R
-np.savez_compressed(sys.argv[1] + '/st_adata_X.npz', st_adata.X.T.todense())
-st_adata.var.to_csv(sys.argv[1] + '/st_adata.var.csv')
-st_adata.obs.to_csv(sys.argv[1] + '/st_adata.obs.csv')

@@ -4,14 +4,37 @@ import os
 import sys
 import scanpy as sc
 import numpy as np
+import pandas as pd
 
 outsPath = sys.argv[1]
 saveFile = sys.argv[2]
 
-print(outsPath)
-print(saveFile)
+print('outsPath:', '\t', outsPath)
+print('saveFile:', '\t', saveFile)
 
-sc_adata = sc.read_10x_mtx(outsPath)
+countsFile = ''
+files = os.listdir(outsPath)
+
+for fname in files:
+    if 'matrix.mtx' in fname:
+        countsFile = fname
+        break
+        
+if countsFile == '':    
+    for fname in files:
+        if '.h5ad' in fname:
+            countsFile = fname
+            break
+
+if '.h5ad' in countsFile:
+    sc_adata = sc.read_h5ad(outsPath + '/' + countsFile)
+else:
+    sc_adata = sc.read_mtx(outsPath +'matrix.mtx.gz').T
+    genes = pd.read_csv(outsPath + 'features.tsv.gz', header=None, sep='\t')
+    sc_adata.var_names = genes[0]
+    sc_adata.var['gene_symbols'] = genes[0].values
+    sc_adata.obs_names = pd.read_csv(outsPath + 'barcodes.tsv.gz', header=None)[0]
+
 sc_adata.var_names_make_unique()
 sc.pp.filter_cells(sc_adata, min_counts=1)
 sc.pp.filter_genes(sc_adata, min_cells=1)

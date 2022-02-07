@@ -22,12 +22,21 @@ library(reticulate)
 np <- import("numpy")
 
 filename <- list.files(path=args[2], pattern="filtered_feature_bc_matrix.h5")[1]
-print(list.files(path=args[2], pattern="filtered_feature_bc_matrix.h5"))
-print(list.files(path=args[2], pattern="filtered_feature_bc_matrix.h5")[1])
-print(filename)
 print(args[2])
 
-se_st <- Seurat::Load10X_Spatial(data.dir = args[2], filename = filename)
+#se_st <- Seurat::Load10X_Spatial(data.dir = args[2], filename = filename)
+image <- Read10X_Image(image.dir=file.path(args[2], 'spatial'), filter.matrix=TRUE)
+m <- Read10X(paste0(args[2], "raw_feature_bc_matrix/"), gene.column=2)
+m <- m[,row.names(image@coordinates)]
+m <- m[,colSums(m)>0]
+se_st <- CreateSeuratObject(counts=m, assay="Spatial")
+image <- image[Cells(x=se_st)]
+DefaultAssay(object=image) <- "Spatial"
+se_st[["slice1"]] <- image
+
+print(dim(se_st))
+print(sum(colSums(se_st@assays$Spatial@counts)==0))
+
 matrix_st <- np$load(paste0(normDataDir, 'st_adata_X.npz'))[['arr_0']]
 st_genes <- read.csv(paste0(normDataDir, 'st_adata.var.csv'))$X
 st_obs <- read.csv(paste0(normDataDir, 'st_adata.obs.csv'))$X
@@ -36,12 +45,15 @@ colnames(matrix_st) <- st_obs
 se_st@assays$Spatial@counts <- as(100*matrix_st, "sparseMatrix")
 se_st@assays$Spatial@data <- as(100*matrix_st, "sparseMatrix")
 
+print(dim(se_st))
+print(sum(colSums(se_st@assays$Spatial@counts)==0))
+
 #se_sc <- Seurat::CreateSeuratObject(counts = Seurat::Read10X(data.dir = 'c:/Projects/A_ST/sc mouse kidney/SRX3436301/outs/filtered_feature_bc_matrix/'))
 matrix_sc <- np$load(paste0(normDataDir, 'sc_adata_X.npz'))[['arr_0']]
-sc_genes <- read.csv(paste0(normDataDir, 'sc_adata.var.csv'))$X
-sc_obs <- read.csv(paste0(normDataDir, 'sc_adata.obs.csv'))$X
-rownames(matrix_sc) <- sc_genes
-colnames(matrix_sc) <- sc_obs
+sc_genes <- read.csv(paste0(normDataDir, 'sc_adata.var.csv'))
+sc_obs <- read.csv(paste0(normDataDir, 'sc_adata.obs.csv'))
+rownames(matrix_sc) <- get(colnames(sc_genes)[1], sc_genes)
+colnames(matrix_sc) <- get(colnames(sc_obs)[1], sc_obs)
 se_sc <- Seurat::CreateSeuratObject(counts = as(100*matrix_sc, "sparseMatrix"))
 
 
@@ -131,3 +143,4 @@ write.csv(se_sc@reductions[["pca"]]@feature.loadings, file=paste0(args[1], "SPOT
 write.csv(cluster_markers_all, file=paste0(args[1], "SPOTlight_sc_cluster_markers.csv"))
 
 quit(status=0)
+

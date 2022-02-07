@@ -50,7 +50,7 @@
     #!/bin/bash
       
     #sleep 5
-    python $projectDir/bin/script_read_st_data.py ${stRawData} ${outdir}/st_adata_raw.h5ad 
+    python $projectDir/bin/script_read_st_data.py ${stRawData} ${outdir}/st_adata_raw.h5ad raw_feature_bc_matrix.h5
     python $projectDir/bin/script_read_sc_data.py ${scRawData} ${outdir}/sc_adata_raw.h5ad
     """
 }
@@ -103,7 +103,7 @@
     
     mitoFile=${dataPath}/`basename "${mitoUrl}"`
      
-    #sleep 5   
+    #sleep 5
     python $projectDir/bin/stPreprocess.py ${outdir}/ st_adata_counts_in_tissue st_adata_raw.h5ad \$mitoFile
     """
 }
@@ -229,8 +229,8 @@
     """
     #!/bin/bash
      
-    #sleep 5     
-    python $projectDir/bin/stSpatialDE.py ${outdir}/ st_adata_norm.h5ad
+    sleep 5     
+    #python $projectDir/bin/stSpatialDE.py ${outdir}/ st_adata_norm.h5ad
     """
 }
 
@@ -253,8 +253,8 @@
     """
     #!/bin/bash
      
-    sleep 5     
-    #python $projectDir/bin/stClusteringWorkflow.py ${outdir}/ st_adata_norm.h5ad
+    #sleep 5     
+    python $projectDir/bin/stClusteringWorkflow.py ${outdir}/
     """
 }
 
@@ -277,8 +277,8 @@
     """
     #!/bin/bash
       
-    sleep 5   
-    echo Reporting
+    #sleep 5   
+    echo 1
     """
 }
 

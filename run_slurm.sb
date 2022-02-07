@@ -1,0 +1,14 @@
+#!/bin/bash --login
+
+#SBATCH --job-name=stest_v0
+#SBATCH --mail-type=END
+#SBATCH --mail-user=sergii.domanskyi@jax.org
+#SBATCH -p compute
+#SBATCH -q batch
+#SBATCH -t 01:00:00
+#SBATCH --mem=2G
+
+~/nextflow run \
+stest.nf \
+-with-timeline -with-trace -with-report \
+-profile slurm,singularity

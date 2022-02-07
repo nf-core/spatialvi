@@ -1,13 +1,3 @@
-#!/opt/conda/bin/python
-
-import os
-import sys
-import scanpy as sc
-import numpy as np
-
-#import importlib
-#read_visium_mtx = importlib.import_module("read_visium_mtx").read_visium_mtx
-
 from scanpy import read_10x_mtx
 from pathlib import Path
 from typing import Union, Dict, Optional
@@ -165,33 +155,3 @@ def read_visium_mtx(
             )
 
     return adata
-
-outsPath = sys.argv[1]
-saveFile = sys.argv[2]
-countsFile = sys.argv[3]
-
-for fname in os.listdir(outsPath):
-    if countsFile in fname:
-        countsFile = fname
-        break
-
-print('outsPath', '\t', outsPath)
-print('countsFile', '\t', countsFile)
-print('saveFile', '\t', saveFile)
-
-if countsFile in os.listdir(outsPath):
-    st_adata = sc.read_visium(outsPath, count_file=countsFile, library_id=None, load_images=True, source_image_path=None)
-else:
-    st_adata = read_visium_mtx(outsPath)
-
-st_adata.var_names_make_unique()
-sc.pp.filter_cells(st_adata, min_counts=1)
-sc.pp.filter_genes(st_adata, min_cells=1)
-
-if not os.path.exists(os.path.dirname(saveFile)):
-    os.makedirs(os.path.dirname(saveFile))
-
-st_adata.write(saveFile)
-
-X = np.array(st_adata[st_adata.obs['in_tissue']==1].X.todense()).T
-np.savez_compressed(os.path.dirname(saveFile) + '/st_adata_counts_in_tissue.npz', X)
