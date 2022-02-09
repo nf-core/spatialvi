@@ -3,28 +3,31 @@
  */
  process MITO_LOAD {
     
-    label "python_process"
+    label "python_process_low"
     
     input:
-    val mitoUrl
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val dataPath
      
     output:
-    val("state")
+    tuple val(sample_id), env(outpath)
               
     script:  
     """  
     #!/bin/bash
+    
+    mitoUrl="ftp://ftp.broadinstitute.org/distribution/metabolic/papers/Pagliarini/MitoCarta2.0/${species}.MitoCarta2.0.txt"
 
-    fname=${dataPath}/`basename "${mitoUrl}"`
+    fname=${dataPath}/`basename "\${mitoUrl}"`
     echo saving to: \$fname
     
     [ ! -d ${dataPath} ] && mkdir ${dataPath}
     
     if [ ! -f \$fname ]
     then
-        wget --quiet ${mitoUrl} --output-document=\$fname
+        wget --quiet \${mitoUrl} --output-document=\$fname
     fi
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -34,24 +37,27 @@
  */
  process READ_ST_AND_SC_SCANPY {
  
-    label "python_process"
+    label "python_process_low"
     
     input:
-    val state
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val outdir
-    val stRawData
-    val scRawData
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
          
     script:  
     """
     #!/bin/bash
+    
+    dname=${outdir}/${sample_id}
       
-    #sleep 5
-    python $projectDir/bin/script_read_st_data.py ${stRawData} ${outdir}/st_adata_raw.h5ad raw_feature_bc_matrix.h5
-    python $projectDir/bin/script_read_sc_data.py ${scRawData} ${outdir}/sc_adata_raw.h5ad
+    [ ! -d \${dname} ] && mkdir \${dname}
+    
+    python $projectDir/bin/script_read_st_data.py ${st_data_dir} \${dname}/st_adata_raw.h5ad raw_feature_bc_matrix.h5
+    python $projectDir/bin/script_read_sc_data.py ${sc_data_dir} \${dname}/sc_adata_raw.h5ad
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -62,21 +68,26 @@
  process ST_CALCULATE_SUM_FACTORS {
     
     label "r_process"
+    cpus 2
+    memory '8.GB'
      
     input:
-    val state
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val outdir
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
     
-    #sleep 5
-    Rscript $projectDir/bin/calculateSumFactors.R ${outdir}/ st_adata_counts_in_tissue
-    Rscript $projectDir/bin/calculateSumFactors.R ${outdir}/ sc_adata_counts
+    dname=${outdir}/${sample_id}
+    
+    Rscript $projectDir/bin/calculateSumFactors.R \${dname}/ st_adata_counts_in_tissue
+    Rscript $projectDir/bin/calculateSumFactors.R \${dname}/ sc_adata_counts
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -87,24 +98,28 @@
  process ST_PREPROCESS {
     
     label "python_process"
+    cpus 2
+    memory '4.GB'
      
     input:
-    val state_factors_calculated
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val dataPath
-    val mitoUrl
     val outdir
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
     
-    mitoFile=${dataPath}/`basename "${mitoUrl}"`
-     
-    #sleep 5
-    python $projectDir/bin/stPreprocess.py ${outdir}/ st_adata_counts_in_tissue st_adata_raw.h5ad \$mitoFile
+    dname=${outdir}/${sample_id}
+    
+    mitoFile=${dataPath}/${species}.MitoCarta2.0.txt
+    
+    python $projectDir/bin/stPreprocess.py \${dname}/ st_adata_counts_in_tissue st_adata_raw.h5ad \$mitoFile
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -115,24 +130,28 @@
  process SC_PREPROCESS {
     
     label "python_process"
-     
+    cpus 2
+    memory '4.GB'
+         
     input:
-    val state_factors_calculated
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val dataPath
-    val mitoUrl
     val outdir
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
     
-    mitoFile=${dataPath}/`basename "${mitoUrl}"`
+    dname=${outdir}/${sample_id}
     
-    #sleep 5
-    python $projectDir/bin/scPreprocess.py ${outdir}/ sc_adata_counts sc_adata_raw.h5ad \$mitoFile
+    mitoFile=${dataPath}/${species}.MitoCarta2.0.txt
+    
+    python $projectDir/bin/scPreprocess.py \${dname}/ sc_adata_counts sc_adata_raw.h5ad \$mitoFile
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -145,19 +164,21 @@
     label "r_process"
      
     input:
-    val state
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val outdir
-    val stRawData
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
-      
-    #sleep 5   
-    Rscript $projectDir/bin/characterization_STdeconvolve.R ${outdir}/ ${stRawData}
+    
+    dname=${outdir}/${sample_id}
+       
+    Rscript $projectDir/bin/characterization_STdeconvolve.R \${dname}/ ${st_data_dir}
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -170,19 +191,21 @@
     label "r_process"
     
     input:
-    val state
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val outdir
-    val stRawData
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
     
-    #sleep 5    
-    Rscript $projectDir/bin/characterization_SPOTlight.R ${outdir}/ ${stRawData}
+    dname=${outdir}/${sample_id}
+        
+    Rscript $projectDir/bin/characterization_SPOTlight.R \${dname}/ ${st_data_dir}
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -195,18 +218,21 @@
     label "r_process"
      
     input:
-    val state
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val outdir
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
-       
-    #sleep 5 
-    Rscript $projectDir/bin/characterization_BayesSpace.R ${outdir}/
+    
+    dname=${outdir}/${sample_id}
+    
+    Rscript $projectDir/bin/characterization_BayesSpace.R \${dname}/
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -219,18 +245,21 @@
     label "python_process"
     
     input:
-    val state
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val outdir
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
-     
-    sleep 5     
-    #python $projectDir/bin/stSpatialDE.py ${outdir}/ st_adata_norm.h5ad
+    
+    dname=${outdir}/${sample_id}
+       
+    python $projectDir/bin/stSpatialDE.py \${dname}/ st_adata_norm.h5ad
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -243,18 +272,21 @@
     label "python_process"
     
     input:
-    val state
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val outdir
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
-     
-    #sleep 5     
-    python $projectDir/bin/stClusteringWorkflow.py ${outdir}/
+    
+    dname=${outdir}/${sample_id}
+         
+    python $projectDir/bin/stClusteringWorkflow.py \${dname}/
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -264,21 +296,24 @@
  */
  process ALL_REPORT {
      
-    label "python_process"
+    label "python_process_low"
     
     input:
-    val state
+    tuple val(s), path(p)
+    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
     val outdir
     
     output:
-    val outdir
+    tuple val(sample_id), env(outpath)
     
     script:  
     """
     #!/bin/bash
-      
-    #sleep 5   
-    echo 1
+    
+    dname=${outdir}/${sample_id}
+    
+    echo \${dname}/  
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 

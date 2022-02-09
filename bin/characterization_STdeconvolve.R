@@ -13,10 +13,12 @@ np <- import("numpy")
 normDataDir <- args[1]
 
 filename <- list.files(path=args[2], pattern="filtered_feature_bc_matrix.h5")[1]
-print(filename)
 print(args[2])
 
-#se_st <- Seurat::Load10X_Spatial(data.dir = args[2], filename = filename)
+if (!is.na(filename)) {
+print(filename)
+se_st <- Seurat::Load10X_Spatial(data.dir = args[2], filename = filename)
+} else {
 image <- Read10X_Image(image.dir=file.path(args[2], 'spatial'), filter.matrix=TRUE)
 m <- Read10X(paste0(args[2], "raw_feature_bc_matrix/"), gene.column=2)
 m <- m[,row.names(image@coordinates)]
@@ -25,9 +27,7 @@ se_st <- CreateSeuratObject(counts=m, assay="Spatial")
 image <- image[Cells(x=se_st)]
 DefaultAssay(object=image) <- "Spatial"
 se_st[["slice1"]] <- image
-
-print(dim(se_st))
-print(sum(colSums(se_st@assays$Spatial@counts)==0))
+}
 
 matrix_st <- np$load(paste0(normDataDir, 'st_adata_X.npz'))[['arr_0']]
 st_genes <- read.csv(paste0(normDataDir, 'st_adata.var.csv'))$X
@@ -37,9 +37,6 @@ colnames(matrix_st) <- st_obs
 se_st@assays$Spatial@counts <- as(matrix_st, "sparseMatrix")
 se_st@assays$Spatial@data <- as(matrix_st, "sparseMatrix")
 se_st@assays$Spatial@counts <- round(100*se_st@assays$Spatial@counts)
-
-print(dim(se_st))
-print(sum(colSums(se_st@assays$Spatial@counts)==0))
 
 corpus <- restrictCorpus(se_st@assays$Spatial@counts, removeAbove=1.0, removeBelow = 0.05)
 corpus <- corpus + 1
@@ -57,7 +54,7 @@ deconProp <- results$theta
 posk <- se_st@images[["slice1"]]@coordinates[c("imagerow", "imagecol")]
 names(posk) <- c('y', 'x')
 posk$x <- posk$x * se_st@images[["slice1"]]@scale.factors[["lowres"]]
-posk$y <- 600 - posk$y * se_st@images[["slice1"]]@scale.factors[["lowres"]]
+posk$y <- dim(se_st@images[["slice1"]])[1] - posk$y * se_st@images[["slice1"]]@scale.factors[["lowres"]]
 vizAllTopics(deconProp, posk, r=2.85, lwd=0, overlay=se_st@images[["slice1"]]@image)
 ggsave(paste0(args[1], "STdeconvolve_st_scatterpies.png"), dpi=600, scale=1.0, width=8, height=8, units='in')
 

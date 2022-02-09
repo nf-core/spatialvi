@@ -15,21 +15,18 @@ workflow ST_LOAD_PREPROCESS_DATA {
  
     take:
       state
-      outdir
-      stRawData
-      scRawData
+      sample_params
       dataPath
-      mitoUrl
+      outdir
       
     main:
-      READ_ST_AND_SC_SCANPY(state, outdir, stRawData, scRawData)
-      ST_CALCULATE_SUM_FACTORS(READ_ST_AND_SC_SCANPY.out, outdir)
-      ST_PREPROCESS(ST_CALCULATE_SUM_FACTORS.out, dataPath, mitoUrl, outdir)
-      SC_PREPROCESS(ST_CALCULATE_SUM_FACTORS.out, dataPath, mitoUrl, outdir)
+      READ_ST_AND_SC_SCANPY(state, sample_params, outdir)
+      ST_CALCULATE_SUM_FACTORS(READ_ST_AND_SC_SCANPY.out, sample_params, outdir)
+      ST_PREPROCESS(ST_CALCULATE_SUM_FACTORS.out, sample_params, dataPath, outdir)
+      SC_PREPROCESS(ST_CALCULATE_SUM_FACTORS.out, sample_params, dataPath, outdir)
       
     emit:
       ST_PREPROCESS.out
-      .combine(SC_PREPROCESS.out)
-      .collect()
+      .join(SC_PREPROCESS.out)
       
  }

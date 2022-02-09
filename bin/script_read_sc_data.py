@@ -31,9 +31,15 @@ if '.h5ad' in countsFile:
 else:
     sc_adata = sc.read_mtx(outsPath +'matrix.mtx.gz').T
     genes = pd.read_csv(outsPath + 'features.tsv.gz', header=None, sep='\t')
-    sc_adata.var_names = genes[0]
-    sc_adata.var['gene_symbols'] = genes[0].values
+    print(genes)
+    if len(genes.columns)==1:
+        gs = genes[0]
+    else:
+        gs = genes[1]
+    sc_adata.var_names = gs
+    sc_adata.var['gene_symbols'] = gs.values
     sc_adata.obs_names = pd.read_csv(outsPath + 'barcodes.tsv.gz', header=None)[0]
+    print(sc_adata.var)
 
 sc_adata.var_names_make_unique()
 sc.pp.filter_cells(sc_adata, min_counts=1)

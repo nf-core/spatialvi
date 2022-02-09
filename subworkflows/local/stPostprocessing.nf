@@ -13,11 +13,12 @@ workflow ST_POSTPROCESSING {
  
     take:
       state
+      sample_params
       outdir
       
     main:
-      ST_CLUSTERING(state, outdir)
-      ALL_REPORT(ST_CLUSTERING.out, outdir)
+      ST_CLUSTERING(state, sample_params, outdir)
+      ALL_REPORT(ST_CLUSTERING.out, sample_params, outdir)
       
     emit:
       ALL_REPORT.out

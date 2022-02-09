@@ -33,9 +33,12 @@ sc_adata.var["mt"] = sc_adata.var_names.isin(mito['Symbol'])
 sc.pp.calculate_qc_metrics(sc_adata, qc_vars=["mt"], inplace=True)
 print(sc_adata)
 
+print(sc_adata.var)
+
 plt.rcParams["figure.figsize"] = (6, 6)
 
 def histplotQC(se_data, bins, ax):
+    print(se_data.shape)
     ax.hist(se_data, density=True, bins=bins, color='navy', alpha=0.3)
     kde = scipy.stats.gaussian_kde(se_data)
     xx = np.linspace(min(se_data), max(se_data), 300)

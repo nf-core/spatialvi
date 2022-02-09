@@ -12,9 +12,6 @@ WorkflowSt.initialise(params, log)
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 log.info """\
-         Species:            ${params.species}
-         ST input data:      ${params.st_data_dir}
-         SC input data:      ${params.sc_data_dir}
          Project directory:  ${projectDir}
          """
          .stripIndent()
@@ -60,9 +57,9 @@ include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessin
 //
 // MODULE: Installed directly from nf-core/modules
 //
-//include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
-//include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
-//include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
+include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
 ========================================================================================
@@ -73,28 +70,32 @@ include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessin
 // Info required for completion email and summary
 def multiqc_report = []
 
+Channel
+.from(file(params.input))
+.splitCsv(header: true)
+.map{ row-> tuple(row.sample_id, row.species, row.st_data_dir, row.sc_data_dir) }
+.set{input_data}
+
 data_path = "${projectDir}/${params.data_path}"
 outdir = "${projectDir}/${params.outdir}"
 
 workflow ST {
 
-    ST_PREPARE_DATA( params.species, 
-                     params.mito_url, 
+    ST_PREPARE_DATA( input_data,
                      data_path )
                      
-    ST_LOAD_PREPROCESS_DATA( ST_PREPARE_DATA.out, 
-                            outdir, 
-                            params.st_data_dir, 
-                            params.sc_data_dir,  
-                            data_path, 
-                            params.mito_url )
+    ST_LOAD_PREPROCESS_DATA( ST_PREPARE_DATA.out,
+                             input_data,
+                             data_path,
+                             outdir )
                           
     ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,
-                            outdir, 
-                            params.st_data_dir )
+                            input_data,
+                            outdir )
     
-    ST_POSTPROCESSING( ST_MISCELLANEOUS_TOOLS.out, 
-                      outdir )
+    ST_POSTPROCESSING( ST_MISCELLANEOUS_TOOLS.out,
+                       input_data,
+                       outdir )
     
 }
 

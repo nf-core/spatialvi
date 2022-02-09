@@ -7,12 +7,9 @@
 #SBATCH -t 10:00:00
 #SBATCH --mem=2G
 
-workPath=/fastscratch/domans/work/
-[ ! -d ${workPath} ] && mkdir ${workPath}
-
 ~/nextflow run \
 --input=assets/samplesheet_st.csv \
-main.nf \
+stest.nf \
 -with-timeline -with-trace -with-report \
 -profile slurm,singularity \
--work-dir $workPath
+-work-dir /fastscratch/domans
