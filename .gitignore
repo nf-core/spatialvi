@@ -9,4 +9,4 @@ results/
 testing/
 testing*
 *.pyc
-.slurm-*
+slurm-*
