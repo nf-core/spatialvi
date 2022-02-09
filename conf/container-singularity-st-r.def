@@ -1,0 +1,48 @@
+bootstrap: docker
+from: rocker/r-ver:4.1.2
+ 
+%post
+R --no-echo -e 'version'
+
+apt-get update
+apt-get install -y r-base-dev
+apt-get install -y libcurl4-openssl-dev
+apt-get install -y libz-dev
+apt-get install -y r-cran-igraph
+apt-get install -y r-cran-magick
+apt-get install -y r-cran-xml
+apt-get install -y libglpk-dev
+apt-get install -y libhdf5-dev
+apt-get install -y libgsl-dev
+apt-get install -y libx11-dev
+apt-get install -y procps
+
+R --no-echo -e 'version'
+R --no-echo -e 'install.packages("hdf5r")'
+R --no-echo -e 'install.packages("BiocManager")'
+R --no-echo -e 'BiocManager::install("bluster")'
+R --no-echo -e 'install.packages("remotes")'
+R --no-echo -e 'remotes::install_github("rstudio/renv")'
+R --no-echo -e 'install.packages("RCurl")'
+R --no-echo -e 'install.packages("devtools")'
+R --no-echo -e 'install.packages("dplyr")'
+R --no-echo -e 'devtools::install_version("RcppAnnoy", "0.0.16", repos="http://cran.us.r-project.org")'
+R --no-echo -e 'install.packages("fastmap")'
+R --no-echo -e 'install.packages("rsvd")'
+R --no-echo -e 'devtools::install_github("https://github.com/MarcElosua/SPOTlight", ref="1f364a965ab275ac54a711e28c67554db25d547e")'
+R --no-echo -e 'remotes::install_github("JEFworks-Lab/STdeconvolve", ref="648d2303bb38002dc6e9a5c9f59487b44d8161d4")'
+R --no-echo -e 'install.packages("reticulate")'
+R --no-echo -e 'install.packages("tidyverse")'
+R --no-echo -e 'install.packages("gt")'
+R --no-echo -e 'install.packages("Seurat")'
+R --no-echo -e 'BiocManager::install("SpatialExperiment")'
+R --no-echo -e 'BiocManager::install("SingleCellExperiment")'
+R --no-echo -e 'BiocManager::install("BayesSpace")'
+R --no-echo -e 'BiocManager::install("DESeq2")'
+R --no-echo -e 'BiocManager::install("scran")'
+R --no-echo -e 'BiocManager::install("corrplot")'
+R --no-echo -e 'install.packages("ggcorrplot")'
+
+%labels
+NAME R with custom packages
+AUTHOR Sergii Domanskyi
