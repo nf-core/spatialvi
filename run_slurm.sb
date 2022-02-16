@@ -15,4 +15,5 @@ workPath=/fastscratch/domans/work/
 main.nf \
 -with-timeline -with-trace -with-report \
 -profile slurm,singularity \
--work-dir $workPath
+-work-dir $workPath \
+-resume
