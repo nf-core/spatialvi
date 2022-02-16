@@ -70,32 +70,50 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // Info required for completion email and summary
 def multiqc_report = []
 
-Channel
-.from(file(params.input))
-.splitCsv(header: true)
-.map{ row-> tuple(row.sample_id, row.species, row.st_data_dir, row.sc_data_dir) }
-.set{input_data}
-
 data_path = "${projectDir}/${params.data_path}"
 outdir = "${projectDir}/${params.outdir}"
 
+Channel
+.from(file(params.input))
+.splitCsv(header:true, sep:',')
+.map{ prep_input_csv_files(it) }
+.set{sample_ids}
+
+import org.apache.commons.csv.CSVPrinter
+import org.apache.commons.csv.CSVFormat
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+def prep_input_csv_files(LinkedHashMap row) {
+    
+    def fileName = String.format("%s/sample_%s", outdir, row.sample_id)    
+    def FILE_HEADER = row.keySet() as String[];
+    
+    new File(fileName + ".csv").withWriter { fileWriter ->
+        def csvFilePrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT)
+        csvFilePrinter.printRecord(FILE_HEADER)
+        csvFilePrinter.printRecord(row.values())
+    }
+    
+    File file = new File(fileName + ".json")
+    file.write(JsonOutput.toJson(row))
+
+    return row.sample_id
+}
+
+
+
 workflow ST {
 
-    ST_PREPARE_DATA( input_data,
-                     data_path )
-                     
-    ST_LOAD_PREPROCESS_DATA( ST_PREPARE_DATA.out,
-                             input_data,
-                             data_path,
-                             outdir )
-                          
-    ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,
-                            input_data,
-                            outdir )
+    ST_PREPARE_DATA(             sample_ids,                   outdir )
     
-    ST_POSTPROCESSING( ST_MISCELLANEOUS_TOOLS.out,
-                       input_data,
-                       outdir )
+    ST_LOAD_PREPROCESS_DATA(     ST_PREPARE_DATA.out,          outdir )
+                          
+    ST_MISCELLANEOUS_TOOLS(      ST_LOAD_PREPROCESS_DATA.out,  outdir )
+    
+    ST_POSTPROCESSING(           ST_MISCELLANEOUS_TOOLS.out,   outdir )
+    
+    ST_POSTPROCESSING.out.view()
     
 }
 

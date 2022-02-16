@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 /* 
  * Download mitochondrial genes list file
  */
@@ -6,22 +8,25 @@
     label "python_process_low"
     
     input:
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
-    val dataPath
+    val sample_id
+    val outdir
      
     output:
     tuple val(sample_id), env(outpath)
               
-    script:  
+    script:
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+        
     """  
     #!/bin/bash
     
-    mitoUrl="ftp://ftp.broadinstitute.org/distribution/metabolic/papers/Pagliarini/MitoCarta2.0/${species}.MitoCarta2.0.txt"
+    mitoUrl="ftp://ftp.broadinstitute.org/distribution/metabolic/papers/Pagliarini/MitoCarta2.0/${sample_info.species}.MitoCarta2.0.txt"
 
-    fname=${dataPath}/`basename "\${mitoUrl}"`
+    fname=${outdir}/`basename "\${mitoUrl}"`
     echo saving to: \$fname
     
-    [ ! -d ${dataPath} ] && mkdir ${dataPath}
+    [ ! -d ${outdir} ] && mkdir ${outdir}
     
     if [ ! -f \$fname ]
     then
@@ -40,14 +45,16 @@
     label "python_process_low"
     
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
+    tuple val(sample_id), val(state)
     val outdir
     
     output:
     tuple val(sample_id), env(outpath)
          
-    script:  
+    script:
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+      
     """
     #!/bin/bash
     
@@ -55,8 +62,8 @@
       
     [ ! -d \${dname} ] && mkdir \${dname}
     
-    python $projectDir/bin/script_read_st_data.py ${st_data_dir} \${dname}/st_adata_raw.h5ad raw_feature_bc_matrix.h5
-    python $projectDir/bin/script_read_sc_data.py ${sc_data_dir} \${dname}/sc_adata_raw.h5ad
+    python $projectDir/bin/script_read_st_data.py ${sample_info.st_data_dir} \${dname}/st_adata_raw.h5ad raw_feature_bc_matrix.h5
+    python $projectDir/bin/script_read_sc_data.py ${sample_info.sc_data_dir} \${dname}/sc_adata_raw.h5ad
     echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
@@ -72,8 +79,7 @@
     memory '8.GB'
      
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
+    tuple val(sample_id), val(state)
     val outdir
     
     output:
@@ -102,21 +108,22 @@
     memory '4.GB'
      
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
-    val dataPath
+    tuple val(sample_id), val(state)
     val outdir
     
     output:
     tuple val(sample_id), env(outpath)
     
-    script:  
+    script:
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+    
     """
     #!/bin/bash
     
     dname=${outdir}/${sample_id}
     
-    mitoFile=${dataPath}/${species}.MitoCarta2.0.txt
+    mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
     
     python $projectDir/bin/stPreprocess.py \${dname}/ st_adata_counts_in_tissue st_adata_raw.h5ad \$mitoFile
     echo "completed" > "output.out" && outpath=`pwd`/output.out
@@ -134,26 +141,37 @@
     memory '4.GB'
          
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
-    val dataPath
+    tuple val(sample_id), val(state)
     val outdir
     
     output:
     tuple val(sample_id), env(outpath)
     
-    script:  
+    script:
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+      
     """
     #!/bin/bash
     
     dname=${outdir}/${sample_id}
     
-    mitoFile=${dataPath}/${species}.MitoCarta2.0.txt
+    mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
     
     python $projectDir/bin/scPreprocess.py \${dname}/ sc_adata_counts sc_adata_raw.h5ad \$mitoFile
     echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
+
+
+
+
+
+
+
+
+
+
 
 
 /* 
@@ -164,20 +182,25 @@
     label "r_process"
      
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
+    val sample_state
     val outdir
     
     output:
-    tuple val(sample_id), env(outpath)
+    tuple env(sample_id), env(outpath)
     
-    script:  
+    script:
+    def sample_id_gr = sample_state[0]
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+        
     """
     #!/bin/bash
     
-    dname=${outdir}/${sample_id}
+    sample_id=${sample_id_gr}
+    
+    dname=${outdir}/\${sample_id}
        
-    Rscript $projectDir/bin/characterization_STdeconvolve.R \${dname}/ ${st_data_dir}
+    Rscript $projectDir/bin/characterization_STdeconvolve.R \${dname}/ ${sample_info.st_data_dir}
     echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
@@ -191,20 +214,25 @@
     label "r_process"
     
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
+    val sample_state
     val outdir
     
     output:
-    tuple val(sample_id), env(outpath)
+    tuple env(sample_id), env(outpath)
     
-    script:  
+    script:
+    def sample_id_gr = sample_state[0]
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+        
     """
     #!/bin/bash
     
-    dname=${outdir}/${sample_id}
+    sample_id=${sample_id_gr}
+    
+    dname=${outdir}/\${sample_id}
         
-    Rscript $projectDir/bin/characterization_SPOTlight.R \${dname}/ ${st_data_dir}
+    Rscript $projectDir/bin/characterization_SPOTlight.R \${dname}/ ${sample_info.st_data_dir}
     echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
@@ -218,18 +246,23 @@
     label "r_process"
      
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
+    val sample_state
     val outdir
     
     output:
-    tuple val(sample_id), env(outpath)
+    tuple env(sample_id), env(outpath)
     
-    script:  
+    script:
+    def sample_id_gr = sample_state[0]
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+        
     """
     #!/bin/bash
     
-    dname=${outdir}/${sample_id}
+    sample_id=${sample_id_gr}
+    
+    dname=${outdir}/\${sample_id}
     
     Rscript $projectDir/bin/characterization_BayesSpace.R \${dname}/
     echo "completed" > "output.out" && outpath=`pwd`/output.out
@@ -245,23 +278,42 @@
     label "python_process"
     
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
+    val sample_state
     val outdir
     
     output:
-    tuple val(sample_id), env(outpath)
+    tuple env(sample_id), env(outpath)
     
-    script:  
+    script:
+    def sample_id_gr = sample_state[0]
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+        
     """
     #!/bin/bash
     
-    dname=${outdir}/${sample_id}
+    sample_id=${sample_id_gr}
+    
+    dname=${outdir}/\${sample_id}
        
     python $projectDir/bin/stSpatialDE.py \${dname}/ st_adata_norm.h5ad
     echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* 
@@ -272,18 +324,23 @@
     label "python_process"
     
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
+    val sample_state
     val outdir
     
     output:
-    tuple val(sample_id), env(outpath)
+    tuple env(sample_id), env(outpath)
     
-    script:  
+    script:
+    def sample_id_gr = sample_state[0]
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+        
     """
     #!/bin/bash
     
-    dname=${outdir}/${sample_id}
+    sample_id=${sample_id_gr}
+    
+    dname=${outdir}/\${sample_id}
          
     python $projectDir/bin/stClusteringWorkflow.py \${dname}/
     echo "completed" > "output.out" && outpath=`pwd`/output.out
@@ -299,18 +356,23 @@
     label "python_process_low"
     
     input:
-    tuple val(s), path(p)
-    tuple val(sample_id), val(species), val(st_data_dir), val(sc_data_dir)
+    val sample_state
     val outdir
     
     output:
-    tuple val(sample_id), env(outpath)
+    tuple env(sample_id), env(outpath)
     
-    script:  
+    script:
+    def sample_id_gr = sample_state[0]
+    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+        
     """
     #!/bin/bash
     
-    dname=${outdir}/${sample_id}
+    sample_id=${sample_id_gr}
+    
+    dname=${outdir}/\${sample_id}
     
     echo \${dname}/  
     echo "completed" > "output.out" && outpath=`pwd`/output.out

@@ -12,13 +12,12 @@ include { ALL_REPORT      } from '../../modules/local/tasks'
 workflow ST_POSTPROCESSING {
  
     take:
-      state
-      sample_params
+      sample_ids
       outdir
       
     main:
-      ST_CLUSTERING(state, sample_params, outdir)
-      ALL_REPORT(ST_CLUSTERING.out, sample_params, outdir)
+      ST_CLUSTERING(  sample_ids,         outdir)
+      ALL_REPORT(     ST_CLUSTERING.out,  outdir)
       
     emit:
       ALL_REPORT.out

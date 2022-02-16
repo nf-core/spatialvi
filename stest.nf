@@ -6,11 +6,89 @@ WorkflowMain.initialise(workflow, params, log)
 
 include { IN_TEST4   } from './modules/local/test_tasks'
 
+
 Channel
 .from(file(params.input))
-.splitCsv(header: true)
-.map{ row-> tuple(row.sample_id, row.species, row.st_data_dir, row.sc_data_dir) }
-.set{input_samples}
+.splitCsv(header:true, sep:',')
+.map{ prep_input_csv_files(it) }
+.set{sample_ids}
+
+import org.apache.commons.csv.CSVPrinter
+import org.apache.commons.csv.CSVFormat
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+def prep_input_csv_files(LinkedHashMap row) {
+    
+    def fileName = String.format("%s/sample_%s", params.outdir, row.sample_id)    
+    def FILE_HEADER = row.keySet() as String[];
+    
+    new File(fileName + ".csv").withWriter { fileWriter ->
+        def csvFilePrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT)
+        csvFilePrinter.printRecord(FILE_HEADER)
+        csvFilePrinter.printRecord(row.values())
+    }
+    
+    File file = new File(fileName + ".json")
+    file.write(JsonOutput.toJson(row))
+
+    return row.sample_id
+}
+
+process IN_TEST0 {
+
+    echo true
+
+    input:
+    val(sample_id)
+    
+    output:
+    tuple val(sample_id), env(outpath) 
+    
+    script:
+    def fileName = String.format("%s/sample_%s.json", params.outdir, sample_id)
+    sample_info = new JsonSlurper().parse(new File(fileName))
+        
+    """
+    echo Species:${sample_info.species}
+    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    """
+}
+
+
+workflow {
+
+    IN_TEST0( sample_ids )
+
+    IN_TEST0.out.view()
+  
+}
+
+
+def aaa(LinkedHashMap row) {
+
+    def meta = [:]
+    meta.id           = row.sample
+    meta.single_end   = row.single_end.toBoolean()
+
+    def array = []
+    if (!file(row.fastq_1).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> Read 1 FastQ file does not exist!\n${row.fastq_1}"
+    }
+    if (meta.single_end) {
+        array = [ meta, [ file(row.fastq_1) ] ]
+    } else {
+        if (!file(row.fastq_2).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
+        }
+        array = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
+    }
+    return array
+}
+
+
+
+
 
 
 process IN_TEST1 {
@@ -70,12 +148,7 @@ process IN_TEST5 {
 }
 
 
-workflow {
 
-    IN_TEST5()  
-    IN_TEST4()
-  
-}
 
 
 

@@ -120,3 +120,5 @@ st_adata.write(sys.argv[1] + '/st_adata_plain.h5ad')
 st_adata.X = csr_matrix(st_adata.X / st_adata.obs['norm_factors'].values[:, None])
 sc.pp.log1p(st_adata)
 st_adata.write(sys.argv[1] + '/st_adata_norm.h5ad')
+
+exit(0)

@@ -52,3 +52,6 @@ sc_adata.write(saveFile)
 
 X = np.array(sc_adata.X.todense()).T
 np.savez_compressed(os.path.dirname(saveFile) + '/sc_adata_counts.npz', X)
+
+exit(0)
+

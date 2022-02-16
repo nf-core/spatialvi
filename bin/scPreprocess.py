@@ -102,3 +102,5 @@ sc_adata.write(sys.argv[1] + '/sc_adata_norm.h5ad')
 np.savez_compressed(sys.argv[1] + '/sc_adata_X.npz', sc_adata.X.T.todense())
 sc_adata.var.to_csv(sys.argv[1] + '/sc_adata.var.csv')
 sc_adata.obs.to_csv(sys.argv[1] + '/sc_adata.obs.csv')
+
+exit(0)

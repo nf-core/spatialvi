@@ -12,11 +12,11 @@ include { MITO_LOAD } from '../../modules/local/tasks'
 workflow ST_PREPARE_DATA {
 
     take:
-      sample_params
-      dataPath
+      sample_id
+      outdir
       
     main:
-      MITO_LOAD(sample_params, dataPath)
+      MITO_LOAD(sample_id, outdir)
       
     emit:
       MITO_LOAD.out
