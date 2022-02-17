@@ -1,7 +1,4 @@
 .nextflow*
-.singularity/
-.github/
-/
 work/
 data/
 results/
@@ -9,4 +6,3 @@ results/
 testing/
 testing*
 *.pyc
-slurm-*
