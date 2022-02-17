@@ -24,6 +24,16 @@
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/st/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "container_r": {
+                    "type": "string",
+                    "description": "Path to the R singularity container.",
+                    "fa_icon": "fas fa-folder-open"
+                },    
+                "container_python": {
+                    "type": "string",
+                    "description": "Path to the Python singularity container.",
+                    "fa_icon": "fas fa-folder-open"
+                },          
                 "outdir": {
                     "type": "string",
                     "description": "Path to the output directory where the results will be saved.",
