@@ -16,8 +16,10 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nf-core/st** is a bioinformatics best-practice analysis pipeline for Spatial Transcriptomics Integrated Analysis Workflow.
+**nf-core/st** is a bioinformatics best-practice analysis pipeline for Spatial Transcriptomics Integrated Analysis.
+The pipeline for processing spatially-resolved gene counts with spatial coordinates, image data, and optionally single cell RNA-seq data, designed for 10x genomics visium and single cell transcriptomics. Specifically, input data can be output of 10x SpaceRanger and CellRanger.
+
+The are numerous methods for ST data analysis, and this research area is rapidly developing. The pipeline may be useful to a community working in the area of ST. The pipeline that performs a set of analyses, not limited to but including quality control, normalization, deconvolution of spots into cell types and topics, resolution enhancement, clustering, selection, spatially-variable genes, etc. The software is made of R and Python with numerous packages containerized.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -26,10 +28,13 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+1. Normalization and Quality Control ([`QC`](https://www.bioinformatics...))
+2. Spots cell types and cell topics deconvolution
+3. Spot resolution enhancement
+4. Dimensionality reduction and projection
+5. Clustering of the spots
+6. Visualization of the clusters in spatial coordinates and 2D projection layout
+7. Identification of spatially variable features
 
 ## Quick Start
 
