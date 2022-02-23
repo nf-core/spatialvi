@@ -28,13 +28,34 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-1. Normalization and Quality Control ([`QC`](https://www.bioinformatics...))
-2. Spots cell types and cell topics deconvolution
-3. Spot resolution enhancement
-4. Dimensionality reduction and projection
-5. Clustering of the spots
-6. Visualization of the clusters in spatial coordinates and 2D projection layout
-7. Identification of spatially variable features
+1. Normalization and Quality Control ([`scran`](https://doi.org/doi:10.18129/B9.bioc.scran), [`scanpy`](https://github.com/theislab/scanpy))
+2. Spots cell types and cell topics deconvolution ([`STdeconvolve`](https://jef.works/STdeconvolve/), [`SPOTlight`](https://github.com/MarcElosua/SPOTlight))
+3. Spot resolution enhancement ([`BayesSpace`](https://github.com/edward130603/BayesSpace))
+4. Dimensionality reduction and projection ([`scanpy`](https://github.com/theislab/scanpy), [`Seurat`](https://satijalab.org/seurat/))
+5. Integration with scRNA-seq data ([`scanorama`](https://github.com/brianhie/scanorama), [`BBKNN`](https://github.com/Teichlab/bbknn)) 
+6. Label transfer from scRNA-seq data ([`Seurat`](https://satijalab.org/seurat/))
+7. Clustering of the spots ([`scanpy Leiden`](https://arxiv.org/abs/1810.08473), [`BayesSpace`](https://github.com/edward130603/BayesSpace))
+8. Visualization of clusters and features in spatial coordinates and 2D projection layout ([`scanpy`](https://github.com/theislab/scanpy), [`Seurat`](https://satijalab.org/seurat/))
+9. Identification of spatially variable features ([`SpatialDE`](https://github.com/Teichlab/SpatialDE))
+
+
+The pipeline combines multiple tools, toolkits and platforms:
+
++ [`Bioconductor`](https://www.bioconductor.org/) - software resource for the analysis of genomic data. Based primarily on the statistical R programming language.
++ [`Seurat`](https://satijalab.org/seurat/) - R toolkit for single cell genomics.
++ [`scran`](https://doi.org/doi:10.18129/B9.bioc.scran) - R package implements miscellaneous functions for analysis and interpretation of single-cell RNA-seq data.
++ [`SpatialExperiment`](https://doi.org/doi:10.18129/B9.bioc.SpatialExperiment) - R package for storing, retrieving spatial coordinates and gene expression.
++ [`Giotto`](https://rubd.github.io/Giotto_site/) - (R package) a toolbox for integrative analysis and visualization of spatial expression data.
++ [`reticulate`](https://github.com/rstudio/reticulate/) - comprehensive set of tools for interoperability between Python and R.
++ [`STdeconvolve`](https://jef.works/STdeconvolve/) - R implementation of LDA-based cell-topics deconvolution of spots.
++ [`SPOTlight`](https://github.com/MarcElosua/SPOTlight) - R implementation of NMF-based cell-types deconvolution of spots.
++ [`BayesSpace`](https://github.com/edward130603/BayesSpace) - R package for spatially-aware clustering and resolution enhancement.
++ [`SpatialDE`](https://github.com/Teichlab/SpatialDE) - Python package for identification of spatially variable genes.
++ [`scanorama`](https://github.com/brianhie/scanorama) - Python package that enables batch-correction and integration of heterogeneous scRNA-seq datasets.
++ [`BBKNN`](https://github.com/Teichlab/bbknn) - (Python package) batch effect removal tool.
++ [`scanpy`](https://github.com/theislab/scanpy) - scalable Python toolkit for analyzing single-cell gene expression data.
++ [`anndata`](https://github.com/theislab/anndata) - a Python package for handling annotated data matrices in memory and on disk.
+
 
 ## Quick Start
 
@@ -69,9 +90,15 @@ The nf-core/st pipeline comes with documentation about the pipeline [usage](http
 
 ## Credits
 
-nf-core/st was originally written by Sergii Domanskyi.
+nf-core/st was originally developed by The Jackson Laboratory as a part of [NCI PDXNet PDCCC](https://www.pdxnetwork.org/pdccc) (PDX Data Commons and Coordination Center). Original authors:
 
-We thank the following people for their extensive assistance in the development of this pipeline:
++ [Sergii Domanskyi](https://github.com/sdomanskyi)
++ [Jeffrey Chuang]()
++ [Anuj Srivastava]()
+
+The pipeline is being further developed in collaboration with the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/).
+
+<!-- We thank the following people for their extensive assistance in the development of this pipeline: -->
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
