@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/spatialtranscriptomics/master/nextflow_schema.json",
     "title": "nf-core/spatialtranscriptomics pipeline parameters",
-    "description": "Spatial Transcriptomics Integrated Analysis Workflow",
+    "description": "Spatial Transcriptomics",
     "type": "object",
     "definitions": {
         "input_output_options": {

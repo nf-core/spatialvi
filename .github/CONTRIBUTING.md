@@ -1,23 +1,23 @@
-# nf-core/st: Contributing Guidelines
+# nf-core/spatialtranscriptomics: Contributing Guidelines
 
 Hi there!
-Many thanks for taking an interest in improving nf-core/st.
+Many thanks for taking an interest in improving nf-core/spatialtranscriptomics.
 
-We try to manage the required tasks for nf-core/st using GitHub issues, you probably came to this page when creating one.
+We try to manage the required tasks for nf-core/spatialtranscriptomics using GitHub issues, you probably came to this page when creating one.
 Please use the pre-filled template to save time.
 
 However, don't be put off by this template - other more general issues and suggestions are welcome!
 Contributions to the code are even more welcome ;)
 
-> If you need help using or modifying nf-core/st then the best place to ask is on the nf-core Slack [#st](https://nfcore.slack.com/channels/st) channel ([join our Slack here](https://nf-co.re/join/slack)).
+> If you need help using or modifying nf-core/spatialtranscriptomics then the best place to ask is on the nf-core Slack [#spatialtranscriptomics](https://nfcore.slack.com/channels/spatialtranscriptomics) channel ([join our Slack here](https://nf-co.re/join/slack)).
 
 ## Contribution workflow
 
-If you'd like to write some code for nf-core/st, the standard workflow is as follows:
+If you'd like to write some code for nf-core/spatialtranscriptomics, the standard workflow is as follows:
 
-1. Check that there isn't already an issue about your idea in the [nf-core/st issues](https://github.com/nf-core/st/issues) to avoid duplicating work
+1. Check that there isn't already an issue about your idea in the [nf-core/spatialtranscriptomics issues](https://github.com/nf-core/spatialtranscriptomics/issues) to avoid duplicating work
     * If there isn't one already, please create one so that others know you're working on this
-2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/st repository](https://github.com/nf-core/st) to your GitHub account
+2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/spatialtranscriptomics repository](https://github.com/nf-core/spatialtranscriptomics) to your GitHub account
 3. Make the necessary changes / additions within your forked repository following [Pipeline conventions](#pipeline-contribution-conventions)
 4. Use `nf-core schema build` and add any new parameters to the pipeline JSON schema (requires [nf-core tools](https://github.com/nf-core/tools) >= 1.10).
 5. Submit a Pull Request against the `dev` branch and wait for the code to be reviewed and merged
@@ -55,11 +55,11 @@ These tests are run both with the latest available version of `Nextflow` and als
 
 ## Getting help
 
-For further information/help, please consult the [nf-core/st documentation](https://nf-co.re/st/usage) and don't hesitate to get in touch on the nf-core Slack [#st](https://nfcore.slack.com/channels/st) channel ([join our Slack here](https://nf-co.re/join/slack)).
+For further information/help, please consult the [nf-core/spatialtranscriptomics documentation](https://nf-co.re/spatialtranscriptomics/usage) and don't hesitate to get in touch on the nf-core Slack [#spatialtranscriptomics](https://nfcore.slack.com/channels/spatialtranscriptomics) channel ([join our Slack here](https://nf-co.re/join/slack)).
 
 ## Pipeline contribution conventions
 
-To make the nf-core/st code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
+To make the nf-core/spatialtranscriptomics code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
 
 ### Adding a new step
 
