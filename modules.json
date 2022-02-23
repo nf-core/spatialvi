@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/st",
-    "homePage": "https://github.com/nf-core/st",
+    "name": "nf-core/spatialtranscriptomics",
+    "homePage": "https://github.com/nf-core/spatialtranscriptomics",
     "repos": {
         "nf-core/modules": {
             "custom/dumpsoftwareversions": {

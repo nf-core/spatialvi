@@ -1,5 +1,5 @@
 //
-// This file holds several functions specific to the workflow/st.nf in the nf-core/st pipeline
+// This file holds several functions specific to the workflow/st.nf in the nf-core/spatialtranscriptomics pipeline
 //
 
 class WorkflowSt {

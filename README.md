@@ -1,7 +1,7 @@
-# ![nf-core/st](docs/images/nf-core-st_logo_light.png#gh-light-mode-only) ![nf-core/st](docs/images/nf-core-st_logo_dark.png#gh-dark-mode-only)
+# ![nf-core/spatialtranscriptomics](docs/images/nf-core-st_logo_light.png#gh-light-mode-only) ![nf-core/spatialtranscriptomics](docs/images/nf-core-st_logo_dark.png#gh-dark-mode-only)
 
-[![GitHub Actions CI Status](https://github.com/nf-core/st/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/st/actions?query=workflow%3A%22nf-core+CI%22)
-[![GitHub Actions Linting Status](https://github.com/nf-core/st/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/st/actions?query=workflow%3A%22nf-core+linting%22)
+[![GitHub Actions CI Status](https://github.com/nf-core/spatialtranscriptomics/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/spatialtranscriptomics/actions?query=workflow%3A%22nf-core+CI%22)
+[![GitHub Actions Linting Status](https://github.com/nf-core/spatialtranscriptomics/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/spatialtranscriptomics/actions?query=workflow%3A%22nf-core+linting%22)
 [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/st/results)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
@@ -16,7 +16,7 @@
 
 ## Introduction
 
-**nf-core/st** is a bioinformatics best-practice analysis pipeline for Spatial Transcriptomics Integrated Analysis.
+**nf-core/spatialtranscriptomics** is a bioinformatics best-practice analysis pipeline for Spatial Transcriptomics Integrated Analysis.
 The pipeline for processing spatially-resolved gene counts with spatial coordinates, image data, and optionally single cell RNA-seq data, designed for 10x genomics visium and single cell transcriptomics. Specifically, input data can be output of 10x SpaceRanger and CellRanger.
 
 The are numerous methods for ST data analysis, and this research area is rapidly developing. The pipeline may be useful to a community working in the area of ST. The pipeline that performs a set of analyses, not limited to but including quality control, normalization, deconvolution of spots into cell types and topics, resolution enhancement, clustering, selection, spatially-variable genes, etc. The software is made of R and Python with numerous packages containerized.
@@ -66,7 +66,7 @@ The pipeline combines multiple tools, toolkits and platforms:
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```console
-    nextflow run nf-core/st -profile test,YOURPROFILE
+    nextflow run nf-core/spatialtranscriptomics -profile test,YOURPROFILE
     ```
 
     Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -81,16 +81,16 @@ The pipeline combines multiple tools, toolkits and platforms:
     <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
 
     ```console
-    nextflow run nf-core/st -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome GRCh37
+    nextflow run nf-core/spatialtranscriptomics -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome GRCh37
     ```
 
 ## Documentation
 
-The nf-core/st pipeline comes with documentation about the pipeline [usage](https://nf-co.re/st/usage), [parameters](https://nf-co.re/st/parameters) and [output](https://nf-co.re/st/output).
+The nf-core/spatialtranscriptomics pipeline comes with documentation about the pipeline [usage](https://nf-co.re/st/usage), [parameters](https://nf-co.re/st/parameters) and [output](https://nf-co.re/st/output).
 
 ## Credits
 
-nf-core/st was originally developed by The Jackson Laboratory as a part of [NCI PDXNet PDCCC](https://www.pdxnetwork.org/pdccc) (PDX Data Commons and Coordination Center). Original authors:
+nf-core/spatialtranscriptomics was originally developed by The Jackson Laboratory as a part of [NCI PDXNet PDCCC](https://www.pdxnetwork.org/pdccc) (PDX Data Commons and Coordination Center). Original authors:
 
 + [Sergii Domanskyi](https://github.com/sdomanskyi)
 + [Jeffrey Chuang]()
@@ -111,7 +111,7 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  nf-core/st for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use  nf-core/spatialtranscriptomics for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.

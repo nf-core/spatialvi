@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-    nf-core/st
+    nf-core/spatialtranscriptomics
 ========================================================================================
-    Github : https://github.com/nf-core/st
+    Github : https://github.com/nf-core/spatialtranscriptomics
     Website: https://nf-co.re/st
     Slack  : https://nfcore.slack.com/channels/st
 ----------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ WorkflowMain.initialise(workflow, params, log)
 include { ST } from './workflows/st'
 
 //
-// WORKFLOW: Run main nf-core/st analysis pipeline
+// WORKFLOW: Run main nf-core/spatialtranscriptomics analysis pipeline
 //
 workflow NFCORE_ST {
     ST ()
