@@ -92,11 +92,11 @@ The nf-core/spatialtranscriptomics pipeline comes with documentation about the p
 
 ## Credits
 
-nf-core/spatialtranscriptomics was originally developed by The Jackson Laboratory as a part of [NCI PDXNet PDCCC](https://www.pdxnetwork.org/pdccc) (PDX Data Commons and Coordination Center). Original authors:
+nf-core/spatialtranscriptomics was originally developed by The Jackson Laboratory. This project has been supported by grants from the US National Institutes of Health [U24CA224067](https://reporter.nih.gov/project-details/10261367) and [U54AG075941](https://reporter.nih.gov/project-details/10376627). Original authors:
 
 + [Sergii Domanskyi](https://github.com/sdomanskyi)
-+ [Jeffrey Chuang]()
-+ [Anuj Srivastava]()
++ Jeffrey Chuang
++ Anuj Srivastava
 
 The pipeline is being further developed in collaboration with the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/).
 
