@@ -17,6 +17,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ### Example output results
 
+> **NB:** The structure of the pipeline output is being optimized. The documentation description of the pipeline outputs will be updated accordingly.
+
 ![QC reads outside tisue](images/sm-st_QC_out.png)
 
 <details markdown="1">
