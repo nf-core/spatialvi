@@ -6,36 +6,48 @@ This document describes the output produced by the pipeline. Most of the plots a
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
 
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-* [FastQC](#fastqc) - Raw read QC
 * [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### FastQC
+### Example output results
+
+> **NB:** The structure of the pipeline output is being optimized. The documentation description of the pipeline outputs will be updated accordingly.
+
+![QC reads outside tisue](images/sm-st_QC_out.png)
 
 <details markdown="1">
-<summary>Output files</summary>
+<summary>Spot clusters</summary>
 
-* `fastqc/`
-    * `*_fastqc.html`: FastQC report containing quality metrics.
-    * `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+![Spot clusters](images/sm-Clusters_scanpy_spatial.png)
+![UMAP layout clusters density](images/sm-UMAP_clusters_embedding_density.png)
 
 </details>
 
-[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
-![MultiQC - FastQC sequence counts plot](images/mqc_fastqc_counts.png)
+<details markdown="1">
+<summary>LDA-based deconvolution with STdeconvolve</summary>
 
-![MultiQC - FastQC mean quality scores plot](images/mqc_fastqc_quality.png)
+![LDA-based deconvolution with STdeconvolve](images/sm-STdeconvolve_st_scatterpies.png)
+![LDA topics spatial layout](images/sm-Topics_LDA_spatial.png)
+![LDA topics UMAP layout](images/sm-UMAP_LDA_topics.png)
+![LDA topics violin plot](images/sm-violin_topics_LDA.png)
 
-![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
+</details>
 
-> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+
+<details markdown="1">
+<summary>BayesSpace spatially-aware clustering</summary>
+
+![BayesSpace enhanced spatial clusters](images/sm-st_bayes_clusters.png)
+![BayesSpace enhanced resolution clusters](images/sm-st_bayes_clusters_enhanced.png)
+
+</details>
+
 
 ### MultiQC
 
