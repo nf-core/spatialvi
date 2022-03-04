@@ -6,7 +6,6 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
 The pipeline is designed to take multiple samples to process them in parallel. Currently processing of samples is fully independent from other samples. The spatial transcriptomics input is expected to be output from [10x Visium](https://www.10xgenomics.com/products/spatial-gene-expression) technology experiment processed with [SpaceRanger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger), which includes gene-spot count matrices in either HDF5 of MTX format, and aligned images with spatial coordinates files.
 
 ## Samplesheet input
