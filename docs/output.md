@@ -15,20 +15,38 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 * [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### Example output plots
+### Example output results
 
 ![QC reads outside tisue](images/sm-st_QC_out.png)
 
+<details markdown="1">
+<summary>Spot clusters</summary>
+
 ![Spot clusters](images/sm-Clusters_scanpy_spatial.png)
 ![UMAP layout clusters density](images/sm-UMAP_clusters_embedding_density.png)
+
+</details>
+
+
+<details markdown="1">
+<summary>LDA-based deconvolution with STdeconvolve</summary>
 
 ![LDA-based deconvolution with STdeconvolve](images/sm-STdeconvolve_st_scatterpies.png)
 ![LDA topics spatial layout](images/sm-Topics_LDA_spatial.png)
 ![LDA topics UMAP layout](images/sm-UMAP_LDA_topics.png)
 ![LDA topics violin plot](images/sm-violin_topics_LDA.png)
 
+</details>
+
+
+<details markdown="1">
+<summary>BayesSpace spatially-aware clustering</summary>
+
 ![BayesSpace enhanced spatial clusters](images/sm-st_bayes_clusters.png)
 ![BayesSpace enhanced resolution clusters](images/sm-st_bayes_clusters_enhanced.png)
+
+</details>
+
 
 ### MultiQC
 
