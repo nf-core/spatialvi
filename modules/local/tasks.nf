@@ -363,7 +363,7 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
          
-    python $projectDir/bin/stClusteringWorkflow.py \--filePath=${dname}/
+    python $projectDir/bin/stClusteringWorkflow.py --filePath=\${dname}/
 
     # Output from script: ...
     echo "completed" > "output.out" && outpath=`pwd`/output.out
