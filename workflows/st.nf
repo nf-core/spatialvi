@@ -70,8 +70,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // Info required for completion email and summary
 def multiqc_report = []
 
-data_path = "${projectDir}/${params.data_path}"
-outdir = "${projectDir}/${params.outdir}"
+outdir = "${launchDir}/${params.outdir}"
 
 Channel
 .from(file(params.input))
@@ -162,7 +161,7 @@ workflow ST {
     
     ST_POSTPROCESSING(           ST_MISCELLANEOUS_TOOLS.out,   outdir )
     
-    ST_POSTPROCESSING.out.view()
+    //ST_POSTPROCESSING.out.view()
     
 }
 
