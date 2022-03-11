@@ -58,7 +58,7 @@ The pipeline combines multiple tools, toolkits and platforms:
 
 ## Quick Start
 
-> **Note:** As a temporary measure the singularity containers necessary to run this pipeline were uploaded to https://doi.org/10.5281/zenodo.6266244. Download the two containers and edit the `nextflow.config` parameters `container_python` and `container_r`.
+> **Note:** As a temporary measure the singularity containers necessary to run this pipeline were uploaded to https://doi.org/10.5281/zenodo.6266243. Download the two containers and edit the `nextflow.config` parameters `container_python` and `container_r`.
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
 
@@ -95,9 +95,9 @@ The nf-core/spatialtranscriptomics pipeline comes with documentation about the p
 
 nf-core/spatialtranscriptomics was originally developed by The Jackson Laboratory. This project has been supported by grants from the US National Institutes of Health [U24CA224067](https://reporter.nih.gov/project-details/10261367) and [U54AG075941](https://reporter.nih.gov/project-details/10376627). Original authors:
 
-+ [Sergii Domanskyi](https://github.com/sdomanskyi)
-+ Jeffrey Chuang
-+ Anuj Srivastava
++ [Dr. Sergii Domanskyi](https://github.com/sdomanskyi)
++ Prof. Jeffrey Chuang
++ Dr. Anuj Srivastava
 
 The pipeline is being further developed in collaboration with the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/).
 

@@ -7,7 +7,7 @@
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
 // Validate input parameters
-WorkflowSt.initialise(params, log)
+WorkflowSpatialtranscriptomics.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
@@ -57,7 +57,7 @@ include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessin
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
+//include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
@@ -70,8 +70,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // Info required for completion email and summary
 def multiqc_report = []
 
-data_path = "${projectDir}/${params.data_path}"
-outdir = "${projectDir}/${params.outdir}"
+outdir = "${launchDir}/${params.outdir}"
 
 Channel
 .from(file(params.input))
@@ -162,7 +161,7 @@ workflow ST {
     
     ST_POSTPROCESSING(           ST_MISCELLANEOUS_TOOLS.out,   outdir )
     
-    ST_POSTPROCESSING.out.view()
+    //ST_POSTPROCESSING.out.view()
     
 }
 
@@ -194,7 +193,7 @@ workflow ST_PROPER {
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowSt.paramsSummaryMultiqc(workflow, summary_params)
+    workflow_summary    = WorkflowSpatialtranscriptomics.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
 
     ch_multiqc_files = Channel.empty()

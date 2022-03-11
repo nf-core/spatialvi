@@ -18,6 +18,7 @@ apt-get install -y libx11-dev
 apt-get install -y procps
 
 R --no-echo -e 'version'
+R --no-echo -e 'install.packages("argparse")'
 R --no-echo -e 'install.packages("hdf5r")'
 R --no-echo -e 'install.packages("BiocManager")'
 R --no-echo -e 'BiocManager::install("bluster")'

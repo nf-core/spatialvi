@@ -1,7 +1,41 @@
 #!/usr/local/bin/Rscript
 
-args = commandArgs(trailingOnly=TRUE)
-#args = c("c:/Projects/A_ST/forPipelineDev/")
+# Load packages
+library(argparse)
+library(SingleCellExperiment)
+library(ggplot2)
+library(BayesSpace)
+library(Matrix)
+library(reticulate)
+
+
+# Parse command-line arguments
+parser <- ArgumentParser()
+
+args <- parser$add_argument_group("Agruments", "required and optional arguments")
+
+args$add_argument("--filePath", help="Path to npz counts file", metavar="dir", required=TRUE)
+args$add_argument("--nameX", default="st_adata_X.npz", help="Path to X", metavar="file", required=FALSE)
+args$add_argument("--nameVar", default="st_adata.var.csv", help="Path to features metadata", metavar="file", required=FALSE)
+args$add_argument("--nameObs", default="st_adata.obs.csv", help="Path to observation metadata", metavar="file", required=FALSE)
+args$add_argument("--countsFactor", default=100, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--numberHVG", default=2000, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--numberPCs", default=7, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--minClusters", default=2, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--maxClusters", default=10, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--optimalQ", default=5, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--STplatform", default="Visium", help="Technology grid", metavar="factor", required=FALSE)
+
+args$add_argument("--qtuneSaveName", default="st_bayes_qtune.png", help="file name", metavar="file", required=FALSE)
+args$add_argument("--bayesClustersName", default="st_bayes_clusters.png", help="file name", metavar="file", required=FALSE)
+args$add_argument("--bayesClustersEnhancedName", default="st_bayes_clusters_enhanced.png", help="file name", metavar="file", required=FALSE)
+args$add_argument("--bayesOriginalEnhancedFeatures", default="st_bayes_original_and_enhanced.png", help="file name", metavar="file", required=FALSE)
+args$add_argument("--bayesEnhancedMarkers", default="bayes_enhanced_markers.csv", help="file name", metavar="file", required=FALSE)
+args$add_argument("--bayesSubspotCoord", default="bayes_subspot_cluster_and_coord.csv", help="file name", metavar="file", required=FALSE)
+args$add_argument("--bayesSpotCluster", default="bayes_spot_cluster.csv", help="file name", metavar="file", required=FALSE)
+
+args <- parser$parse_args()
+
 
 # #### Spatial clustering:
 # The latent cluster is modeled to depend on three parameters: cluster mean, fixed precision matrix and scaling factor. <br>
@@ -19,25 +53,19 @@ args = commandArgs(trailingOnly=TRUE)
 # #### Tuning number of clusters:
 # Elbow of negative pseudo-log-likelihood curve, that estimates how well the model fit the data for each number of clusters. <br>
 
+
+# Main script
 set.seed(123)
-
-library(SingleCellExperiment)
-library(ggplot2)
-library(BayesSpace)
-library(Matrix)
-
-library(reticulate)
 np <- import("numpy")
-
-normDataDir <- args[1]
+normDataDir <- args$filePath
 
 # Load gene names
-rowData <- read.csv(paste0(normDataDir, "st_adata.var.csv"))$X
+rowData <- read.csv(paste0(normDataDir, args$nameVar))$X
 row_df <- as.data.frame(rowData)
 row.names(row_df) <- rowData
 
 # Load coordinates of spots
-st_obs_all <- read.csv(paste0(normDataDir, "st_adata.obs.csv"))
+st_obs_all <- read.csv(paste0(normDataDir, args$nameObs))
 col_df <- as.data.frame(st_obs_all$X)
 row.names(col_df) <- st_obs_all$X
 col_df$imagerow <- st_obs_all$array_row
@@ -48,29 +76,30 @@ col_df$col <- st_obs_all$array_col
 
 
 # Load counts data
-count.data <- np$load(paste0(normDataDir, "st_adata_X.npz"))[['arr_0']] * 100.
+count.data <- np$load(paste0(normDataDir, args$nameX))[['arr_0']] * args$countsFactor
 colnames(count.data) <- st_obs_all$X
 rownames(count.data) <- rowData
 
 dsp <- SingleCellExperiment(assays=list(counts=count.data), rowData=row_df, colData=col_df)
-dsp <- spatialPreprocess(dsp, platform="Visium", n.PCs=7, n.HVGs=2000, log.normalize=TRUE)
+dsp <- spatialPreprocess(dsp, platform=args$STplatform, n.PCs=args$numberPCs, n.HVGs=args$numberHVG, log.normalize=TRUE)
     
-dsp <- qTune(dsp, qs=seq(2, 10), platform="Visium", d=7)
+dsp <- qTune(dsp, qs=seq(args$minClusters, args$maxClusters), platform="Visium", d=args$numberPCs)
 qPlot(dsp)
-ggsave(paste0(normDataDir, "st_bayes_qtune.png"), dpi=600, scale=0.55, width=8, height=8, units="in")
+ggsave(paste0(normDataDir, args$qtuneSaveName), dpi=600, scale=0.55, width=8, height=8, units="in")
     
-dsp <- spatialCluster(dsp, q=5, platform="Visium", d=7, init.method="mclust", model="t", gamma=2, nrep=1000, burn.in=100, save.chain=FALSE)
+# TODO: Need to determine optimal q!
+dsp <- spatialCluster(dsp, q=args$optimalQ, platform=args$STplatform, d=args$numberPCs, init.method="mclust", model="t", gamma=2, nrep=1000, burn.in=100, save.chain=FALSE)
     
 clusterPlot(dsp, palette=c("purple", "cyan", "blue", "yellow", "red"), color=NA) + theme_bw() + xlab("Column") + ylab("Row") + labs(fill="BayesSpace\ncluster", title="Spatial clustering")
-ggsave(paste0(normDataDir, "st_bayes_clusters.png"), dpi=600, scale=0.75, width=8, height=8, units="in")
+ggsave(paste0(normDataDir, args$bayesClustersName), dpi=600, scale=0.75, width=8, height=8, units="in")
 
-dsp.enhanced <- spatialEnhance(dsp, q=5, platform="Visium", d=7, model="t", gamma=2, jitter_prior=0.3, jitter_scale=3.5, nrep=1000, burn.in=100)
+dsp.enhanced <- spatialEnhance(dsp, q=args$optimalQ, platform="Visium", d=args$numberPCs, model="t", gamma=2, jitter_prior=0.3, jitter_scale=3.5, nrep=1000, burn.in=100)
     
 clusterPlot(dsp.enhanced, palette=c("purple", "cyan", "blue", "yellow", "red"), color=NA) + theme_bw() + xlab("Column") + ylab("Row") + labs(fill="BayesSpace\ncluster", title="Spatial clustering")
-ggsave(paste0(normDataDir, "st_bayes_clusters_enhanced.png"), dpi=600, scale=0.75, width=8, height=8, units="in") 
+ggsave(paste0(normDataDir, args$bayesClustersEnhancedName), dpi=600, scale=0.75, width=8, height=8, units="in") 
 
 
-
+# As of current implementation: take first 6 genes and enhance/plot them
 ncol <- 6
 markers <- dsp@rowRanges@partitioning@NAMES[0:ncol]
 
@@ -78,17 +107,16 @@ dsp.enhanced <- enhanceFeatures(dsp.enhanced, dsp, feature_names=markers, nround
 enhanced.plots <- purrr::map(markers, function(x) featurePlot(dsp.enhanced, x))
 spot.plots <- purrr::map(markers, function(x) featurePlot(dsp, x, color=NA))
 patchwork::wrap_plots(c(spot.plots, enhanced.plots), ncol=ncol)
-ggsave(paste0(normDataDir, "st_bayes_original_and_enhanced.png"), dpi=600, scale=1.25, width=2.3*ncol, height=4.5, limitsize=FALSE, units="in")
-
+ggsave(paste0(normDataDir, args$bayesOriginalEnhancedFeatures), dpi=600, scale=1.25, width=2.3*ncol, height=4.5, limitsize=FALSE, units="in")
 
 
 df_subspot_cluster_and_coord <- subset(as.data.frame(dsp.enhanced@colData), select=-c(imagecol, imagerow))
-write.csv(df_subspot_cluster_and_coord, file=paste0(args[1], "bayes_subspot_cluster_and_coord.csv"))
+write.csv(df_subspot_cluster_and_coord, file=paste0(args$filePath, args$bayesSubspotCoord))
 
 df_enhanced_markers <- as.data.frame(dsp.enhanced@assays@data@listData[["logcounts"]][markers,])
-write.csv(df_enhanced_markers, file=paste0(args[1], "bayes_enhanced_markers.csv"))
+write.csv(df_enhanced_markers, file=paste0(args$filePath, args$bayesEnhancedMarkers))
 
 df_spot_cluster <- subset(as.data.frame(dsp@colData), select=-c(imagecol, imagerow))
-write.csv(df_spot_cluster, file=paste0(args[1], "bayes_spot_cluster.csv"))
+write.csv(df_spot_cluster, file=paste0(args$filePath, args$bayesSpotCluster))
 
 quit(status=0)

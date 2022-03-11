@@ -12,7 +12,7 @@ import groovy.json.JsonSlurper
     val outdir
      
     output:
-    tuple val(sample_id), env(outpath)
+    tuple val(sample_id), env(fname)
               
     script:
     def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
@@ -32,7 +32,6 @@ import groovy.json.JsonSlurper
     then
         wget --quiet \${mitoUrl} --output-document=\$fname
     fi
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
     """
 }
 
@@ -45,7 +44,7 @@ import groovy.json.JsonSlurper
     label "python_process_low"
     
     input:
-    tuple val(sample_id), val(state)
+    tuple val(sample_id), file(state)
     val outdir
     
     output:
@@ -61,10 +60,21 @@ import groovy.json.JsonSlurper
     dname=${outdir}/${sample_id}
       
     [ ! -d \${dname} ] && mkdir \${dname}
-    
-    python $projectDir/bin/script_read_st_data.py ${sample_info.st_data_dir} \${dname}/st_adata_raw.h5ad raw_feature_bc_matrix.h5
-    python $projectDir/bin/script_read_sc_data.py ${sample_info.sc_data_dir} \${dname}/sc_adata_raw.h5ad
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+
+    python $projectDir/bin/script_read_st_data.py --outsPath=${sample_info.st_data_dir} --saveFile=\${dname}/st_adata_raw.h5ad --countsFile=raw_feature_bc_matrix.h5 --npCountsOutputName=st_adata_counts_in_tissue.npz --minCounts=params.STload_minCounts --minCells=params.STload_minCells
+
+    python $projectDir/bin/script_read_sc_data.py --outsPath=${sample_info.sc_data_dir} --saveFile=\${dname}/sc_adata_raw.h5ad --npCountsOutputName=sc_adata_counts.npz --minCounts=params.SCload_minCounts --minCells=params.SCload_minCells --minGenes=params.SCload_minGenes
+
+    if [[ -s \${dname}/st_adata_raw.h5ad ]] && \
+      [[ -s \${dname}/sc_adata_raw.h5ad ]] && \
+      [[ -s \${dname}/st_adata_counts_in_tissue.npz ]] && \
+      [[ -s \${dname}/sc_adata_counts.npz ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi
     """
 }
 
@@ -79,21 +89,28 @@ import groovy.json.JsonSlurper
     memory '8.GB'
      
     input:
-    tuple val(sample_id), val(state)
+    tuple val(sample_id), file(state)
     val outdir
     
     output:
     tuple val(sample_id), env(outpath)
     
-    script:  
     """
     #!/bin/bash
     
     dname=${outdir}/${sample_id}
     
-    Rscript $projectDir/bin/calculateSumFactors.R \${dname}/ st_adata_counts_in_tissue
-    Rscript $projectDir/bin/calculateSumFactors.R \${dname}/ sc_adata_counts
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    Rscript $projectDir/bin/calculateSumFactors.R --filePath=\${dname}/ --npCountsOutputName=st_adata_counts_in_tissue.npz --npFactorsOutputName=st_adata_counts_in_tissue_factors.npz
+    Rscript $projectDir/bin/calculateSumFactors.R --filePath=\${dname}/ --npCountsOutputName=sc_adata_counts.npz --npFactorsOutputName=sc_adata_counts_factors.npz
+    
+    if [[ -s \${dname}/st_adata_counts_in_tissue_factors.npz ]] && \
+      [[ -s \${dname}/sc_adata_counts_factors.npz ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi 
     """
 }
 
@@ -108,7 +125,7 @@ import groovy.json.JsonSlurper
     memory '4.GB'
      
     input:
-    tuple val(sample_id), val(state)
+    tuple val(sample_id), file(state)
     val outdir
     
     output:
@@ -125,8 +142,18 @@ import groovy.json.JsonSlurper
     
     mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
     
-    python $projectDir/bin/stPreprocess.py \${dname}/ st_adata_counts_in_tissue st_adata_raw.h5ad \$mitoFile
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    python $projectDir/bin/stPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=st_adata_counts_in_tissue_factors.npz --rawAdata=st_adata_raw.h5ad --mitoFile=\$mitoFile --pltFigSize=params.STpreprocess_pltFigSize --minCounts=params.STpreprocess_minCounts --minGenes=params.STpreprocess_minGenes --minCells=params.STpreprocess_minCells --histplotQCmaxTotalCounts=params.STpreprocess_histplotQCmaxTotalCounts --histplotQCminGeneCounts=params.STpreprocess_histplotQCminGeneCounts --histplotQCbins=params.STpreprocess_histplotQCbins
+
+    if [[ -s \${dname}/st_adata_norm.h5ad ]] && \
+      [[ -s \${dname}/st_adata_X.npz ]] && \
+      [[ -s \${dname}/st_adata.var.csv ]] && \
+      [[ -s \${dname}/st_adata.obs.csv ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi
     """
 }
 
@@ -141,7 +168,7 @@ import groovy.json.JsonSlurper
     memory '4.GB'
          
     input:
-    tuple val(sample_id), val(state)
+    tuple val(sample_id), file(state)
     val outdir
     
     output:
@@ -158,8 +185,18 @@ import groovy.json.JsonSlurper
     
     mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
     
-    python $projectDir/bin/scPreprocess.py \${dname}/ sc_adata_counts sc_adata_raw.h5ad \$mitoFile
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    python $projectDir/bin/scPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=sc_adata_counts_factors.npz --rawAdata=sc_adata_raw.h5ad --mitoFile=\$mitoFile --pltFigSize=params.SCpreprocess_pltFigSize --minCounts=params.SCpreprocess_minCounts --minGenes=params.SCpreprocess_minGenes --minCells=params.SCpreprocess_minCells --histplotQCmaxTotalCounts=params.SCpreprocess_histplotQCmaxTotalCounts --histplotQCminGeneCounts=params.SCpreprocess_histplotQCminGeneCounts --histplotQCbins=params.SCpreprocess_histplotQCbins
+
+    if [[ -s \${dname}/sc_adata_norm.h5ad ]] && \
+      [[ -s \${dname}/sc_adata_X.npz ]] && \
+      [[ -s \${dname}/sc_adata.var.csv ]] && \
+      [[ -s \${dname}/sc_adata.obs.csv ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi
     """
 }
 
@@ -200,8 +237,20 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
        
-    Rscript $projectDir/bin/characterization_STdeconvolve.R \${dname}/ ${sample_info.st_data_dir}
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    Rscript $projectDir/bin/characterization_STdeconvolve.R --filePath=\${dname}/ --outsPath=${sample_info.st_data_dir} --mtxGeneColumn=params.STdeconvolve_mtxGeneColumn --countsFactor=params.STdeconvolve_countsFactor --corpusRemoveAbove=params.STdeconvolve_corpusRemoveAbove --corpusRemoveBelow=params.STdeconvolve_corpusRemoveBelow --LDAminTopics=params.STdeconvolve_LDAminTopics --LDAmaxTopics=params.STdeconvolve_LDAmaxTopics --STdeconvolveScatterpiesSize=params.STdeconvolve_ScatterpiesSize --STdeconvolveFeaturesSizeFactor=params.STdeconvolve_FeaturesSizeFactor
+    
+    if [[ -s \${dname}/STdeconvolve_prop_norm.csv ]] && \
+      [[ -s \${dname}/STdeconvolve_beta_norm.csv ]] && \
+      [[ -s \${dname}/STdeconvolve_sc_cluster_ids.csv ]] && \
+      [[ -s \${dname}/STdeconvolve_sc_pca.csv ]] && \
+      [[ -s \${dname}/STdeconvolve_sc_pca_feature_loadings.csv ]] && \
+      [[ -s \${dname}/STdeconvolve_sc_cluster_markers.csv ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi
     """
 }
 
@@ -232,8 +281,20 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
         
-    Rscript $projectDir/bin/characterization_SPOTlight.R \${dname}/ ${sample_info.st_data_dir}
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    Rscript $projectDir/bin/characterization_SPOTlight.R --filePath=\${dname}/ --outsPath=${sample_info.st_data_dir} --mtxGeneColumn=params.SPOTlight_mtxGeneColumn --countsFactor=params.SPOTlight_countsFactor --clusterResolution=params.SPOTlight_clusterResolution --numberHVG=params.SPOTlight_numberHVG --numberCellsPerCelltype=params.SPOTlight_numberCellsPerCelltype --SPOTlightScatterpiesSize=params.SPOTlight_ScatterpiesSize 
+
+    if [[ -s \${dname}/SPOTlight_prop_norm.csv ]] && \
+      [[ -s \${dname}/SPOTlight_beta_norm.csv ]] && \
+      [[ -s \${dname}/SPOTlight_sc_cluster_ids.csv ]] && \
+      [[ -s \${dname}/SPOTlight_sc_pca.csv ]] && \
+      [[ -s \${dname}/SPOTlight_sc_pca_feature_loadings.csv ]] && \
+      [[ -s \${dname}/SPOTlight_sc_cluster_markers.csv ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi
     """
 }
 
@@ -264,8 +325,17 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
     
-    Rscript $projectDir/bin/characterization_BayesSpace.R \${dname}/
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    Rscript $projectDir/bin/characterization_BayesSpace.R --filePath=\${dname}/ --numberHVG=params.BayesSpace_numberHVG --numberPCs=params.BayesSpace_numberPCs --minClusters=params.BayesSpace_minClusters --maxClusters=params.BayesSpace_maxClusters --optimalQ=params.BayesSpace_optimalQ --STplatform=params.BayesSpace_STplatform
+
+    if [[ -s \${dname}/bayes_spot_cluster.csv ]] && \
+      [[ -s \${dname}/bayes_subspot_cluster_and_coord.csv ]] && \
+      [[ -s \${dname}/bayes_enhanced_markers.csv ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi
     """
 }
 
@@ -296,8 +366,15 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
        
-    python $projectDir/bin/stSpatialDE.py \${dname}/ st_adata_norm.h5ad
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    python $projectDir/bin/stSpatialDE.py --filePath=\${dname}/ --numberOfColumns=params.SpatialDE_numberOfColumns
+
+    if [[ -s \${dname}/stSpatialDE.csv ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi
     """
 }
 
@@ -342,8 +419,16 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
          
-    python $projectDir/bin/stClusteringWorkflow.py \${dname}/
-    echo "completed" > "output.out" && outpath=`pwd`/output.out
+    python $projectDir/bin/stClusteringWorkflow.py --filePath=\${dname}/ --resolution=params.Clustering_resolution
+
+    if [[ -s \${dname}/st_adata_processed.h5ad ]] && \
+      [[ -s \${dname}/sc_adata_processed.h5ad ]]
+    then
+      echo "completed" > "output.out" && outpath=`pwd`/output.out
+    else
+      echo ERROR: Output files missing. >&2
+      exit 2
+    fi
     """
 }
 
