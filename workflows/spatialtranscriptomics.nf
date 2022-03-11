@@ -7,7 +7,7 @@
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
 // Validate input parameters
-WorkflowSt.initialise(params, log)
+WorkflowSpatialtranscriptomics.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
@@ -193,7 +193,7 @@ workflow ST_PROPER {
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowSt.paramsSummaryMultiqc(workflow, summary_params)
+    workflow_summary    = WorkflowSpatialtranscriptomics.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
 
     ch_multiqc_files = Channel.empty()
