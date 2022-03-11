@@ -33,7 +33,7 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
-include { ST } from './workflows/st'
+include { ST } from './workflows/spatialtranscriptomics'
 
 //
 // WORKFLOW: Run main nf-core/spatialtranscriptomics analysis pipeline
