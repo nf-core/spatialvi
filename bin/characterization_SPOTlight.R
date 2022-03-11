@@ -74,7 +74,7 @@ if (!is.na(filename)) {
     se_st <- Seurat::Load10X_Spatial(data.dir = args$outsPath, filename = filename)
 } else {
     image <- Read10X_Image(image.dir=file.path(args$outsPath, 'spatial'), filter.matrix=TRUE)
-    m <- Read10X(paste0(args$outsPath, args$outsSubDir), gene.column=srgs$mtxGeneColumn)
+    m <- Read10X(paste0(args$outsPath, args$outsSubDir), gene.column=args$mtxGeneColumn)
     m <- m[,row.names(image@coordinates)]
     m <- m[,colSums(m)>0]
     se_st <- CreateSeuratObject(counts=m, assay="Spatial")
@@ -176,7 +176,7 @@ ggsave(paste0(args$filePath, args$SPOTlightCorrName), dpi=600, scale=0.75, width
 
 write.csv(decon_df, file=paste0(args$filePath, args$SPOTlightPropNorm))
 # There was some error need to test this output
-#write.csv(cbind(cluster_id=nmf_mod[[2]], h_ds), file=paste0(args$filePath, args$SPOTlightBetaNorm))
+write.csv(cbind(cluster_id=nmf_mod[[2]], h), file=paste0(args$filePath, args$SPOTlightBetaNorm))
 
 write.csv(se_sc@active.ident, file=paste0(args$filePath, args$SPOTlightSCclusterIds))
 write.csv(se_sc@reductions[["pca"]]@cell.embeddings, file=paste0(args$filePath, args$SPOTlightSCpca))

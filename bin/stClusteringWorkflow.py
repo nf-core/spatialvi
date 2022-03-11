@@ -227,7 +227,7 @@ if True:
     keys = st_adata.obs.columns[st_adata.obs.columns.str.contains('Topic NMF ')]
     sc.pl.umap(st_adata, color=keys, wspace=0.4, ncols=5, save='/' + args.UMAP_NMF_topics)
     keys = st_adata.obs.columns[st_adata.obs.columns.str.contains('LT PC ')]
-    sc.pl.umap(st_adata, color=keys, wspace=0.4, ncols=5, save='/' + args.UMAP_LT_PC)
+    sc.pl.umap(st_adata, color=keys, wspace=0.4, ncols=5, save='/' + args.UMAP_LT_PC_topics)
 
 # Make plots of spatial ST spots clusters
 if True:
@@ -244,7 +244,7 @@ if True:
     keys = st_adata.obs.columns[st_adata.obs.columns.str.contains('LT PC ')]
     sc.pl.violin(st_adata, keys, jitter=0.4, groupby='clusters', rotation=0, save='/' + args.violin_topics_LT_PC)
 
-st_adata.write(args.saveFileST)
-sc_adata.write(args.saveFileSC)
+st_adata.write(args.filePath + '/' + args.saveFileST)
+sc_adata.write(args.filePath + '/' + args.saveFileSC)
 
 exit(0)

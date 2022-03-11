@@ -48,4 +48,4 @@ df_results.to_csv(args.filePath + '/' + args.saveFileName)
 keys = df_results.index.values[:args.plotTopHVG]
 sc.pl.spatial(st_adata, img_key="hires", color=keys, alpha=0.7, save='/' + args.savePlotName, ncols=args.numberOfColumns)
 
-
+exit(0)

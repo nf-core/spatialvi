@@ -44,7 +44,7 @@ import groovy.json.JsonSlurper
     label "python_process_low"
     
     input:
-    tuple val(sample_id), path(state)
+    tuple val(sample_id), file(state)
     val outdir
     
     output:
@@ -88,7 +88,7 @@ import groovy.json.JsonSlurper
     memory '8.GB'
      
     input:
-    tuple val(sample_id), path(state)
+    tuple val(sample_id), file(state)
     val outdir
     
     output:
@@ -124,7 +124,7 @@ import groovy.json.JsonSlurper
     memory '4.GB'
      
     input:
-    tuple val(sample_id), val(state)
+    tuple val(sample_id), file(state)
     val outdir
     
     output:
@@ -141,7 +141,7 @@ import groovy.json.JsonSlurper
     
     mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
     
-    python $projectDir/bin/stPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=st_adata_counts_in_tissue.npz --rawAdata=st_adata_raw.h5ad --mitoFile=\$mitoFile
+    python $projectDir/bin/stPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=st_adata_counts_in_tissue_factors.npz --rawAdata=st_adata_raw.h5ad --mitoFile=\$mitoFile
 
     if [[ -s \${dname}/st_adata_norm.h5ad ]] && \
       [[ -s \${dname}/st_adata_X.npz ]] && \
@@ -167,7 +167,7 @@ import groovy.json.JsonSlurper
     memory '4.GB'
          
     input:
-    tuple val(sample_id), val(state)
+    tuple val(sample_id), file(state)
     val outdir
     
     output:
@@ -184,7 +184,7 @@ import groovy.json.JsonSlurper
     
     mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
     
-    python $projectDir/bin/scPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=sc_adata_counts.npz --rawAdata=sc_adata_raw.h5ad --mitoFile=\$mitoFile
+    python $projectDir/bin/scPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=sc_adata_counts_factors.npz --rawAdata=sc_adata_raw.h5ad --mitoFile=\$mitoFile
 
     if [[ -s \${dname}/sc_adata_norm.h5ad ]] && \
       [[ -s \${dname}/sc_adata_X.npz ]] && \
@@ -373,6 +373,7 @@ import groovy.json.JsonSlurper
     else
       echo ERROR: Output files missing. >&2
       exit 2
+    fi
     """
 }
 

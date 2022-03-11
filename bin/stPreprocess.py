@@ -22,7 +22,7 @@ parser.add_argument('--mitoFile', metavar='file', type=str, default=None, help='
 
 parser.add_argument('--pltFigSize', metavar='figsize', type=int, default=6, help='Figure size.')
 parser.add_argument('--stQCinName', metavar='name', type=str, default='st_QC_in.png', help='Figure name.')
-parser.add_argument('--stQCoutName', metavar='name', type=str, default='st_QC_in.png', help='Figure name.')
+parser.add_argument('--stQCoutName', metavar='name', type=str, default='st_QC_out.png', help='Figure name.')
 
 parser.add_argument('--minCounts', metavar='cutoff', type=int, default=500, help='Min counts per spot.')
 parser.add_argument('--minGenes', metavar='cutoff', type=int, default=250, help='Min genes per spot.')
@@ -129,8 +129,8 @@ st_adata_R.obs.to_csv(args.filePath + '/' + args.nameObs)
 
 
 sc.pp.filter_cells(st_adata, min_counts=args.minCounts)
-sc.pp.filter_cells(st_adata, min_genes=args.minCells)
-sc.pp.filter_genes(st_adata, min_cells=args.minGenes)
+sc.pp.filter_cells(st_adata, min_genes=args.minGenes)
+sc.pp.filter_genes(st_adata, min_cells=args.minCells)
 print('Filtered spots and genes:', st_adata.shape)
 
 # Effect of normalization by size factors

@@ -68,7 +68,7 @@ if (!is.na(filename)) {
     se_st <- Seurat::Load10X_Spatial(data.dir = args$outsPath, filename = filename)
 } else {
     image <- Read10X_Image(image.dir=file.path(args$outsPath, 'spatial'), filter.matrix=TRUE)
-    m <- Read10X(paste0(args$outsPath, args$outsSubDir), gene.column=srgs$mtxGeneColumn)
+    m <- Read10X(paste0(args$outsPath, args$outsSubDir), gene.column=args$mtxGeneColumn)
     m <- m[,row.names(image@coordinates)]
     m <- m[,colSums(m)>0]
     se_st <- CreateSeuratObject(counts=m, assay="Spatial")
@@ -139,7 +139,7 @@ write.csv(t(results$beta), file=paste0(args$filePath, args$STdeconvolveBetaNormN
 ##### For PCA and clustering only
 matrix_sc <- np$load(paste0(normDataDir, args$SCnameX))[['arr_0']]
 sc_genes <- read.csv(paste0(normDataDir, args$SCnameVar))
-sc_obs <- read.csv(paste0(normDataDir, args$SCnameXObs))
+sc_obs <- read.csv(paste0(normDataDir, args$SCnameObs))
 rownames(matrix_sc) <- get(colnames(sc_genes)[1], sc_genes)
 colnames(matrix_sc) <- get(colnames(sc_obs)[1], sc_obs)
 se_sc <- Seurat::CreateSeuratObject(counts = as((args$countsFactor)*matrix_sc, "sparseMatrix"))
