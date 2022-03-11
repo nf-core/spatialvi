@@ -60,6 +60,9 @@ parser.add_argument('--violin_topics_LDA', metavar='name', type=str, default='vi
 parser.add_argument('--violin_topics_NMF', metavar='name', type=str, default='violin_topics_NMF.png', help='')
 parser.add_argument('--violin_topics_LT_PC', metavar='name', type=str, default='violin_topics_LT_PC.png', help='')
 
+parser.add_argument('--saveFileST', metavar='savefile', type=str, default='st_adata_processed.h5ad', help='Path to a file to save h5ad data into.')
+parser.add_argument('--saveFileSC', metavar='savefile', type=str, default='sc_adata_processed.h5ad', help='Path to a file to save h5ad data into.')
+
 args = parser.parse_args()
 
 
@@ -240,5 +243,8 @@ if True:
     sc.pl.violin(st_adata, keys, jitter=0.4, groupby='clusters', rotation=0, save='/' + args.violin_topics_NMF)
     keys = st_adata.obs.columns[st_adata.obs.columns.str.contains('LT PC ')]
     sc.pl.violin(st_adata, keys, jitter=0.4, groupby='clusters', rotation=0, save='/' + args.violin_topics_LT_PC)
+
+st_adata.write(args.saveFileST)
+sc_adata.write(args.saveFileSC)
 
 exit(0)

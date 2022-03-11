@@ -181,7 +181,7 @@ def read_visium_mtx(
 
     return adata
 
-for fname in os.listdir(outsPath):
+for fname in os.listdir(args.outsPath):
     if args.countsFile in fname:
         args.countsFile = fname
         break
