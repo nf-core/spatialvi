@@ -58,7 +58,7 @@ The pipeline combines multiple tools, toolkits and platforms:
 
 ## Quick Start
 
-> **Note:** As a temporary measure the singularity containers necessary to run this pipeline were uploaded to https://doi.org/10.5281/zenodo.6266244. Download the two containers and edit the `nextflow.config` parameters `container_python` and `container_r`.
+> **Note:** As a temporary measure the singularity containers necessary to run this pipeline were uploaded to https://doi.org/10.5281/zenodo.6266243. Download the two containers and edit the `nextflow.config` parameters `container_python` and `container_r`.
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
 
