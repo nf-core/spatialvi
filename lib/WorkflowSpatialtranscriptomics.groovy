@@ -1,8 +1,8 @@
 //
-// This file holds several functions specific to the workflow/st.nf in the nf-core/spatialtranscriptomics pipeline
+// This file holds several functions specific to the workflow/spatialtranscriptomics.nf in the nf-core/spatialtranscriptomics pipeline
 //
 
-class WorkflowSt {
+class WorkflowSpatialtranscriptomics {
 
     //
     // Check and validate parameters

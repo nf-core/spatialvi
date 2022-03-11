@@ -5,6 +5,224 @@
     "description": "Spatial Transcriptomics",
     "type": "object",
     "definitions": {
+        "analysis_option": {
+            "title": "Analysis option",
+            "type": "object",
+            "description": "Define options for each tool in the pipeline",
+            "default": "",
+            "properties": {
+                "STload_minCounts": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum genes count"
+                },
+                "STload_minCells": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum cells count"
+                },
+                "SCload_minCounts": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum UMI count"
+                },
+                "SCload_minGenes": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum genes count"
+                },
+                "SCload_minCells": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum cells count"
+                },
+                "STpreprocess_pltFigSize": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Figure size, inches"
+                },
+                "STpreprocess_minCounts": {
+                    "type": "integer",
+                    "default": 500,
+                    "description": "Minimum UMI count"
+                },
+                "STpreprocess_minGenes": {
+                    "type": "integer",
+                    "default": 250,
+                    "description": "Minimum genes count"
+                },
+                "STpreprocess_minCells": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum cells count"
+                },
+                "STpreprocess_histplotQCmaxTotalCounts": {
+                    "type": "integer",
+                    "default": 10000,
+                    "description": "Max total counts cutoff for histogram QC plot"
+                },
+                "STpreprocess_histplotQCminGeneCounts": {
+                    "type": "integer",
+                    "default": 4000,
+                    "description": "Min total gene counts cutoff for histogram QC plot"
+                },
+                "STpreprocess_histplotQCbins": {
+                    "type": "integer",
+                    "default": 40,
+                    "description": "Histogram QC plot number of bins"
+                },
+                "SCpreprocess_pltFigSize": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Figure size, inches"
+                },
+                "SCpreprocess_minCounts": {
+                    "type": "integer",
+                    "default": 500,
+                    "description": "Minimum UMI count"
+                },
+                "SCpreprocess_minGenes": {
+                    "type": "integer",
+                    "default": 250,
+                    "description": "Minimum genes count"
+                },
+                "SCpreprocess_minCells": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum cells count"
+                },
+                "SCpreprocess_histplotQCmaxTotalCounts": {
+                    "type": "integer",
+                    "default": 5000,
+                    "description": "Max total counts cutoff for histogram QC plot"
+                },
+                "SCpreprocess_histplotQCminGeneCounts": {
+                    "type": "integer",
+                    "default": 2000,
+                    "description": "Min gene total counts cutoff for histogram QC plot"
+                },
+                "SCpreprocess_histplotQCbins": {
+                    "type": "integer",
+                    "default": 40,
+                    "description": "Histogram QC plot number of bins"
+                },
+                "SpatialDE_plotTopHVG": {
+                    "type": "integer",
+                    "default": 15,
+                    "description": "Number of top highly variable genes to plot"
+                },
+                "SpatialDE_numberOfColumns": {
+                    "type": "integer",
+                    "default": 5,
+                    "description": "Number of columns to group genes plots into"
+                },
+                "Clustering_resolution": {
+                    "type": "number",
+                    "default": 0.4,
+                    "description": "Clustering resolution for ST spots"
+                },
+                "BayesSpace_numberHVG": {
+                    "type": "integer",
+                    "default": 2000,
+                    "description": "Number of top highly variable genes to use"
+                },
+                "BayesSpace_numberPCs": {
+                    "type": "integer",
+                    "default": 7,
+                    "description": "Number of principal components to use"
+                },
+                "BayesSpace_minClusters": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Minimum number of clusters to try"
+                },
+                "BayesSpace_maxClusters": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Maxium number of clusters to try"
+                },
+                "BayesSpace_optimalQ": {
+                    "type": "integer",
+                    "default": 5,
+                    "description": "Default optimal number of clusters"
+                },
+                "BayesSpace_STplatform": {
+                    "type": "string",
+                    "default": "Visium",
+                    "description": "Spatial technology platform"
+                },
+                "STdeconvolve_mtxGeneColumn": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Gene column identifier in the MTX formatted data"
+                },
+                "STdeconvolve_countsFactor": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "Integer transformation factor"
+                },
+                "STdeconvolve_corpusRemoveAbove": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Upper cutoff for genes"
+                },
+                "STdeconvolve_corpusRemoveBelow": {
+                    "type": "number",
+                    "default": 0.05,
+                    "description": "Lower cutoff for genes"
+                },
+                "STdeconvolve_LDAminTopics": {
+                    "type": "integer",
+                    "default": 8,
+                    "description": "Minimum number of topics to try"
+                },
+                "STdeconvolve_LDAmaxTopics": {
+                    "type": "integer",
+                    "default": 9,
+                    "description": "Maximum number of topics to try"
+                },
+                "STdeconvolve_ScatterpiesSize": {
+                    "type": "number",
+                    "default": 2.85,
+                    "description": "Size of scatterpies"
+                },
+                "STdeconvolve_FeaturesSizeFactor": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Size of spots in the feature plots"
+                },
+                "SPOTlight_mtxGeneColumn": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Gene column identifier in the MTX formatted data"
+                },
+                "SPOTlight_countsFactor": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "Integer transformation factor"
+                },
+                "SPOTlight_clusterResolution": {
+                    "type": "number",
+                    "default": 0.3,
+                    "description": "Clustering resolution"
+                },
+                "SPOTlight_numberHVG": {
+                    "type": "integer",
+                    "default": 3000,
+                    "description": "Number of top highly variable genes to use"
+                },
+                "SPOTlight_numberCellsPerCelltype": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "Number of cells per celltype"
+                },
+                "SPOTlight_ScatterpiesSize": {
+                    "type": "number",
+                    "default": 0.35,
+                    "description": "Size of scatterpies"
+                }
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -28,12 +246,12 @@
                     "type": "string",
                     "description": "Path to the R singularity container.",
                     "fa_icon": "fas fa-folder-open"
-                },    
+                },
                 "container_python": {
                     "type": "string",
                     "description": "Path to the Python singularity container.",
                     "fa_icon": "fas fa-folder-open"
-                },          
+                },
                 "outdir": {
                     "type": "string",
                     "description": "Path to the output directory where the results will be saved.",
@@ -64,7 +282,8 @@
                     "type": "string",
                     "description": "Name of iGenomes reference.",
                     "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details.",
+                    "hidden": true
                 },
                 "fasta": {
                     "type": "string",
@@ -73,7 +292,8 @@
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
+                    "fa_icon": "far fa-file-code",
+                    "hidden": true
                 },
                 "igenomes_base": {
                     "type": "string",
@@ -253,6 +473,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/analysis_option"
+        },
         {
             "$ref": "#/definitions/input_output_options"
         },
