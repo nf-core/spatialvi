@@ -19,11 +19,11 @@ args$add_argument("--nameX", default="st_adata_X.npz", help="Path to X", metavar
 args$add_argument("--nameVar", default="st_adata.var.csv", help="Path to features metadata", metavar="file", required=FALSE)
 args$add_argument("--nameObs", default="st_adata.obs.csv", help="Path to observation metadata", metavar="file", required=FALSE)
 args$add_argument("--countsFactor", default=100, help="factor", metavar="factor", required=FALSE)
-args$add_argument("--numberHVG", default=2000, help="factor", metavar="factor", required=FALSE)
-args$add_argument("--numberPCs", default=7, help="factor", metavar="factor", required=FALSE)
-args$add_argument("--minClusters", default=2, help="factor", metavar="factor", required=FALSE)
-args$add_argument("--maxClusters", default=10, help="factor", metavar="factor", required=FALSE)
-args$add_argument("--optimalQ", default=5, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--numberHVG", default=2000, type="integer", help="factor", metavar="factor", required=FALSE)
+args$add_argument("--numberPCs", default=7, type="integer", help="factor", metavar="factor", required=FALSE)
+args$add_argument("--minClusters", default=2, type="integer", help="factor", metavar="factor", required=FALSE)
+args$add_argument("--maxClusters", default=10, type="integer", help="factor", metavar="factor", required=FALSE)
+args$add_argument("--optimalQ", default=5, type="integer", help="factor", metavar="factor", required=FALSE)
 args$add_argument("--STplatform", default="Visium", help="Technology grid", metavar="factor", required=FALSE)
 
 args$add_argument("--qtuneSaveName", default="st_bayes_qtune.png", help="file name", metavar="file", required=FALSE)
@@ -79,6 +79,13 @@ col_df$col <- st_obs_all$array_col
 count.data <- np$load(paste0(normDataDir, args$nameX))[['arr_0']] * args$countsFactor
 colnames(count.data) <- st_obs_all$X
 rownames(count.data) <- rowData
+
+print(args$countsFactor)
+print(args$STplatform)
+print(args$numberPCs)
+print(args$numberHVG)
+print(args$minClusters)
+
 
 dsp <- SingleCellExperiment(assays=list(counts=count.data), rowData=row_df, colData=col_df)
 dsp <- spatialPreprocess(dsp, platform=args$STplatform, n.PCs=args$numberPCs, n.HVGs=args$numberHVG, log.normalize=TRUE)

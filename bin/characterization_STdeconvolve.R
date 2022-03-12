@@ -29,19 +29,19 @@ args$add_argument("--SCnameObs", default="sc_adata.obs.csv", help="Path to obser
 args$add_argument("--fileh5", default="raw_feature_bc_matrix.h5", help="File HDF5", metavar="file", required=FALSE) # "filtered_feature_bc_matrix.h5"
 
 args$add_argument("--outsSubDir", default="raw_feature_bc_matrix/", help="dir", metavar="file", required=FALSE)
-args$add_argument("--mtxGeneColumn", default=2, help="columns index", metavar="col", required=FALSE)
-args$add_argument("--countsFactor", default=100, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--mtxGeneColumn", default=2, type="integer", help="columns index", metavar="col", required=FALSE)
+args$add_argument("--countsFactor", default=100, type="integer", help="factor", metavar="factor", required=FALSE)
 
-args$add_argument("--corpusRemoveAbove", default=1.0, help="factor", metavar="factor", required=FALSE)
-args$add_argument("--corpusRemoveBelow", default=0.05, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--corpusRemoveAbove", default=1.0, type="double", help="factor", metavar="factor", required=FALSE)
+args$add_argument("--corpusRemoveBelow", default=0.05, type="double", help="factor", metavar="factor", required=FALSE)
 
-args$add_argument("--LDAminTopics", default=8, help="factor", metavar="factor", required=FALSE)
-args$add_argument("--LDAmaxTopics", default=9, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--LDAminTopics", default=8, type="integer", help="factor", metavar="factor", required=FALSE)
+args$add_argument("--LDAmaxTopics", default=9, type="integer", help="factor", metavar="factor", required=FALSE)
 args$add_argument("--LDAsaveFile", default="STdeconvolve_optLDA.rds", help="File to save LDA RDS", metavar="file", required=FALSE)
 
 args$add_argument("--STdeconvolveScatterpiesName", default="STdeconvolve_st_scatterpies.png", help="dir", metavar="file", required=FALSE)
-args$add_argument("--STdeconvolveScatterpiesSize", default=2.85, help="dir", metavar="file", required=FALSE)
-args$add_argument("--STdeconvolveFeaturesSizeFactor", default=1.0, help="dir", metavar="file", required=FALSE)
+args$add_argument("--STdeconvolveScatterpiesSize", default=2.85, type="double", help="dir", metavar="file", required=FALSE)
+args$add_argument("--STdeconvolveFeaturesSizeFactor", default=1.0, type="double", help="dir", metavar="file", required=FALSE)
 args$add_argument("--STdeconvolveFeaturesName", default="STdeconvolve_st_prop.png", help="dir", metavar="file", required=FALSE)
 args$add_argument("--STdeconvolveCorrName", default="STdeconvolve_st_prop_corr.png", help="dir", metavar="file", required=FALSE)
 args$add_argument("--STdeconvolvePropNormName", default="STdeconvolve_prop_norm.csv", help="dir", metavar="file", required=FALSE)

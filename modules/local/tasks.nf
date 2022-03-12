@@ -61,9 +61,9 @@ import groovy.json.JsonSlurper
       
     [ ! -d \${dname} ] && mkdir \${dname}
 
-    python $projectDir/bin/script_read_st_data.py --outsPath=${sample_info.st_data_dir} --saveFile=\${dname}/st_adata_raw.h5ad --countsFile=raw_feature_bc_matrix.h5 --npCountsOutputName=st_adata_counts_in_tissue.npz --minCounts=params.STload_minCounts --minCells=params.STload_minCells
+    python $projectDir/bin/script_read_st_data.py --outsPath=${sample_info.st_data_dir} --saveFile=\${dname}/st_adata_raw.h5ad --countsFile=raw_feature_bc_matrix.h5 --npCountsOutputName=st_adata_counts_in_tissue.npz --minCounts=$params.STload_minCounts --minCells=$params.STload_minCells
 
-    python $projectDir/bin/script_read_sc_data.py --outsPath=${sample_info.sc_data_dir} --saveFile=\${dname}/sc_adata_raw.h5ad --npCountsOutputName=sc_adata_counts.npz --minCounts=params.SCload_minCounts --minCells=params.SCload_minCells --minGenes=params.SCload_minGenes
+    python $projectDir/bin/script_read_sc_data.py --outsPath=${sample_info.sc_data_dir} --saveFile=\${dname}/sc_adata_raw.h5ad --npCountsOutputName=sc_adata_counts.npz --minCounts=$params.SCload_minCounts --minCells=$params.SCload_minCells --minGenes=$params.SCload_minGenes
 
     if [[ -s \${dname}/st_adata_raw.h5ad ]] && \
       [[ -s \${dname}/sc_adata_raw.h5ad ]] && \
@@ -142,7 +142,7 @@ import groovy.json.JsonSlurper
     
     mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
     
-    python $projectDir/bin/stPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=st_adata_counts_in_tissue_factors.npz --rawAdata=st_adata_raw.h5ad --mitoFile=\$mitoFile --pltFigSize=params.STpreprocess_pltFigSize --minCounts=params.STpreprocess_minCounts --minGenes=params.STpreprocess_minGenes --minCells=params.STpreprocess_minCells --histplotQCmaxTotalCounts=params.STpreprocess_histplotQCmaxTotalCounts --histplotQCminGeneCounts=params.STpreprocess_histplotQCminGeneCounts --histplotQCbins=params.STpreprocess_histplotQCbins
+    python $projectDir/bin/stPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=st_adata_counts_in_tissue_factors.npz --rawAdata=st_adata_raw.h5ad --mitoFile=\$mitoFile --pltFigSize=$params.STpreprocess_pltFigSize --minCounts=$params.STpreprocess_minCounts --minGenes=$params.STpreprocess_minGenes --minCells=$params.STpreprocess_minCells --histplotQCmaxTotalCounts=$params.STpreprocess_histplotQCmaxTotalCounts --histplotQCminGeneCounts=$params.STpreprocess_histplotQCminGeneCounts --histplotQCbins=$params.STpreprocess_histplotQCbins
 
     if [[ -s \${dname}/st_adata_norm.h5ad ]] && \
       [[ -s \${dname}/st_adata_X.npz ]] && \
@@ -185,7 +185,7 @@ import groovy.json.JsonSlurper
     
     mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
     
-    python $projectDir/bin/scPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=sc_adata_counts_factors.npz --rawAdata=sc_adata_raw.h5ad --mitoFile=\$mitoFile --pltFigSize=params.SCpreprocess_pltFigSize --minCounts=params.SCpreprocess_minCounts --minGenes=params.SCpreprocess_minGenes --minCells=params.SCpreprocess_minCells --histplotQCmaxTotalCounts=params.SCpreprocess_histplotQCmaxTotalCounts --histplotQCminGeneCounts=params.SCpreprocess_histplotQCminGeneCounts --histplotQCbins=params.SCpreprocess_histplotQCbins
+    python $projectDir/bin/scPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=sc_adata_counts_factors.npz --rawAdata=sc_adata_raw.h5ad --mitoFile=\$mitoFile --pltFigSize=$params.SCpreprocess_pltFigSize --minCounts=$params.SCpreprocess_minCounts --minGenes=$params.SCpreprocess_minGenes --minCells=$params.SCpreprocess_minCells --histplotQCmaxTotalCounts=$params.SCpreprocess_histplotQCmaxTotalCounts --histplotQCminGeneCounts=$params.SCpreprocess_histplotQCminGeneCounts --histplotQCbins=$params.SCpreprocess_histplotQCbins
 
     if [[ -s \${dname}/sc_adata_norm.h5ad ]] && \
       [[ -s \${dname}/sc_adata_X.npz ]] && \
@@ -237,7 +237,7 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
        
-    Rscript $projectDir/bin/characterization_STdeconvolve.R --filePath=\${dname}/ --outsPath=${sample_info.st_data_dir} --mtxGeneColumn=params.STdeconvolve_mtxGeneColumn --countsFactor=params.STdeconvolve_countsFactor --corpusRemoveAbove=params.STdeconvolve_corpusRemoveAbove --corpusRemoveBelow=params.STdeconvolve_corpusRemoveBelow --LDAminTopics=params.STdeconvolve_LDAminTopics --LDAmaxTopics=params.STdeconvolve_LDAmaxTopics --STdeconvolveScatterpiesSize=params.STdeconvolve_ScatterpiesSize --STdeconvolveFeaturesSizeFactor=params.STdeconvolve_FeaturesSizeFactor
+    Rscript $projectDir/bin/characterization_STdeconvolve.R --filePath=\${dname}/ --outsPath=${sample_info.st_data_dir} --mtxGeneColumn=$params.STdeconvolve_mtxGeneColumn --countsFactor=$params.STdeconvolve_countsFactor --corpusRemoveAbove=$params.STdeconvolve_corpusRemoveAbove --corpusRemoveBelow=$params.STdeconvolve_corpusRemoveBelow --LDAminTopics=$params.STdeconvolve_LDAminTopics --LDAmaxTopics=$params.STdeconvolve_LDAmaxTopics --STdeconvolveScatterpiesSize=$params.STdeconvolve_ScatterpiesSize --STdeconvolveFeaturesSizeFactor=$params.STdeconvolve_FeaturesSizeFactor
     
     if [[ -s \${dname}/STdeconvolve_prop_norm.csv ]] && \
       [[ -s \${dname}/STdeconvolve_beta_norm.csv ]] && \
@@ -281,7 +281,7 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
         
-    Rscript $projectDir/bin/characterization_SPOTlight.R --filePath=\${dname}/ --outsPath=${sample_info.st_data_dir} --mtxGeneColumn=params.SPOTlight_mtxGeneColumn --countsFactor=params.SPOTlight_countsFactor --clusterResolution=params.SPOTlight_clusterResolution --numberHVG=params.SPOTlight_numberHVG --numberCellsPerCelltype=params.SPOTlight_numberCellsPerCelltype --SPOTlightScatterpiesSize=params.SPOTlight_ScatterpiesSize 
+    Rscript $projectDir/bin/characterization_SPOTlight.R --filePath=\${dname}/ --outsPath=${sample_info.st_data_dir} --mtxGeneColumn=$params.SPOTlight_mtxGeneColumn --countsFactor=$params.SPOTlight_countsFactor --clusterResolution=$params.SPOTlight_clusterResolution --numberHVG=$params.SPOTlight_numberHVG --numberCellsPerCelltype=$params.SPOTlight_numberCellsPerCelltype --SPOTlightScatterpiesSize=$params.SPOTlight_ScatterpiesSize 
 
     if [[ -s \${dname}/SPOTlight_prop_norm.csv ]] && \
       [[ -s \${dname}/SPOTlight_beta_norm.csv ]] && \
@@ -325,7 +325,7 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
     
-    Rscript $projectDir/bin/characterization_BayesSpace.R --filePath=\${dname}/ --numberHVG=params.BayesSpace_numberHVG --numberPCs=params.BayesSpace_numberPCs --minClusters=params.BayesSpace_minClusters --maxClusters=params.BayesSpace_maxClusters --optimalQ=params.BayesSpace_optimalQ --STplatform=params.BayesSpace_STplatform
+    Rscript $projectDir/bin/characterization_BayesSpace.R --filePath=\${dname}/ --numberHVG=$params.BayesSpace_numberHVG --numberPCs=$params.BayesSpace_numberPCs --minClusters=$params.BayesSpace_minClusters --maxClusters=$params.BayesSpace_maxClusters --optimalQ=$params.BayesSpace_optimalQ --STplatform=$params.BayesSpace_STplatform
 
     if [[ -s \${dname}/bayes_spot_cluster.csv ]] && \
       [[ -s \${dname}/bayes_subspot_cluster_and_coord.csv ]] && \
@@ -366,7 +366,7 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
        
-    python $projectDir/bin/stSpatialDE.py --filePath=\${dname}/ --numberOfColumns=params.SpatialDE_numberOfColumns
+    python $projectDir/bin/stSpatialDE.py --filePath=\${dname}/ --numberOfColumns=$params.SpatialDE_numberOfColumns
 
     if [[ -s \${dname}/stSpatialDE.csv ]]
     then
@@ -419,7 +419,7 @@ import groovy.json.JsonSlurper
     
     dname=${outdir}/\${sample_id}
          
-    python $projectDir/bin/stClusteringWorkflow.py --filePath=\${dname}/ --resolution=params.Clustering_resolution
+    python $projectDir/bin/stClusteringWorkflow.py --filePath=\${dname}/ --resolution=$params.Clustering_resolution
 
     if [[ -s \${dname}/st_adata_processed.h5ad ]] && \
       [[ -s \${dname}/sc_adata_processed.h5ad ]]

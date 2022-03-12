@@ -17,8 +17,8 @@ parser.add_argument('--filePath', metavar='path', type=str, default=None, help='
 parser.add_argument('--fileName', metavar='file', type=str, default="st_adata_norm.h5ad", help='File name.')
 parser.add_argument('--saveFileName', metavar='file', type=str, default="stSpatialDE.csv", help='File name.')
 parser.add_argument('--savePlotName', metavar='plot', type=str, default="stSpatialDE.png", help='File name.')
-parser.add_argument('--plotTopHVG', metavar='number', type=str, default=15, help='File name.')
-parser.add_argument('--numberOfColumns', metavar='number', type=str, default=5, help='File name.')
+parser.add_argument('--plotTopHVG', metavar='number', type=int, default=15, help='File name.')
+parser.add_argument('--numberOfColumns', metavar='number', type=int, default=5, help='File name.')
 
 args = parser.parse_args()
 

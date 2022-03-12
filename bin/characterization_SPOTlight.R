@@ -34,17 +34,17 @@ args$add_argument("--SCnameObs", default="sc_adata.obs.csv", help="Path to obser
 args$add_argument("--fileh5", default="raw_feature_bc_matrix.h5", help="File HDF5", metavar="file", required=FALSE) # "filtered_feature_bc_matrix.h5"
 
 args$add_argument("--outsSubDir", default="raw_feature_bc_matrix/", help="dir", metavar="file", required=FALSE)
-args$add_argument("--mtxGeneColumn", default=2, help="columns index", metavar="col", required=FALSE)
-args$add_argument("--countsFactor", default=100, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--mtxGeneColumn", default=2, type="integer", help="columns index", metavar="col", required=FALSE)
+args$add_argument("--countsFactor", default=100, type="integer", help="factor", metavar="factor", required=FALSE)
 
-args$add_argument("--clusterResolution", default=0.3, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--clusterResolution", default=0.3, type="double", help="factor", metavar="factor", required=FALSE)
 
-args$add_argument("--numberHVG", default=3000, help="factor", metavar="factor", required=FALSE)
-args$add_argument("--numberCellsPerCelltype", default=100, help="factor", metavar="factor", required=FALSE)
+args$add_argument("--numberHVG", default=3000, type="integer", help="factor", metavar="factor", required=FALSE)
+args$add_argument("--numberCellsPerCelltype", default=100, type="integer", help="factor", metavar="factor", required=FALSE)
 args$add_argument("--NMFsaveFile", default="SPOTlight_ls_mk_normed.rds", help="File to save NMF RDS", metavar="file", required=FALSE)
 
 args$add_argument("--SPOTlightScatterpiesName", default="SPOTlight_st_scatterpies.png", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightScatterpiesSize", default=0.35, help="dir", metavar="file", required=FALSE)
+args$add_argument("--SPOTlightScatterpiesSize", default=0.35, type="double", help="dir", metavar="file", required=FALSE)
 args$add_argument("--SPOTlightSCclustersName", default="SPOTlight_sc_clusters.png", help="dir", metavar="file", required=FALSE)
 args$add_argument("--SPOTlightTopicsName", default="SPOTlight_st_topic_profiles.png", help="dir", metavar="file", required=FALSE)
 args$add_argument("--SPOTlightFeaturesName", default="SPOTlight_st_prop.png", help="dir", metavar="file", required=FALSE)
