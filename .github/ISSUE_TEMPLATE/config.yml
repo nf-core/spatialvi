@@ -2,6 +2,6 @@ contact_links:
   - name: Join nf-core
     url: https://nf-co.re/join
     about: Please join the nf-core community here
-  - name: "Slack #st channel"
-    url: https://nfcore.slack.com/channels/st
-    about: Discussion about the nf-core/st pipeline
+  - name: "Slack #spatialtranscriptomics channel"
+    url: https://nfcore.slack.com/channels/spatialtranscriptomics
+    about: Discussion about the nf-core/spatialtranscriptomics pipeline
