@@ -1,6 +1,6 @@
 bootstrap: docker
 from: rocker/r-ver:4.1.2
- 
+
 %post
 R --no-echo -e 'version'
 

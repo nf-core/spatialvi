@@ -121,7 +121,7 @@ spotlight_ls <- SPOTlight::spotlight_deconvolution(
   ntop = NULL, 					# Number of top marker genes to use (by default all)
   transf = "uv", 				# Perform unit-variance scaling per cell and spot prior to factorzation and NLS
   method = "nsNMF", 				# Factorization method
-  min_cont = 0)					# Remove those cells contributing to a spot below a certain threshold 
+  min_cont = 0)					# Remove those cells contributing to a spot below a certain threshold
 
 saveRDS(object = spotlight_ls, file = paste0(args$filePath, args$NMFsaveFile))
 
@@ -141,7 +141,7 @@ decon_mtrx_sub <- decon_mtrx[, colnames(decon_mtrx)!="res_ss"]
 decon_mtrx_sub[decon_mtrx_sub < 0.08] <- 0
 decon_mtrx <- cbind(decon_mtrx_sub, "res_ss" = decon_mtrx[, "res_ss"])
 rm(decon_mtrx_sub)
-rownames(decon_mtrx) <- colnames(se_st) 
+rownames(decon_mtrx) <- colnames(se_st)
 decon_df <- decon_mtrx %>% data.frame() %>% tibble::rownames_to_column("barcodes")
 se_st@meta.data <- se_st@meta.data %>% tibble::rownames_to_column("barcodes") %>% dplyr::left_join(decon_df, by = "barcodes") %>% tibble::column_to_rownames("barcodes")
 
@@ -167,7 +167,7 @@ p.mat <- corrplot::cor.mtest(mat = decon_mtrx_sub, conf.level = 0.95)
 # Visualize
 ggcorrplot::ggcorrplot(corr = decon_cor, p.mat = p.mat[[1]], hc.order = TRUE, type = "full", insig = "blank",
   lab = TRUE, outline.col = "lightgrey", method = "square", colors = c("#6D9EC1", "white", "#E46726"),
-  title = "Cell type proportions correlation", 
+  title = "Cell type proportions correlation",
   legend.title = "Correlation\n(Pearson)") +
   ggplot2::theme(plot.title = ggplot2::element_text(size = 22, hjust = 0.5, face = "bold"),
     legend.text = ggplot2::element_text(size = 12), legend.title = ggplot2::element_text(size = 15),

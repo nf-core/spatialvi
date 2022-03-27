@@ -89,21 +89,21 @@ print(args$minClusters)
 
 dsp <- SingleCellExperiment(assays=list(counts=count.data), rowData=row_df, colData=col_df)
 dsp <- spatialPreprocess(dsp, platform=args$STplatform, n.PCs=args$numberPCs, n.HVGs=args$numberHVG, log.normalize=TRUE)
-    
+
 dsp <- qTune(dsp, qs=seq(args$minClusters, args$maxClusters), platform="Visium", d=args$numberPCs)
 qPlot(dsp)
 ggsave(paste0(normDataDir, args$qtuneSaveName), dpi=600, scale=0.55, width=8, height=8, units="in")
-    
+
 # TODO: Need to determine optimal q!
 dsp <- spatialCluster(dsp, q=args$optimalQ, platform=args$STplatform, d=args$numberPCs, init.method="mclust", model="t", gamma=2, nrep=1000, burn.in=100, save.chain=FALSE)
-    
+
 clusterPlot(dsp, palette=c("purple", "cyan", "blue", "yellow", "red"), color=NA) + theme_bw() + xlab("Column") + ylab("Row") + labs(fill="BayesSpace\ncluster", title="Spatial clustering")
 ggsave(paste0(normDataDir, args$bayesClustersName), dpi=600, scale=0.75, width=8, height=8, units="in")
 
 dsp.enhanced <- spatialEnhance(dsp, q=args$optimalQ, platform="Visium", d=args$numberPCs, model="t", gamma=2, jitter_prior=0.3, jitter_scale=3.5, nrep=1000, burn.in=100)
-    
+
 clusterPlot(dsp.enhanced, palette=c("purple", "cyan", "blue", "yellow", "red"), color=NA) + theme_bw() + xlab("Column") + ylab("Row") + labs(fill="BayesSpace\ncluster", title="Spatial clustering")
-ggsave(paste0(normDataDir, args$bayesClustersEnhancedName), dpi=600, scale=0.75, width=8, height=8, units="in") 
+ggsave(paste0(normDataDir, args$bayesClustersEnhancedName), dpi=600, scale=0.75, width=8, height=8, units="in")
 
 
 # As of current implementation: take first 6 genes and enhance/plot them

@@ -1,7 +1,7 @@
 /*
-========================================================================================
+================================================================================
     VALIDATE INPUTS
-========================================================================================
+================================================================================
 */
 
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
@@ -15,7 +15,7 @@ log.info """\
          Project directory:  ${projectDir}
          """
          .stripIndent()
-         
+
 
 def checkPathParamList = [ params.input, params.multiqc_config ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
@@ -24,18 +24,18 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
 /*
-========================================================================================
+================================================================================
     CONFIG FILES
-========================================================================================
+================================================================================
 */
 
 ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
 
 /*
-========================================================================================
+================================================================================
     IMPORT LOCAL MODULES/SUBWORKFLOWS
-========================================================================================
+================================================================================
 */
 
 //
@@ -49,9 +49,9 @@ include { ST_MISCELLANEOUS_TOOLS   } from '../subworkflows/local/stMiscellaneous
 include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessing'
 
 /*
-========================================================================================
+================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
-========================================================================================
+================================================================================
 */
 
 //
@@ -62,9 +62,9 @@ include { MULTIQC                     } from '../modules/nf-core/modules/multiqc
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
-========================================================================================
+================================================================================
     RUN MAIN WORKFLOW
-========================================================================================
+================================================================================
 */
 
 // Info required for completion email and summary
@@ -84,21 +84,21 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 def loadFromURL(String sample_id, String data_dir, String pref_dir, List files) {
-    for(cfile: files) {    
+    for(cfile: files) {
         def lfile = cfile.split('/')
         if (lfile.size()>1) {
             subdir = String.join('/', lfile[0..lfile.size()-2]) + '/'
         } else {
             subdir = ''
         }
-        
-        filename = lfile[lfile.size()-1]        
+
+        filename = lfile[lfile.size()-1]
         url = data_dir + subdir + filename
         savedir = outdir + '/' + 'dataset-' + sample_id + '/' + pref_dir + '/' + subdir
-    
+
         File filedir = new File(savedir)
         filedir.mkdirs()
-     
+
         URL urlobj = new URL(url)
         File fileload = new File(savedir + filename)
         if (!fileload.exists()) {
@@ -106,12 +106,12 @@ def loadFromURL(String sample_id, String data_dir, String pref_dir, List files) 
             fileload.bytes = urlobj.bytes
         }
     }
-    
+
     return outdir + '/' + 'dataset-' + sample_id + '/' + pref_dir + '/'
 }
 
 def prep_input_csv_files(LinkedHashMap row) {
-    
+
     files_st = ['spatial/detected_tissue_image.jpg',
                 'spatial/scalefactors_json.json',
                 'spatial/tissue_hires_image.png',
@@ -121,31 +121,31 @@ def prep_input_csv_files(LinkedHashMap row) {
                 'raw_feature_bc_matrix/features.tsv.gz',
                 'raw_feature_bc_matrix/barcodes.tsv.gz',
                 'raw_feature_bc_matrix/matrix.mtx.gz']
-             
+
     files_sc = ['features.tsv.gz',
                 'barcodes.tsv.gz',
                 'matrix.mtx.gz']
-                    
+
     if (row.st_data_dir[0..3]=='http') {
         row.st_data_dir = loadFromURL(row.sample_id, row.st_data_dir, 'ST', files_st)
     }
-    
+
     if (row.sc_data_dir[0..3]=='http') {
         row.sc_data_dir = loadFromURL(row.sample_id, row.sc_data_dir, 'SC', files_sc)
     }
-    
-    def fileName = String.format("%s/sample_%s", outdir, row.sample_id)    
+
+    def fileName = String.format("%s/sample_%s", outdir, row.sample_id)
     def FILE_HEADER = row.keySet() as String[];
-    
+
     new File(fileName + ".csv").withWriter { fileWriter ->
         def csvFilePrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT)
         csvFilePrinter.printRecord(FILE_HEADER)
         csvFilePrinter.printRecord(row.values())
     }
-       
+
     File file = new File(fileName + ".json")
     file.write(JsonOutput.toJson(row))
-    
+
     return row.sample_id
 }
 
@@ -154,15 +154,15 @@ def prep_input_csv_files(LinkedHashMap row) {
 workflow ST {
 
     ST_PREPARE_DATA(             sample_ids,                   outdir )
-    
+
     ST_LOAD_PREPROCESS_DATA(     ST_PREPARE_DATA.out,          outdir )
-                          
+
     ST_MISCELLANEOUS_TOOLS(      ST_LOAD_PREPROCESS_DATA.out,  outdir )
-    
+
     ST_POSTPROCESSING(           ST_MISCELLANEOUS_TOOLS.out,   outdir )
-    
+
     //ST_POSTPROCESSING.out.view()
-    
+
 }
 
 
@@ -211,9 +211,9 @@ workflow ST_PROPER {
 }
 
 /*
-========================================================================================
+================================================================================
     COMPLETION EMAIL AND SUMMARY
-========================================================================================
+================================================================================
 */
 
 workflow.onComplete {
@@ -224,7 +224,7 @@ workflow.onComplete {
 }
 
 /*
-========================================================================================
+================================================================================
     THE END
-========================================================================================
+================================================================================
 */

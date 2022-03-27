@@ -1,6 +1,6 @@
 #!/opt/conda/bin/python
 
-# Load packages 
+# Load packages
 import sys
 import os
 import argparse
@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 from matplotlib import cm
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import cdist
-   
+
 def label_transfer(dist, labels):
     class_prob = pd.get_dummies(labels).to_numpy().T @ dist
     class_prob /= np.linalg.norm(class_prob, 2, axis=0)
@@ -123,7 +123,7 @@ df.T.round(3) #.style.background_gradient(axis=None)
 # Integrating with BBKNN
 # This is only to see the UMAP of SC and ST together
 # Not using it with label transfer
-if True: 
+if True:
     st_adata = sc.read(args.filePath + args.fileNameST)
     sc_adata = sc.read(args.filePath + args.fileNameSC)
     adata_all = st_adata.concatenate(sc_adata, batch_categories=['st', 'sc'])
@@ -168,13 +168,13 @@ if True:
     fig.savefig(args.filePath + '/' + args.LT_individual_histograms_combined, facecolor='white', dpi=300);
     plt.close(fig)
 
-# Add LT results to adata 
+# Add LT results to adata
 dfb = pd.DataFrame(v_in_pc)
 dfb.columns = 'LT PC ' + dfb.columns.astype(str)
 dfb.index = st_adata.obs.index.values
 for col in dfb.columns:
     st_adata.obs[col] = dfb[col]
-    
+
 #dfc = pd.DataFrame(v_in_bbknn)
 #dfc.columns = 'LT BBKNN ' + dfc.columns.astype(str)
 #dfc.index = st_adata.obs.index.values
@@ -185,7 +185,7 @@ for col in dfb.columns:
 df_theta = pd.read_csv(args.filePath + args.STdeconvolvePropNormName, index_col=0)
 df_theta.columns = 'Topic LDA ' + df_theta.columns.astype(str)
 for col in df_theta.columns:
-    st_adata.obs[col] = df_theta[col]   
+    st_adata.obs[col] = df_theta[col]
 
 # Add NMF proportions to adata
 df_theta = pd.read_csv(args.filePath + args.SPOTlightPropNorm, index_col=0).set_index('barcodes').drop('res_ss', axis=1)

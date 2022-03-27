@@ -1,6 +1,6 @@
 #!/opt/conda/bin/python
 
-# Load packages 
+# Load packages
 import sys
 import os
 import argparse
@@ -92,7 +92,7 @@ def histplotQC(se_data, bins, ax):
     ax.plot(xx, kde(xx), color='crimson')
     ax.set_xlim([0, ax.get_xlim()[1]])
     return
-    
+
 fig, axs = plt.subplots(1, 5, figsize=(args.pltFigSize*5, args.pltFigSize))
 histplotQC(st_adata.obs["total_counts"], bins=args.histplotQCbins, ax=axs[0])
 histplotQC(st_adata.obs["total_counts"][st_adata.obs["total_counts"] < args.histplotQCmaxTotalCounts], bins=args.histplotQCbins, ax=axs[1])
@@ -152,7 +152,7 @@ fig.savefig(args.filePath + '/' + args.histWithWithoutNorm, facecolor='white', d
 plt.close(fig)
 
 # Save raw filtered data
-st_adata.write(args.filePath + '/' + args.nameDataPlain) 
+st_adata.write(args.filePath + '/' + args.nameDataPlain)
 
 # Save normalized data
 st_adata.X = csr_matrix(st_adata.X / st_adata.obs['norm_factors'].values[:, None])

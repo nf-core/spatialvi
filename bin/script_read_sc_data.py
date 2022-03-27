@@ -1,6 +1,6 @@
 #!/opt/conda/bin/python
 
-# Load packages 
+# Load packages
 import os
 import sys
 import argparse
@@ -31,8 +31,8 @@ for fname in files:
     if 'matrix.mtx' in fname:
         countsFile = fname
         break
-        
-if countsFile == '':    
+
+if countsFile == '':
     for fname in files:
         if '.h5ad' in fname:
             countsFile = fname

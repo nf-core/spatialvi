@@ -67,7 +67,7 @@ def read_visium_mtx(
     path = Path(path)
     #adata = read_10x_h5(path / count_file, genome=genome)
     adata = read_10x_mtx(path / 'raw_feature_bc_matrix')
-    
+
     adata.uns["spatial"] = dict()
 
     #from h5py import File
@@ -121,7 +121,7 @@ def read_visium_mtx(
         #    for k in ("chemistry_description", "software_version")
         #    if k in attrs
         #}
-        
+
         adata.uns["spatial"][library_id]["metadata"] = {k: "NA" for k in ("chemistry_description", "software_version")}
 
         # read coordinates

@@ -1,6 +1,6 @@
 #!/opt/conda/bin/python
 
-# Load packages 
+# Load packages
 import sys
 import os
 import argparse
