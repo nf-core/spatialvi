@@ -76,41 +76,32 @@ process READ_ST_AND_SC_SCANPY {
 }
 
 
-/*
- * Calculate ST and SC sum factors
- */
- process ST_CALCULATE_SUM_FACTORS {
+//
+// Calculate ST and SC sum factors for use in downstream normalisation
+//
+process ST_CALCULATE_SUM_FACTORS {
 
     label "r_process"
-    cpus 2
-    memory '8.GB'
 
     input:
-    tuple val(sample_id), file(state)
-    val outdir
+    tuple val(sample_id), file(st_counts)
+    tuple val(sample_id), file(sc_counts)
 
     output:
-    tuple val(sample_id), env(outpath)
+    tuple val(sample_id), file("*.st_*.npz"), emit: st_factors
+    tuple val(sample_id), file("*.sc_*.npz"), emit: sc_factors
 
+    script:
     """
-    #!/bin/bash
+    calculateSumFactors.R \
+        --npCountsOutputName=${st_counts} \
+        --npFactorsOutputName=${sample_id}.st_adata_counts_in_tissue_factors.npz
 
-    dname=${outdir}/${sample_id}
-
-    Rscript $projectDir/bin/calculateSumFactors.R --filePath=\${dname}/ --npCountsOutputName=st_adata_counts_in_tissue.npz --npFactorsOutputName=st_adata_counts_in_tissue_factors.npz
-    Rscript $projectDir/bin/calculateSumFactors.R --filePath=\${dname}/ --npCountsOutputName=sc_adata_counts.npz --npFactorsOutputName=sc_adata_counts_factors.npz
-
-    if [[ -s \${dname}/st_adata_counts_in_tissue_factors.npz ]] && \
-      [[ -s \${dname}/sc_adata_counts_factors.npz ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
+    calculateSumFactors.R \
+        --npCountsOutputName=${sc_counts} \
+        --npFactorsOutputName=${sample_id}.sc_adata_counts_factors.npz
     """
 }
-
 
 /*
  * ST data preprocessing

@@ -24,10 +24,14 @@ workflow ST_LOAD_PREPROCESS_DATA {
     //
     READ_ST_AND_SC_SCANPY ( sample_ids, outdir )
 
+    //
+    // Calculate sum factors used for normalisation in pre-processing
+    //
     ST_CALCULATE_SUM_FACTORS( READ_ST_AND_SC_SCANPY.out.st_counts,
                               READ_ST_AND_SC_SCANPY.out.sc_counts)
-    ST_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out, outdir)
-    SC_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out, outdir)
+
+    ST_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out.st_factors, outdir)
+    SC_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out.sc_factors, outdir)
 
     emit:
     ST_PREPROCESS.out.join(SC_PREPROCESS.out)
