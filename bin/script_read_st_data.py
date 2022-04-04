@@ -1,8 +1,7 @@
-#!/opt/conda/bin/python
+#!/usr/bin/env python
 
 # Load packages
 import os
-import sys
 import argparse
 import scanpy as sc
 import numpy as np
@@ -19,18 +18,40 @@ from anndata import AnnData, read_csv
 
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description='Load spatial traqnscriptomics data from MTX or HDF5 count matrices and aligned images.')
-
-parser.add_argument('--outsPath', metavar='outspath', type=str, default=None, help='Path to Space Range outs directory, etc.')
-parser.add_argument('--saveFile', metavar='savefile', type=str, default=None, help='Path to a file to save h5ad data into.')
-parser.add_argument('--countsFile', metavar='countsfile', type=str, default='raw_feature_bc_matrix.h5', help='Name of the HDF5 file.')
-parser.add_argument('--npCountsOutputName', metavar='npzoutput', type=str, default=None, help='Name of the NPZ file.')
-
-parser.add_argument('--minCounts', metavar='cutoff', type=int, default=1, help='Min counts per spot.')
-parser.add_argument('--minCells', metavar='cutoff', type=int, default=1, help='Min cells per gene.')
-
+parser = argparse.ArgumentParser(
+    description='Load spatial transcriptomics data from MTX or HDF5 count' +
+                'matrices and aligned images.')
+parser.add_argument('--outsPath',
+                    metavar='outspath',
+                    type=str,
+                    default=None,
+                    help='Path to Space Range outs directory, etc.')
+parser.add_argument('--saveFile',
+                    metavar='savefile',
+                    type=str,
+                    default=None,
+                    help='Path to a file to save h5ad data into.')
+parser.add_argument('--countsFile',
+                    metavar='countsfile',
+                    type=str,
+                    default='raw_feature_bc_matrix.h5',
+                    help='Name of the HDF5 file.')
+parser.add_argument('--npCountsOutputName',
+                    metavar='npzoutput',
+                    type=str,
+                    default=None,
+                    help='Name of the NPZ file.')
+parser.add_argument('--minCounts',
+                    metavar='cutoff',
+                    type=int,
+                    default=1,
+                    help='Min counts per spot.')
+parser.add_argument('--minCells',
+                    metavar='cutoff',
+                    type=int,
+                    default=1,
+                    help='Min cells per gene.')
 args = parser.parse_args()
-
 
 # Function to read MTX
 def read_visium_mtx(
@@ -189,7 +210,11 @@ for fname in os.listdir(args.outsPath):
 
 # Main script
 if args.countsFile in os.listdir(args.outsPath):
-    st_adata = sc.read_visium(args.outsPath, count_file=args.countsFile, library_id=None, load_images=True, source_image_path=None)
+    st_adata = sc.read_visium(args.outsPath,
+                              count_file=args.countsFile,
+                              library_id=None,
+                              load_images=True,
+                              source_image_path=None)
 else:
     st_adata = read_visium_mtx(args.outsPath)
 
@@ -197,12 +222,9 @@ st_adata.var_names_make_unique()
 sc.pp.filter_cells(st_adata, min_counts=args.minCounts)
 sc.pp.filter_genes(st_adata, min_cells=args.minCells)
 
-if not os.path.exists(os.path.dirname(args.saveFile)):
-    os.makedirs(os.path.dirname(args.saveFile))
-
+# Save raw anndata to file
 st_adata.write(args.saveFile)
 
+# Save counts anndata to file
 X = np.array(st_adata[st_adata.obs['in_tissue']==1].X.todense()).T
-np.savez_compressed(os.path.dirname(args.saveFile) + '/' + args.npCountsOutputName, X)
-
-exit(0)
+np.savez_compressed(args.npCountsOutputName, X)
