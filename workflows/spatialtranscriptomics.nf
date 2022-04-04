@@ -151,13 +151,13 @@ def prep_input_csv_files(LinkedHashMap row) {
 
 workflow ST {
 
-    ST_PREPARE_DATA(             sample_ids,                   outdir )
+    ST_PREPARE_DATA( sample_ids, outdir )
 
-    ST_LOAD_PREPROCESS_DATA(     ST_PREPARE_DATA.out,          outdir )
+    ST_LOAD_PREPROCESS_DATA( ST_PREPARE_DATA.out, outdir)
 
-    ST_MISCELLANEOUS_TOOLS(      ST_LOAD_PREPROCESS_DATA.out,  outdir )
+    ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,  outdir )
 
-    ST_POSTPROCESSING(           ST_MISCELLANEOUS_TOOLS.out,   outdir )
+    ST_POSTPROCESSING( ST_MISCELLANEOUS_TOOLS.out, outdir )
 
 }
 

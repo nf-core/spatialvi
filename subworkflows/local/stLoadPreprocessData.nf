@@ -14,17 +14,21 @@ include { SC_PREPROCESS             } from '../../modules/local/tasks'
 workflow ST_LOAD_PREPROCESS_DATA {
 
     take:
-      sample_ids
-      outdir
+    sample_ids
+    outdir
 
     main:
-      READ_ST_AND_SC_SCANPY(       sample_ids,                   outdir)
-      ST_CALCULATE_SUM_FACTORS(    READ_ST_AND_SC_SCANPY.out,    outdir)
-      ST_PREPROCESS(               ST_CALCULATE_SUM_FACTORS.out, outdir)
-      SC_PREPROCESS(               ST_CALCULATE_SUM_FACTORS.out, outdir)
+
+    //
+    // Read ST and SC data and save as `anndata`
+    //
+    READ_ST_AND_SC_SCANPY ( sample_ids, outdir )
+
+    ST_CALCULATE_SUM_FACTORS( READ_ST_AND_SC_SCANPY.out.st_counts,
+                              READ_ST_AND_SC_SCANPY.out.sc_counts)
+    ST_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out, outdir)
+    SC_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out, outdir)
 
     emit:
-      ST_PREPROCESS.out
-      .join(SC_PREPROCESS.out)
-
- }
+    ST_PREPROCESS.out.join(SC_PREPROCESS.out)
+}

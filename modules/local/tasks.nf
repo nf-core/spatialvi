@@ -36,45 +36,42 @@ import groovy.json.JsonSlurper
 }
 
 
-/*
- * Read ST 10x visium and SC 10x data with scanpy and save to anndata file
- */
- process READ_ST_AND_SC_SCANPY {
+//
+// Read ST 10x visium and SC 10x data with Scanpy and save to `anndata` file
+//
+process READ_ST_AND_SC_SCANPY {
 
     label "python_process_low"
 
     input:
     tuple val(sample_id), file(state)
-    val outdir
+    val(outdir)
 
     output:
-    tuple val(sample_id), env(outpath)
+    tuple val(sample_id), file("*.st_adata_raw.h5ad"), emit: st_anndata
+    tuple val(sample_id), file("*.sc_adata_raw.h5ad"), emit: sc_anndata
+    tuple val(sample_id), file("*.st_*.npz"), emit: st_counts
+    tuple val(sample_id), file("*.sc_*.npz"), emit: sc_counts
 
     script:
     def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
     sample_info = new JsonSlurper().parse(new File(fileName))
-
     """
-    #!/bin/bash
+    script_read_st_data.py \
+        --outsPath=${sample_info.st_data_dir} \
+        --saveFile=${sample_id}.st_adata_raw.h5ad \
+        --npCountsOutputName=${sample_id}.st_adata_counts_in_tissue.npz \
+        --countsFile=${sample_id}.raw_feature_bc_matrix.h5 \
+        --minCounts=${params.STload_minCounts} \
+        --minCells=${params.STload_minCells}
 
-    dname=${outdir}/${sample_id}
-
-    [ ! -d \${dname} ] && mkdir \${dname}
-
-    python $projectDir/bin/script_read_st_data.py --outsPath=${sample_info.st_data_dir} --saveFile=\${dname}/st_adata_raw.h5ad --countsFile=raw_feature_bc_matrix.h5 --npCountsOutputName=st_adata_counts_in_tissue.npz --minCounts=$params.STload_minCounts --minCells=$params.STload_minCells
-
-    python $projectDir/bin/script_read_sc_data.py --outsPath=${sample_info.sc_data_dir} --saveFile=\${dname}/sc_adata_raw.h5ad --npCountsOutputName=sc_adata_counts.npz --minCounts=$params.SCload_minCounts --minCells=$params.SCload_minCells --minGenes=$params.SCload_minGenes
-
-    if [[ -s \${dname}/st_adata_raw.h5ad ]] && \
-      [[ -s \${dname}/sc_adata_raw.h5ad ]] && \
-      [[ -s \${dname}/st_adata_counts_in_tissue.npz ]] && \
-      [[ -s \${dname}/sc_adata_counts.npz ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
+    script_read_sc_data.py \
+        --outsPath=${sample_info.sc_data_dir} \
+        --saveFile=${sample_id}.sc_adata_raw.h5ad \
+        --npCountsOutputName=${sample_id}.sc_adata_counts.npz \
+        --minCounts=${params.SCload_minCounts} \
+        --minCells=${params.SCload_minCells} \
+        --minGenes=${params.SCload_minGenes} \
     """
 }
 
