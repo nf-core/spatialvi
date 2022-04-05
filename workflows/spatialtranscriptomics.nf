@@ -147,6 +147,9 @@ def prep_input_csv_files(LinkedHashMap row) {
 
 workflow ST {
 
+    //
+    // Loading and pre-processing of ST and SC data
+    //
     ST_LOAD_PREPROCESS_DATA( sample_ids, outdir )
 
     ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,  outdir )

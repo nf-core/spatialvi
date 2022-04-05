@@ -12,10 +12,10 @@ process READ_ST_AND_SC_SCANPY {
     val(outdir)
 
     output:
-    tuple val(sample_id), file("*.st_adata_raw.h5ad"), emit: st_raw
-    tuple val(sample_id), file("*.sc_adata_raw.h5ad"), emit: sc_raw
-    tuple val(sample_id), file("*.st_*.npz"), emit: st_counts
-    tuple val(sample_id), file("*.sc_*.npz"), emit: sc_counts
+    tuple val(sample_id), path("*.st_adata_raw.h5ad"), emit: st_raw
+    tuple val(sample_id), path("*.sc_adata_raw.h5ad"), emit: sc_raw
+    tuple val(sample_id), path("*.st_*.npz"), emit: st_counts
+    tuple val(sample_id), path("*.sc_*.npz"), emit: sc_counts
 
     script:
     def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
@@ -48,12 +48,12 @@ process ST_CALCULATE_SUM_FACTORS {
     label "r_process"
 
     input:
-    tuple val(sample_id), file(st_counts)
-    tuple val(sample_id), file(sc_counts)
+    tuple val(sample_id), path(st_counts)
+    tuple val(sample_id), path(sc_counts)
 
     output:
-    tuple val(sample_id), file("*.st_*.npz"), emit: st_factors
-    tuple val(sample_id), file("*.sc_*.npz"), emit: sc_factors
+    tuple val(sample_id), path("*.st_*.npz"), emit: st_factors
+    tuple val(sample_id), path("*.sc_*.npz"), emit: sc_factors
 
     script:
     """
@@ -67,20 +67,20 @@ process ST_CALCULATE_SUM_FACTORS {
     """
 }
 
-/*
- * ST data preprocessing
- */
+//
+// ST data preprocessing
+//
  process ST_PREPROCESS {
 
     label "python_process"
 
     input:
-    tuple val(sample_id), file(st_raw), file(st_factors)
-    file(mito_data)
+    tuple val(sample_id), path(st_raw), path(st_factors)
+    path(mito_data)
 
     output:
-    tuple val(sample_id), file("*_plain.h5ad"), file("*_norm.h5ad")
-    // file("*.png"), emit: figures
+    tuple val(sample_id), path("*_plain.h5ad"), path("*_norm.h5ad"), emit: st_data
+    path("*.png"), emit: figures
 
     script:
     """
@@ -99,7 +99,6 @@ process ST_CALCULATE_SUM_FACTORS {
         --nameDataNorm=${sample_id}.st_adata_norm.h5ad
     """
 }
-
 
 /*
  * SC data preprocessing

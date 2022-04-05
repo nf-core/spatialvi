@@ -46,5 +46,6 @@ workflow ST_LOAD_PREPROCESS_DATA {
     // SC_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out.sc_factors, outdir)
 
     emit:
-    ST_PREPROCESS.out.join(ST_PREPROCESS.out)
+    // ST_PREPROCESS.out.join(ST_PREPROCESS.out)
+    ST_PREPROCESS.out.st_data
 }
