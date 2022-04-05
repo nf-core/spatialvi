@@ -20,6 +20,12 @@ workflow ST_LOAD_PREPROCESS_DATA {
     main:
 
     //
+    // Channel for mitochondrial data
+    //
+    ch_mito_data = Channel
+        .fromPath("ftp://ftp.broadinstitute.org/distribution/metabolic/papers/Pagliarini/MitoCarta2.0/Human.MitoCarta2.0.txt")
+
+    //
     // Read ST and SC data and save as `anndata`
     //
     READ_ST_AND_SC_SCANPY ( sample_ids, outdir )
@@ -28,11 +34,17 @@ workflow ST_LOAD_PREPROCESS_DATA {
     // Calculate sum factors used for normalisation in pre-processing
     //
     ST_CALCULATE_SUM_FACTORS( READ_ST_AND_SC_SCANPY.out.st_counts,
-                              READ_ST_AND_SC_SCANPY.out.sc_counts)
+                              READ_ST_AND_SC_SCANPY.out.sc_counts )
 
-    ST_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out.st_factors, outdir)
-    SC_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out.sc_factors, outdir)
+    //
+    // Spatial pre-processing
+    //
+    ch_st_raw_and_factors = READ_ST_AND_SC_SCANPY.out.st_raw.join(
+        ST_CALCULATE_SUM_FACTORS.out.st_factors)
+    ST_PREPROCESS( ch_st_raw_and_factors, ch_mito_data )
+
+    // SC_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out.sc_factors, outdir)
 
     emit:
-    ST_PREPROCESS.out.join(SC_PREPROCESS.out)
+    ST_PREPROCESS.out.join(ST_PREPROCESS.out)
 }

@@ -43,7 +43,6 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // include { INPUT_CHECK } from '../subworkflows/local/input_check'
 
-include { ST_PREPARE_DATA          } from '../subworkflows/local/stPrepareData'
 include { ST_LOAD_PREPROCESS_DATA  } from '../subworkflows/local/stLoadPreprocessData'
 include { ST_MISCELLANEOUS_TOOLS   } from '../subworkflows/local/stMiscellaneousTools'
 include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessing'
@@ -151,9 +150,7 @@ def prep_input_csv_files(LinkedHashMap row) {
 
 workflow ST {
 
-    ST_PREPARE_DATA( sample_ids, outdir )
-
-    ST_LOAD_PREPROCESS_DATA( ST_PREPARE_DATA.out, outdir)
+    ST_LOAD_PREPROCESS_DATA( sample_ids, outdir )
 
     ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,  outdir )
 

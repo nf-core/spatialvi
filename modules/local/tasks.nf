@@ -1,41 +1,5 @@
 import groovy.json.JsonSlurper
 
-/*
- * Download mitochondrial genes list file
- */
- process MITO_LOAD {
-
-    label "python_process_low"
-
-    input:
-    val sample_id
-    val outdir
-
-    output:
-    tuple val(sample_id), env(fname)
-
-    script:
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
-    sample_info = new JsonSlurper().parse(new File(fileName))
-
-    """
-    #!/bin/bash
-
-    mitoUrl="ftp://ftp.broadinstitute.org/distribution/metabolic/papers/Pagliarini/MitoCarta2.0/${sample_info.species}.MitoCarta2.0.txt"
-
-    fname=${outdir}/`basename "\${mitoUrl}"`
-    echo saving to: \$fname
-
-    [ ! -d ${outdir} ] && mkdir ${outdir}
-
-    if [ ! -f \$fname ]
-    then
-        wget --quiet \${mitoUrl} --output-document=\$fname
-    fi
-    """
-}
-
-
 //
 // Read ST 10x visium and SC 10x data with Scanpy and save to `anndata` file
 //
@@ -44,12 +8,12 @@ process READ_ST_AND_SC_SCANPY {
     label "python_process_low"
 
     input:
-    tuple val(sample_id), file(state)
+    val(sample_id)
     val(outdir)
 
     output:
-    tuple val(sample_id), file("*.st_adata_raw.h5ad"), emit: st_anndata
-    tuple val(sample_id), file("*.sc_adata_raw.h5ad"), emit: sc_anndata
+    tuple val(sample_id), file("*.st_adata_raw.h5ad"), emit: st_raw
+    tuple val(sample_id), file("*.sc_adata_raw.h5ad"), emit: sc_raw
     tuple val(sample_id), file("*.st_*.npz"), emit: st_counts
     tuple val(sample_id), file("*.sc_*.npz"), emit: sc_counts
 
@@ -109,39 +73,30 @@ process ST_CALCULATE_SUM_FACTORS {
  process ST_PREPROCESS {
 
     label "python_process"
-    cpus 2
-    memory '4.GB'
 
     input:
-    tuple val(sample_id), file(state)
-    val outdir
+    tuple val(sample_id), file(st_raw), file(st_factors)
+    file(mito_data)
 
     output:
-    tuple val(sample_id), env(outpath)
+    tuple val(sample_id), file("*_plain.h5ad"), file("*_norm.h5ad")
+    // file("*.png"), emit: figures
 
     script:
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
-    sample_info = new JsonSlurper().parse(new File(fileName))
-
     """
-    #!/bin/bash
-
-    dname=${outdir}/${sample_id}
-
-    mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
-
-    python $projectDir/bin/stPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=st_adata_counts_in_tissue_factors.npz --rawAdata=st_adata_raw.h5ad --mitoFile=\$mitoFile --pltFigSize=$params.STpreprocess_pltFigSize --minCounts=$params.STpreprocess_minCounts --minGenes=$params.STpreprocess_minGenes --minCells=$params.STpreprocess_minCells --histplotQCmaxTotalCounts=$params.STpreprocess_histplotQCmaxTotalCounts --histplotQCminGeneCounts=$params.STpreprocess_histplotQCminGeneCounts --histplotQCbins=$params.STpreprocess_histplotQCbins
-
-    if [[ -s \${dname}/st_adata_norm.h5ad ]] && \
-      [[ -s \${dname}/st_adata_X.npz ]] && \
-      [[ -s \${dname}/st_adata.var.csv ]] && \
-      [[ -s \${dname}/st_adata.obs.csv ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
+    stPreprocess.py \
+        --npFactorsOutputName=${st_factors} \
+        --rawAdata=${st_raw} \
+        --mitoFile=${mito_data} \
+        --pltFigSize=${params.STpreprocess_pltFigSize} \
+        --minCounts=${params.STpreprocess_minCounts} \
+        --minGenes=${params.STpreprocess_minGenes} \
+        --minCells=${params.STpreprocess_minCells} \
+        --histplotQCmaxTotalCounts=${params.STpreprocess_histplotQCmaxTotalCounts} \
+        --histplotQCminGeneCounts=${params.STpreprocess_histplotQCminGeneCounts} \
+        --histplotQCbins=${params.STpreprocess_histplotQCbins} \
+        --nameDataPlain=${sample_id}.st_adata_plain.h5ad \
+        --nameDataNorm=${sample_id}.st_adata_norm.h5ad
     """
 }
 
