@@ -14,19 +14,20 @@ include { ST_SPATIALDE                      } from '../../modules/local/tasks'
 workflow ST_MISCELLANEOUS_TOOLS {
 
     take:
-      sample_ids
-      outdir
+    sample_ids
+    outdir
 
     main:
-      DECONVOLUTION_WITH_STDECONVOLVE( sample_ids, outdir)
-      DECONVOLUTION_WITH_SPOTLIGHT(    sample_ids, outdir)
-      CLUSTERING_WITH_BAYESSPACE(      sample_ids, outdir)
-      ST_SPATIALDE(                    sample_ids, outdir)
+    DECONVOLUTION_WITH_STDECONVOLVE( sample_ids, outdir)
+    // DECONVOLUTION_WITH_SPOTLIGHT(    sample_ids, outdir)
+    // CLUSTERING_WITH_BAYESSPACE(      sample_ids, outdir)
+    // ST_SPATIALDE(                    sample_ids, outdir)
 
     emit:
-      ST_SPATIALDE.out
-      .join(DECONVOLUTION_WITH_STDECONVOLVE.out)
-      .join(DECONVOLUTION_WITH_SPOTLIGHT.out)
-      .join(CLUSTERING_WITH_BAYESSPACE.out)
+    DECONVOLUTION_WITH_STDECONVOLVE.out
+    // ST_SPATIALDE.out
+    // .join(DECONVOLUTION_WITH_STDECONVOLVE.out)
+    // .join(DECONVOLUTION_WITH_SPOTLIGHT.out)
+    // .join(CLUSTERING_WITH_BAYESSPACE.out)
 
  }

@@ -128,7 +128,9 @@ process ST_CALCULATE_SUM_FACTORS {
         --minCells=${params.SCpreprocess_minCells} \
         --histplotQCmaxTotalCounts=${params.SCpreprocess_histplotQCmaxTotalCounts} \
         --histplotQCminGeneCounts=${params.SCpreprocess_histplotQCminGeneCounts} \
-        --histplotQCbins=${params.SCpreprocess_histplotQCbins}
+        --histplotQCbins=${params.SCpreprocess_histplotQCbins} \
+        --nameDataPlain=${sample_id}.sc_adata_plain.h5ad \
+        --nameDataNorm=${sample_id}.sc_adata_norm.h5ad
     """
 }
 
@@ -158,31 +160,17 @@ process ST_CALCULATE_SUM_FACTORS {
     tuple env(sample_id), env(outpath)
 
     script:
-    def sample_id_gr = sample_state[0]
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
-    sample_info = new JsonSlurper().parse(new File(fileName))
-
     """
-    #!/bin/bash
-
-    sample_id=${sample_id_gr}
-
-    dname=${outdir}/\${sample_id}
-
-    Rscript $projectDir/bin/characterization_STdeconvolve.R --filePath=\${dname}/ --outsPath=${sample_info.st_data_dir} --mtxGeneColumn=$params.STdeconvolve_mtxGeneColumn --countsFactor=$params.STdeconvolve_countsFactor --corpusRemoveAbove=$params.STdeconvolve_corpusRemoveAbove --corpusRemoveBelow=$params.STdeconvolve_corpusRemoveBelow --LDAminTopics=$params.STdeconvolve_LDAminTopics --LDAmaxTopics=$params.STdeconvolve_LDAmaxTopics --STdeconvolveScatterpiesSize=$params.STdeconvolve_ScatterpiesSize --STdeconvolveFeaturesSizeFactor=$params.STdeconvolve_FeaturesSizeFactor
-
-    if [[ -s \${dname}/STdeconvolve_prop_norm.csv ]] && \
-      [[ -s \${dname}/STdeconvolve_beta_norm.csv ]] && \
-      [[ -s \${dname}/STdeconvolve_sc_cluster_ids.csv ]] && \
-      [[ -s \${dname}/STdeconvolve_sc_pca.csv ]] && \
-      [[ -s \${dname}/STdeconvolve_sc_pca_feature_loadings.csv ]] && \
-      [[ -s \${dname}/STdeconvolve_sc_cluster_markers.csv ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
+    characterization_STdeconvolve.R \
+        --outsPath=${sample_info.st_data_dir} \
+        --mtxGeneColumn=$params.STdeconvolve_mtxGeneColumn \
+        --countsFactor=$params.STdeconvolve_countsFactor \
+        --corpusRemoveAbove=$params.STdeconvolve_corpusRemoveAbove \
+        --corpusRemoveBelow=$params.STdeconvolve_corpusRemoveBelow \
+        --LDAminTopics=$params.STdeconvolve_LDAminTopics \
+        --LDAmaxTopics=$params.STdeconvolve_LDAmaxTopics \
+        --STdeconvolveScatterpiesSize=$params.STdeconvolve_ScatterpiesSize \
+        --STdeconvolveFeaturesSizeFactor=$params.STdeconvolve_FeaturesSizeFactor
     """
 }
 
