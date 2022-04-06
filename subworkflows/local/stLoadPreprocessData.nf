@@ -43,7 +43,12 @@ workflow ST_LOAD_PREPROCESS_DATA {
         ST_CALCULATE_SUM_FACTORS.out.st_factors)
     ST_PREPROCESS( ch_st_raw_and_factors, ch_mito_data )
 
-    // SC_PREPROCESS( ST_CALCULATE_SUM_FACTORS.out.sc_factors, outdir)
+    //
+    // Single cell pre-processing
+    //
+    ch_sc_raw_and_factors = READ_ST_AND_SC_SCANPY.out.sc_raw.join(
+        ST_CALCULATE_SUM_FACTORS.out.sc_factors)
+    SC_PREPROCESS( ch_sc_raw_and_factors, ch_mito_data )
 
     emit:
     // ST_PREPROCESS.out.join(ST_PREPROCESS.out)

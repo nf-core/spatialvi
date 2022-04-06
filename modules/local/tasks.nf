@@ -100,45 +100,35 @@ process ST_CALCULATE_SUM_FACTORS {
     """
 }
 
-/*
- * SC data preprocessing
- */
+//
+// SC data preprocessing
+//
  process SC_PREPROCESS {
 
     label "python_process"
-    cpus 2
-    memory '4.GB'
 
     input:
-    tuple val(sample_id), file(state)
-    val outdir
+    tuple val(sample_id), path(sc_raw), path(sc_factors)
+    path(mito_data)
 
     output:
-    tuple val(sample_id), env(outpath)
+    tuple val(sample_id), path("*_plain.h5ad"), path("*_norm.h5ad"), emit: sc_data
+    path("*.png"), emit: figures
 
     script:
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
-    sample_info = new JsonSlurper().parse(new File(fileName))
 
     """
-    #!/bin/bash
-
-    dname=${outdir}/${sample_id}
-
-    mitoFile=${outdir}/${sample_info.species}.MitoCarta2.0.txt
-
-    python $projectDir/bin/scPreprocess.py --filePath=\${dname}/ --npFactorsOutputName=sc_adata_counts_factors.npz --rawAdata=sc_adata_raw.h5ad --mitoFile=\$mitoFile --pltFigSize=$params.SCpreprocess_pltFigSize --minCounts=$params.SCpreprocess_minCounts --minGenes=$params.SCpreprocess_minGenes --minCells=$params.SCpreprocess_minCells --histplotQCmaxTotalCounts=$params.SCpreprocess_histplotQCmaxTotalCounts --histplotQCminGeneCounts=$params.SCpreprocess_histplotQCminGeneCounts --histplotQCbins=$params.SCpreprocess_histplotQCbins
-
-    if [[ -s \${dname}/sc_adata_norm.h5ad ]] && \
-      [[ -s \${dname}/sc_adata_X.npz ]] && \
-      [[ -s \${dname}/sc_adata.var.csv ]] && \
-      [[ -s \${dname}/sc_adata.obs.csv ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
+    scPreprocess.py \
+        --npFactorsOutputName=${sc_factors} \
+        --rawAdata=${sc_raw} \
+        --mitoFile=${mito_data} \
+        --pltFigSize=${params.SCpreprocess_pltFigSize} \
+        --minCounts=${params.SCpreprocess_minCounts} \
+        --minGenes=${params.SCpreprocess_minGenes} \
+        --minCells=${params.SCpreprocess_minCells} \
+        --histplotQCmaxTotalCounts=${params.SCpreprocess_histplotQCmaxTotalCounts} \
+        --histplotQCminGeneCounts=${params.SCpreprocess_histplotQCminGeneCounts} \
+        --histplotQCbins=${params.SCpreprocess_histplotQCbins}
     """
 }
 
