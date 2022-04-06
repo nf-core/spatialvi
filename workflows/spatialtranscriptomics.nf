@@ -66,101 +66,42 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // Info required for completion email and summary
 def multiqc_report = []
 
-outdir = "${launchDir}/${params.outdir}"
-
-Channel
-.from(file(params.input))
-.splitCsv(header:true, sep:',')
-.map{ prep_input_csv_files(it) }
-.set{sample_ids}
-
-import org.apache.commons.csv.CSVPrinter
-import org.apache.commons.csv.CSVFormat
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
-def loadFromURL(String sample_id, String data_dir, String pref_dir, List files) {
-    for(cfile: files) {
-        def lfile = cfile.split('/')
-        if (lfile.size()>1) {
-            subdir = String.join('/', lfile[0..lfile.size()-2]) + '/'
-        } else {
-            subdir = ''
-        }
-
-        filename = lfile[lfile.size()-1]
-        url = data_dir + subdir + filename
-        savedir = outdir + '/' + 'dataset-' + sample_id + '/' + pref_dir + '/' + subdir
-
-        File filedir = new File(savedir)
-        filedir.mkdirs()
-
-        URL urlobj = new URL(url)
-        File fileload = new File(savedir + filename)
-        if (!fileload.exists()) {
-            println 'Loading: ' + url
-            fileload.bytes = urlobj.bytes
-        }
+// TODO: add check/schema for samplesheet
+//
+// Channel for input spatial transcriptomics data
+//
+ch_spatial_data = Channel
+    .fromPath ( params.input, checkIfExists: true)
+    .splitCsv ( header: true )
+    .map      { row -> tuple(
+                row.sample,
+                row.tissue_positions_list,
+                row.tissue_hires_image,
+                row.scale_factors,
+                row.barcodes,
+                row.features,
+                row.matrix
+                )
     }
 
-    return outdir + '/' + 'dataset-' + sample_id + '/' + pref_dir + '/'
-}
-
-def prep_input_csv_files(LinkedHashMap row) {
-
-    files_st = ['spatial/detected_tissue_image.jpg',
-                'spatial/scalefactors_json.json',
-                'spatial/tissue_hires_image.png',
-                'spatial/tissue_positions_list.csv',
-                'spatial/aligned_fiducials.jpg',
-                'spatial/tissue_lowres_image.png',
-                'raw_feature_bc_matrix/features.tsv.gz',
-                'raw_feature_bc_matrix/barcodes.tsv.gz',
-                'raw_feature_bc_matrix/matrix.mtx.gz']
-
-    files_sc = ['features.tsv.gz',
-                'barcodes.tsv.gz',
-                'matrix.mtx.gz']
-
-    if (row.st_data_dir[0..3]=='http') {
-        row.st_data_dir = loadFromURL(row.sample_id, row.st_data_dir, 'ST', files_st)
-    }
-
-    if (row.sc_data_dir[0..3]=='http') {
-        row.sc_data_dir = loadFromURL(row.sample_id, row.sc_data_dir, 'SC', files_sc)
-    }
-
-    def fileName = String.format("%s/sample_%s", outdir, row.sample_id)
-    def FILE_HEADER = row.keySet() as String[];
-
-    new File(fileName + ".csv").withWriter { fileWriter ->
-        def csvFilePrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT)
-        csvFilePrinter.printRecord(FILE_HEADER)
-        csvFilePrinter.printRecord(row.values())
-    }
-
-    File file = new File(fileName + ".json")
-    file.write(JsonOutput.toJson(row))
-
-    return row.sample_id
-}
-
+//
+// Spatial transcriptomics workflow
+//
 workflow ST {
 
     //
     // Loading and pre-processing of ST and SC data
     //
-    ST_LOAD_PREPROCESS_DATA( sample_ids, outdir )
+    ST_LOAD_PREPROCESS_DATA( ch_spatial_data )
 
     //
-    // [Optional] Deconvolution with SC data
+    // Deconvolution with SC data (optional; do not run by default)
     //
     if (params.run_deconvolution) {
         ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,  outdir )
     }
 
     // ST_POSTPROCESSING( ST_MISCELLANEOUS_TOOLS.out, outdir )
-
 }
 
 /*

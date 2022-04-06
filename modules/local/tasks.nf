@@ -8,8 +8,13 @@ process READ_ST_AND_SC_SCANPY {
     label "python_process_low"
 
     input:
-    val(sample_id)
-    val(outdir)
+    tuple val  (sample_id),
+          path (tissue_position_list),
+          path (tissue_hires_image),
+          path (scale_factors),
+          path (barcodes),
+          path (features),
+          path (matrix)
 
     output:
     tuple val(sample_id), path("*.st_adata_raw.h5ad"), emit: st_raw
@@ -18,8 +23,6 @@ process READ_ST_AND_SC_SCANPY {
     tuple val(sample_id), path("*.sc_*.npz"), emit: sc_counts
 
     script:
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
-    sample_info = new JsonSlurper().parse(new File(fileName))
     """
     script_read_st_data.py \
         --outsPath=${sample_info.st_data_dir} \
