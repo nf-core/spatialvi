@@ -51,6 +51,8 @@ workflow ST_LOAD_PREPROCESS_DATA {
     SC_PREPROCESS( ch_sc_raw_and_factors, ch_mito_data )
 
     emit:
-    // ST_PREPROCESS.out.join(ST_PREPROCESS.out)
-    ST_PREPROCESS.out.st_data
+    st_data_norm  = ST_PREPROCESS.out.st_data_norm  // channel: [ val(sample), h5ad ]
+    st_data_plain = ST_PREPROCESS.out.st_data_plain // channel: [ val(sample), h5ad ]
+    sc_data_norm  = SC_PREPROCESS.out.sc_data_norm  // channel: [ val(sample), h5ad ]
+    sc_data_plain = SC_PREPROCESS.out.sc_data_plain // channel: [ val(sample), h5ad ]
 }
