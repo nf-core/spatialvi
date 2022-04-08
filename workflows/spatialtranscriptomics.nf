@@ -159,7 +159,10 @@ workflow ST {
         ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,  outdir )
     }
 
-    // ST_POSTPROCESSING( ST_MISCELLANEOUS_TOOLS.out, outdir )
+    //
+    // Post-processing and reporting
+    //
+    ST_POSTPROCESSING( ST_LOAD_PREPROCESS_DATA.out.st_data_norm )
 
 }
 

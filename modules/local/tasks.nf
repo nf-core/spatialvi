@@ -68,7 +68,7 @@ process ST_CALCULATE_SUM_FACTORS {
 }
 
 //
-// ST data preprocessing
+// Spatial data pre-processing
 //
  process ST_PREPROCESS {
 
@@ -79,7 +79,8 @@ process ST_CALCULATE_SUM_FACTORS {
     path(mito_data)
 
     output:
-    tuple val(sample_id), path("*_plain.h5ad"), path("*_norm.h5ad"), emit: st_data
+    tuple val(sample_id), path("*_norm.h5ad"), emit: st_data_norm
+    tuple val(sample_id), path("*_plain.h5ad"), emit: st_data_plain
     path("*.png"), emit: figures
 
     script:
@@ -101,7 +102,7 @@ process ST_CALCULATE_SUM_FACTORS {
 }
 
 //
-// SC data preprocessing
+// Single cell data pre-processing
 //
  process SC_PREPROCESS {
 
@@ -112,7 +113,8 @@ process ST_CALCULATE_SUM_FACTORS {
     path(mito_data)
 
     output:
-    tuple val(sample_id), path("*_plain.h5ad"), path("*_norm.h5ad"), emit: sc_data
+    tuple val(sample_id), path("*_norm.h5ad"), emit: sc_data_norm
+    tuple val(sample_id), path("*_plain.h5ad"), emit: sc_data_plain
     path("*.png"), emit: figures
 
     script:
@@ -135,6 +137,29 @@ process ST_CALCULATE_SUM_FACTORS {
 }
 
 
+//
+// Spatial differential expression
+//
+ process ST_SPATIAL_DE {
+
+    label "python_process"
+
+    input:
+    tuple val(sample_id), path(st_data_norm)
+
+    output:
+    tuple val(sample_id), path("*.csv"), emit: degs
+    path("*.png"), optional: true, emit: figures
+
+    script:
+    """
+    stSpatialDE.py \
+        --fileName=${st_data_norm} \
+        --numberOfColumns=${params.SpatialDE_numberOfColumns} \
+        --saveFileName=stSpatialDE.csv \
+        --savePlotName=stSpatialDE.png
+    """
+}
 
 
 
@@ -258,59 +283,6 @@ process ST_CALCULATE_SUM_FACTORS {
     fi
     """
 }
-
-
-/*
- * SpatialDE
- */
- process ST_SPATIALDE {
-
-    label "python_process"
-
-    input:
-    val sample_state
-    val outdir
-
-    output:
-    tuple env(sample_id), env(outpath)
-
-    script:
-    def sample_id_gr = sample_state[0]
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
-    sample_info = new JsonSlurper().parse(new File(fileName))
-
-    """
-    #!/bin/bash
-
-    sample_id=${sample_id_gr}
-
-    dname=${outdir}/\${sample_id}
-
-    python $projectDir/bin/stSpatialDE.py --filePath=\${dname}/ --numberOfColumns=$params.SpatialDE_numberOfColumns
-
-    if [[ -s \${dname}/stSpatialDE.csv ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
-    """
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
