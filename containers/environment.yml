@@ -16,6 +16,11 @@ dependencies:
     - seaborn=0.11.2
     - umap-learn=0.5.2
 
+    # Pip packages
+    - pip=22.0.04
+    - pip:
+      - spatialde=1.1.3
+
     # R packages
     - bioconductor-bluster=1.4.0
     - bioconductor-bayesspace=1.4.1
