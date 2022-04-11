@@ -5,15 +5,13 @@ import os
 import argparse
 import scanpy as sc
 import numpy as np
+import json
+import pandas as pd
 
 from scanpy import read_10x_mtx
 from pathlib import Path
 from typing import Union, Dict, Optional
-import json
-import numpy as np
-import pandas as pd
 from matplotlib.image import imread
-import anndata
 from anndata import AnnData, read_csv
 
 

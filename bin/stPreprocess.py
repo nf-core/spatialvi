@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 # Load packages
-import sys
-import os
 import argparse
 import scanpy as sc
 import numpy as np
