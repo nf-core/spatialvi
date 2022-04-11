@@ -14,8 +14,8 @@ process READ_ST_AND_SC_SCANPY {
     output:
     tuple val(sample_id), path("*.st_adata_raw.h5ad"), emit: st_raw
     tuple val(sample_id), path("*.sc_adata_raw.h5ad"), emit: sc_raw
-    tuple val(sample_id), path("*.st_*.npz"), emit: st_counts
-    tuple val(sample_id), path("*.sc_*.npz"), emit: sc_counts
+    tuple val(sample_id), path("*.st_*.npz"),          emit: st_counts
+    tuple val(sample_id), path("*.sc_*.npz"),          emit: sc_counts
 
     script:
     def fileName = String.format("%s/sample_%s.json", outdir, sample_id)
@@ -298,15 +298,15 @@ process ST_CLUSTERING {
 
     output:
     tuple val(sample_id), path("*.csv"), emit: degs
-    path("*.png"), optional: true, emit: figures
+    path("*.png"),                       emit: figures, optional: true
 
     script:
     """
     stSpatialDE.py \
         --fileName=${st_data_norm} \
         --numberOfColumns=${params.SpatialDE_numberOfColumns} \
-        --saveFileName=stSpatialDE.csv \
-        --savePlotName=stSpatialDE.png
+        --saveFileName=${sample_id}.stSpatialDE.csv \
+        --savePlotName=${sample_id}.stSpatialDE.png
     """
 }
 
