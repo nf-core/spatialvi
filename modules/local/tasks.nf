@@ -145,10 +145,10 @@ process ST_CALCULATE_SUM_FACTORS {
 
 
 
-/*
- * ST data deconvolution with STdeconvolve
- */
- process DECONVOLUTION_WITH_STDECONVOLVE {
+//
+// Spatial deconvolution with STdeconvolve
+//
+process DECONVOLUTION_WITH_STDECONVOLVE {
 
     label "r_process"
 
@@ -219,46 +219,34 @@ process ST_CALCULATE_SUM_FACTORS {
 }
 
 
-/*
- * Resolution enhancement and spatial clustering with BayesSpace
- */
- process CLUSTERING_WITH_BAYESSPACE {
+//
+// Resolution enhancement and spatial clustering with BayesSpace
+//
+process CLUSTERING_WITH_BAYESSPACE {
 
     label "r_process"
 
     input:
-    val sample_state
-    val outdir
+    tuple val(sample_id), path(st_adata_x), path(st_adata_var), path(st_adata_obs)
 
     output:
-    tuple env(sample_id), env(outpath)
+    tuple val(sample_id), path("bayes_*.csv"), emit: tables
+    tuple val(sample_id), path("*.png"), emit: figures
 
     script:
-    def sample_id_gr = sample_state[0]
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
-    sample_info = new JsonSlurper().parse(new File(fileName))
-
     """
-    #!/bin/bash
-
-    sample_id=${sample_id_gr}
-
-    dname=${outdir}/\${sample_id}
-
-    Rscript $projectDir/bin/characterization_BayesSpace.R --filePath=\${dname}/ --numberHVG=$params.BayesSpace_numberHVG --numberPCs=$params.BayesSpace_numberPCs --minClusters=$params.BayesSpace_minClusters --maxClusters=$params.BayesSpace_maxClusters --optimalQ=$params.BayesSpace_optimalQ --STplatform=$params.BayesSpace_STplatform
-
-    if [[ -s \${dname}/bayes_spot_cluster.csv ]] && \
-      [[ -s \${dname}/bayes_subspot_cluster_and_coord.csv ]] && \
-      [[ -s \${dname}/bayes_enhanced_markers.csv ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
+    characterization_BayesSpace.R \
+        --nameX ${st_adata_x} \
+        --nameVar ${st_adata_var} \
+        --nameObs ${st_adata_osb} \
+        --numberHVG $params.BayesSpace_numberHVG \
+        --numberPCs $params.BayesSpace_numberPCs \
+        --minClusters $params.BayesSpace_minClusters \
+        --maxClusters $params.BayesSpace_maxClusters \
+        --optimalQ $params.BayesSpace_optimalQ \
+        --STplatform $params.BayesSpace_STplatform
     """
 }
-
 
 //
 // Clustering etc. TODO: better description

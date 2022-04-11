@@ -21,13 +21,13 @@ workflow ST_MISCELLANEOUS_TOOLS {
     //
     // Deconvolution with single cell data
     //
-    DECONVOLUTION_WITH_STDECONVOLVE( sample_ids, outdir)
-    // DECONVOLUTION_WITH_SPOTLIGHT(    sample_ids, outdir)
+    DECONVOLUTION_WITH_STDECONVOLVE( sample_ids, outdir )
+    // DECONVOLUTION_WITH_SPOTLIGHT( sample_ids, outdir )
 
     //
     // Clustering etc. TODO: better description
     //
-    // CLUSTERING_WITH_BAYESSPACE(      sample_ids, outdir)
+    // CLUSTERING_WITH_BAYESSPACE( sample_ids, outdir )
     // ST_CLUSTERING ( st_data_norm.join(sc_data_norm) )
 
     emit:
@@ -39,4 +39,4 @@ workflow ST_MISCELLANEOUS_TOOLS {
     // sc_adata_processed = ST_CLUSTERING.out.sc_adata_processed // channel: [ val(sample), adata ]
     // processed_figures  = ST_CLUSTERING.out.figures            // channel: [ val(sample), png ]
 
- }
+}
