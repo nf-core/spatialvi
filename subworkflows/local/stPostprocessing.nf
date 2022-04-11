@@ -16,11 +16,17 @@ workflow ST_POSTPROCESSING {
     st_data_norm
 
     main:
-    ST_SPATIAL_DE  ( st_data_norm )
-    // ST_CLUSTERING  ( sample_ids,         outdir)
+    //
+    // Spatial differential expression
+    //
+    ST_SPATIAL_DE ( st_data_norm )
+
+    //
+    // Reporting and final outputs
+    //
     // ALL_REPORT     ( ST_CLUSTERING.out,  outdir)
 
     emit:
     spatial_degs    = ST_SPATIAL_DE.out.degs    // channel: [ val(sample), csv ]
     spatial_figures = ST_SPATIAL_DE.out.figures // channel: [ val(sample), png ]
- }
+}

@@ -137,31 +137,6 @@ process ST_CALCULATE_SUM_FACTORS {
 }
 
 
-//
-// Spatial differential expression
-//
- process ST_SPATIAL_DE {
-
-    label "python_process"
-
-    input:
-    tuple val(sample_id), path(st_data_norm)
-
-    output:
-    tuple val(sample_id), path("*.csv"), emit: degs
-    path("*.png"), optional: true, emit: figures
-
-    script:
-    """
-    stSpatialDE.py \
-        --fileName=${st_data_norm} \
-        --numberOfColumns=${params.SpatialDE_numberOfColumns} \
-        --saveFileName=stSpatialDE.csv \
-        --savePlotName=stSpatialDE.png
-    """
-}
-
-
 
 
 
@@ -285,42 +260,65 @@ process ST_CALCULATE_SUM_FACTORS {
 }
 
 
-/*
- * Clustering etc.
- */
- process ST_CLUSTERING {
+//
+// Clustering etc. TODO: better description
+//
+process ST_CLUSTERING {
 
     label "python_process"
 
     input:
-    val sample_state
-    val outdir
+    tuple val(sample_id), path(st_adata_norm), path(sc_adata_norm)
 
     output:
-    tuple env(sample_id), env(outpath)
+    tuple val(sample), path("*.st_*.h5ad"), emit: st_adata_processed
+    tuple val(sample), path("*.sc_*.h5ad"), emit: sc_adata_processed
+    path("*.png"), optional: true, emit: figures
 
     script:
-    def sample_id_gr = sample_state[0]
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
-    sample_info = new JsonSlurper().parse(new File(fileName))
-
     """
-    #!/bin/bash
+    stClusteringWorkflow.py \
+        --fileNameST ${st_adata_norm} \
+        --fileNameSC ${sc_adata_norm} \
+        --resolution=$params.Clustering_resolution \
+        --saveFileST ${sample_id}.st_adata_processed.h5ad \
+        --saveFileSC ${sample_id}.sc_adata_processed.h5ad
+    """
+}
 
-    sample_id=${sample_id_gr}
 
-    dname=${outdir}/\${sample_id}
 
-    python $projectDir/bin/stClusteringWorkflow.py --filePath=\${dname}/ --resolution=$params.Clustering_resolution
 
-    if [[ -s \${dname}/st_adata_processed.h5ad ]] && \
-      [[ -s \${dname}/sc_adata_processed.h5ad ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
+
+
+
+
+
+
+
+
+
+//
+// Spatial differential expression
+//
+ process ST_SPATIAL_DE {
+
+    label "python_process"
+
+    input:
+    tuple val(sample_id), path(st_data_norm)
+
+    output:
+    tuple val(sample_id), path("*.csv"), emit: degs
+    path("*.png"), optional: true, emit: figures
+
+    script:
+    """
+    stSpatialDE.py \
+        --fileName=${st_data_norm} \
+        --numberOfColumns=${params.SpatialDE_numberOfColumns} \
+        --saveFileName=stSpatialDE.csv \
+        --savePlotName=stSpatialDE.png
     """
 }
 
