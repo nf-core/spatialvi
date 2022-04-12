@@ -53,6 +53,12 @@ workflow ST_LOAD_PREPROCESS_DATA {
     emit:
     st_data_norm  = ST_PREPROCESS.out.st_data_norm  // channel: [ val(sample), h5ad ]
     st_data_plain = ST_PREPROCESS.out.st_data_plain // channel: [ val(sample), h5ad ]
+    st_adata_X    = ST_PREPROCESS.out.st_adata_X    // channel: [ val(sample), npz ]
+    st_adata_var  = ST_PREPROCESS.out.st_adata_var  // channel: [ val(sample), npz ]
+    st_adata_obs  = ST_PREPROCESS.out.st_adata_obs  // channel: [ val(sample), npz ]
     sc_data_norm  = SC_PREPROCESS.out.sc_data_norm  // channel: [ val(sample), h5ad ]
     sc_data_plain = SC_PREPROCESS.out.sc_data_plain // channel: [ val(sample), h5ad ]
+    sc_adata_X    = SC_PREPROCESS.out.sc_adata_X    // channel: [ val(sample), npz ]
+    sc_adata_var  = SC_PREPROCESS.out.sc_adata_var  // channel: [ val(sample), npz ]
+    sc_adata_obs  = SC_PREPROCESS.out.sc_adata_obs  // channel: [ val(sample), npz ]
 }

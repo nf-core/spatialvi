@@ -79,25 +79,31 @@ process ST_CALCULATE_SUM_FACTORS {
     path(mito_data)
 
     output:
-    tuple val(sample_id), path("*_norm.h5ad"), emit: st_data_norm
-    tuple val(sample_id), path("*_plain.h5ad"), emit: st_data_plain
-    path("*.png"), emit: figures
+    tuple val(sample_id), path("*_norm.h5ad"),        emit: st_data_norm
+    tuple val(sample_id), path("*_plain.h5ad"),       emit: st_data_plain
+    tuple val(sample_id), path("*.st_adata_X.npz"),   emit: st_adata_X
+    tuple val(sample_id), path("*.st_adata_var.npz"), emit: st_adata_var
+    tuple val(sample_id), path("*.st_adata_obs.npz"), emit: st_adata_obs
+    tuple val(sample_id), path("*.png"),              emit: figures
 
     script:
     """
     stPreprocess.py \
-        --npFactorsOutputName=${st_factors} \
-        --rawAdata=${st_raw} \
-        --mitoFile=${mito_data} \
-        --pltFigSize=${params.STpreprocess_pltFigSize} \
-        --minCounts=${params.STpreprocess_minCounts} \
-        --minGenes=${params.STpreprocess_minGenes} \
-        --minCells=${params.STpreprocess_minCells} \
-        --histplotQCmaxTotalCounts=${params.STpreprocess_histplotQCmaxTotalCounts} \
-        --histplotQCminGeneCounts=${params.STpreprocess_histplotQCminGeneCounts} \
-        --histplotQCbins=${params.STpreprocess_histplotQCbins} \
-        --nameDataPlain=${sample_id}.st_adata_plain.h5ad \
-        --nameDataNorm=${sample_id}.st_adata_norm.h5ad
+        --npFactorsOutputName ${st_factors} \
+        --rawAdata ${st_raw} \
+        --mitoFile ${mito_data} \
+        --pltFigSize ${params.STpreprocess_pltFigSize} \
+        --minCounts ${params.STpreprocess_minCounts} \
+        --minGenes ${params.STpreprocess_minGenes} \
+        --minCells ${params.STpreprocess_minCells} \
+        --histplotQCmaxTotalCounts ${params.STpreprocess_histplotQCmaxTotalCounts} \
+        --histplotQCminGeneCounts ${params.STpreprocess_histplotQCminGeneCounts} \
+        --histplotQCbins ${params.STpreprocess_histplotQCbins} \
+        --nameDataPlain ${sample_id}.st_adata_plain.h5ad \
+        --nameDataNorm ${sample_id}.st_adata_norm.h5ad \
+        --nameX ${sample_id}.st_adata_X.npz \
+        --nameVar ${sample_id}.st_adata_var.npz \
+        --nameObs ${sample_id}.st_adata_obs.npz
     """
 }
 
@@ -113,12 +119,14 @@ process ST_CALCULATE_SUM_FACTORS {
     path(mito_data)
 
     output:
-    tuple val(sample_id), path("*_norm.h5ad"), emit: sc_data_norm
-    tuple val(sample_id), path("*_plain.h5ad"), emit: sc_data_plain
-    path("*.png"), emit: figures
+    tuple val(sample_id), path("*_norm.h5ad"),        emit: sc_data_norm
+    tuple val(sample_id), path("*_plain.h5ad"),       emit: sc_data_plain
+    tuple val(sample_id), path("*.sc_adata_X.npz"),   emit: sc_adata_X
+    tuple val(sample_id), path("*.sc_adata_var.npz"), emit: sc_adata_var
+    tuple val(sample_id), path("*.sc_adata_obs.npz"), emit: sc_adata_obs
+    tuple val(sample_id), path("*.png"),              emit: figures
 
     script:
-
     """
     scPreprocess.py \
         --npFactorsOutputName=${sc_factors} \
@@ -132,7 +140,10 @@ process ST_CALCULATE_SUM_FACTORS {
         --histplotQCminGeneCounts=${params.SCpreprocess_histplotQCminGeneCounts} \
         --histplotQCbins=${params.SCpreprocess_histplotQCbins} \
         --nameDataPlain=${sample_id}.sc_adata_plain.h5ad \
-        --nameDataNorm=${sample_id}.sc_adata_norm.h5ad
+        --nameDataNorm=${sample_id}.sc_adata_norm.h5ad \
+        --nameX ${sample_id}.sc_adata_X.npz \
+        --nameVar ${sample_id}.sc_adata_var.npz \
+        --nameObs ${sample_id}.sc_adata_obs.npz
     """
 }
 
