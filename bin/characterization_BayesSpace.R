@@ -243,11 +243,11 @@ enhanced.plots <- purrr::map(markers, function(x) featurePlot(dsp.enhanced, x))
 spot.plots <- purrr::map(markers, function(x) featurePlot(dsp, x, color = NA))
 patchwork::wrap_plots(c(spot.plots, enhanced.plots), ncol = ncol)
 ggsave(paste0(args$bayesOriginalEnhancedFeatures),
-       dpi       = 600
-       scale     = 1.25
-       width     = 2.3*ncol
-       height    = 4.5
-       limitsize = FALSE
+       dpi       = 600,
+       scale     = 1.25,
+       width     = 2.3 * ncol,
+       height    = 4.5,
+       limitsize = FALSE,
        units     = "in")
 
 df_subspot_cluster_and_coord <- subset(as.data.frame(dsp.enhanced@colData),
