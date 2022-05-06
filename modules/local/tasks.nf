@@ -81,7 +81,7 @@ process ST_CALCULATE_SUM_FACTORS {
     output:
     tuple val(sample_id), path("*_norm.h5ad"),        emit: st_data_norm
     tuple val(sample_id), path("*_plain.h5ad"),       emit: st_data_plain
-    tuple val(sample_id), path("*.st_adata_X.npz"),   emit: st_adata_X
+    tuple val(sample_id), path("*.st_adata_x.npz"),   emit: st_adata_x
     tuple val(sample_id), path("*.st_adata_var.npz"), emit: st_adata_var
     tuple val(sample_id), path("*.st_adata_obs.npz"), emit: st_adata_obs
     tuple val(sample_id), path("*.png"),              emit: figures
@@ -101,7 +101,7 @@ process ST_CALCULATE_SUM_FACTORS {
         --histplotQCbins ${params.STpreprocess_histplotQCbins} \
         --nameDataPlain ${sample_id}.st_adata_plain.h5ad \
         --nameDataNorm ${sample_id}.st_adata_norm.h5ad \
-        --nameX ${sample_id}.st_adata_X.npz \
+        --nameX ${sample_id}.st_adata_x.npz \
         --nameVar ${sample_id}.st_adata_var.npz \
         --nameObs ${sample_id}.st_adata_obs.npz
     """
@@ -121,7 +121,7 @@ process ST_CALCULATE_SUM_FACTORS {
     output:
     tuple val(sample_id), path("*_norm.h5ad"),        emit: sc_data_norm
     tuple val(sample_id), path("*_plain.h5ad"),       emit: sc_data_plain
-    tuple val(sample_id), path("*.sc_adata_X.npz"),   emit: sc_adata_X
+    tuple val(sample_id), path("*.sc_adata_x.npz"),   emit: sc_adata_x
     tuple val(sample_id), path("*.sc_adata_var.npz"), emit: sc_adata_var
     tuple val(sample_id), path("*.sc_adata_obs.npz"), emit: sc_adata_obs
     tuple val(sample_id), path("*.png"),              emit: figures
@@ -141,7 +141,7 @@ process ST_CALCULATE_SUM_FACTORS {
         --histplotQCbins=${params.SCpreprocess_histplotQCbins} \
         --nameDataPlain=${sample_id}.sc_adata_plain.h5ad \
         --nameDataNorm=${sample_id}.sc_adata_norm.h5ad \
-        --nameX ${sample_id}.sc_adata_X.npz \
+        --nameX ${sample_id}.sc_adata_x.npz \
         --nameVar ${sample_id}.sc_adata_var.npz \
         --nameObs ${sample_id}.sc_adata_obs.npz
     """
@@ -238,7 +238,9 @@ process CLUSTERING_WITH_BAYESSPACE {
     label "r_process"
 
     input:
-    tuple val(sample_id), path(st_adata_x), path(st_adata_var), path(st_adata_obs)
+    tuple val(sample_id), path(st_adata_x)
+    tuple val(sample_id), path(st_adata_var)
+    tuple val(sample_id), path(st_adata_obs)
 
     output:
     tuple val(sample_id), path("bayes_*.csv"), emit: tables
@@ -249,7 +251,7 @@ process CLUSTERING_WITH_BAYESSPACE {
     characterization_BayesSpace.R \
         --nameX ${st_adata_x} \
         --nameVar ${st_adata_var} \
-        --nameObs ${st_adata_osb} \
+        --nameObs ${st_adata_obs} \
         --numberHVG $params.BayesSpace_numberHVG \
         --numberPCs $params.BayesSpace_numberPCs \
         --minClusters $params.BayesSpace_minClusters \

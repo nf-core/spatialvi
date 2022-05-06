@@ -13,28 +13,31 @@ include { CLUSTERING_WITH_BAYESSPACE      } from '../../modules/local/tasks'
 workflow ST_MISCELLANEOUS_TOOLS {
 
     take:
-    sample_ids
-    outdir
+    st_adata_x
+    st_adata_var
+    st_adata_obs
 
     main:
 
     //
     // Deconvolution with single cell data
     //
-    DECONVOLUTION_WITH_STDECONVOLVE( sample_ids, outdir )
+    // DECONVOLUTION_WITH_STDECONVOLVE( sample_ids, outdir )
     // DECONVOLUTION_WITH_SPOTLIGHT( sample_ids, outdir )
 
     //
     // Clustering etc. TODO: better description
     //
-    // CLUSTERING_WITH_BAYESSPACE( sample_ids, outdir )
+    CLUSTERING_WITH_BAYESSPACE(
+        st_adata_x,
+        st_adata_var,
+        st_adata_obs
+    )
     // ST_CLUSTERING ( st_data_norm.join(sc_data_norm) )
 
     emit:
-    DECONVOLUTION_WITH_STDECONVOLVE.out
-    // .join(DECONVOLUTION_WITH_STDECONVOLVE.out)
-    // .join(DECONVOLUTION_WITH_SPOTLIGHT.out)
-    // .join(CLUSTERING_WITH_BAYESSPACE.out)
+    bayes_tables        = CLUSTERING_WITH_BAYESSPACE.out.tables  // channel: [ val(sample), csv ]
+    bayes_figures       = CLUSTERING_WITH_BAYESSPACE.out.figures // channel: [ val(sample), png ]
     // st_adata_processed = ST_CLUSTERING.out.st_adata_processed // channel: [ val(sample), adata ]
     // sc_adata_processed = ST_CLUSTERING.out.sc_adata_processed // channel: [ val(sample), adata ]
     // processed_figures  = ST_CLUSTERING.out.figures            // channel: [ val(sample), png ]

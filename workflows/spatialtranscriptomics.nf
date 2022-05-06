@@ -156,7 +156,11 @@ workflow ST {
     // [Optional] Deconvolution with SC data
     //
     if (params.run_deconvolution) {
-        ST_MISCELLANEOUS_TOOLS( ST_LOAD_PREPROCESS_DATA.out,  outdir )
+        ST_MISCELLANEOUS_TOOLS(
+            ST_LOAD_PREPROCESS_DATA.out.st_adata_x,
+            ST_LOAD_PREPROCESS_DATA.out.st_adata_var,
+            ST_LOAD_PREPROCESS_DATA.out.st_adata_obs
+        )
     }
 
     //
