@@ -1,4 +1,4 @@
-#!/usr/local/bin/Rscript
+#!/usr/bin/env Rscript
 
 # Load packages
 library(argparse)
@@ -14,50 +14,160 @@ library(DESeq2)
 library(ggplot2)
 library(reticulate)
 
-
 # Parse command-line arguments
 parser <- ArgumentParser()
 
 args <- parser$add_argument_group("Agruments", "required and optional arguments")
 
-args$add_argument("--filePath", help="Path to npz counts file", metavar="dir", required=TRUE)
-args$add_argument("--outsPath", help="Path to data", metavar="dir", required=TRUE)
-
-args$add_argument("--nameX", default="st_adata_X.npz", help="Path to X", metavar="file", required=FALSE)
-args$add_argument("--nameVar", default="st_adata.var.csv", help="Path to features metadata", metavar="file", required=FALSE)
-args$add_argument("--nameObs", default="st_adata.obs.csv", help="Path to observation metadata", metavar="file", required=FALSE)
-
-args$add_argument("--SCnameX", default="sc_adata_X.npz", help="Path to X", metavar="file", required=FALSE)
-args$add_argument("--SCnameVar", default="sc_adata.var.csv", help="Path to features metadata", metavar="file", required=FALSE)
-args$add_argument("--SCnameObs", default="sc_adata.obs.csv", help="Path to observation metadata", metavar="file", required=FALSE)
-
-args$add_argument("--fileh5", default="raw_feature_bc_matrix.h5", help="File HDF5", metavar="file", required=FALSE) # "filtered_feature_bc_matrix.h5"
-
-args$add_argument("--outsSubDir", default="raw_feature_bc_matrix/", help="dir", metavar="file", required=FALSE)
-args$add_argument("--mtxGeneColumn", default=2, type="integer", help="columns index", metavar="col", required=FALSE)
-args$add_argument("--countsFactor", default=100, type="integer", help="factor", metavar="factor", required=FALSE)
-
-args$add_argument("--clusterResolution", default=0.3, type="double", help="factor", metavar="factor", required=FALSE)
-
-args$add_argument("--numberHVG", default=3000, type="integer", help="factor", metavar="factor", required=FALSE)
-args$add_argument("--numberCellsPerCelltype", default=100, type="integer", help="factor", metavar="factor", required=FALSE)
-args$add_argument("--NMFsaveFile", default="SPOTlight_ls_mk_normed.rds", help="File to save NMF RDS", metavar="file", required=FALSE)
-
-args$add_argument("--SPOTlightScatterpiesName", default="SPOTlight_st_scatterpies.png", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightScatterpiesSize", default=0.35, type="double", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightSCclustersName", default="SPOTlight_sc_clusters.png", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightTopicsName", default="SPOTlight_st_topic_profiles.png", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightFeaturesName", default="SPOTlight_st_prop.png", help="dir", metavar="file", required=FALSE)
-args$add_argument("--imagePath", default="spatial/tissue_lowres_image.png", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightCorrName", default="SPOTlight_st_prop_corr.png", help="dir", metavar="file", required=FALSE)
-
-args$add_argument("--SPOTlightPropNorm", default="SPOTlight_prop_norm.csv", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightBetaNorm", default="SPOTlight_beta_norm.csv", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightSCclusterIds", default="SPOTlight_sc_cluster_ids.csv", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightSCpca", default="SPOTlight_sc_pca.csv", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightSCloadings", default="SPOTlight_sc_pca_feature_loadings.csv", help="dir", metavar="file", required=FALSE)
-args$add_argument("--SPOTlightSCclusterMarkers", default="SPOTlight_sc_cluster_markers.csv", help="dir", metavar="file", required=FALSE)
-
+args$add_argument("--filePath",
+                  help="Path to npz counts file",
+                  metavar="dir",
+                  required=TRUE)
+args$add_argument("--outsPath",
+                  help="Path to data",
+                  metavar="dir",
+                  required=TRUE)
+args$add_argument("--nameX",
+                  default="st_adata_X.npz",
+                  help="Path to X",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--nameVar",
+                  default="st_adata.var.csv",
+                  help="Path to features metadata",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--nameObs",
+                  default="st_adata.obs.csv",
+                  help="Path to observation metadata",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SCnameX",
+                  default="sc_adata_X.npz",
+                  help="Path to X",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SCnameVar",
+                  default="sc_adata.var.csv",
+                  help="Path to features metadata",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SCnameObs",
+                  default="sc_adata.obs.csv",
+                  help="Path to observation metadata",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--fileh5",
+                  default="raw_feature_bc_matrix.h5",
+                  help="File HDF5",
+                  metavar="file",
+                  required=FALSE) # "filtered_feature_bc_matrix.h5"
+args$add_argument("--outsSubDir",
+                  default="raw_feature_bc_matrix/",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--mtxGeneColumn",
+                  default=2,
+                  type="integer",
+                  help="columns index",
+                  metavar="col",
+                  required=FALSE)
+args$add_argument("--countsFactor",
+                  default=100,
+                  type="integer",
+                  help="factor",
+                  metavar="factor",
+                  required=FALSE)
+args$add_argument("--clusterResolution",
+                  default=0.3,
+                  type="double",
+                  help="factor",
+                  metavar="factor",
+                  required=FALSE)
+args$add_argument("--numberHVG",
+                  default=3000,
+                  type="integer",
+                  help="factor",
+                  metavar="factor",
+                  required=FALSE)
+args$add_argument("--numberCellsPerCelltype",
+                  default=100,
+                  type="integer",
+                  help="factor",
+                  metavar="factor",
+                  required=FALSE)
+args$add_argument("--NMFsaveFile",
+                  default="SPOTlight_ls_mk_normed.rds",
+                  help="File to save NMF RDS",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightScatterpiesName",
+                  default="SPOTlight_st_scatterpies.png",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightScatterpiesSize",
+                  default=0.35,
+                  type="double",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightSCclustersName",
+                  default="SPOTlight_sc_clusters.png",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightTopicsName",
+                  default="SPOTlight_st_topic_profiles.png",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightFeaturesName",
+                  default="SPOTlight_st_prop.png",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--imagePath",
+                  default="spatial/tissue_lowres_image.png",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightCorrName",
+                  default="SPOTlight_st_prop_corr.png",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightPropNorm",
+                  default="SPOTlight_prop_norm.csv",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightBetaNorm",
+                  default="SPOTlight_beta_norm.csv",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightSCclusterIds",
+                  default="SPOTlight_sc_cluster_ids.csv",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightSCpca",
+                  default="SPOTlight_sc_pca.csv",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightSCloadings",
+                  default="SPOTlight_sc_pca_feature_loadings.csv",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
+args$add_argument("--SPOTlightSCclusterMarkers",
+                  default="SPOTlight_sc_cluster_markers.csv",
+                  help="dir",
+                  metavar="file",
+                  required=FALSE)
 args <- parser$parse_args()
 
 
