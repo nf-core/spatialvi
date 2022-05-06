@@ -161,7 +161,6 @@ args$add_argument("--STdeconvolveSCclusterMarkers",
                   required = FALSE)
 args <- parser$parse_args()
 
-
 # Main script
 set.seed(123)
 np <- import("numpy")

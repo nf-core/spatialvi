@@ -13,7 +13,7 @@ parser <- ArgumentParser()
 args <- parser$add_argument_group("Arguments",
                                   "required and optional arguments")
 args$add_argument("--nameX",
-                  default  ="st_adata_X.npz",
+                  default  = "st_adata_X.npz",
                   help     = "Path to X",
                   metavar  = "file",
                   required = FALSE)
@@ -110,21 +110,21 @@ args <- parser$parse_args()
 # the priors. Clusters are initialized using a non-spatial clustering method
 # (mclust). Iteratively and sequentially, each of the three parameters is
 # updated via MCMC (Gibbs sampling). The cluster membership is updated via MCMC
-# (Metropolis–Hastings algorithm) by taking into account both the likelihood and
-# spatial prior information.
-
+# (Metropolis–Hastings algorithm) by taking into account both the likelihood
+# and spatial prior information.
+#
 # #### Enhancement of clustering resolution:
 # The procedure reassigns the total expression (in the PC space) within a spot
 # to its constituent subspots by leveraging spatial information. The latent
 # expression of each subspot is initialized to be expression of the original
 # spot, and updated via MCMC (the Metropolis–Hastings algorithm). The cluster
 # membership is then determined similarly to the spatial clustering above.
-
+#
 # #### Mapping gene expression:
 # A regression model is trained for each gene of interest, and used to predict
 # gene expression from the high-resolution PCs estimated using
 # enhanced-resolution clustering.
-
+#
 # #### Tuning number of clusters:
 # Elbow of negative pseudo-log-likelihood curve, that estimates how well the
 # model fit the data for each number of clusters.
