@@ -9,77 +9,75 @@ import pandas as pd
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Load scRNA-seq data from MTX.')
-parser.add_argument('--outsPath',
-                    metavar='outspath',
+parser.add_argument('--SRCountDir',
+                    metavar='SRCountDir',
                     type=str,
                     default=None,
-                    help='Path to Space Range outs directory, etc.')
-parser.add_argument('--saveFile',
-                    metavar='savefile',
+                    help='Path to Space Range output directory, etc.')
+parser.add_argument('--outAnnData',
+                    metavar='outAnnData',
                     type=str,
                     default=None,
                     help='Path to a file to save h5ad data into.')
-parser.add_argument('--npCountsOutputName',
-                    metavar='npzoutput',
+parser.add_argument('--outSCCounts',
+                    metavar='outSCCounts',
                     type=str,
                     default=None,
                     help='Name of the NPZ file.')
 parser.add_argument('--minCounts',
-                    metavar='cutoff',
+                    metavar='minCounts',
                     type=int,
                     default=1,
                     help='Min counts per spot.')
 parser.add_argument('--minGenes',
-                    metavar='cutoff',
+                    metavar='minGenes',
                     type=int,
                     default=1,
                     help='Min genes per spot.')
 parser.add_argument('--minCells',
-                    metavar='cutoff',
+                    metavar='minCells',
                     type=int,
                     default=1,
                     help='Min cells per gene.')
 args = parser.parse_args()
 
-# Main script
-countsFile = ''
-files = os.listdir(args.outsPath)
+matrixFilename = os.path.join(
+    args.SRCountDir,
+    'raw_feature_bc_matrix',
+    'matrix.mtx.gz'
+)
+featuresFiles = os.path.join(
+    args.SRCountDir,
+    'raw_feature_bc_matrix',
+    'features.tsv.gz'
+)
+barcodesFilename = os.path.join(
+    args.SRCountDir,
+    'raw_feature_bc_matrix',
+    'barcodes.tsv.gz'
+ )
 
-for fname in files:
-    if 'matrix.mtx' in fname:
-        countsFile = fname
-        break
-
-if countsFile == '':
-    for fname in files:
-        if '.h5ad' in fname:
-            countsFile = fname
-            break
-
-if '.h5ad' in countsFile:
-    sc_adata = sc.read_h5ad(args.outsPath + '/' + countsFile)
+sc_adata = sc.read_mtx(matrixFilename).T
+genes = pd.read_csv(featuresFiles,
+                    header=None, sep='\t')
+print(genes)
+if len(genes.columns) == 1:
+    gs = genes[0]
 else:
-    sc_adata = sc.read_mtx(args.outsPath + 'matrix.mtx.gz').T
-    genes = pd.read_csv(args.outsPath + 'features.tsv.gz',
-                        header=None, sep='\t')
-    print(genes)
-    if len(genes.columns) == 1:
-        gs = genes[0]
-    else:
-        gs = genes[1]
-    sc_adata.var_names = gs
-    sc_adata.var['gene_symbols'] = gs.values
-    sc_adata.obs_names = pd.read_csv(args.outsPath + 'barcodes.tsv.gz',
-                                     header=None)[0]
-    print(sc_adata.var)
+    gs = genes[1]
+sc_adata.var_names = gs
+sc_adata.var['gene_symbols'] = gs.values
+sc_adata.obs_names = pd.read_csv(barcodesFilename,
+                                    header=None)[0]
+print(sc_adata.var)
 
 sc_adata.var_names_make_unique()
 sc.pp.filter_cells(sc_adata, min_counts=args.minCounts)
 sc.pp.filter_genes(sc_adata, min_cells=args.minCells)
 
 # Save raw anndata to file
-sc_adata.write(args.saveFile)
+sc_adata.write(args.outAnnData)
 
 # Save counts anndata to file
 X = np.array(sc_adata.X.todense()).T
-np.savez_compressed(args.npCountsOutputName, X)
+np.savez_compressed(args.outSCCounts, X)

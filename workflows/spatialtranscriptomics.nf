@@ -42,6 +42,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 
+include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { ST_LOAD_PREPROCESS_DATA  } from '../subworkflows/local/stLoadPreprocessData'
 include { ST_MISCELLANEOUS_TOOLS   } from '../subworkflows/local/stMiscellaneousTools'
 include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessing'
@@ -66,33 +67,26 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // Info required for completion email and summary
 def multiqc_report = []
 
-// TODO: add check/schema for samplesheet
-//
-// Channel for input spatial transcriptomics data
-//
-ch_spatial_data = Channel
-    .fromPath ( params.input, checkIfExists: true)
-    .splitCsv ( header: true )
-    .map      { row -> tuple(
-                row.sample,
-                row.tissue_positions_list,
-                row.tissue_hires_image,
-                row.scale_factors,
-                row.barcodes,
-                row.features,
-                row.matrix
-                )
-    }
-
 //
 // Spatial transcriptomics workflow
 //
 workflow ST {
 
+    ch_versions = Channel.empty()
+    
+    //
+    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    //
+    INPUT_CHECK (
+        ch_input
+    )
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+
     //
     // Loading and pre-processing of ST and SC data
     //
-    ST_LOAD_PREPROCESS_DATA( ch_spatial_data )
+    ST_LOAD_PREPROCESS_DATA( INPUT_CHECK.out.reads )
 
     //
     // Deconvolution with SC data (optional; do not run by default)
