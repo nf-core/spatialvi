@@ -14,8 +14,7 @@ include { SC_PREPROCESS             } from '../../modules/local/tasks'
 workflow ST_LOAD_PREPROCESS_DATA {
 
     take:
-    sample_ids
-    outdir
+    ch_spatial_data
 
     main:
 
@@ -28,7 +27,7 @@ workflow ST_LOAD_PREPROCESS_DATA {
     //
     // Read ST and SC data and save as `anndata`
     //
-    READ_ST_AND_SC_SCANPY ( sample_ids, outdir )
+    READ_ST_AND_SC_SCANPY ( ch_spatial_data )
 
     //
     // Calculate sum factors used for normalisation in pre-processing

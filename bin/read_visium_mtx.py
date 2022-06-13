@@ -1,13 +1,20 @@
+#!/usr/bin/env python
+
+# Load packages
+import os
+import argparse
+import scanpy as sc
+
 from scanpy import read_10x_mtx
 from pathlib import Path
 from typing import Union, Dict, Optional
 import json
-import numpy as np
 import pandas as pd
 from matplotlib.image import imread
 import anndata
 from anndata import AnnData, read_csv
 
+# Function to read MTX
 def read_visium_mtx(
     path: Union[str, Path],
     genome: Optional[str] = None,

@@ -42,6 +42,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 
+include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { ST_LOAD_PREPROCESS_DATA  } from '../subworkflows/local/stLoadPreprocessData'
 include { ST_MISCELLANEOUS_TOOLS   } from '../subworkflows/local/stMiscellaneousTools'
 include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessing'
@@ -66,94 +67,29 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // Info required for completion email and summary
 def multiqc_report = []
 
-outdir = "${launchDir}/${params.outdir}"
-
-Channel
-.from(file(params.input))
-.splitCsv(header:true, sep:',')
-.map{ prep_input_csv_files(it) }
-.set{sample_ids}
-
-import org.apache.commons.csv.CSVPrinter
-import org.apache.commons.csv.CSVFormat
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
-def loadFromURL(String sample_id, String data_dir, String pref_dir, List files) {
-    for(cfile: files) {
-        def lfile = cfile.split('/')
-        if (lfile.size()>1) {
-            subdir = String.join('/', lfile[0..lfile.size()-2]) + '/'
-        } else {
-            subdir = ''
-        }
-
-        filename = lfile[lfile.size()-1]
-        url = data_dir + subdir + filename
-        savedir = outdir + '/' + 'dataset-' + sample_id + '/' + pref_dir + '/' + subdir
-
-        File filedir = new File(savedir)
-        filedir.mkdirs()
-
-        URL urlobj = new URL(url)
-        File fileload = new File(savedir + filename)
-        if (!fileload.exists()) {
-            println 'Loading: ' + url
-            fileload.bytes = urlobj.bytes
-        }
-    }
-
-    return outdir + '/' + 'dataset-' + sample_id + '/' + pref_dir + '/'
-}
-
-def prep_input_csv_files(LinkedHashMap row) {
-
-    files_st = ['spatial/detected_tissue_image.jpg',
-                'spatial/scalefactors_json.json',
-                'spatial/tissue_hires_image.png',
-                'spatial/tissue_positions_list.csv',
-                'spatial/aligned_fiducials.jpg',
-                'spatial/tissue_lowres_image.png',
-                'raw_feature_bc_matrix/features.tsv.gz',
-                'raw_feature_bc_matrix/barcodes.tsv.gz',
-                'raw_feature_bc_matrix/matrix.mtx.gz']
-
-    files_sc = ['features.tsv.gz',
-                'barcodes.tsv.gz',
-                'matrix.mtx.gz']
-
-    if (row.st_data_dir[0..3]=='http') {
-        row.st_data_dir = loadFromURL(row.sample_id, row.st_data_dir, 'ST', files_st)
-    }
-
-    if (row.sc_data_dir[0..3]=='http') {
-        row.sc_data_dir = loadFromURL(row.sample_id, row.sc_data_dir, 'SC', files_sc)
-    }
-
-    def fileName = String.format("%s/sample_%s", outdir, row.sample_id)
-    def FILE_HEADER = row.keySet() as String[];
-
-    new File(fileName + ".csv").withWriter { fileWriter ->
-        def csvFilePrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT)
-        csvFilePrinter.printRecord(FILE_HEADER)
-        csvFilePrinter.printRecord(row.values())
-    }
-
-    File file = new File(fileName + ".json")
-    file.write(JsonOutput.toJson(row))
-
-    return row.sample_id
-}
-
+//
+// Spatial transcriptomics workflow
+//
 workflow ST {
+
+    ch_versions = Channel.empty()
+    
+    //
+    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    //
+    INPUT_CHECK (
+        ch_input
+    )
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
 
     //
     // Loading and pre-processing of ST and SC data
     //
-    ST_LOAD_PREPROCESS_DATA( sample_ids, outdir )
+    ST_LOAD_PREPROCESS_DATA( INPUT_CHECK.out.reads )
 
     //
-    // [Optional] Deconvolution with SC data
+    // Deconvolution with SC data (optional; do not run by default)
     //
     if (params.run_deconvolution) {
         ST_MISCELLANEOUS_TOOLS(
