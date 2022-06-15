@@ -1,5 +1,5 @@
-
 process SAMPLESHEET_CHECK {
+
     tag "$samplesheet"
 
     conda (params.enable_conda ? "conda-forge::python=3.8.3" : null)

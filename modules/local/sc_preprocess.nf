@@ -4,7 +4,9 @@
 process SC_PREPROCESS {
 
     tag "${sample_id}"
-    label "python_process"
+    label "process_low"
+
+    // TODO: Add Conda/container directive
 
     input:
     tuple val(sample_id), path(sc_raw), path(sc_factors)

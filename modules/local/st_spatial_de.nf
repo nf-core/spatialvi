@@ -4,7 +4,9 @@
  process ST_SPATIAL_DE {
 
     tag "${sample_id}"
-    label "python_process"
+    label "process_low"
+
+    // TODO: Add Conda/container directive
 
     input:
     tuple val(sample_id), path(st_data_norm)

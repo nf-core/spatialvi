@@ -14,6 +14,8 @@ workflow ST_LOAD_PREPROCESS_DATA {
 
     main:
 
+    ch_versions = Channel.empty()
+
     // TODO: Add file manifest or other non-hard-coded path
     //
     // Channel for mitochondrial data
@@ -27,6 +29,7 @@ workflow ST_LOAD_PREPROCESS_DATA {
     READ_ST_AND_SC_DATA (
         ch_spatial_data
     )
+    ch_versions = ch_versions.mix(READ_ST_AND_SC_DATA.out.versions)
 
     // TODO: Incorporate this step into previous one or skip it?
     //
@@ -69,4 +72,6 @@ workflow ST_LOAD_PREPROCESS_DATA {
     sc_adata_x    = SC_PREPROCESS.out.sc_adata_x    // channel: [ val(sample), npz ]
     sc_adata_var  = SC_PREPROCESS.out.sc_adata_var  // channel: [ val(sample), npz ]
     sc_adata_obs  = SC_PREPROCESS.out.sc_adata_obs  // channel: [ val(sample), npz ]
+
+    versions      = ch_versions                     // channel: [ version.yml ]
 }

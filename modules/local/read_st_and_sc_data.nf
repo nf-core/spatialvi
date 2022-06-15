@@ -4,7 +4,12 @@
 process READ_ST_AND_SC_DATA {
 
     tag "${sample_id}"
-    label "python_process_low"
+    label "process_low"
+
+    conda (params.enable_conda ? "conda-forge::scanpy=1.7.2" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/scanpy:1.7.2--pyhdfd78af_0' :
+        'quay.io/biocontainers/scanpy:1.7.2--pyhdfd78af_0' }"
 
     input:
     tuple val  (sample_id),
@@ -21,6 +26,7 @@ process READ_ST_AND_SC_DATA {
     tuple val(sample_id), path("sc_adata_raw.h5ad"), emit: sc_raw
     tuple val(sample_id), path("st_counts.npz")    , emit: st_counts
     tuple val(sample_id), path("sc_counts.npz")    , emit: sc_counts
+    path("versions.yml")                           , emit: versions
 
     script:
     """
@@ -33,5 +39,10 @@ process READ_ST_AND_SC_DATA {
         --SRCountDir  ./SRCount \
         --outAnnData  sc_adata_raw.h5ad \
         --outSCCounts sc_counts.npz
+
+     cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
+    END_VERSIONS
     """
 }

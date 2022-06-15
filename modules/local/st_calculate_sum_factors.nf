@@ -4,7 +4,9 @@
 process ST_CALCULATE_SUM_FACTORS {
 
     tag "${sample_id}"
-    label "r_process"
+    label "process_low"
+
+    // TODO: Add Conda/container directive
 
     input:
     tuple val(sample_id), path(st_counts)
