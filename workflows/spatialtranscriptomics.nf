@@ -41,11 +41,10 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
-include { ST_LOAD_PREPROCESS_DATA  } from '../subworkflows/local/stLoadPreprocessData'
-include { ST_MISCELLANEOUS_TOOLS   } from '../subworkflows/local/stMiscellaneousTools'
-include { ST_POSTPROCESSING        } from '../subworkflows/local/stPostprocessing'
+include { INPUT_CHECK             } from '../subworkflows/local/input_check'
+include { ST_LOAD_PREPROCESS_DATA } from '../subworkflows/local/stLoadPreprocessData'
+include { ST_MISCELLANEOUS_TOOLS  } from '../subworkflows/local/stMiscellaneousTools'
+include { ST_POSTPROCESSING       } from '../subworkflows/local/stPostprocessing'
 
 /*
 ================================================================================
@@ -73,7 +72,7 @@ def multiqc_report = []
 workflow ST {
 
     ch_versions = Channel.empty()
-    
+
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
@@ -82,11 +81,12 @@ workflow ST {
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
-
     //
     // Loading and pre-processing of ST and SC data
     //
-    ST_LOAD_PREPROCESS_DATA( INPUT_CHECK.out.reads )
+    ST_LOAD_PREPROCESS_DATA (
+        INPUT_CHECK.out.reads
+    )
 
     //
     // Deconvolution with SC data (optional; do not run by default)
@@ -102,8 +102,9 @@ workflow ST {
     //
     // Post-processing and reporting
     //
-    ST_POSTPROCESSING( ST_LOAD_PREPROCESS_DATA.out.st_data_norm )
-
+    ST_POSTPROCESSING (
+        ST_LOAD_PREPROCESS_DATA.out.st_data_norm
+    )
 }
 
 /*

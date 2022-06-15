@@ -1,5 +1,3 @@
-import groovy.json.JsonSlurper
-
 //
 // Read ST 10x visium and SC 10x data with Scanpy and save to `anndata` file
 //
@@ -20,26 +18,22 @@ process READ_ST_AND_SC_SCANPY {
     output:
     tuple val(sample_id), path("st_adata_raw.h5ad"), emit: st_raw
     tuple val(sample_id), path("sc_adata_raw.h5ad"), emit: sc_raw
-    tuple val(sample_id), path("st_counts.npz"),     emit: st_counts
-    tuple val(sample_id), path("sc_counts.npz"),     emit: sc_counts
+    tuple val(sample_id), path("st_counts.npz")    , emit: st_counts
+    tuple val(sample_id), path("sc_counts.npz")    , emit: sc_counts
 
     script:
     """
-    cat $tissue_position_list
-    echo foo task path: \$PWD
-
     script_read_st_data.py \
-                        --SRCountDir  ./SRCount \
-                        --outAnnData  st_adata_raw.h5ad \
-                        --outSTCounts st_counts.npz
+        --SRCountDir  ./SRCount \
+        --outAnnData  st_adata_raw.h5ad \
+        --outSTCounts st_counts.npz
 
     script_read_sc_data.py \
-                        --SRCountDir  ./SRCount \
-                        --outAnnData  sc_adata_raw.h5ad \
-                        --outSCCounts sc_counts.npz
+        --SRCountDir  ./SRCount \
+        --outAnnData  sc_adata_raw.h5ad \
+        --outSCCounts sc_counts.npz
     """
 }
-
 
 //
 // Calculate ST and SC sum factors for use in downstream normalisation

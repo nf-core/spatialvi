@@ -1,15 +1,11 @@
-nextflow.enable.dsl=2
+//
+// Spatial differential expression and reporting
+//
 
-//
-// Include requires tasks
-//
 include { ST_SPATIAL_DE } from '../../modules/local/tasks'
 include { ST_CLUSTERING } from '../../modules/local/tasks'
 include { ALL_REPORT    } from '../../modules/local/tasks'
 
-//
-// Run postprocessing tools
-//
 workflow ST_POSTPROCESSING {
 
     take:
@@ -19,8 +15,11 @@ workflow ST_POSTPROCESSING {
     //
     // Spatial differential expression
     //
-    ST_SPATIAL_DE ( st_data_norm )
+    ST_SPATIAL_DE (
+        st_data_norm
+    )
 
+    // TODO: Add reporting
     //
     // Reporting and final outputs
     //
