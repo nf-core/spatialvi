@@ -2,9 +2,9 @@
 // Spatial differential expression and reporting
 //
 
-include { ST_SPATIAL_DE } from '../../modules/local/tasks'
-include { ST_CLUSTERING } from '../../modules/local/tasks'
-include { ALL_REPORT    } from '../../modules/local/tasks'
+include { ST_SPATIAL_DE } from '../../modules/local/st_spatial_de'
+include { ST_CLUSTERING } from '../../modules/local/st_clustering'
+include { REPORT_ALL    } from '../../modules/local/report_all'
 
 workflow ST_POSTPROCESSING {
 
@@ -23,7 +23,7 @@ workflow ST_POSTPROCESSING {
     //
     // Reporting and final outputs
     //
-    // ALL_REPORT     ( ST_CLUSTERING.out,  outdir)
+    // REPORT_ALL     ( ST_CLUSTERING.out,  outdir)
 
     emit:
     spatial_degs    = ST_SPATIAL_DE.out.degs    // channel: [ val(sample), csv ]

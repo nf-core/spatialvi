@@ -2,10 +2,10 @@
 // Pre-processing of spatial and single-cell data
 //
 
-include { READ_ST_AND_SC_SCANPY     } from '../../modules/local/tasks'
-include { ST_CALCULATE_SUM_FACTORS  } from '../../modules/local/tasks'
-include { ST_PREPROCESS             } from '../../modules/local/tasks'
-include { SC_PREPROCESS             } from '../../modules/local/tasks'
+include { READ_ST_AND_SC_DATA      } from '../../modules/local/read_st_and_sc_data'
+include { ST_CALCULATE_SUM_FACTORS } from '../../modules/local/st_calculate_sum_factors'
+include { ST_PREPROCESS            } from '../../modules/local/st_preprocess'
+include { SC_PREPROCESS            } from '../../modules/local/sc_preprocess'
 
 workflow ST_LOAD_PREPROCESS_DATA {
 
@@ -24,7 +24,7 @@ workflow ST_LOAD_PREPROCESS_DATA {
     //
     // Read ST and SC data and save as `anndata`
     //
-    READ_ST_AND_SC_SCANPY (
+    READ_ST_AND_SC_DATA (
         ch_spatial_data
     )
 
@@ -33,14 +33,14 @@ workflow ST_LOAD_PREPROCESS_DATA {
     // Calculate sum factors used for normalisation in pre-processing
     //
     ST_CALCULATE_SUM_FACTORS (
-        READ_ST_AND_SC_SCANPY.out.st_counts,
-        READ_ST_AND_SC_SCANPY.out.sc_counts
+        READ_ST_AND_SC_DATA.out.st_counts,
+        READ_ST_AND_SC_DATA.out.sc_counts
     )
 
     //
     // Spatial pre-processing
     //
-    ch_st_raw_and_factors = READ_ST_AND_SC_SCANPY.out.st_raw
+    ch_st_raw_and_factors = READ_ST_AND_SC_DATA.out.st_raw
         .join( ST_CALCULATE_SUM_FACTORS.out.st_factors )
     ST_PREPROCESS (
         ch_st_raw_and_factors,
@@ -50,7 +50,7 @@ workflow ST_LOAD_PREPROCESS_DATA {
     //
     // Single cell pre-processing
     //
-    ch_sc_raw_and_factors = READ_ST_AND_SC_SCANPY.out.sc_raw
+    ch_sc_raw_and_factors = READ_ST_AND_SC_DATA.out.sc_raw
         .join( ST_CALCULATE_SUM_FACTORS.out.sc_factors )
     SC_PREPROCESS (
         ch_sc_raw_and_factors,
@@ -63,6 +63,7 @@ workflow ST_LOAD_PREPROCESS_DATA {
     st_adata_x    = ST_PREPROCESS.out.st_adata_x    // channel: [ val(sample), npz ]
     st_adata_var  = ST_PREPROCESS.out.st_adata_var  // channel: [ val(sample), npz ]
     st_adata_obs  = ST_PREPROCESS.out.st_adata_obs  // channel: [ val(sample), npz ]
+
     sc_data_norm  = SC_PREPROCESS.out.sc_data_norm  // channel: [ val(sample), h5ad ]
     sc_data_plain = SC_PREPROCESS.out.sc_data_plain // channel: [ val(sample), h5ad ]
     sc_adata_x    = SC_PREPROCESS.out.sc_adata_x    // channel: [ val(sample), npz ]
