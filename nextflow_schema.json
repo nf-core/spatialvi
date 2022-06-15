@@ -11,11 +11,6 @@
             "description": "Define options for each tool in the pipeline",
             "default": "",
             "properties": {
-                "run_deconvolution": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Run deconvolution analyses"
-                },
                 "STload_minCounts": {
                     "type": "integer",
                     "default": 1,

@@ -142,120 +142,6 @@ process ST_CALCULATE_SUM_FACTORS {
     """
 }
 
-
-
-
-
-
-
-
-
-
-//
-// Spatial deconvolution with STdeconvolve
-//
-process DECONVOLUTION_WITH_STDECONVOLVE {
-
-    label "r_process"
-
-    input:
-    val sample_state
-    val outdir
-
-    output:
-    tuple env(sample_id), env(outpath)
-
-    script:
-    """
-    characterization_STdeconvolve.R \
-        --outsPath=${sample_info.st_data_dir} \
-        --mtxGeneColumn=$params.STdeconvolve_mtxGeneColumn \
-        --countsFactor=$params.STdeconvolve_countsFactor \
-        --corpusRemoveAbove=$params.STdeconvolve_corpusRemoveAbove \
-        --corpusRemoveBelow=$params.STdeconvolve_corpusRemoveBelow \
-        --LDAminTopics=$params.STdeconvolve_LDAminTopics \
-        --LDAmaxTopics=$params.STdeconvolve_LDAmaxTopics \
-        --STdeconvolveScatterpiesSize=$params.STdeconvolve_ScatterpiesSize \
-        --STdeconvolveFeaturesSizeFactor=$params.STdeconvolve_FeaturesSizeFactor
-    """
-}
-
-
-/*
- * ST data deconvolution with SPOTlight
- */
- process DECONVOLUTION_WITH_SPOTLIGHT {
-
-    label "r_process"
-
-    input:
-    val sample_state
-    val outdir
-
-    output:
-    tuple env(sample_id), env(outpath)
-
-    script:
-    def sample_id_gr = sample_state[0]
-    def fileName = String.format("%s/sample_%s.json", outdir, sample_id_gr)
-    sample_info = new JsonSlurper().parse(new File(fileName))
-
-    """
-    #!/bin/bash
-
-    sample_id=${sample_id_gr}
-
-    dname=${outdir}/\${sample_id}
-
-    Rscript $projectDir/bin/characterization_SPOTlight.R --filePath=\${dname}/ --outsPath=${sample_info.st_data_dir} --mtxGeneColumn=$params.SPOTlight_mtxGeneColumn --countsFactor=$params.SPOTlight_countsFactor --clusterResolution=$params.SPOTlight_clusterResolution --numberHVG=$params.SPOTlight_numberHVG --numberCellsPerCelltype=$params.SPOTlight_numberCellsPerCelltype --SPOTlightScatterpiesSize=$params.SPOTlight_ScatterpiesSize
-
-    if [[ -s \${dname}/SPOTlight_prop_norm.csv ]] && \
-      [[ -s \${dname}/SPOTlight_beta_norm.csv ]] && \
-      [[ -s \${dname}/SPOTlight_sc_cluster_ids.csv ]] && \
-      [[ -s \${dname}/SPOTlight_sc_pca.csv ]] && \
-      [[ -s \${dname}/SPOTlight_sc_pca_feature_loadings.csv ]] && \
-      [[ -s \${dname}/SPOTlight_sc_cluster_markers.csv ]]
-    then
-      echo "completed" > "output.out" && outpath=`pwd`/output.out
-    else
-      echo ERROR: Output files missing. >&2
-      exit 2
-    fi
-    """
-}
-
-
-//
-// Resolution enhancement and spatial clustering with BayesSpace
-//
-process CLUSTERING_WITH_BAYESSPACE {
-
-    label "r_process"
-
-    input:
-    tuple val(sample_id), path(st_adata_x)
-    tuple val(sample_id), path(st_adata_var)
-    tuple val(sample_id), path(st_adata_obs)
-
-    output:
-    tuple val(sample_id), path("bayes_*.csv"), emit: tables
-    tuple val(sample_id), path("*.png"), emit: figures
-
-    script:
-    """
-    characterization_BayesSpace.R \
-        --nameX ${st_adata_x} \
-        --nameVar ${st_adata_var} \
-        --nameObs ${st_adata_obs} \
-        --numberHVG $params.BayesSpace_numberHVG \
-        --numberPCs $params.BayesSpace_numberPCs \
-        --minClusters $params.BayesSpace_minClusters \
-        --maxClusters $params.BayesSpace_maxClusters \
-        --optimalQ $params.BayesSpace_optimalQ \
-        --STplatform $params.BayesSpace_STplatform
-    """
-}
-
 //
 // Clustering etc. TODO: better description
 //
@@ -282,18 +168,6 @@ process ST_CLUSTERING {
     """
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 //
 // Spatial differential expression
 //
@@ -318,10 +192,9 @@ process ST_CLUSTERING {
     """
 }
 
-
-/*
- * Report
- */
+//
+// Report
+//
  process ALL_REPORT {
 
     label "python_process_low"

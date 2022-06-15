@@ -43,7 +43,6 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 include { INPUT_CHECK             } from '../subworkflows/local/input_check'
 include { ST_LOAD_PREPROCESS_DATA } from '../subworkflows/local/stLoadPreprocessData'
-include { ST_MISCELLANEOUS_TOOLS  } from '../subworkflows/local/stMiscellaneousTools'
 include { ST_POSTPROCESSING       } from '../subworkflows/local/stPostprocessing'
 
 /*
@@ -87,17 +86,6 @@ workflow ST {
     ST_LOAD_PREPROCESS_DATA (
         INPUT_CHECK.out.reads
     )
-
-    //
-    // Deconvolution with SC data (optional; do not run by default)
-    //
-    if (params.run_deconvolution) {
-        ST_MISCELLANEOUS_TOOLS(
-            ST_LOAD_PREPROCESS_DATA.out.st_adata_x,
-            ST_LOAD_PREPROCESS_DATA.out.st_adata_var,
-            ST_LOAD_PREPROCESS_DATA.out.st_adata_obs
-        )
-    }
 
     //
     // Post-processing and reporting
