@@ -3,6 +3,7 @@
 //
  process ST_SPATIAL_DE {
 
+    tag "${sample_id}"
     label "python_process"
 
     input:

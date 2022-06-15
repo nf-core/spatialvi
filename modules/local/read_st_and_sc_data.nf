@@ -3,6 +3,7 @@
 //
 process READ_ST_AND_SC_DATA {
 
+    tag "${sample_id}"
     label "python_process_low"
 
     input:

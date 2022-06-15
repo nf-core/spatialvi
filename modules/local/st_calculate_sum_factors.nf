@@ -3,6 +3,7 @@
 //
 process ST_CALCULATE_SUM_FACTORS {
 
+    tag "${sample_id}"
     label "r_process"
 
     input:

@@ -3,6 +3,7 @@
 //
 process SC_PREPROCESS {
 
+    tag "${sample_id}"
     label "python_process"
 
     input:
