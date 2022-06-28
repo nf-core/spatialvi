@@ -25,7 +25,7 @@ workflow INPUT_CHECK {
 // scale_factors, barcodes, features, matrix ] ]
 def create_visium_channels(LinkedHashMap row) {
     def meta = [:]
-    meta.id           = row.sample
+    meta.id = row.sample
 
     def array = []
     if (!file(row.tissue_positions_list).exists()) {
