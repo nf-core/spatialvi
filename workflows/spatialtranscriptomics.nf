@@ -42,6 +42,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK             } from '../subworkflows/local/input_check'
+include { SPACERANGER             } from '../subworkflows/local/spaceranger'
 include { ST_LOAD_PREPROCESS_DATA } from '../subworkflows/local/stLoadPreprocessData'
 include { ST_POSTPROCESSING       } from '../subworkflows/local/stPostprocessing'
 
@@ -80,6 +81,16 @@ workflow ST {
         ch_input
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+    //
+    // SUBWORKFLOW: SpaceRanger raw data processing
+    //
+    if ( params.run_spaceranger ) {
+        SPACERANGER (
+            params.spaceranger_input
+        )
+    }
+    // ch_versions = ch_versions.mix(SPACERANGER.out.versions)
 
     //
     // Loading and pre-processing of ST and SC data
