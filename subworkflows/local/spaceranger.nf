@@ -32,9 +32,7 @@ workflow SPACERANGER {
             .fromPath ( params.spaceranger_reference, type: "dir", checkIfExists: true )
     } else {
         address = "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-mm10-2020-A.tar.gz"
-        DOWNLOAD_REFERENCE (
-            address
-        )
+        ch_reference = DOWNLOAD_REFERENCE ( address ).out.reference
     }
 
     //
@@ -46,9 +44,7 @@ workflow SPACERANGER {
             .fromPath ( params.spaceranger_probeset, checkIfExists: true )
     } else {
         address = "https://cf.10xgenomics.com/supp/spatial-exp/probeset/Visium_Mouse_Transcriptome_Probe_Set_v1.0_mm10-2020-A.csv"
-        DOWNLOAD_PROBESET (
-            address
-        )
+        ch_probeset = DOWNLOAD_PROBESET ( address ).out.probeset
     }
 
     //
@@ -56,15 +52,15 @@ workflow SPACERANGER {
     //
     SPACERANGER_COUNT (
         ch_input,
-        DOWNLOAD_REFERENCE.out.reference,
-        DOWNLOAD_PROBESET.out.probeset
+        ch_reference,
+        ch_probeset
     )
     ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
     emit:
     sr_dir   = SPACERANGER_COUNT.out.sr_dir // channel: [ dir ]
 
-    versions = ch_versions                 // channel: [ versions.yml ]
+    versions = ch_versions                  // channel: [ versions.yml ]
 }
 
 def create_spaceranger_channels(LinkedHashMap row) {
