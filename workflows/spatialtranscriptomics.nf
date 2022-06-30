@@ -90,7 +90,7 @@ workflow ST {
             params.spaceranger_input
         )
     }
-    // ch_versions = ch_versions.mix(SPACERANGER.out.versions)
+    ch_versions = ch_versions.mix(SPACERANGER.out.versions)
 
     //
     // Loading and pre-processing of ST and SC data
