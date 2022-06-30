@@ -62,7 +62,7 @@ workflow SPACERANGER {
     ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
     emit:
-    sr_dir   = SPACERANGE_COUNT.out.sr_dir // channel: [ dir ]
+    sr_dir   = SPACERANGER_COUNT.out.sr_dir // channel: [ dir ]
 
     versions = ch_versions                 // channel: [ versions.yml ]
 }
