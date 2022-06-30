@@ -73,7 +73,7 @@ def create_spaceranger_channels(LinkedHashMap row) {
 
     def array = []
     if (!file(row.fastq_dir).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> fastq_dir file does not exist!\n${row.fastq_1}"
+        exit 1, "ERROR: Please check input samplesheet -> fastq_dir directory does not exist!\n${row.fastq_1}"
     }
     if (!file(row.tissue_hires_image).exists()) {
         exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.fastq_1}"
