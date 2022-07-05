@@ -32,7 +32,7 @@ workflow SPACERANGER {
             .fromPath ( params.spaceranger_reference, type: "dir", checkIfExists: true )
     } else {
         address = "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-mm10-2020-A.tar.gz"
-        ch_reference = DOWNLOAD_REFERENCE ( address ).out.reference
+        ch_reference = DOWNLOAD_REFERENCE ( address ).reference
     }
 
     //
@@ -44,7 +44,8 @@ workflow SPACERANGER {
             .fromPath ( params.spaceranger_probeset, checkIfExists: true )
     } else {
         address = "https://cf.10xgenomics.com/supp/spatial-exp/probeset/Visium_Mouse_Transcriptome_Probe_Set_v1.0_mm10-2020-A.csv"
-        ch_probeset = DOWNLOAD_PROBESET ( address ).out.probeset
+        ch_probeset = Channel
+            .fromPath( address )
     }
 
     //
