@@ -89,19 +89,22 @@ workflow ST {
         SPACERANGER (
             params.spaceranger_input
         )
+        ch_st_data = SPACERANGER.out.sr_out
         ch_versions = ch_versions.mix(SPACERANGER.out.versions)
+    } else {
+        ch_st_data = INPUT_CHECK.out.reads
     }
 
     //
-    // Loading and pre-processing of ST and SC data
+    // SUBWORKFLOW: Loading and pre-processing of ST and SC data
     //
     ST_LOAD_PREPROCESS_DATA (
-        INPUT_CHECK.out.reads
+        ch_st_data
     )
     ch_versions = ch_versions.mix(ST_LOAD_PREPROCESS_DATA.out.versions)
 
     //
-    // Post-processing and reporting
+    // SUBWORKFLOW: Post-processing and reporting
     //
     ST_POSTPROCESSING (
         ST_LOAD_PREPROCESS_DATA.out.st_data_norm

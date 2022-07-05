@@ -3,7 +3,7 @@
 //
 process READ_ST_AND_SC_DATA {
 
-    tag "${sample_id}"
+    tag "${meta.id}"
     label "process_low"
 
     conda (params.enable_conda ? "conda-forge::scanpy=1.7.2" : null)
@@ -12,21 +12,21 @@ process READ_ST_AND_SC_DATA {
         'quay.io/biocontainers/scanpy:1.7.2--pyhdfd78af_0' }"
 
     input:
-    tuple val  (sample_id),
-          path (tissue_position_list, stageAs: "SRCount/spatial/tissue_positions_list.csv"),
-          path (tissue_lowres_image , stageAs: "SRCount/spatial/tissue_lowres_image.png"),
-          path (tissue_hires_image  , stageAs: "SRCount/spatial/tissue_hires_image.png"),
-          path (scale_factors       , stageAs: "SRCount/spatial/scalefactors_json.json"),
-          path (barcodes            , stageAs: "SRCount/raw_feature_bc_matrix/barcodes.tsv.gz"),
-          path (features            , stageAs: "SRCount/raw_feature_bc_matrix/features.tsv.gz"),
-          path (matrix              , stageAs: "SRCount/raw_feature_bc_matrix/matrix.mtx.gz")
+    tuple val  (meta),
+          path (tissue_positions_list, stageAs: "SRCount/spatial/tissue_positions_list.csv"),
+          path (tissue_lowres_image  , stageAs: "SRCount/spatial/tissue_lowres_image.png"),
+          path (tissue_hires_image   , stageAs: "SRCount/spatial/tissue_hires_image.png"),
+          path (scale_factors        , stageAs: "SRCount/spatial/scalefactors_json.json"),
+          path (barcodes             , stageAs: "SRCount/raw_feature_bc_matrix/barcodes.tsv.gz"),
+          path (features             , stageAs: "SRCount/raw_feature_bc_matrix/features.tsv.gz"),
+          path (matrix               , stageAs: "SRCount/raw_feature_bc_matrix/matrix.mtx.gz")
 
     output:
-    tuple val(sample_id), path("st_adata_raw.h5ad"), emit: st_raw
-    tuple val(sample_id), path("sc_adata_raw.h5ad"), emit: sc_raw
-    tuple val(sample_id), path("st_counts.npz")    , emit: st_counts
-    tuple val(sample_id), path("sc_counts.npz")    , emit: sc_counts
-    path("versions.yml")                           , emit: versions
+    tuple val(meta), path("st_adata_raw.h5ad"), emit: st_raw
+    tuple val(meta), path("sc_adata_raw.h5ad"), emit: sc_raw
+    tuple val(meta), path("st_counts.npz")    , emit: st_counts
+    tuple val(meta), path("sc_counts.npz")    , emit: sc_counts
+    path("versions.yml")                      , emit: versions
 
     script:
     """
