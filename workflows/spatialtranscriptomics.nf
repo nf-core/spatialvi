@@ -39,12 +39,18 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 */
 
 //
+// MODULE: Loaded from modules/local/
+//
+include { READ_ST_AND_SC_DATA } from '../modules/local/read_st_and_sc_data'
+
+//
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK             } from '../subworkflows/local/input_check'
-include { SPACERANGER             } from '../subworkflows/local/spaceranger'
-include { ST_LOAD_PREPROCESS_DATA } from '../subworkflows/local/stLoadPreprocessData'
-include { ST_POSTPROCESSING       } from '../subworkflows/local/stPostprocessing'
+include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { PREPROCESS_SC_DATA } from '../subworkflows/local/preprocess_sc_data'
+include { PREPROCESS_ST_DATA } from '../subworkflows/local/preprocess_st_data'
+include { SPACERANGER        } from '../subworkflows/local/spaceranger'
+include { ST_POSTPROCESSING  } from '../subworkflows/local/st_postprocessing'
 
 /*
 ================================================================================
@@ -96,19 +102,49 @@ workflow ST {
     }
 
     //
-    // SUBWORKFLOW: Loading and pre-processing of ST and SC data
+    // MODULE: Read ST and SC data and save as `anndata`
     //
-    ST_LOAD_PREPROCESS_DATA (
+    READ_ST_AND_SC_DATA (
         ch_st_data
     )
-    ch_versions = ch_versions.mix(ST_LOAD_PREPROCESS_DATA.out.versions)
+    ch_versions = ch_versions.mix(READ_ST_AND_SC_DATA.out.versions)
+
+    // TODO: Add file manifest or other non-hard-coded path
+    //
+    // Channel for mitochondrial data
+    //
+    ch_mito_data = Channel
+        .fromPath("ftp://ftp.broadinstitute.org/distribution/metabolic/papers/Pagliarini/MitoCarta2.0/Human.MitoCarta2.0.txt")
+
+    //
+    // SUBWORKFLOW: Pre-processing of ST  data
+    //
+    PREPROCESS_ST_DATA (
+        READ_ST_AND_SC_DATA.out.st_counts,
+        READ_ST_AND_SC_DATA.out.st_raw,
+        ch_mito_data
+    )
+    ch_versions = ch_versions.mix(PREPROCESS_ST_DATA.out.versions)
+
+    //
+    // SUBWORKFLOW (optional): Pre-processing of SC data
+    //
+    if ( params.single_cell ) {
+        PREPROCESS_SC_DATA (
+            READ_ST_AND_SC_DATA.out.sc_counts,
+            READ_ST_AND_SC_DATA.out.sc_raw,
+            ch_mito_data
+        )
+        ch_versions = ch_versions.mix(PREPROCESS_SC_DATA.out.versions)
+    }
 
     //
     // SUBWORKFLOW: Post-processing and reporting
     //
     ST_POSTPROCESSING (
-        ST_LOAD_PREPROCESS_DATA.out.st_data_norm
+        PREPROCESS_ST_DATA.out.st_data_norm
     )
+    ch_versions = ch_versions.mix(ST_POSTPROCESSING.out.versions)
 }
 
 /*

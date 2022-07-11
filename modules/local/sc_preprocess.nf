@@ -3,7 +3,7 @@
 //
 process SC_PREPROCESS {
 
-    tag "${meta}"
+    tag "${meta.id}"
     label "process_low"
 
     // TODO: Add Conda/container directive
