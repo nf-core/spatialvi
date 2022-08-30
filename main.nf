@@ -4,7 +4,7 @@
     nf-core/spatialtranscriptomics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/nf-core/spatialtranscriptomics
-    Website: https://nf-co.re/spatialtranscriptomics
+Website: https://nf-co.re/spatialtranscriptomics
     Slack  : https://nfcore.slack.com/channels/spatialtranscriptomics
 ----------------------------------------------------------------------------------------
 */
