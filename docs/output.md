@@ -6,7 +6,6 @@ This document describes the output produced by the pipeline. Most of the plots a
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
@@ -28,7 +27,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 </details>
 
-
 <details markdown="1">
 <summary>LDA-based deconvolution with STdeconvolve</summary>
 
@@ -39,7 +37,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 </details>
 
-
 <details markdown="1">
 <summary>BayesSpace spatially-aware clustering</summary>
 
@@ -47,7 +44,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ![BayesSpace enhanced resolution clusters](images/sm-st_bayes_clusters_enhanced.png)
 
 </details>
-
 
 ### MultiQC
 

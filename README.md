@@ -31,12 +31,11 @@ On release, automated continuous integration tests run the pipeline on a [full-s
 2. Spots cell types and cell topics deconvolution ([`STdeconvolve`](https://jef.works/STdeconvolve/), [`SPOTlight`](https://github.com/MarcElosua/SPOTlight))
 3. Spot resolution enhancement ([`BayesSpace`](https://github.com/edward130603/BayesSpace))
 4. Dimensionality reduction and projection ([`scanpy`](https://github.com/theislab/scanpy), [`Seurat`](https://satijalab.org/seurat/))
-5. Integration with scRNA-seq data ([`scanorama`](https://github.com/brianhie/scanorama), [`BBKNN`](https://github.com/Teichlab/bbknn)) 
+5. Integration with scRNA-seq data ([`scanorama`](https://github.com/brianhie/scanorama), [`BBKNN`](https://github.com/Teichlab/bbknn))
 6. Label transfer from scRNA-seq data ([`Seurat`](https://satijalab.org/seurat/))
 7. Clustering of the spots ([`scanpy Leiden`](https://arxiv.org/abs/1810.08473), [`BayesSpace`](https://github.com/edward130603/BayesSpace))
 8. Visualization of clusters and features in spatial coordinates and 2D projection layout ([`scanpy`](https://github.com/theislab/scanpy), [`Seurat`](https://satijalab.org/seurat/))
 9. Identification of spatially variable features ([`SpatialDE`](https://github.com/Teichlab/SpatialDE))
-
 
 The pipeline combines multiple tools, toolkits and platforms:
 
@@ -55,16 +54,13 @@ The pipeline combines multiple tools, toolkits and platforms:
 + [`scanpy`](https://github.com/theislab/scanpy) - scalable Python toolkit for analyzing single-cell gene expression data.
 + [`anndata`](https://github.com/theislab/anndata) - a Python package for handling annotated data matrices in memory and on disk.
 
-
 ## Quick Start
 
-> **Note:** As a temporary measure the singularity containers necessary to run this pipeline were uploaded to https://doi.org/10.5281/zenodo.6266243. Download the two containers and edit the `nextflow.config` parameters `container_python` and `container_r`.
+> **Note:** As a temporary measure the singularity containers necessary to run this pipeline were uploaded to <https://doi.org/10.5281/zenodo.6266243>. Download the two containers and edit the `nextflow.config` parameters `container_python` and `container_r`.
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_
-
-> **Note:** Test datasets and their description are located at [`nf-core/test-datasets`](https://github.com/nf-core/test-datasets/tree/spatialtranscriptomics).
 
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
@@ -74,10 +70,10 @@ The pipeline combines multiple tools, toolkits and platforms:
 
     Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
 
-    > * The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
-    > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-    > * If you are using `singularity` and are persistently observing issues downloading Singularity images directly due to timeout or network issues, then you can use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, you can use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
-    > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+    > + The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
+    > + Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+    > + If you are using `singularity` and are persistently observing issues downloading Singularity images directly due to timeout or network issues, then you can use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, you can use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
+    > + If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
 
 4. Start running your own analysis!
 
@@ -85,11 +81,13 @@ The pipeline combines multiple tools, toolkits and platforms:
     nextflow run nf-core/spatialtranscriptomics -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv
     ```
 
+> **Note:** Test datasets and their description are located at [`nf-core/test-datasets`](https://github.com/nf-core/test-datasets/tree/spatialtranscriptomics).
+
 ## Documentation
 
 > **Note:** The documentation is under development and will be updated as soon as possible.
 
-The nf-core/spatialtranscriptomics pipeline comes with documentation about the pipeline [usage](https://nf-co.re/spatialtranscriptomics/usage), [parameters](https://nf-co.re/spatialtranscriptomics/parameters) and [output](https://nf-co.re/spatialtranscriptomics/output). 
+The nf-core/spatialtranscriptomics pipeline comes with documentation about the pipeline [usage](https://nf-co.re/spatialtranscriptomics/usage), [parameters](https://nf-co.re/spatialtranscriptomics/parameters) and [output](https://nf-co.re/spatialtranscriptomics/output).
 
 ## Credits
 
@@ -102,7 +100,6 @@ nf-core/spatialtranscriptomics was originally developed by The Jackson Laborator
 The pipeline is being further developed in collaboration with the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/).
 
 <!-- We thank the following people for their extensive assistance in the development of this pipeline: -->
-
 
 ## Contributions and Support
 
