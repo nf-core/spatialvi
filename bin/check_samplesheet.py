@@ -197,7 +197,16 @@ def check_samplesheet(file_in, file_out):
 
         ## Check header
         MIN_COLS = 7
-        HEADER = ["sample","tissue_positions_list","tissue_lowres_image","tissue_hires_image","scale_factors","barcodes","features","matrix"]
+        HEADER = [
+            "sample",
+            "tissue_positions_list",
+            "tissue_lowres_image",
+            "tissue_hires_image",
+            "scale_factors",
+            "barcodes",
+            "features",
+            "matrix",
+        ]
         header = [x.strip('"') for x in fin.readline().strip().split(",")]
         if header[: len(HEADER)] != HEADER:
             print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
@@ -223,13 +232,30 @@ def check_samplesheet(file_in, file_out):
                 )
 
             ## Check sample name entries
-            sample,tissue_positions_list,tissue_lowres_image,tissue_hires_image,scale_factors,barcodes,features,matrix = lspl[: len(HEADER)]
+            (
+                sample,
+                tissue_positions_list,
+                tissue_lowres_image,
+                tissue_hires_image,
+                scale_factors,
+                barcodes,
+                features,
+                matrix,
+            ) = lspl[: len(HEADER)]
             sample = sample.replace(" ", "_")
             if not sample:
                 print_error("Sample entry has not been specified!", "Line", line)
 
             ## Auto-detect paired-end/single-end
-            sample_info = [tissue_positions_list,tissue_lowres_image,tissue_hires_image,scale_factors,barcodes,features,matrix]  ## [single_end, fastq_1, fastq_2]
+            sample_info = [
+                tissue_positions_list,
+                tissue_lowres_image,
+                tissue_hires_image,
+                scale_factors,
+                barcodes,
+                features,
+                matrix,
+            ]  ## [single_end, fastq_1, fastq_2]
 
             ## Create sample mapping dictionary = { sample: [ single_end, fastq_1, fastq_2 ] }
             if sample not in sample_mapping_dict:
@@ -245,7 +271,21 @@ def check_samplesheet(file_in, file_out):
         out_dir = os.path.dirname(file_out)
         make_dir(out_dir)
         with open(file_out, "w") as fout:
-            fout.write(",".join(["sample","tissue_positions_list","tissue_lowres_image","tissue_hires_image","scale_factors","barcodes","features","matrix"]) + "\n")
+            fout.write(
+                ",".join(
+                    [
+                        "sample",
+                        "tissue_positions_list",
+                        "tissue_lowres_image",
+                        "tissue_hires_image",
+                        "scale_factors",
+                        "barcodes",
+                        "features",
+                        "matrix",
+                    ]
+                )
+                + "\n"
+            )
             for sample in sorted(sample_mapping_dict.keys()):
 
                 for idx, val in enumerate(sample_mapping_dict[sample]):
