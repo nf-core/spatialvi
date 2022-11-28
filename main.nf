@@ -38,8 +38,8 @@ include { ST } from './workflows/spatialtranscriptomics'
 //
 // WORKFLOW: Run main nf-core/spatialtranscriptomics analysis pipeline
 //
-workflow NFCORE_ST {
-    ST ()
+workflow NFCORE_SPATIALTRANSCRIPTOMICS {
+    SPATIALTRANSCRIPTOMICS ()
 }
 
 /*
@@ -53,7 +53,7 @@ workflow NFCORE_ST {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCORE_ST ()
+    NFCORE_SPATIALTRANSCRIPTOMICS ()
 }
 
 /*
