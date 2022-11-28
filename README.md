@@ -53,8 +53,6 @@ The pipeline combines multiple tools, toolkits and platforms:
 
 ## Quick Start
 
-> **Note:** As a temporary measure the singularity containers necessary to run this pipeline were uploaded to <https://doi.org/10.5281/zenodo.6266243>. Download the two containers and edit the `nextflow.config` parameters `container_python` and `container_r`.
-
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
