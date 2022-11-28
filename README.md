@@ -36,20 +36,20 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 The pipeline combines multiple tools, toolkits and platforms:
 
-+ [`Bioconductor`](https://www.bioconductor.org/) - software resource for the analysis of genomic data. Based primarily on the statistical R programming language.
-+ [`Seurat`](https://satijalab.org/seurat/) - R toolkit for single cell genomics.
-+ [`scran`](https://doi.org/doi:10.18129/B9.bioc.scran) - R package implements miscellaneous functions for analysis and interpretation of single-cell RNA-seq data.
-+ [`SpatialExperiment`](https://doi.org/doi:10.18129/B9.bioc.SpatialExperiment) - R package for storing, retrieving spatial coordinates and gene expression.
-+ [`Giotto`](https://rubd.github.io/Giotto_site/) - (R package) a toolbox for integrative analysis and visualization of spatial expression data.
-+ [`reticulate`](https://github.com/rstudio/reticulate/) - comprehensive set of tools for interoperability between Python and R.
-+ [`STdeconvolve`](https://jef.works/STdeconvolve/) - R implementation of LDA-based cell-topics deconvolution of spots.
-+ [`SPOTlight`](https://github.com/MarcElosua/SPOTlight) - R implementation of NMF-based cell-types deconvolution of spots.
-+ [`BayesSpace`](https://github.com/edward130603/BayesSpace) - R package for spatially-aware clustering and resolution enhancement.
-+ [`SpatialDE`](https://github.com/Teichlab/SpatialDE) - Python package for identification of spatially variable genes.
-+ [`scanorama`](https://github.com/brianhie/scanorama) - Python package that enables batch-correction and integration of heterogeneous scRNA-seq datasets.
-+ [`BBKNN`](https://github.com/Teichlab/bbknn) - (Python package) batch effect removal tool.
-+ [`scanpy`](https://github.com/theislab/scanpy) - scalable Python toolkit for analyzing single-cell gene expression data.
-+ [`anndata`](https://github.com/theislab/anndata) - a Python package for handling annotated data matrices in memory and on disk.
+- [`Bioconductor`](https://www.bioconductor.org/) - software resource for the analysis of genomic data. Based primarily on the statistical R programming language.
+- [`Seurat`](https://satijalab.org/seurat/) - R toolkit for single cell genomics.
+- [`scran`](https://doi.org/doi:10.18129/B9.bioc.scran) - R package implements miscellaneous functions for analysis and interpretation of single-cell RNA-seq data.
+- [`SpatialExperiment`](https://doi.org/doi:10.18129/B9.bioc.SpatialExperiment) - R package for storing, retrieving spatial coordinates and gene expression.
+- [`Giotto`](https://rubd.github.io/Giotto_site/) - (R package) a toolbox for integrative analysis and visualization of spatial expression data.
+- [`reticulate`](https://github.com/rstudio/reticulate/) - comprehensive set of tools for interoperability between Python and R.
+- [`STdeconvolve`](https://jef.works/STdeconvolve/) - R implementation of LDA-based cell-topics deconvolution of spots.
+- [`SPOTlight`](https://github.com/MarcElosua/SPOTlight) - R implementation of NMF-based cell-types deconvolution of spots.
+- [`BayesSpace`](https://github.com/edward130603/BayesSpace) - R package for spatially-aware clustering and resolution enhancement.
+- [`SpatialDE`](https://github.com/Teichlab/SpatialDE) - Python package for identification of spatially variable genes.
+- [`scanorama`](https://github.com/brianhie/scanorama) - Python package that enables batch-correction and integration of heterogeneous scRNA-seq datasets.
+- [`BBKNN`](https://github.com/Teichlab/bbknn) - (Python package) batch effect removal tool.
+- [`scanpy`](https://github.com/theislab/scanpy) - scalable Python toolkit for analyzing single-cell gene expression data.
+- [`anndata`](https://github.com/theislab/anndata) - a Python package for handling annotated data matrices in memory and on disk.
 
 ## Quick Start
 
@@ -61,18 +61,18 @@ The pipeline combines multiple tools, toolkits and platforms:
 
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
-   > + The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
-   > + Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-   > + If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
-   > + If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+   > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
+   > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+   > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
+   > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
 
 4. Start running your own analysis!
 
    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
 
-    ```bash
-    nextflow run nf-core/spatialtranscriptomics -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv
-    ```
+   ```bash
+   nextflow run nf-core/spatialtranscriptomics -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv
+   ```
 
 > **Note:** Test datasets and their description are located at [`nf-core/test-datasets`](https://github.com/nf-core/test-datasets/tree/spatialtranscriptomics).
 
@@ -86,9 +86,9 @@ The nf-core/spatialtranscriptomics pipeline comes with documentation about the p
 
 nf-core/spatialtranscriptomics was originally developed by The Jackson Laboratory. This project has been supported by grants from the US National Institutes of Health [U24CA224067](https://reporter.nih.gov/project-details/10261367) and [U54AG075941](https://reporter.nih.gov/project-details/10376627). Original authors:
 
-+ [Dr. Sergii Domanskyi](https://github.com/sdomanskyi)
-+ Prof. Jeffrey Chuang
-+ Dr. Anuj Srivastava
+- [Dr. Sergii Domanskyi](https://github.com/sdomanskyi)
+- Prof. Jeffrey Chuang
+- Dr. Anuj Srivastava
 
 The pipeline is being further developed in collaboration with the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/).
 
