@@ -94,10 +94,11 @@ posk$x <- posk$x * se_st@images[["slice1"]]@scale.factors[["lowres"]]
 posk$y <- dim(se_st@images[["slice1"]])[1] -
     posk$y * se_st@images[["slice1"]]@scale.factors[["lowres"]]
 vizAllTopics(deconProp,
-             posk,
-             lwd     = 0,
-             overlay = se_st@images[["slice1"]]@image,
-             r       = args$STdeconvolveScatterpiesSize)
+    posk,
+    lwd     = 0,
+    overlay = se_st@images[["slice1"]]@image,
+    r       = args$STdeconvolveScatterpiesSize
+)
 ggsave(args$STdeconvolveScatterpiesName,
     dpi    = 600,
     scale  = 1.0,
