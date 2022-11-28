@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 //
 // Report
 //
- process REPORT_ALL {
+process REPORT_ALL {
 
     label "python_process_low"
 

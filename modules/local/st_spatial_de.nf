@@ -1,7 +1,7 @@
 //
 // Spatial differential expression
 //
- process ST_SPATIAL_DE {
+process ST_SPATIAL_DE {
 
     tag "${sample_id}"
     label "process_low"

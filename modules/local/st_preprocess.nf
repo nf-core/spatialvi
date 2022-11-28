@@ -1,7 +1,7 @@
 //
 // Spatial data pre-processing
 //
- process ST_PREPROCESS {
+process ST_PREPROCESS {
 
     tag "${sample_id}"
     label "process_low"
@@ -40,4 +40,3 @@
         --nameObs ${sample_id}.st_adata_obs.npz
     """
 }
-

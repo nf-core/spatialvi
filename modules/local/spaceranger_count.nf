@@ -15,16 +15,16 @@ process SPACERANGER_COUNT {
     path(probeset)
 
     output:
-    path "spaceranger-${meta.id}", type: "dir"                 , emit: sr_dir
+    path "spaceranger-${meta.id}", type: "dir"               , emit: sr_dir
     tuple val  (meta),
-          path ("*/outs/spatial/tissue_positions_list.csv"),
-          path ("*/outs/spatial/tissue_lowres_image.png"),
-          path ("*/outs/spatial/tissue_hires_image.png"),
-          path ("*/outs/spatial/scalefactors_json.json"),
-          path ("*/outs/raw_feature_bc_matrix/barcodes.tsv.gz"),
-          path ("*/outs/raw_feature_bc_matrix/features.tsv.gz"),
-          path ("*/outs/raw_feature_bc_matrix/matrix.mtx.gz")  , emit: sr_out
-    path "versions.yml"                                        , emit: versions
+        path ("*/outs/spatial/tissue_positions_list.csv"),
+        path ("*/outs/spatial/tissue_lowres_image.png"),
+        path ("*/outs/spatial/tissue_hires_image.png"),
+        path ("*/outs/spatial/scalefactors_json.json"),
+        path ("*/outs/raw_feature_bc_matrix/barcodes.tsv.gz"),
+        path ("*/outs/raw_feature_bc_matrix/features.tsv.gz"),
+        path ("*/outs/raw_feature_bc_matrix/matrix.mtx.gz")  , emit: sr_out
+    path "versions.yml"                                      , emit: versions
 
     script:
     """
@@ -39,7 +39,7 @@ process SPACERANGER_COUNT {
         --probe-set=${probeset} \
         --localcores=${task.cpus}
 
-     cat <<-END_VERSIONS > versions.yml
+    cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         SpaceRanger: \$(spaceranger -V | sed -e "s/spaceranger spaceranger-//g")
     END_VERSIONS
