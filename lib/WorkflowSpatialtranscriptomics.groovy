@@ -1,3 +1,5 @@
+import groovy.text.SimpleTemplateEngine
+
 //
 // This file holds several functions specific to the workflow/spatialtranscriptomics.nf in the nf-core/spatialtranscriptomics pipeline
 //
