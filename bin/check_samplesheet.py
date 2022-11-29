@@ -6,7 +6,9 @@
 
 import argparse
 import csv
+import errno
 import logging
+import os
 import sys
 from collections import Counter
 from pathlib import Path
@@ -163,6 +165,25 @@ def sniff_format(handle):
         sys.exit(1)
     dialect = sniffer.sniff(peek)
     return dialect
+
+
+def make_dir(path):
+    if len(path) > 0:
+        try:
+            os.makedirs(path)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise exception
+
+
+def print_error(error, context="Line", context_str=""):
+    error_str = "ERROR: Please check samplesheet -> {}".format(error)
+    if context != "" and context_str != "":
+        error_str = "ERROR: Please check samplesheet -> {}\n{}: '{}'".format(
+            error, context.strip(), context_str.strip()
+        )
+    print(error_str)
+    sys.exit(1)
 
 
 def check_samplesheet(file_in, file_out):
