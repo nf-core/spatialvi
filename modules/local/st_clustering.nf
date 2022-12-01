@@ -6,6 +6,7 @@ process ST_CLUSTERING {
     label "python_process"
 
     // TODO: Add Conda/container directive
+    container "erikfas/spatialtranscriptomics"
 
     input:
     tuple val(sample_id), path(st_adata_norm), path(sc_adata_norm)

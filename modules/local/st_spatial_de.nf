@@ -7,6 +7,7 @@ process ST_SPATIAL_DE {
     label "process_low"
 
     // TODO: Add Conda/container directive
+    container "erikfas/spatialtranscriptomics"
 
     input:
     tuple val(sample_id), path(st_data_norm)

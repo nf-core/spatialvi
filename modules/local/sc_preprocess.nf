@@ -7,6 +7,7 @@ process SC_PREPROCESS {
     label "process_low"
 
     // TODO: Add Conda/container directive
+    container "erikfas/spatialtranscriptomics"
 
     input:
     tuple val(meta), path(sc_raw), path(sc_factors)

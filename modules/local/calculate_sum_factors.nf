@@ -7,6 +7,7 @@ process CALCULATE_SUM_FACTORS {
     label "process_low"
 
     // TODO: Add Conda/container directive
+    container "erikfas/spatialtranscriptomics"
 
     input:
     tuple val(meta), path(counts)
