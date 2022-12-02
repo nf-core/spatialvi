@@ -5,7 +5,9 @@ import groovy.json.JsonSlurper
 //
 process REPORT_ALL {
 
-    label "python_process_low"
+    // TODO: Change this to correspond to final report
+
+    label "process_low"
 
     input:
     val sample_state

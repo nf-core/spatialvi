@@ -3,7 +3,7 @@
 //
 process ST_CLUSTERING {
 
-    label "python_process"
+    label "process_medium"
 
     // TODO: Add Conda/container directive
     container "erikfas/spatialtranscriptomics"
