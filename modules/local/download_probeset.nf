@@ -16,12 +16,18 @@ process DOWNLOAD_PROBESET {
     val(address)
 
     output:
-    path("*.csv"), emit: probeset
+    path("*.csv")       , emit: probeset
+    path("versions.yml"), emit: versions
 
     script:
     probeset = address.tokenize("/").last()
     name = probeset.take(probeset.lastIndexOf('.'))
     """
     wget ${address}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gnu-wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
+    END_VERSIONS
     """
 }

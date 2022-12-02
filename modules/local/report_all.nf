@@ -5,7 +5,10 @@ import groovy.json.JsonSlurper
 //
 process REPORT_ALL {
 
-    // TODO: Change this to correspond to final report
+    // TODO: Create the final report script
+    // TODO: Change this process to correspond to final report
+    // TODO: Add Conda/container directive
+    // TODO: Export versions
 
     label "process_low"
 
@@ -15,6 +18,7 @@ process REPORT_ALL {
 
     output:
     tuple env(sample_id), env(outpath)
+    // path("versions.yml"), emit: versions
 
     script:
     def sample_id_gr = sample_state[0]

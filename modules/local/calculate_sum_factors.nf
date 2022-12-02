@@ -3,10 +3,12 @@
 //
 process CALCULATE_SUM_FACTORS {
 
+    // TODO: Add proper Conda/container directive
+    // Export versions
+
     tag "${meta.id}"
     label "process_low"
 
-    // TODO: Add Conda/container directive
     container "erikfas/spatialtranscriptomics"
 
     input:
@@ -14,6 +16,7 @@ process CALCULATE_SUM_FACTORS {
 
     output:
     tuple val(meta), path("*.npz"), emit: factors
+    // path("versions.yml")          , emit: versions
 
     script:
     """

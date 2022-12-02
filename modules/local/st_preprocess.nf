@@ -3,10 +3,12 @@
 //
 process ST_PREPROCESS {
 
+    // TODO: Add final Conda/container directive
+    // TODO: Export versions
+
     tag "${sample_id}"
     label "process_low"
 
-    // TODO: Add Conda/container directive
     container "erikfas/spatialtranscriptomics"
 
     input:
@@ -20,6 +22,7 @@ process ST_PREPROCESS {
     tuple val(sample_id), path("*.st_adata_var.npz"), emit: st_adata_var
     tuple val(sample_id), path("*.st_adata_obs.npz"), emit: st_adata_obs
     tuple val(sample_id), path("*.png")             , emit: figures
+    // path("versions.yml")                            , emit: versions
 
     script:
     """

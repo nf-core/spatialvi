@@ -1,11 +1,14 @@
 //
-// Clustering etc. TODO: better description
+// Clustering etc.
 //
 process ST_CLUSTERING {
 
+    // TODO: Add a better description
+    // TODO: Add proper Conda/container directive
+    // TODO: Export versions
+
     label "process_medium"
 
-    // TODO: Add Conda/container directive
     container "erikfas/spatialtranscriptomics"
 
     input:
@@ -15,6 +18,7 @@ process ST_CLUSTERING {
     tuple val(sample), path("*.st_*.h5ad"), emit: st_adata_processed
     tuple val(sample), path("*.sc_*.h5ad"), emit: sc_adata_processed
     path("*.png")                         , emit: figures, optional: true
+    // path("versions.yml")                  , emit: versions
 
     script:
     """

@@ -3,10 +3,12 @@
 //
 process ST_SPATIAL_DE {
 
+    // TODO: Add proper Conda/container directive
+    // TODO: Export versions
+
     tag "${sample_id}"
     label "process_low"
 
-    // TODO: Add Conda/container directive
     container "erikfas/spatialtranscriptomics"
 
     input:
@@ -15,6 +17,7 @@ process ST_SPATIAL_DE {
     output:
     tuple val(sample_id), path("*.csv"), emit: degs
     path("*.png")                      , emit: figures, optional: true
+    // path("versions.yml")               , emit: versions
 
     script:
     """

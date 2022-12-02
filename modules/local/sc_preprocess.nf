@@ -3,10 +3,12 @@
 //
 process SC_PREPROCESS {
 
+    // TODO: Add final Conda/container directive
+    // TODO: Export versions
+
     tag "${meta.id}"
     label "process_low"
 
-    // TODO: Add Conda/container directive
     container "erikfas/spatialtranscriptomics"
 
     input:

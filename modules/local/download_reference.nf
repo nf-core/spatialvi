@@ -17,6 +17,7 @@ process DOWNLOAD_REFERENCE {
 
     output:
     path "${name}", type: "dir", emit: reference
+    path "versions.yml"        , emit: versions
 
     script:
     reference = address.tokenize("/").last()
@@ -25,5 +26,10 @@ process DOWNLOAD_REFERENCE {
     wget ${address}
     tar -xzvf ${reference}
     rm ${reference}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gnu-wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
+    END_VERSIONS
     """
 }
