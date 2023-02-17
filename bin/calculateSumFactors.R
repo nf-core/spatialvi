@@ -10,14 +10,8 @@ library(scran)
 parser <- ArgumentParser()
 
 args <- parser$add_argument_group("Agruments", "required and optional arguments")
-args$add_argument("--npCountsOutputName",
-                  required = TRUE,
-                  metavar  = "file",
-                  help     = "Name of npz counts file")
-args$add_argument("--npFactorsOutputName",
-                  required = TRUE,
-                  metavar  = "file",
-                  help     = "Name of npz factors file")
+args$add_argument("--npCountsOutputName", required = TRUE, metavar = "file", help = "Name of npz counts file")
+args$add_argument("--npFactorsOutputName", required = TRUE, metavar = "file", help = "Name of npz factors file")
 args <- parser$parse_args()
 
 # Main script
