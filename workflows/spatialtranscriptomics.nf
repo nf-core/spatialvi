@@ -1,7 +1,7 @@
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
     VALIDATE INPUTS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
 */
 
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
@@ -11,16 +11,22 @@ WorkflowSpatialtranscriptomics.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+log.info """\
+         Project directory:  ${projectDir}
+         """
+         .stripIndent()
+
+
+def checkPathParamList = [ params.input, params.multiqc_config ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
     CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
 */
 
 ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
@@ -29,40 +35,51 @@ ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.mu
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
     IMPORT LOCAL MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
 */
+
+//
+// MODULE: Loaded from modules/local/
+//
+include { READ_ST_AND_SC_DATA } from '../modules/local/read_st_and_sc_data'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { PREPROCESS_SC_DATA } from '../subworkflows/local/preprocess_sc_data'
+include { PREPROCESS_ST_DATA } from '../subworkflows/local/preprocess_st_data'
+include { SPACERANGER        } from '../subworkflows/local/spaceranger'
+include { ST_POSTPROCESSING  } from '../subworkflows/local/st_postprocessing'
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
 */
 
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                      } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
     RUN MAIN WORKFLOW
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
 */
 
 // Info required for completion email and summary
 def multiqc_report = []
 
-workflow SPATIALTRANSCRIPTOMICS {
+//
+// Spatial transcriptomics workflow
+//
+workflow ST {
 
+    // TODO: Collect versions for all modules/subworkflows
     ch_versions = Channel.empty()
 
     //
@@ -74,45 +91,68 @@ workflow SPATIALTRANSCRIPTOMICS {
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
-    // MODULE: Run FastQC
+    // SUBWORKFLOW: SpaceRanger raw data processing
     //
-    FASTQC (
-        INPUT_CHECK.out.reads
-    )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
-
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
+    if ( params.run_spaceranger ) {
+        SPACERANGER (
+            params.spaceranger_input
+        )
+        ch_st_data = SPACERANGER.out.sr_out
+        ch_versions = ch_versions.mix(SPACERANGER.out.versions)
+    } else {
+        ch_st_data = INPUT_CHECK.out.reads
+    }
 
     //
-    // MODULE: MultiQC
+    // MODULE: Read ST and SC data and save as `anndata`
     //
-    workflow_summary    = WorkflowSpatialtranscriptomics.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
-
-    methods_description    = WorkflowSpatialtranscriptomics.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
-    ch_methods_description = Channel.value(methods_description)
-
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
-
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
+    READ_ST_AND_SC_DATA (
+        ch_st_data
     )
-    multiqc_report = MULTIQC.out.report.toList()
+    ch_versions = ch_versions.mix(READ_ST_AND_SC_DATA.out.versions)
+
+    // TODO: Add file manifest or other non-hard-coded path
+    //
+    // Channel for mitochondrial data
+    //
+    ch_mito_data = Channel
+        .fromPath("ftp://ftp.broadinstitute.org/distribution/metabolic/papers/Pagliarini/MitoCarta2.0/Human.MitoCarta2.0.txt")
+
+    //
+    // SUBWORKFLOW: Pre-processing of ST  data
+    //
+    PREPROCESS_ST_DATA (
+        READ_ST_AND_SC_DATA.out.st_counts,
+        READ_ST_AND_SC_DATA.out.st_raw,
+        ch_mito_data
+    )
+    ch_versions = ch_versions.mix(PREPROCESS_ST_DATA.out.versions)
+
+    //
+    // SUBWORKFLOW (optional): Pre-processing of SC data
+    //
+    if ( params.single_cell ) {
+        PREPROCESS_SC_DATA (
+            READ_ST_AND_SC_DATA.out.sc_counts,
+            READ_ST_AND_SC_DATA.out.sc_raw,
+            ch_mito_data
+        )
+        ch_versions = ch_versions.mix(PREPROCESS_SC_DATA.out.versions)
+    }
+
+    //
+    // SUBWORKFLOW: Post-processing and reporting
+    //
+    ST_POSTPROCESSING (
+        PREPROCESS_ST_DATA.out.st_data_norm
+    )
+    ch_versions = ch_versions.mix(ST_POSTPROCESSING.out.versions)
 }
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
     COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
 */
 
 workflow.onComplete {
@@ -126,7 +166,7 @@ workflow.onComplete {
 }
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
     THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================================
 */

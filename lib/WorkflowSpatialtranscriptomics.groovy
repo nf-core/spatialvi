@@ -1,8 +1,8 @@
+import groovy.text.SimpleTemplateEngine
+
 //
 // This file holds several functions specific to the workflow/spatialtranscriptomics.nf in the nf-core/spatialtranscriptomics pipeline
 //
-
-import groovy.text.SimpleTemplateEngine
 
 class WorkflowSpatialtranscriptomics {
 
@@ -12,11 +12,10 @@ class WorkflowSpatialtranscriptomics {
     public static void initialise(params, log) {
         genomeExistsError(params, log)
 
-
-        if (!params.fasta) {
-            log.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
-            System.exit(1)
-        }
+        //if (!params.fasta) {
+            //log.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
+            //System.exit(1)
+        //}
     }
 
     //

@@ -5,14 +5,15 @@
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
 
 workflow INPUT_CHECK {
+
     take:
     samplesheet // file: /path/to/samplesheet.csv
 
     main:
     SAMPLESHEET_CHECK ( samplesheet )
         .csv
-        .splitCsv ( header:true, sep:',' )
-        .map { create_fastq_channel(it) }
+        .splitCsv ( header: true, sep: ',' )
+        .map { create_visium_channels(it) }
         .set { reads }
 
     emit:
@@ -20,25 +21,38 @@ workflow INPUT_CHECK {
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
-// Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
-def create_fastq_channel(LinkedHashMap row) {
-    // create meta map
+// Function to get list of [ meta, [ tissue_positions_list, tissue_hires_image, \
+// scale_factors, barcodes, features, matrix ] ]
+def create_visium_channels(LinkedHashMap row) {
     def meta = [:]
-    meta.id         = row.sample
-    meta.single_end = row.single_end.toBoolean()
+    meta.id = row.sample
 
-    // add path(s) of the fastq file(s) to the meta map
-    def fastq_meta = []
-    if (!file(row.fastq_1).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Read 1 FastQ file does not exist!\n${row.fastq_1}"
+    def array = []
+    if (!file(row.tissue_positions_list).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> tissue_positions_list file does not exist!\n${row.fastq_1}"
     }
-    if (meta.single_end) {
-        fastq_meta = [ meta, [ file(row.fastq_1) ] ]
-    } else {
-        if (!file(row.fastq_2).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
-        }
-        fastq_meta = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
+    if (!file(row.tissue_lowres_image).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> tissue_lowres_image file does not exist!\n${row.fastq_1}"
     }
-    return fastq_meta
+    if (!file(row.tissue_hires_image).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.fastq_1}"
+    }
+    if (!file(row.scale_factors).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> scale_factors file does not exist!\n${row.fastq_1}"
+    }
+    if (!file(row.barcodes).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> barcodes file does not exist!\n${row.fastq_1}"
+    }
+    if (!file(row.features).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> features file does not exist!\n${row.fastq_1}"
+    }
+    if (!file(row.matrix).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> matrix file does not exist!\n${row.fastq_1}"
+    }
+    array = [ meta,
+        file(row.tissue_positions_list), file(row.tissue_lowres_image), file(row.tissue_hires_image),
+        file(row.scale_factors), file(row.barcodes),
+        file(row.features), file(row.matrix)
+    ]
+    return array
 }

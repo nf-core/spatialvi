@@ -24,10 +24,32 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+1. Normalization and Quality Control ([`scran`](https://doi.org/doi:10.18129/B9.bioc.scran), [`scanpy`](https://github.com/theislab/scanpy))
+2. Spots cell types and cell topics deconvolution ([`STdeconvolve`](https://jef.works/STdeconvolve/), [`SPOTlight`](https://github.com/MarcElosua/SPOTlight))
+3. Spot resolution enhancement ([`BayesSpace`](https://github.com/edward130603/BayesSpace))
+4. Dimensionality reduction and projection ([`scanpy`](https://github.com/theislab/scanpy), [`Seurat`](https://satijalab.org/seurat/))
+5. Integration with scRNA-seq data ([`scanorama`](https://github.com/brianhie/scanorama), [`BBKNN`](https://github.com/Teichlab/bbknn))
+6. Label transfer from scRNA-seq data ([`Seurat`](https://satijalab.org/seurat/))
+7. Clustering of the spots ([`scanpy Leiden`](https://arxiv.org/abs/1810.08473), [`BayesSpace`](https://github.com/edward130603/BayesSpace))
+8. Visualization of clusters and features in spatial coordinates and 2D projection layout ([`scanpy`](https://github.com/theislab/scanpy), [`Seurat`](https://satijalab.org/seurat/))
+9. Identification of spatially variable features ([`SpatialDE`](https://github.com/Teichlab/SpatialDE))
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+The pipeline combines multiple tools, toolkits and platforms:
+
+- [`Bioconductor`](https://www.bioconductor.org/) - software resource for the analysis of genomic data. Based primarily on the statistical R programming language.
+- [`Seurat`](https://satijalab.org/seurat/) - R toolkit for single cell genomics.
+- [`scran`](https://doi.org/doi:10.18129/B9.bioc.scran) - R package implements miscellaneous functions for analysis and interpretation of single-cell RNA-seq data.
+- [`SpatialExperiment`](https://doi.org/doi:10.18129/B9.bioc.SpatialExperiment) - R package for storing, retrieving spatial coordinates and gene expression.
+- [`Giotto`](https://rubd.github.io/Giotto_site/) - (R package) a toolbox for integrative analysis and visualization of spatial expression data.
+- [`reticulate`](https://github.com/rstudio/reticulate/) - comprehensive set of tools for interoperability between Python and R.
+- [`STdeconvolve`](https://jef.works/STdeconvolve/) - R implementation of LDA-based cell-topics deconvolution of spots.
+- [`SPOTlight`](https://github.com/MarcElosua/SPOTlight) - R implementation of NMF-based cell-types deconvolution of spots.
+- [`BayesSpace`](https://github.com/edward130603/BayesSpace) - R package for spatially-aware clustering and resolution enhancement.
+- [`SpatialDE`](https://github.com/Teichlab/SpatialDE) - Python package for identification of spatially variable genes.
+- [`scanorama`](https://github.com/brianhie/scanorama) - Python package that enables batch-correction and integration of heterogeneous scRNA-seq datasets.
+- [`BBKNN`](https://github.com/Teichlab/bbknn) - (Python package) batch effect removal tool.
+- [`scanpy`](https://github.com/theislab/scanpy) - scalable Python toolkit for analyzing single-cell gene expression data.
+- [`anndata`](https://github.com/theislab/anndata) - a Python package for handling annotated data matrices in memory and on disk.
 
 ## Quick Start
 
@@ -36,12 +58,6 @@ On release, automated continuous integration tests run the pipeline on a full-si
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
 
 3. Download the pipeline and test it on a minimal dataset with a single command:
-
-   ```bash
-   nextflow run nf-core/spatialtranscriptomics -profile test,YOURPROFILE --outdir <OUTDIR>
-   ```
-
-   Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
 
    > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
    > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
@@ -53,20 +69,28 @@ On release, automated continuous integration tests run the pipeline on a full-si
    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
 
    ```bash
-   nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run nf-core/spatialtranscriptomics -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv
    ```
 
+> **Note:** Test datasets and their description are located at [`nf-core/test-datasets`](https://github.com/nf-core/test-datasets/tree/spatialtranscriptomics).
+
 ## Documentation
+
+> **Note:** The documentation is under development and will be updated as soon as possible.
 
 The nf-core/spatialtranscriptomics pipeline comes with documentation about the pipeline [usage](https://nf-co.re/spatialtranscriptomics/usage), [parameters](https://nf-co.re/spatialtranscriptomics/parameters) and [output](https://nf-co.re/spatialtranscriptomics/output).
 
 ## Credits
 
-nf-core/spatialtranscriptomics was originally written by Sergii Domanskyi, Jeffrey Chuang, Anuj Srivastava.
+nf-core/spatialtranscriptomics was originally developed by The Jackson Laboratory. This project has been supported by grants from the US National Institutes of Health [U24CA224067](https://reporter.nih.gov/project-details/10261367) and [U54AG075941](https://reporter.nih.gov/project-details/10376627). Original authors:
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+- [Dr. Sergii Domanskyi](https://github.com/sdomanskyi)
+- Prof. Jeffrey Chuang
+- Dr. Anuj Srivastava
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+The pipeline is being further developed in collaboration with the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/).
+
+<!-- We thank the following people for their extensive assistance in the development of this pipeline: -->
 
 ## Contributions and Support
 
@@ -78,8 +102,6 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 <!-- If you use  nf-core/spatialtranscriptomics for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
