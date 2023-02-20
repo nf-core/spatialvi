@@ -215,7 +215,6 @@ def check_samplesheet(file_in, file_out):
 
     sample_mapping_dict = {}
     with open(file_in, "r") as fin:
-
         ## Check header
         MIN_COLS = 7
         HEADER = [
@@ -308,7 +307,6 @@ def check_samplesheet(file_in, file_out):
                 + "\n"
             )
             for sample in sorted(sample_mapping_dict.keys()):
-
                 for idx, val in enumerate(sample_mapping_dict[sample]):
                     fout.write(",".join(["{}_T{}".format(sample, idx + 1)] + val) + "\n")
     else:
