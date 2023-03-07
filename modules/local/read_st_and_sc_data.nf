@@ -6,7 +6,7 @@ process READ_ST_AND_SC_DATA {
     tag "${meta.id}"
     label "process_low"
 
-    conda (params.enable_conda ? "conda-forge::scanpy=1.7.2" : null)
+    conda "conda-forge::scanpy=1.7.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/scanpy:1.7.2--pyhdfd78af_0' :
         'quay.io/biocontainers/scanpy:1.7.2--pyhdfd78af_0' }"
