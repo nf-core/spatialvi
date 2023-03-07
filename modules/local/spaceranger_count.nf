@@ -28,8 +28,8 @@ process SPACERANGER_COUNT {
     path "versions.yml"                                      , emit: versions
 
     script:
-    def probeset         = probeset.name != 'EMPTY' ? "--probe-set=${probeset}" : ''
-    def manual_alignment = manual_alignment.name != 'EMPTY' ? "--loupe-alignment=${manual_alignment}" : ''
+    def probeset         = probeset.name != 'EMPTY_PROBESET' ? "--probe-set=${probeset}" : ''
+    def manual_alignment = manual_alignment.name != 'EMPTY_ALIGNMENT' ? "--loupe-alignment=${manual_alignment}" : ''
     """
     spaceranger count \
         --id=spaceranger-${meta.id} \

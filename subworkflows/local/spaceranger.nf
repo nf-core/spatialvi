@@ -43,7 +43,7 @@ workflow SPACERANGER {
         ch_probeset = Channel
             .fromPath ( params.spaceranger_probeset, checkIfExists: true )
     } else {
-        ch_probeset = file ( 'EMPTY' )
+        ch_probeset = file ( 'EMPTY_PROBESET' )
     }
 
     //
@@ -54,7 +54,7 @@ workflow SPACERANGER {
         ch_manual_alignment = Channel
             .fromPath ( params.spaceranger_manual_alignment, checkIfExists: true )
     } else {
-        ch_manual_alignment = file ( 'EMPTY' )
+        ch_manual_alignment = file ( 'EMPTY_ALIGNMENT' )
     }
 
     //
