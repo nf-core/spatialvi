@@ -39,13 +39,19 @@
                     "help_text": "Use this when your data is raw spatial data that needs to be processed by SpaceRanger before downstream analyses can be executed.",
                     "default": "false"
                 },
-                "input_spaceranger": {
+                "spaceranger_input": {
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the raw spatial samples in the experiment.",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "spaceranger_reference": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Location of SpaceRanger reference directory",
+                    "fa_icon": "fas fa-folder-open"
                 },
                 "spaceranger_probeset": {
                     "type": "string",
@@ -55,12 +61,12 @@
                     "description": "Location of SpaceRanger probeset file",
                     "fa_icon": "fas fa-file-csv"
                 },
-                "spaceranger_reference": {
+                "spaceranger_manual_alignment": {
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Location of SpaceRanger reference file",
+                    "pattern": "^\\S+\\.json$",
+                    "description": "Location of SpaceRanger manual alignment file",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "email": {
@@ -115,6 +121,11 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "save_reference": {
+                    "type": "boolean",
+                    "description": "Temporary param to be removed.",
+                    "fa_icon": "fas fa-save"
                 }
             }
         },
@@ -523,6 +534,12 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "enable_conda": {
+                    "type": "boolean",
+                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-bacon"
                 }
             }
         }
