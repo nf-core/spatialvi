@@ -13,6 +13,7 @@ process SPACERANGER_COUNT {
     tuple val(meta), path(fastq_dir), path(image), val(slide), val(area)
     path(reference)
     path(probeset)
+    path(manual_alignment)
 
     output:
     path "spaceranger-${meta.id}", type: "dir"               , emit: sr_dir
@@ -27,6 +28,8 @@ process SPACERANGER_COUNT {
     path "versions.yml"                                      , emit: versions
 
     script:
+    def probeset         = probeset.name != 'EMPTY' ? "--probe-set=${probeset}" : ''
+    def manual_alignment = manual_alignment.name != 'EMPTY' ? "--loupe-alignment=${manual_alignment}" : ''
     """
     spaceranger count \
         --id=spaceranger-${meta.id} \
@@ -36,8 +39,9 @@ process SPACERANGER_COUNT {
         --slide=${slide} \
         --area=${area} \
         --transcriptome=${reference} \
-        --probe-set=${probeset} \
-        --localcores=${task.cpus}
+        --localcores=${task.cpus} \
+        ${probeset} \
+        ${manual_alignment}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

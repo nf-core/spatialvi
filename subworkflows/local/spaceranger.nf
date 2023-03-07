@@ -24,7 +24,7 @@ workflow SPACERANGER {
         .map      { create_spaceranger_channels(it) }
 
     //
-    // Use a user-provided reference or a default value
+    // Reference files
     //
     ch_reference = Channel.empty()
     if (params.spaceranger_reference) {
@@ -36,16 +36,25 @@ workflow SPACERANGER {
     }
 
     //
-    // Use a user-provided probe set or a default value
+    // Optional: probe set
     //
     ch_probeset = Channel.empty()
     if (params.spaceranger_probeset) {
         ch_probeset = Channel
             .fromPath ( params.spaceranger_probeset, checkIfExists: true )
     } else {
-        address = "https://cf.10xgenomics.com/supp/spatial-exp/probeset/Visium_Mouse_Transcriptome_Probe_Set_v1.0_mm10-2020-A.csv"
-        ch_probeset = Channel
-            .fromPath( address )
+        ch_probeset = file ( 'EMPTY' )
+    }
+
+    //
+    // Optional: manual alignment file
+    //
+    ch_manual_alignment = Channel.empty()
+    if (params.spaceranger_manual_alignment) {
+        ch_manual_alignment = Channel
+            .fromPath ( params.spaceranger_manual_alignment, checkIfExists: true )
+    } else {
+        ch_manual_alignment = file ( 'EMPTY' )
     }
 
     //
@@ -54,7 +63,8 @@ workflow SPACERANGER {
     SPACERANGER_COUNT (
         ch_input,
         ch_reference,
-        ch_probeset
+        ch_probeset,
+        ch_manual_alignment
     )
     ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
