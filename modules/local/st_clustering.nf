@@ -9,24 +9,25 @@ process ST_CLUSTERING {
 
     label "process_medium"
 
-    container "erikfas/spatialtranscriptomics"
+    container "cavenel/spatialtranscriptomics"
 
     input:
-    tuple val(sample_id), path(st_adata_norm), path(sc_adata_norm)
+    path(report_template_summary)
+    tuple val(sample_id), path(st_adata_norm, stageAs: "adata_norm.h5ad")
 
     output:
-    tuple val(sample), path("*.st_*.h5ad"), emit: st_adata_processed
-    tuple val(sample), path("*.sc_*.h5ad"), emit: sc_adata_processed
-    path("*.png")                         , emit: figures, optional: true
+    tuple val(sample_id), path("*.st_*.h5ad"), emit: st_adata_processed
+    tuple val(sample_id), path("*.stClustering.html")  , emit: report
+    tuple val(sample_id), path("stClustering_files/*")  , emit: report_files
     // path("versions.yml")                  , emit: versions
 
     script:
     """
-    stClusteringWorkflow.py \
-        --fileNameST ${st_adata_norm} \
-        --fileNameSC ${sc_adata_norm} \
-        --resolution=$params.Clustering_resolution \
-        --saveFileST ${sample_id}.st_adata_processed.h5ad \
-        --saveFileSC ${sample_id}.sc_adata_processed.h5ad
+    quarto render "${report_template_summary}" --output "${sample_id}.stClustering.html" \
+        -P fileNameST:${st_adata_norm} \
+        -P resolution:$params.Clustering_resolution \
+        -P saveFileST:st_adata_processed.h5ad
+
+    mv st_adata_processed.h5ad "${sample_id}.st_adata_processed.h5ad"
     """
 }

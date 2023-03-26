@@ -3,22 +3,34 @@
 //
 
 include { ST_SPATIAL_DE } from '../../modules/local/st_spatial_de'
+include { ST_CLUSTERING } from '../../modules/local/st_clustering'
 include { REPORT_ALL    } from '../../modules/local/report_all'
 
 workflow ST_POSTPROCESSING {
 
     take:
-    st_data_norm
+    st_adata_norm
 
     main:
 
     ch_versions = Channel.empty()
 
     //
+    // Report files
+    //
+    report_template_summary = file("${projectDir}/bin/stClustering.qmd")
+
+    // Clustering
+    ST_CLUSTERING (
+        report_template_summary,
+        st_adata_norm
+    )
+
+    //
     // Spatial differential expression
     //
     ST_SPATIAL_DE (
-        st_data_norm
+        st_adata_norm
     )
 
     // TODO: Add reporting
