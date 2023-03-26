@@ -1,18 +1,26 @@
 FROM nfcore/base:2.1
 LABEL \
-    author = "Erik Fasterius" \
+    author = "Christophe Avenel" \
     description = "Temporary Dockerfile for nf-core/spatialtranscriptomics" \
-    maintainer = "erik.fasterius@nbis.se"
+    maintainer = "christophe.avenel@it.uu.se"
+
+RUN apt-get -y update; apt-get -y install -y --no-install-recommends \
+    pandoc \
+    pandoc-citeproc \
+    curl \
+    gdebi-core \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install quarto
+ARG QUARTO_VERSION="0.9.522"
+RUN curl -o quarto-linux-amd64.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb
+RUN gdebi --non-interactive quarto-linux-amd64.deb
 
 # Copy and install the Conda environment
 COPY environment.yml ./
-RUN conda config --set channel_priority strict \
-    && conda env update --name base --file environment.yml \
-    && conda clean --all --force-pkgs-dirs --yes
-
-# Installation of non-Conda packages
-RUN Rscript -e 'devtools::install_github("MarcElosua/SPOTlight", ref="1f364a965ab275ac54a711e28c67554db25d547e")'
-RUN Rscript -e 'remotes::install_github("JEFworks-Lab/STdeconvolve", ref="648d2303bb38002dc6e9a5c9f59487b44d8161d4")'
+RUN conda install -c conda-forge mamba \
+    && mamba env update --name base --file environment.yml \
+    && mamba clean --all --force-pkgs-dirs --yes
 
 # Start Bash shell by default
 CMD /bin/bash
