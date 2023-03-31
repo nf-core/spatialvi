@@ -121,7 +121,6 @@ workflow ST {
     // SUBWORKFLOW: Pre-processing of ST  data
     //
     PREPROCESS_ST_DATA (
-        READ_ST_AND_SC_DATA.out.st_counts,
         READ_ST_AND_SC_DATA.out.st_raw,
         ch_mito_data
     )
