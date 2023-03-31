@@ -84,7 +84,7 @@ The nf-core/spatialtranscriptomics pipeline comes with documentation about the p
 
 nf-core/spatialtranscriptomics was originally developed by the Jackson
 Laboratory<sup>1</sup>, up to the [0.1.0](https://github.com/nf-core/spatialtranscriptomics/releases/tag/0.1.0)
-tag. It was further developed  in a collaboration between the [National
+tag. It was further developed in a collaboration between the [National
 Bioinformatics Infrastructure Sweden](https://nbis.se/) and [National Genomics
 Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/);
 it is currently developed and maintained by [Erik Fasterius](https://github.com/fasterius)
