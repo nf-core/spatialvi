@@ -2,7 +2,6 @@
 // Pre-processing of ST data
 //
 
-include { CALCULATE_SUM_FACTORS } from '../../modules/local/calculate_sum_factors'
 include { ST_PREPROCESS         } from '../../modules/local/st_preprocess'
 
 workflow PREPROCESS_ST_DATA {

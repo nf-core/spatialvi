@@ -49,7 +49,6 @@ include { READ_ST_AND_SC_DATA } from '../modules/local/read_st_and_sc_data'
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
-include { PREPROCESS_SC_DATA } from '../subworkflows/local/preprocess_sc_data'
 include { PREPROCESS_ST_DATA } from '../subworkflows/local/preprocess_st_data'
 include { SPACERANGER        } from '../subworkflows/local/spaceranger'
 include { ST_POSTPROCESSING  } from '../subworkflows/local/st_postprocessing'

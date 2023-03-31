@@ -141,21 +141,6 @@
                     "default": 1,
                     "description": "Minimum cells count"
                 },
-                "SCload_minCounts": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Minimum UMI count"
-                },
-                "SCload_minGenes": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Minimum genes count"
-                },
-                "SCload_minCells": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Minimum cells count"
-                },
                 "STpreprocess_pltFigSize": {
                     "type": "integer",
                     "default": 6,
@@ -191,41 +176,6 @@
                     "default": 40,
                     "description": "Histogram QC plot number of bins"
                 },
-                "SCpreprocess_pltFigSize": {
-                    "type": "integer",
-                    "default": 6,
-                    "description": "Figure size, inches"
-                },
-                "SCpreprocess_minCounts": {
-                    "type": "integer",
-                    "default": 500,
-                    "description": "Minimum UMI count"
-                },
-                "SCpreprocess_minGenes": {
-                    "type": "integer",
-                    "default": 250,
-                    "description": "Minimum genes count"
-                },
-                "SCpreprocess_minCells": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Minimum cells count"
-                },
-                "SCpreprocess_histplotQCmaxTotalCounts": {
-                    "type": "integer",
-                    "default": 5000,
-                    "description": "Max total counts cutoff for histogram QC plot"
-                },
-                "SCpreprocess_histplotQCminGeneCounts": {
-                    "type": "integer",
-                    "default": 2000,
-                    "description": "Min gene total counts cutoff for histogram QC plot"
-                },
-                "SCpreprocess_histplotQCbins": {
-                    "type": "integer",
-                    "default": 40,
-                    "description": "Histogram QC plot number of bins"
-                },
                 "SpatialDE_plotTopHVG": {
                     "type": "integer",
                     "default": 15,
@@ -240,106 +190,6 @@
                     "type": "number",
                     "default": 0.4,
                     "description": "Clustering resolution for ST spots"
-                },
-                "BayesSpace_numberHVG": {
-                    "type": "integer",
-                    "default": 2000,
-                    "description": "Number of top highly variable genes to use"
-                },
-                "BayesSpace_numberPCs": {
-                    "type": "integer",
-                    "default": 7,
-                    "description": "Number of principal components to use"
-                },
-                "BayesSpace_minClusters": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "Minimum number of clusters to try"
-                },
-                "BayesSpace_maxClusters": {
-                    "type": "integer",
-                    "default": 10,
-                    "description": "Maxium number of clusters to try"
-                },
-                "BayesSpace_optimalQ": {
-                    "type": "integer",
-                    "default": 5,
-                    "description": "Default optimal number of clusters"
-                },
-                "BayesSpace_STplatform": {
-                    "type": "string",
-                    "default": "Visium",
-                    "description": "Spatial technology platform"
-                },
-                "STdeconvolve_mtxGeneColumn": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "Gene column identifier in the MTX formatted data"
-                },
-                "STdeconvolve_countsFactor": {
-                    "type": "integer",
-                    "default": 100,
-                    "description": "Integer transformation factor"
-                },
-                "STdeconvolve_corpusRemoveAbove": {
-                    "type": "number",
-                    "default": 1.0,
-                    "description": "Upper cutoff for genes"
-                },
-                "STdeconvolve_corpusRemoveBelow": {
-                    "type": "number",
-                    "default": 0.05,
-                    "description": "Lower cutoff for genes"
-                },
-                "STdeconvolve_LDAminTopics": {
-                    "type": "integer",
-                    "default": 8,
-                    "description": "Minimum number of topics to try"
-                },
-                "STdeconvolve_LDAmaxTopics": {
-                    "type": "integer",
-                    "default": 9,
-                    "description": "Maximum number of topics to try"
-                },
-                "STdeconvolve_ScatterpiesSize": {
-                    "type": "number",
-                    "default": 2.85,
-                    "description": "Size of scatterpies"
-                },
-                "STdeconvolve_FeaturesSizeFactor": {
-                    "type": "number",
-                    "default": 1.0,
-                    "description": "Size of spots in the feature plots"
-                },
-                "SPOTlight_mtxGeneColumn": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "Gene column identifier in the MTX formatted data"
-                },
-                "SPOTlight_countsFactor": {
-                    "type": "integer",
-                    "default": 100,
-                    "description": "Integer transformation factor"
-                },
-                "SPOTlight_clusterResolution": {
-                    "type": "number",
-                    "default": 0.3,
-                    "description": "Clustering resolution"
-                },
-                "SPOTlight_numberHVG": {
-                    "type": "integer",
-                    "default": 3000,
-                    "description": "Number of top highly variable genes to use"
-                },
-                "SPOTlight_numberCellsPerCelltype": {
-                    "type": "integer",
-                    "default": 100,
-                    "description": "Number of cells per celltype"
-                },
-                "SPOTlight_ScatterpiesSize": {
-                    "type": "number",
-                    "default": 0.35,
-                    "description": "Size of scatterpies"
                 }
             }
         },

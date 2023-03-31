@@ -23,22 +23,13 @@ process READ_ST_AND_SC_DATA {
 
     output:
     tuple val(meta), path("st_adata_raw.h5ad"), emit: st_raw
-    tuple val(meta), path("sc_adata_raw.h5ad"), emit: sc_raw
-    tuple val(meta), path("st_counts.npz")    , emit: st_counts
-    tuple val(meta), path("sc_counts.npz")    , emit: sc_counts
     path("versions.yml")                      , emit: versions
 
     script:
     """
     script_read_st_data.py \
         --SRCountDir  ./SRCount \
-        --outAnnData  st_adata_raw.h5ad \
-        --outSTCounts st_counts.npz
-
-    script_read_sc_data.py \
-        --SRCountDir  ./SRCount \
-        --outAnnData  sc_adata_raw.h5ad \
-        --outSCCounts sc_counts.npz
+        --outAnnData  st_adata_raw.h5ad
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
