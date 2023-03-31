@@ -82,15 +82,19 @@ The nf-core/spatialtranscriptomics pipeline comes with documentation about the p
 
 ## Credits
 
-nf-core/spatialtranscriptomics was originally developed by The Jackson Laboratory. This project has been supported by grants from the US National Institutes of Health [U24CA224067](https://reporter.nih.gov/project-details/10261367) and [U54AG075941](https://reporter.nih.gov/project-details/10376627). Original authors:
+nf-core/spatialtranscriptomics was originally developed by the Jackson
+Laboratory<sup>1</sup>, up to the [0.1.0](https://github.com/nf-core/spatialtranscriptomics/releases/tag/0.1.0)
+tag. It was further developed  in a collaboration between the [National
+Bioinformatics Infrastructure Sweden](https://nbis.se/) and [National Genomics
+Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/);
+it is currently developed and maintained by [Erik Fasterius](https://github.com/fasterius)
+and [Christophe Avenel](https://github.com/cavenel).
 
-- [Dr. Sergii Domanskyi](https://github.com/sdomanskyi)
-- Prof. Jeffrey Chuang
-- Dr. Anuj Srivastava
-
-The pipeline is being further developed in collaboration with the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/).
-
-<!-- We thank the following people for their extensive assistance in the development of this pipeline: -->
+<sup>1</sup> Supported by grants from the US National Institutes of Health
+[U24CA224067](https://reporter.nih.gov/project-details/10261367) and
+[U54AG075941](https://reporter.nih.gov/project-details/10376627). Original
+authors [Dr. Sergii Domanskyi](https://github.com/sdomanskyi), Prof. Jeffrey
+Chuang and Dr. Anuj Srivastava.
 
 ## Contributions and Support
 
