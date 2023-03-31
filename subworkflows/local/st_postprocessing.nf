@@ -18,11 +18,12 @@ workflow ST_POSTPROCESSING {
     //
     // Report files
     //
-    report_template_summary = file("${projectDir}/bin/stClustering.qmd")
+    report_template_summary_clustering = file("${projectDir}/bin/stClustering.qmd")
+    report_template_summary_spatial_de = file("${projectDir}/bin/stSpatialDE.qmd")
 
     // Clustering
     ST_CLUSTERING (
-        report_template_summary,
+        report_template_summary_clustering,
         st_adata_norm
     )
 
@@ -30,7 +31,8 @@ workflow ST_POSTPROCESSING {
     // Spatial differential expression
     //
     ST_SPATIAL_DE (
-        st_adata_norm
+        report_template_summary_spatial_de,
+        ST_CLUSTERING.out.st_adata_processed
     )
 
     // TODO: Add reporting
@@ -41,7 +43,6 @@ workflow ST_POSTPROCESSING {
 
     emit:
     spatial_degs    = ST_SPATIAL_DE.out.degs    // channel: [ val(sample), csv ]
-    spatial_figures = ST_SPATIAL_DE.out.figures // channel: [ val(sample), png ]
 
     versions        = ch_versions               // channel: [ versions.yml ]
 }

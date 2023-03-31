@@ -9,22 +9,28 @@ process ST_SPATIAL_DE {
     tag "${sample_id}"
     label "process_low"
 
-    container "erikfas/spatialtranscriptomics"
+    container "cavenel/spatialtranscriptomics"
 
     input:
-    tuple val(sample_id), path(st_data_norm)
+    path(report_template_summary)
+    tuple val(sample_id), path(st_adata_norm, stageAs: "adata_norm.h5ad")
 
     output:
     tuple val(sample_id), path("*.csv"), emit: degs
-    path("*.png")                      , emit: figures, optional: true
+    tuple val(sample_id), path("*.stSpatialDE.html")  , emit: report
+    tuple val(sample_id), path("stSpatialDE_files/*")  , emit: report_files
+
     // path("versions.yml")               , emit: versions
 
     script:
     """
-    stSpatialDE.py \
-        --fileName=${st_data_norm} \
-        --numberOfColumns=${params.SpatialDE_numberOfColumns} \
-        --saveFileName=${sample_id}.stSpatialDE.csv \
-        --savePlotName=${sample_id}.stSpatialDE.png
+    quarto render "${report_template_summary}" --output "${sample_id}.stSpatialDE.html" \
+        -P fileNameST:${st_adata_norm} \
+        -P numberOfColumns:${params.SpatialDE_numberOfColumns} \
+        -P saveDEFileName:stDE.csv \
+        -P saveSpatialDEFileName:stSpatialDE.csv
+
+    # mv stDE.csv "${sample_id}.stDE.csv"
+    mv stSpatialDE.csv "${sample_id}.stSpatialDE.csv"
     """
 }
