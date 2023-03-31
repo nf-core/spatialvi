@@ -1,4 +1,4 @@
-FROM nfcore/base:2.1
+FROM --platform=linux/amd64 nfcore/base:2.1
 LABEL \
     author = "Christophe Avenel" \
     description = "Temporary Dockerfile for nf-core/spatialtranscriptomics" \
