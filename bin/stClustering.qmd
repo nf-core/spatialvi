@@ -3,6 +3,7 @@ title: "Clustering Spatial Transcriptomics data"
 format:
   html:
     code-fold: true
+    embed-resources: false
 jupyter: python3
 ---
 
@@ -92,19 +93,6 @@ Spots belonging to the same cluster in gene expression space often co-occur in s
 #| echo: false
 # Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
 st_adata.uns['log1p']['base'] = None
-```
-
-## Differential Gene Expression
-
-```{python}
-plt.rcParams["figure.figsize"] = (5, 5)
-sc.tl.rank_genes_groups(st_adata, 'clusters', method='t-test')
-sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False)
-```
-
-```{python}
-sc.tl.rank_genes_groups(st_adata, 'clusters', method='wilcoxon')
-sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False)
 ```
 
 ## Saving anndata file for future use.

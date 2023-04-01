@@ -3,6 +3,7 @@ title: "Clustering Spatial Transcriptomics data"
 format:
   html:
     code-fold: true
+    embed-resources: false
 jupyter: python3
 ---
 
@@ -18,31 +19,61 @@ plotTopHVG = 15
 ```
 
 ```{python}
-#| echo: false
-# Hide warnings in output html.
 # Load packages
-import argparse
 import scanpy as sc
 import pandas as pd
 import SpatialDE
+from matplotlib import pyplot as plt
+```
 
-# Main script
-# See more settings at:
-# https://scanpy.readthedocs.io/en/stable/generated/scanpy._settings.ScanpyConfig.html
+```{python}
 st_adata = sc.read(fileNameST)
-print(st_adata.shape)
+st_adata
+```
 
+## Differential Gene Expression
+
+```{python}
+plt.rcParams["figure.figsize"] = (5, 5)
+st_adata.uns['log1p']['base'] = None
+
+sc.tl.rank_genes_groups(st_adata, 'clusters', method='t-test')
+sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False)
+```
+
+```{python}
+sc.tl.rank_genes_groups(st_adata, 'clusters', method='wilcoxon')
+sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False)
+```
+
+## Spatially variable genes
+
+Spatial transcriptomics allows researchers to investigate how gene expression trends varies in space, thus identifying spatial patterns of gene expression. For this purpose, we use SpatialDE [Svensson18](https://www.nature.com/articles/nmeth.4636) ([code](https://github.com/Teichlab/SpatialDE)), a Gaussian process-based statistical framework that aims to identify spatially variable genes.
+
+First, we convert normalized counts and coordinates to pandas dataframe, needed for inputs to spatialDE.
+
+```{python}
 counts = pd.DataFrame(st_adata.X.todense(), columns=st_adata.var_names, index=st_adata.obs_names)
-coord = pd.DataFrame(st_adata.obsm["spatial"], columns=["x_coord", "y_coord"], index=st_adata.obs_names)
+coord = pd.DataFrame(st_adata.obsm['spatial'], columns=['x_coord', 'y_coord'], index=st_adata.obs_names)
+results = SpatialDE.run(coord, counts)
+```
 
-df_results = SpatialDE.run(coord, counts)
+We concatenate the results with the DataFrame of annotations of variables: `st_adata.var`.
 
-df_results.index = df_results["g"]
-df_results = df_results.sort_values("qval", ascending=True)
+```{python}
+results.index = results["g"]
+st_adata.var = pd.concat([st_adata.var, results.loc[st_adata.var.index.values, :]], axis=1)
+```
 
-df_results.to_csv(saveSpatialDEFileName)
+Then we can inspect significant genes that varies in space and visualize them with `sc.pl.spatial` function.
 
-# Plotting top most-HVG
-keys = df_results.index.values[: plotTopHVG]
+```{python}
+results = results.sort_values("qval", ascending=True)
+results.to_csv(saveSpatialDEFileName)
+results.head(10)
+```
+
+```{python}
+keys = results.index.values[: plotTopHVG]
 sc.pl.spatial(st_adata, img_key="hires", color=keys, alpha=0.7, ncols=numberOfColumns)
 ```
