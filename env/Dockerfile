@@ -12,7 +12,7 @@ RUN apt-get -y update; apt-get -y install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install quarto
-ARG QUARTO_VERSION="1.2.475"
+ARG QUARTO_VERSION="1.3.302"
 RUN curl -o quarto-linux-amd64.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb
 RUN gdebi --non-interactive quarto-linux-amd64.deb
 
