@@ -41,7 +41,7 @@ The data has already been filtered and is saved in AnnData format.
 ```{python}
 #| echo: true
 #| code-fold: false
-st_adata = sc.read(str(fileNameST))
+st_adata = sc.read("./" + fileNameST)
 st_adata
 ```
 

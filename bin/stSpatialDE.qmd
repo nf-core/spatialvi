@@ -27,7 +27,7 @@ from matplotlib import pyplot as plt
 ```
 
 ```{python}
-st_adata = sc.read(fileNameST)
+st_adata = sc.read("./" + fileNameST)
 st_adata
 ```
 

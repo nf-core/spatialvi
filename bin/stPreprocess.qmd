@@ -48,7 +48,7 @@ plt.rcParams["figure.figsize"] = (pltFigSize, pltFigSize)
 ```
 
 ```{python}
-st_adata = sc.read(rawAdata)
+st_adata = sc.read("./" + rawAdata)
 #st_adata.var_names_make_unique()
 
 mito = pd.read_csv(mitoFile, index_col=["Symbol", "MCARTA2_LIST"], delimiter="\t")["EnsemblGeneID"]
