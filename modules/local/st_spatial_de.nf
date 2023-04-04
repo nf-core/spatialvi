@@ -24,13 +24,13 @@ process ST_SPATIAL_DE {
 
     script:
     """
-    quarto render "${report}" --output "${sample_id}.st_spatial_de.html" \
+    quarto render "${report}" \
+        --output "${sample_id}.st_spatial_de.html" \
         -P fileNameST:${st_adata_norm} \
         -P numberOfColumns:${params.SpatialDE_numberOfColumns} \
         -P saveDEFileName:stDE.csv \
         -P saveSpatialDEFileName:st_spatial_de.csv
 
-    # mv stDE.csv "${sample_id}.stDE.csv"
     mv st_spatial_de.csv "${sample_id}.st_spatial_de.csv"
     """
 }

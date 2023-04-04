@@ -21,8 +21,7 @@ process ST_QC_AND_NORMALISATION {
     tuple val(sample_id), path("*.st_adata_plain.h5ad")          , emit: st_data_plain
     tuple val(sample_id), path("*.st_qc_and_normalisation.html") , emit: html
     tuple val(sample_id), path("st_qc_and_normalisation_files/*"), emit: html_files
-
-    // path("versions.yml")                            , emit: versions
+    // path("versions.yml")                                         , emit: versions
 
     script:
     """
