@@ -127,18 +127,6 @@ workflow ST {
     ch_versions = ch_versions.mix(ST_PREPROCESS.out.versions)
 
     //
-    // SUBWORKFLOW (optional): Pre-processing of SC data
-    //
-    if ( params.single_cell ) {
-        PREPROCESS_SC_DATA (
-            ST_READ_DATA.out.sc_counts,
-            ST_READ_DATA.out.sc_raw,
-            ch_mito_data
-        )
-        ch_versions = ch_versions.mix(PREPROCESS_SC_DATA.out.versions)
-    }
-
-    //
     // SUBWORKFLOW: Post-processing and reporting
     //
     ST_POSTPROCESS (
