@@ -1,7 +1,7 @@
 //
 // Spatial data pre-processing
 //
-process ST_PREPROCESS {
+process ST_QC_AND_NORMALISATION {
 
     // TODO: Add final Conda/container directive
     // TODO: Export versions
@@ -12,21 +12,22 @@ process ST_PREPROCESS {
     container "cavenel/spatialtranscriptomics"
 
     input:
-    path(report_template_summary)
+    path(report)
     tuple val(sample_id), path(st_raw, stageAs: "adata_raw.h5ad")
     path(mito_data)
 
     output:
-    tuple val(sample_id), path("*.st_adata_norm.h5ad") , emit: st_data_norm
-    tuple val(sample_id), path("*.st_adata_plain.h5ad"), emit: st_data_plain
-    tuple val(sample_id), path("*.stPreprocessing.html")  , emit: report
-    tuple val(sample_id), path("stPreprocess_files/*")  , emit: report_files
+    tuple val(sample_id), path("*.st_adata_norm.h5ad")           , emit: st_data_norm
+    tuple val(sample_id), path("*.st_adata_plain.h5ad")          , emit: st_data_plain
+    tuple val(sample_id), path("*.st_qc_and_normalisation.html") , emit: html
+    tuple val(sample_id), path("st_qc_and_normalisation_files/*"), emit: html_files
 
     // path("versions.yml")                            , emit: versions
 
     script:
     """
-    quarto render "${report_template_summary}" --output "${sample_id}.stPreprocessing.html" \
+    quarto render ${report} \
+        --output ${sample_id}.st_qc_and_normalisation.html \
         -P rawAdata:${st_raw} \
         -P mitoFile:${mito_data} \
         -P pltFigSize:${params.STpreprocess_pltFigSize} \
@@ -39,7 +40,7 @@ process ST_PREPROCESS {
         -P nameDataPlain:st_adata_plain.h5ad \
         -P nameDataNorm:st_adata_norm.h5ad
 
-    mv st_adata_plain.h5ad "${sample_id}.st_adata_plain.h5ad"
-    mv st_adata_norm.h5ad "${sample_id}.st_adata_norm.h5ad"
+    mv st_adata_plain.h5ad ${sample_id}.st_adata_plain.h5ad
+    mv st_adata_norm.h5ad ${sample_id}.st_adata_norm.h5ad
     """
 }

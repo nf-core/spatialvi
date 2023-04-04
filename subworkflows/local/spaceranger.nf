@@ -2,9 +2,9 @@
 // Raw data processing with SpaceRanger
 //
 
-include { DOWNLOAD_PROBESET  } from '../../modules/local/download_probeset'
-include { DOWNLOAD_REFERENCE } from '../../modules/local/download_reference'
-include { SPACERANGER_COUNT  } from '../../modules/local/spaceranger_count'
+include { SPACERANGER_DOWNLOAD_PROBESET  } from '../../modules/local/spaceranger_download_probeset'
+include { SPACERANGER_DOWNLOAD_REFERENCE } from '../../modules/local/spaceranger_download_reference'
+include { SPACERANGER_COUNT              } from '../../modules/local/spaceranger_count'
 
 workflow SPACERANGER {
 
@@ -32,7 +32,7 @@ workflow SPACERANGER {
             .fromPath ( params.spaceranger_reference, type: "dir", checkIfExists: true )
     } else {
         address = "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-mm10-2020-A.tar.gz"
-        ch_reference = DOWNLOAD_REFERENCE ( address ).reference
+        ch_reference = SPACERANGER_SPACERANGER_DOWNLOAD_REFERENCE ( address ).reference
     }
 
     //

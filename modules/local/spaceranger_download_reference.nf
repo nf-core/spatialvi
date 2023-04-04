@@ -1,8 +1,8 @@
 //
-// Download SpaceRanger probeset
+// Download genome reference
 //
 
-process DOWNLOAD_PROBESET {
+process SPACERANGER_DOWNLOAD_REFERENCE {
 
     tag "${name}"
     label "process_low"
@@ -16,14 +16,16 @@ process DOWNLOAD_PROBESET {
     val(address)
 
     output:
-    path("*.csv")       , emit: probeset
-    path("versions.yml"), emit: versions
+    path "${name}", type: "dir", emit: reference
+    path "versions.yml"        , emit: versions
 
     script:
-    probeset = address.tokenize("/").last()
-    name = probeset.take(probeset.lastIndexOf('.'))
+    reference = address.tokenize("/").last()
+    name = reference.split("\\.", 2)[0]
     """
     wget ${address}
+    tar -xzvf ${reference}
+    rm ${reference}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -43,15 +43,15 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // MODULE: Loaded from modules/local/
 //
-include { READ_ST_AND_SC_DATA } from '../modules/local/read_st_and_sc_data'
+include { ST_READ_DATA } from '../modules/local/st_read_data'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK        } from '../subworkflows/local/input_check'
-include { PREPROCESS_ST_DATA } from '../subworkflows/local/preprocess_st_data'
-include { SPACERANGER        } from '../subworkflows/local/spaceranger'
-include { ST_POSTPROCESSING  } from '../subworkflows/local/st_postprocessing'
+include { INPUT_CHECK    } from '../subworkflows/local/input_check'
+include { SPACERANGER    } from '../subworkflows/local/spaceranger'
+include { ST_PREPROCESS  } from '../subworkflows/local/st_preprocess'
+include { ST_POSTPROCESS } from '../subworkflows/local/st_postprocess'
 
 /*
 ================================================================================
@@ -103,12 +103,12 @@ workflow ST {
     }
 
     //
-    // MODULE: Read ST and SC data and save as `anndata`
+    // MODULE: Read ST data and save as `anndata`
     //
-    READ_ST_AND_SC_DATA (
+    ST_READ_DATA (
         ch_st_data
     )
-    ch_versions = ch_versions.mix(READ_ST_AND_SC_DATA.out.versions)
+    ch_versions = ch_versions.mix(ST_READ_DATA.out.versions)
 
     // TODO: Add file manifest or other non-hard-coded path
     //
@@ -120,19 +120,19 @@ workflow ST {
     //
     // SUBWORKFLOW: Pre-processing of ST  data
     //
-    PREPROCESS_ST_DATA (
-        READ_ST_AND_SC_DATA.out.st_raw,
+    ST_PREPROCESS (
+        ST_READ_DATA.out.st_raw,
         ch_mito_data
     )
-    ch_versions = ch_versions.mix(PREPROCESS_ST_DATA.out.versions)
+    ch_versions = ch_versions.mix(ST_PREPROCESS.out.versions)
 
     //
     // SUBWORKFLOW (optional): Pre-processing of SC data
     //
     if ( params.single_cell ) {
         PREPROCESS_SC_DATA (
-            READ_ST_AND_SC_DATA.out.sc_counts,
-            READ_ST_AND_SC_DATA.out.sc_raw,
+            ST_READ_DATA.out.sc_counts,
+            ST_READ_DATA.out.sc_raw,
             ch_mito_data
         )
         ch_versions = ch_versions.mix(PREPROCESS_SC_DATA.out.versions)
@@ -141,10 +141,10 @@ workflow ST {
     //
     // SUBWORKFLOW: Post-processing and reporting
     //
-    ST_POSTPROCESSING (
-        PREPROCESS_ST_DATA.out.st_data_norm
+    ST_POSTPROCESS (
+        ST_PREPROCESS.out.st_data_norm
     )
-    ch_versions = ch_versions.mix(ST_POSTPROCESSING.out.versions)
+    ch_versions = ch_versions.mix(ST_POSTPROCESS.out.versions)
 }
 
 /*
