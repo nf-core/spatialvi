@@ -54,7 +54,7 @@ First, we convert normalized counts and coordinates to pandas dataframe, needed 
 
 ```{python}
 counts = pd.DataFrame(st_adata.X.todense(), columns=st_adata.var_names, index=st_adata.obs_names)
-coord = pd.DataFrame(st_adata.obsm['spatial'], columns=['x_coord', 'y_coord'], index=st_adata.obs_names)
+coord = pd.DataFrame(st_adata.obsm['spatial'], columns=['x_coord', 'y_coord'], index=st_adata.obs_names).to_numpy()
 results = SpatialDE.run(coord, counts)
 ```
 
