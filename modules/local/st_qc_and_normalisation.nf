@@ -29,13 +29,13 @@ process ST_QC_AND_NORMALISATION {
         --output ${sample_id}.st_qc_and_normalisation.html \
         -P rawAdata:${st_raw} \
         -P mitoFile:${mito_data} \
-        -P pltFigSize:${params.STpreprocess_pltFigSize} \
-        -P minCounts:${params.STpreprocess_minCounts} \
-        -P minGenes:${params.STpreprocess_minGenes} \
-        -P minCells:${params.STpreprocess_minCells} \
-        -P histplotQCmaxTotalCounts:${params.STpreprocess_histplotQCmaxTotalCounts} \
-        -P histplotQCminGeneCounts:${params.STpreprocess_histplotQCminGeneCounts} \
-        -P histplotQCbins:${params.STpreprocess_histplotQCbins} \
+        -P pltFigSize:${params.st_preprocess_fig_size} \
+        -P minCounts:${params.st_preprocess_min_counts} \
+        -P minGenes:${params.st_preprocess_min_genes} \
+        -P minCells:${params.st_preprocess_min_cells} \
+        -P histplotQCmaxTotalCounts:${params.st_preprocess_hist_qc_max_total_counts} \
+        -P histplotQCminGeneCounts:${params.st_preprocess_hist_qc_min_gene_counts} \
+        -P histplotQCbins:${params.st_preprocess_hist_qc_bins} \
         -P nameDataPlain:st_adata_plain.h5ad \
         -P nameDataNorm:st_adata_norm.h5ad
 

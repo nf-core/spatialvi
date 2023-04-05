@@ -27,7 +27,7 @@ process ST_SPATIAL_DE {
     quarto render "${report}" \
         --output "${sample_id}.st_spatial_de.html" \
         -P fileNameST:${st_adata_norm} \
-        -P numberOfColumns:${params.SpatialDE_numberOfColumns} \
+        -P numberOfColumns:${params.st_spatial_de_ncols} \
         -P saveDEFileName:stDE.csv \
         -P saveSpatialDEFileName:st_spatial_de.csv
 

@@ -26,7 +26,7 @@ process ST_CLUSTERING {
     quarto render "${report}" \
         --output "${sample_id}.st_clustering.html" \
         -P fileNameST:${st_adata_norm} \
-        -P resolution:${params.Clustering_resolution} \
+        -P resolution:${params.st_cluster_resolution} \
         -P saveFileST:st_adata_processed.h5ad
 
     mv st_adata_processed.h5ad "${sample_id}.st_adata_processed.h5ad"

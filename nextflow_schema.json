@@ -126,62 +126,62 @@
             "description": "Define options for each tool in the pipeline",
             "default": "",
             "properties": {
-                "STload_minCounts": {
+                "st_load_min_counts": {
                     "type": "integer",
                     "default": 1,
                     "description": "Minimum genes count"
                 },
-                "STload_minCells": {
+                "st_load_min_cells": {
                     "type": "integer",
                     "default": 1,
                     "description": "Minimum cells count"
                 },
-                "STpreprocess_pltFigSize": {
+                "st_preprocess_fig_size": {
                     "type": "integer",
                     "default": 6,
                     "description": "Figure size, inches"
                 },
-                "STpreprocess_minCounts": {
+                "st_preprocess_min_counts": {
                     "type": "integer",
                     "default": 500,
                     "description": "Minimum UMI count"
                 },
-                "STpreprocess_minGenes": {
+                "st_preprocess_min_genes": {
                     "type": "integer",
                     "default": 250,
                     "description": "Minimum genes count"
                 },
-                "STpreprocess_minCells": {
+                "st_preprocess_min_cells": {
                     "type": "integer",
                     "default": 1,
                     "description": "Minimum cells count"
                 },
-                "STpreprocess_histplotQCmaxTotalCounts": {
+                "st_preprocess_hist_qc_max_total_counts": {
                     "type": "integer",
                     "default": 10000,
                     "description": "Max total counts cutoff for histogram QC plot"
                 },
-                "STpreprocess_histplotQCminGeneCounts": {
+                "st_preprocess_hist_qc_min_gene_counts": {
                     "type": "integer",
                     "default": 4000,
                     "description": "Min total gene counts cutoff for histogram QC plot"
                 },
-                "STpreprocess_histplotQCbins": {
+                "st_preprocess_hist_qc_bins": {
                     "type": "integer",
                     "default": 40,
                     "description": "Histogram QC plot number of bins"
                 },
-                "SpatialDE_plotTopHVG": {
+                "st_spatial_de_top_hgv": {
                     "type": "integer",
                     "default": 15,
                     "description": "Number of top highly variable genes to plot"
                 },
-                "SpatialDE_numberOfColumns": {
+                "st_spatial_de_ncols": {
                     "type": "integer",
                     "default": 5,
                     "description": "Number of columns to group genes plots into"
                 },
-                "Clustering_resolution": {
+                "st_cluster_resolution": {
                     "type": "number",
                     "default": 0.4,
                     "description": "Clustering resolution for ST spots"
