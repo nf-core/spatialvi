@@ -1,7 +1,7 @@
 //
 // Read ST 10x visium and SC 10x data with Scanpy and save to `anndata` file
 //
-process READ_ST_AND_SC_DATA {
+process ST_READ_DATA {
 
     tag "${meta.id}"
     label "process_low"
@@ -27,9 +27,9 @@ process READ_ST_AND_SC_DATA {
 
     script:
     """
-    script_read_st_data.py \
-        --SRCountDir  ./SRCount \
-        --outAnnData  st_adata_raw.h5ad
+    read_st_data.py \
+        --SRCountDir ./SRCount \
+        --outAnnData st_adata_raw.h5ad
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
