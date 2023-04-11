@@ -2,8 +2,9 @@
 title: "Clustering Spatial Transcriptomics data"
 format:
   html:
+    embed-resources: true
+    page-layout: full
     code-fold: true
-    embed-resources: false
 jupyter: python3
 ---
 
