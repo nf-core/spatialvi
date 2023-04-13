@@ -17,9 +17,10 @@ process ST_SPATIAL_DE {
 
     output:
     tuple val(sample_id), path("*/*.csv"), emit: degs
-    tuple val(sample_id), path("*/st_spatial_de.html")  , emit: html
+    tuple val(sample_id), path("*/st_spatial_de.html")   , emit: html
+    tuple val(sample_id), path("*/st_spatial_de_files/*"), emit: html_files
 
-    // path("versions.yml")               , emit: versions
+    // path("versions.yml")                              , emit: versions
 
     script:
     """
@@ -35,5 +36,6 @@ process ST_SPATIAL_DE {
     # mv st_gde.csv "${sample_id}/st_gde.csv"
     mv st_spatial_de.csv "${sample_id}/st_spatial_de.csv"
     mv st_spatial_de.html "${sample_id}/st_spatial_de.html"
+    mv st_spatial_de_files/ "${sample_id}/st_spatial_de_files/"
     """
 }

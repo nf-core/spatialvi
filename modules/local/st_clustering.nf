@@ -18,7 +18,8 @@ process ST_CLUSTERING {
     output:
     tuple val(sample_id), path("*/st_adata_processed.h5ad"), emit: st_adata_processed
     tuple val(sample_id), path("*/st_clustering.html")     , emit: html
-    // path("versions.yml")                                   , emit: versions
+    tuple val(sample_id), path("*/st_clustering_files/*")  , emit: html_files
+    // path("versions.yml")                                , emit: versions
 
     script:
     """
@@ -31,5 +32,6 @@ process ST_CLUSTERING {
     mkdir "${sample_id}" -p
     mv st_adata_processed.h5ad "${sample_id}/st_adata_processed.h5ad"
     mv st_clustering.html "${sample_id}/st_clustering.html"
+    mv st_clustering_files/ "${sample_id}/st_clustering_files/"
     """
 }
