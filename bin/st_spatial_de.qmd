@@ -1,5 +1,5 @@
 ---
-title: "Clustering Spatial Transcriptomics data"
+title: "Differential Gene Expression and spatially variable genes"
 format:
   html:
     embed-resources: false
