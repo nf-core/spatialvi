@@ -5,7 +5,7 @@
 process SPACERANGER_COUNT {
 
     tag "${meta.id}"
-    label "process_high"
+    label "process_spaceranger"
 
     container "nfcore/spaceranger:1.3.0"
 

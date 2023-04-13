@@ -7,7 +7,7 @@ process ST_SPATIAL_DE {
     // TODO: Export versions
 
     tag "${sample_id}"
-    label "process_low"
+    label "process_medium"
 
     container "cavenel/spatialtranscriptomics"
 
