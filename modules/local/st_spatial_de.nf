@@ -16,11 +16,10 @@ process ST_SPATIAL_DE {
     tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
 
     output:
-    tuple val(meta), path("*/*.csv")                , emit: degs
-    tuple val(meta), path("*/st_spatial_de.html")   , emit: html
-    tuple val(meta), path("*/st_spatial_de_files/*"), emit: html_files
-
-    // path("versions.yml")                            , emit: versions
+    tuple val(meta), path("*.csv")              , emit: degs
+    tuple val(meta), path("st_spatial_de.html") , emit: html
+    tuple val(meta), path("st_spatial_de_files"), emit: html_files
+    // path("versions.yml")                          , emit: versions
 
     script:
     """
@@ -30,10 +29,5 @@ process ST_SPATIAL_DE {
         -P numberOfColumns:${params.st_spatial_de_ncols} \
         -P saveDEFileName:st_gde.csv \
         -P saveSpatialDEFileName:st_spatial_de.csv
-
-    mkdir -p ${meta.id}
-    mv st_spatial_de.csv ${meta.id}/st_spatial_de.csv
-    mv st_spatial_de.html ${meta.id}/st_spatial_de.html
-    mv st_spatial_de_files/ ${meta.id}/st_spatial_de_files/
     """
 }
