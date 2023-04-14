@@ -23,14 +23,14 @@ process ST_CLUSTERING {
 
     script:
     """
-    quarto render "${report}" \
+    quarto render ${report} \
         --output "st_clustering.html" \
         -P fileNameST:${st_adata_norm} \
         -P resolution:${params.st_cluster_resolution} \
         -P saveFileST:st_adata_processed.h5ad
 
-    mkdir "${meta.id}" -p
-    mv st_adata_processed.h5ad "${meta.id}/st_adata_processed.h5ad"
-    mv st_clustering.html "${meta.id}/st_clustering.html"
+    mkdir -p ${meta.id}
+    mv st_adata_processed.h5ad ${meta.id}/st_adata_processed.h5ad
+    mv st_clustering.html ${meta.id}/st_clustering.html
     """
 }

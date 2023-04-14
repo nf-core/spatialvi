@@ -38,9 +38,9 @@ process ST_QC_AND_NORMALISATION {
         -P nameDataPlain:st_adata_plain.h5ad \
         -P nameDataNorm:st_adata_norm.h5ad
 
-    mkdir "${meta.id}" -p
+    mkdir -p ${meta.id}
     mv st_adata_plain.h5ad ${meta.id}/st_adata_plain.h5ad
     mv st_adata_norm.h5ad ${meta.id}/st_adata_norm.h5ad
-    mv st_qc_and_normalisation.html "${meta.id}/st_qc_and_normalisation.html"
+    mv st_qc_and_normalisation.html ${meta.id}/st_qc_and_normalisation.html
     """
 }

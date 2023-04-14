@@ -23,16 +23,16 @@ process ST_SPATIAL_DE {
 
     script:
     """
-    quarto render "${report}" \
+    quarto render ${report} \
         --output "st_spatial_de.html" \
         -P fileNameST:${st_adata_norm} \
         -P numberOfColumns:${params.st_spatial_de_ncols} \
         -P saveDEFileName:st_gde.csv \
         -P saveSpatialDEFileName:st_spatial_de.csv
 
-    mkdir "${meta.id}" -p
-    # mv st_gde.csv "${meta.id}/st_gde.csv"
-    mv st_spatial_de.csv "${meta.id}/st_spatial_de.csv"
-    mv st_spatial_de.html "${meta.id}/st_spatial_de.html"
+    mkdir -p ${meta.id}
+    # mv st_gde.csv ${meta.id}/st_gde.csv
+    mv st_spatial_de.csv ${meta.id}/st_spatial_de.csv
+    mv st_spatial_de.html ${meta.id}/st_spatial_de.html
     """
 }

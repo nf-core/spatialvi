@@ -12,7 +12,7 @@ process ST_READ_DATA {
         'quay.io/biocontainers/scanpy:1.7.2--pyhdfd78af_0' }"
 
     input:
-    tuple val  (meta),
+    tuple val (meta),
         path (tissue_positions_list, stageAs: "SRCount/spatial/tissue_positions_list.csv"),
         path (tissue_lowres_image  , stageAs: "SRCount/spatial/tissue_lowres_image.png"),
         path (tissue_hires_image   , stageAs: "SRCount/spatial/tissue_hires_image.png"),
