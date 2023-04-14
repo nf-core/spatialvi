@@ -7,18 +7,19 @@ process ST_CLUSTERING {
     // TODO: Add proper Conda/container directive
     // TODO: Export versions
 
+    tag "${meta.id}"
     label "process_low"
 
     container "cavenel/spatialtranscriptomics"
 
     input:
     path(report)
-    tuple val(sample_id), path(st_adata_norm, stageAs: "adata_norm.h5ad")
+    tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
 
     output:
-    tuple val(sample_id), path("*/st_adata_processed.h5ad"), emit: st_adata_processed
-    tuple val(sample_id), path("*/st_clustering.html")     , emit: html
-    // path("versions.yml")                                   , emit: versions
+    tuple val(meta), path("*/st_adata_processed.h5ad"), emit: st_adata_processed
+    tuple val(meta), path("*/st_clustering.html")     , emit: html
+    // path("versions.yml")                              , emit: versions
 
     script:
     """
@@ -28,8 +29,8 @@ process ST_CLUSTERING {
         -P resolution:${params.st_cluster_resolution} \
         -P saveFileST:st_adata_processed.h5ad
 
-    mkdir "${sample_id}" -p
-    mv st_adata_processed.h5ad "${sample_id}/st_adata_processed.h5ad"
-    mv st_clustering.html "${sample_id}/st_clustering.html"
+    mkdir "${meta.id}" -p
+    mv st_adata_processed.h5ad "${meta.id}/st_adata_processed.h5ad"
+    mv st_clustering.html "${meta.id}/st_clustering.html"
     """
 }

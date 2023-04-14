@@ -6,21 +6,21 @@ process ST_QC_AND_NORMALISATION {
     // TODO: Add final Conda/container directive
     // TODO: Export versions
 
-    tag "${sample_id}"
+    tag "${meta.id}"
     label "process_low"
 
     container "cavenel/spatialtranscriptomics"
 
     input:
     path(report)
-    tuple val(sample_id), path(st_raw, stageAs: "adata_raw.h5ad")
+    tuple val(meta), path(st_raw, stageAs: "adata_raw.h5ad")
     path(mito_data)
 
     output:
-    tuple val(sample_id), path("*/st_adata_norm.h5ad")           , emit: st_data_norm
-    tuple val(sample_id), path("*/st_adata_plain.h5ad")          , emit: st_data_plain
-    tuple val(sample_id), path("*/st_qc_and_normalisation.html") , emit: html
-    // path("versions.yml")                                         , emit: versions
+    tuple val(meta), path("*/st_adata_norm.h5ad")           , emit: st_data_norm
+    tuple val(meta), path("*/st_adata_plain.h5ad")          , emit: st_data_plain
+    tuple val(meta), path("*/st_qc_and_normalisation.html") , emit: html
+    // path("versions.yml")                                    , emit: versions
 
     script:
     """
@@ -38,9 +38,9 @@ process ST_QC_AND_NORMALISATION {
         -P nameDataPlain:st_adata_plain.h5ad \
         -P nameDataNorm:st_adata_norm.h5ad
 
-    mkdir "${sample_id}" -p
-    mv st_adata_plain.h5ad ${sample_id}/st_adata_plain.h5ad
-    mv st_adata_norm.h5ad ${sample_id}/st_adata_norm.h5ad
-    mv st_qc_and_normalisation.html "${sample_id}/st_qc_and_normalisation.html"
+    mkdir "${meta.id}" -p
+    mv st_adata_plain.h5ad ${meta.id}/st_adata_plain.h5ad
+    mv st_adata_norm.h5ad ${meta.id}/st_adata_norm.h5ad
+    mv st_qc_and_normalisation.html "${meta.id}/st_qc_and_normalisation.html"
     """
 }
