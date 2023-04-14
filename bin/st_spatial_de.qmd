@@ -1,8 +1,8 @@
 ---
-title: "Clustering Spatial Transcriptomics data"
+title: "Differential Gene Expression and spatially variable genes"
 format:
   html:
-    embed-resources: true
+    embed-resources: false
     page-layout: full
     code-fold: true
 jupyter: python3

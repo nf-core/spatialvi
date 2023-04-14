@@ -17,10 +17,11 @@ process ST_QC_AND_NORMALISATION {
     path(mito_data)
 
     output:
-    tuple val(meta), path("*/st_adata_norm.h5ad")           , emit: st_data_norm
-    tuple val(meta), path("*/st_adata_plain.h5ad")          , emit: st_data_plain
-    tuple val(meta), path("*/st_qc_and_normalisation.html") , emit: html
-    // path("versions.yml")                                    , emit: versions
+    tuple val(meta), path("*/st_adata_norm.h5ad")             , emit: st_data_norm
+    tuple val(meta), path("*/st_adata_plain.h5ad")            , emit: st_data_plain
+    tuple val(meta), path("*/st_qc_and_normalisation.html")   , emit: html
+    tuple val(meta), path("*/st_qc_and_normalisation_files/*"), emit: html_files
+    // path("versions.yml")                                      , emit: versions
 
     script:
     """
@@ -42,5 +43,6 @@ process ST_QC_AND_NORMALISATION {
     mv st_adata_plain.h5ad ${meta.id}/st_adata_plain.h5ad
     mv st_adata_norm.h5ad ${meta.id}/st_adata_norm.h5ad
     mv st_qc_and_normalisation.html ${meta.id}/st_qc_and_normalisation.html
+    mv st_qc_and_normalisation_files/ ${meta.id}/st_qc_and_normalisation_files/
     """
 }
