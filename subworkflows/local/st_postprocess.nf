@@ -27,6 +27,7 @@ workflow ST_POSTPROCESS {
         report_clustering,
         st_adata_norm
     )
+    ch_versions = ch_versions.mix(ST_CLUSTERING.out.versions)
 
     //
     // Spatial differential expression
@@ -35,6 +36,7 @@ workflow ST_POSTPROCESS {
         report_spatial_de,
         ST_CLUSTERING.out.st_adata_processed
     )
+    ch_versions = ch_versions.mix(ST_SPATIAL_DE.out.versions)
 
     emit:
     spatial_degs    = ST_SPATIAL_DE.out.degs    // channel: [ val(sample), csv ]

@@ -2,19 +2,10 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  # Python packages
-  - bbknn=1.5.1
-  - leidenalg=0.9.1
-  - matplotlib=3.7.1
-  - numpy=1.23.0
-  - scikit-learn=1.2.2
-  - scanorama=1.7.3
-  - scanpy=1.9.3
-  - scipy=1.10.1
-  - seaborn=0.12.2
-  - umap-learn=0.5.3
-  - papermill=2.3.4
   - jupyter=1.0.0
+  - leidenalg=0.9.1
+  - papermill=2.3.4
   - pip=23.0.1
+  - scanpy=1.9.3
   - pip:
       - SpatialDE==1.1.3
