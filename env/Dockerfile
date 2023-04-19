@@ -1,26 +1,24 @@
-FROM --platform=linux/amd64 nfcore/base:2.1
-LABEL \
-    author = "Christophe Avenel" \
-    description = "Temporary Dockerfile for nf-core/spatialtranscriptomics" \
-    maintainer = "christophe.avenel@it.uu.se"
+# First stage: multi-platform Quarto image
+FROM jdutant/quarto-minimal:1.3.313 as quarto
 
-RUN apt-get -y update; apt-get -y install -y --no-install-recommends \
-    pandoc \
-    pandoc-citeproc \
-    curl \
-    gdebi-core \
-    && rm -rf /var/lib/apt/lists/*
+# Second stage: multi-platform Mamba image
+FROM condaforge/mambaforge:23.1.0-1
 
-# Install quarto
-ARG QUARTO_VERSION="1.3.302"
-RUN curl -o quarto-linux-amd64.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb
-RUN gdebi --non-interactive quarto-linux-amd64.deb
+# Copy Quarto installation from first stage and add to PATH
+COPY --from=quarto /opt/quarto /opt/quarto
+ENV PATH="${PATH}:/opt/quarto/bin"
 
-# Copy and install the Conda environment
+# Install packages using Mamba; also remove static libraries, python bytecode
+# files and javascript source maps that are not required for execution
 COPY environment.yml ./
-RUN conda install -c conda-forge mamba \
-    && mamba env update --name base --file environment.yml \
-    && mamba clean --all --force-pkgs-dirs --yes
+RUN mamba env update --name base --file environment.yml \
+    && mamba clean --all --force-pkgs-dirs --yes \
+    && find /opt/conda -follow -type f -name '*.a' -delete \
+    && find /opt/conda -follow -type f -name '*.pyc' -delete \
+    && find /opt/conda -follow -type f -name '*.js.map' -delete
 
-# Start Bash shell by default
 CMD /bin/bash
+
+LABEL \
+    authors = "Erik Fasterius, Christophe Avenel" \
+    description = "Dockerfile for nf-core/spatialtranscriptomics report modules"

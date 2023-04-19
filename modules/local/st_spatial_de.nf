@@ -3,13 +3,13 @@
 //
 process ST_SPATIAL_DE {
 
-    // TODO: Add proper Conda/container directive
-    // TODO: Export versions
+    // TODO: Add a better description
+    // TODO: Find solution for Quarto with Conda
 
     tag "${meta.id}"
     label "process_medium"
 
-    container "cavenel/spatialtranscriptomics"
+    container "erikfas/spatialtranscriptomics"
 
     input:
     path(report)

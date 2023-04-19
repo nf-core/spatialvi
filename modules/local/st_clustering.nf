@@ -4,13 +4,12 @@
 process ST_CLUSTERING {
 
     // TODO: Add a better description
-    // TODO: Add proper Conda/container directive
-    // TODO: Export versions
+    // TODO: Find solution for Quarto with Conda
 
     tag "${meta.id}"
     label "process_low"
 
-    container "cavenel/spatialtranscriptomics"
+    container "erikfas/spatialtranscriptomics"
 
     input:
     path(report)

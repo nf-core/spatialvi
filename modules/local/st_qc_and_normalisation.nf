@@ -3,13 +3,13 @@
 //
 process ST_QC_AND_NORMALISATION {
 
-    // TODO: Add final Conda/container directive
-    // TODO: Export versions
+    // TODO: Add a better description
+    // TODO: Find solution for Quarto with Conda
 
     tag "${meta.id}"
     label "process_low"
 
-    container "cavenel/spatialtranscriptomics"
+    container "erikfas/spatialtranscriptomics"
 
     input:
     path(report)
