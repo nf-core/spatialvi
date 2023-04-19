@@ -19,7 +19,7 @@ process ST_SPATIAL_DE {
     tuple val(meta), path("*.csv")              , emit: degs
     tuple val(meta), path("st_spatial_de.html") , emit: html
     tuple val(meta), path("st_spatial_de_files"), emit: html_files
-    // path("versions.yml")                          , emit: versions
+    path("versions.yml")                        , emit: versions
 
     script:
     """
@@ -29,5 +29,13 @@ process ST_SPATIAL_DE {
         -P numberOfColumns:${params.st_spatial_de_ncols} \
         -P saveDEFileName:st_gde.csv \
         -P saveSpatialDEFileName:st_spatial_de.csv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        quarto: \$(quarto -v)
+        leidenalg: \$(python -c "import leidenalg; print(leidenalg.__version__)")
+        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
+        SpatialDE: \$(python -c "import SpatialDE; print(SpatialDE.__version__)")
+    END_VERSIONS
     """
 }

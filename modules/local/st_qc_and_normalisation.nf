@@ -21,7 +21,7 @@ process ST_QC_AND_NORMALISATION {
     tuple val(meta), path("st_adata_plain.h5ad")          , emit: st_data_plain
     tuple val(meta), path("st_qc_and_normalisation.html") , emit: html
     tuple val(meta), path("st_qc_and_normalisation_files"), emit: html_files
-    // path("versions.yml")                                    , emit: versions
+    path("versions.yml")                                  , emit: versions
 
     script:
     """
@@ -38,5 +38,11 @@ process ST_QC_AND_NORMALISATION {
         -P histplotQCbins:${params.st_preprocess_hist_qc_bins} \
         -P nameDataPlain:st_adata_plain.h5ad \
         -P nameDataNorm:st_adata_norm.h5ad
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        quarto: \$(quarto -v)
+        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
+    END_VERSIONS
     """
 }

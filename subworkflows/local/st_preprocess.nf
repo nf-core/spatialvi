@@ -27,7 +27,7 @@ workflow ST_PREPROCESS {
         st_raw,
         mito_data
     )
-    // ch_versions = ch_versions.mix(ST_QC_AND_NORMALISATION.out.versions)
+    ch_versions = ch_versions.mix(ST_QC_AND_NORMALISATION.out.versions)
 
     emit:
     st_data_norm  = ST_QC_AND_NORMALISATION.out.st_data_norm  // channel: [ val(sample), h5ad ]
