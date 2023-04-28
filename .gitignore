@@ -6,5 +6,3 @@ results/
 testing/
 testing*
 *.pyc
-run.sh
-**.sif
