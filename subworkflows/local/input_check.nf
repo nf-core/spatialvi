@@ -11,14 +11,41 @@ workflow INPUT_CHECK {
 
     main:
     SAMPLESHEET_CHECK ( samplesheet )
-        .csv
-        .splitCsv ( header: true, sep: ',' )
-        .map { create_visium_channels(it) }
-        .set { reads }
+    if ( params.run_spaceranger ) {
+        st_data = SAMPLESHEET_CHECK.out.csv
+            .splitCsv ( header: true, sep: ',' )
+            .map      { create_spaceranger_channels(it) }
+    } else {
+        st_data = SAMPLESHEET_CHECK.out.csv
+            .splitCsv ( header: true, sep: ',' )
+            .map      { create_visium_channels(it) }
+    }
 
     emit:
-    reads                                     // channel: [ val(meta), [ reads ] ]
+    st_data                                   // channel: [ val(meta), [ st data ] ]
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
+}
+
+// Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]
+def create_spaceranger_channels(LinkedHashMap row) {
+    def meta = [:]
+    meta.id = row.sample
+
+    def array = []
+    if (!file(row.fastq_dir).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> fastq_dir directory does not exist!\n${row.fastq_1}"
+    }
+    if (!file(row.tissue_hires_image).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.fastq_1}"
+    }
+    array = [
+        meta,
+        file(row.fastq_dir),
+        file(row.tissue_hires_image),
+        row.slide,
+        row.area,
+    ]
+    return array
 }
 
 // Function to get list of [ meta, [ tissue_positions_list, tissue_hires_image, \
@@ -49,10 +76,15 @@ def create_visium_channels(LinkedHashMap row) {
     if (!file(row.matrix).exists()) {
         exit 1, "ERROR: Please check input samplesheet -> matrix file does not exist!\n${row.fastq_1}"
     }
-    array = [ meta,
-        file(row.tissue_positions_list), file(row.tissue_lowres_image), file(row.tissue_hires_image),
-        file(row.scale_factors), file(row.barcodes),
-        file(row.features), file(row.matrix)
+    array = [
+        meta,
+        file(row.tissue_positions_list),
+        file(row.tissue_lowres_image),
+        file(row.tissue_hires_image),
+        file(row.scale_factors),
+        file(row.barcodes),
+        file(row.features),
+        file(row.matrix)
     ]
     return array
 }

@@ -9,19 +9,11 @@ include { SPACERANGER_COUNT              } from '../../modules/local/spaceranger
 workflow SPACERANGER {
 
     take:
-    samplesheet // file: path/to/samplesheet.csv
+    ch_st_data // channel: [ val(meta), [ raw st data ] ]
 
     main:
 
     ch_versions = Channel.empty()
-
-    //
-    // Read input samplesheet
-    //
-    ch_input = Channel
-        .fromPath ( samplesheet )
-        .splitCsv ( header: true, sep: ',' )
-        .map      { create_spaceranger_channels(it) }
 
     //
     // Reference files
@@ -61,7 +53,7 @@ workflow SPACERANGER {
     // Run SpaceRanger count
     //
     SPACERANGER_COUNT (
-        ch_input,
+        ch_st_data,
         ch_reference,
         ch_probeset,
         ch_manual_alignment
@@ -73,25 +65,4 @@ workflow SPACERANGER {
     sr_out   = SPACERANGER_COUNT.out.sr_out // channel: [ val(meta), positions, tissue_lowres_image, tissue_hires_image, scale_factors, barcodes, features, matrix ]
 
     versions = ch_versions                  // channel: [ versions.yml ]
-}
-
-def create_spaceranger_channels(LinkedHashMap row) {
-    def meta = [:]
-    meta.id = row.sample
-
-    def array = []
-    if (!file(row.fastq_dir).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> fastq_dir directory does not exist!\n${row.fastq_1}"
-    }
-    if (!file(row.tissue_hires_image).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.fastq_1}"
-    }
-    array = [
-        meta,
-        file(row.fastq_dir),
-        file(row.tissue_hires_image),
-        row.slide,
-        row.area
-    ]
-    return array
 }

@@ -16,7 +16,7 @@ process SPACERANGER_COUNT {
     path(manual_alignment)
 
     output:
-    path "spaceranger-${meta.id}", type: "dir"               , emit: sr_dir
+    path "spaceranger", type: "dir"                          , emit: sr_dir
     tuple val  (meta),
         path ("*/outs/spatial/tissue_positions_list.csv"),
         path ("*/outs/spatial/tissue_lowres_image.png"),
@@ -32,7 +32,7 @@ process SPACERANGER_COUNT {
     def manual_alignment = manual_alignment.name != 'EMPTY_ALIGNMENT' ? "--loupe-alignment=${manual_alignment}" : ''
     """
     spaceranger count \
-        --id=spaceranger-${meta.id} \
+        --id=spaceranger \
         --sample=${meta.id} \
         --fastqs=${fastq_dir} \
         --image=${image} \

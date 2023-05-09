@@ -78,11 +78,10 @@ def multiqc_report = []
 //
 workflow ST {
 
-    // TODO: Collect versions for all modules/subworkflows
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    // SUBWORKFLOW: Read and validate samplesheet
     //
     INPUT_CHECK (
         ch_input
@@ -94,12 +93,12 @@ workflow ST {
     //
     if ( params.run_spaceranger ) {
         SPACERANGER (
-            params.spaceranger_input
+            INPUT_CHECK.out.st_data
         )
         ch_st_data = SPACERANGER.out.sr_out
         ch_versions = ch_versions.mix(SPACERANGER.out.versions)
     } else {
-        ch_st_data = INPUT_CHECK.out.reads
+        ch_st_data = INPUT_CHECK.out.st_data
     }
 
     //
