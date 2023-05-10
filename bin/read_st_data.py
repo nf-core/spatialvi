@@ -135,14 +135,11 @@ def read_visium_mtx(
 
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(
-    description="Load spatial transcriptomics data from MTX " +
-                "matrices and aligned images."
+parser = argparse.ArgumentParser(description="Load spatial transcriptomics data from MTX matrices and aligned images.")
+parser.add_argument(
+    "--SRCountDir", metavar="SRCountDir", type=str, default=None, help="Input directory with Spaceranger data."
 )
-parser.add_argument("--SRCountDir", metavar="SRCountDir", type=str,
-                    default=None, help="Input directory with Spaceranger data.")
-parser.add_argument("--outAnnData", metavar="outAnnData", type=str,
-                    default=None, help="Output h5ad file path.")
+parser.add_argument("--outAnnData", metavar="outAnnData", type=str, default=None, help="Output h5ad file path.")
 args = parser.parse_args()
 
 # Read Visium data
