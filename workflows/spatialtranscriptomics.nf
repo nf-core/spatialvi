@@ -109,19 +109,11 @@ workflow ST {
     )
     ch_versions = ch_versions.mix(ST_READ_DATA.out.versions)
 
-    // TODO: Add file manifest or other non-hard-coded path
-    //
-    // Channel for mitochondrial data
-    //
-    ch_mito_data = Channel
-        .fromPath("ftp://ftp.broadinstitute.org/distribution/metabolic/papers/Pagliarini/MitoCarta2.0/Human.MitoCarta2.0.txt")
-
     //
     // SUBWORKFLOW: Pre-processing of ST  data
     //
     ST_PREPROCESS (
-        ST_READ_DATA.out.st_raw,
-        ch_mito_data
+        ST_READ_DATA.out.st_raw
     )
     ch_versions = ch_versions.mix(ST_PREPROCESS.out.versions)
 
