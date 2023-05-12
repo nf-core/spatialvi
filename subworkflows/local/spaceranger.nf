@@ -23,8 +23,8 @@ workflow SPACERANGER {
         ch_reference = Channel
             .fromPath ( params.spaceranger_reference, type: "dir", checkIfExists: true )
     } else {
-        address = "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-mm10-2020-A.tar.gz"
-        ch_reference = SPACERANGER_SPACERANGER_DOWNLOAD_REFERENCE ( address ).reference
+        address = "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz"
+        ch_reference = SPACERANGER_DOWNLOAD_REFERENCE ( address ).reference
     }
 
     //
