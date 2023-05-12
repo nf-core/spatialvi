@@ -4,41 +4,107 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Introduction
-
-The pipeline is designed to take multiple samples to process them in parallel. Currently processing of samples is fully independent from other samples. The spatial transcriptomics input is expected to be output from [10x Visium](https://www.10xgenomics.com/products/spatial-gene-expression) technology experiment processed with [SpaceRanger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger), which includes gene-spot count matrices in either HDF5 of MTX format, and aligned images with spatial coordinates files.
-
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 or more columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you
+would like to analyse before running the pipeline. Use this parameter to specify
+its location. It has to be a comma-separated file with at least 5 or 8 columns
+(depending on input data type, [see below](#raw-spatial-data)), and a header row
+as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple samples
+### Raw spatial data
 
-The `sample` identifiers have to be unique. There can be arbirtary number of samples in the samplesheet. The pipeline will perform any downstream analysis for each sample independently:
+The samplesheet for raw spatial data yet to be analysed with SpaceRanger is
+specified like so:
 
-```console
-sample_id,species,st_data_dir,sc_data_dir
-SAMPLE_1,Human,/path/to/ST/data1/,/path/to/scRNA-seq/data1/
-SAMPLE_2,Mouse,/path/to/ST/data2/,/path/to/scRNA-seq/data2/
+```no-highlight
+sample,fastq_dir,tissue_hires_image,slide,area
+SAMPLE_1,fastqs_1/,hires_1.png,V11J26,B1
+SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1
 ```
 
-### Full samplesheet
+| Column               | Description
+| -------------------- | -------------------------------------------------------
+| `sample`             | Custom sample name.
+| `fastq_dir`          | Path to directory where the sample FASTQ files are stored.
+| `tissue_hires_image` | Path to the high-resolution image for the sample.
+| `slide`              | The Visium slide ID used for the sequencing.
+| `area`               | Which slide area contains the tissue sample.
 
-The pipeline will auto-detect whether scRNA-seq data was specified using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+If you are unsure, please see the Visium documentation for details regarding the
+different variants of [FASTQ directory structures](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/fastq-input)
+and [slide parameters](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/slide-info)
+appropriate for your samples.
 
-| Column                                                 | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample_id`                                            | Custom sample name. This entry will be unique.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `species`                                              | Species of the sample. Currently supported "Human" and "Mouse".                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `st_data_dir`                                          | Full path to directory with spatial transcriptomics data. There shold be a sub-directory `spatial` containing files `tissue_hires_image.png`, `tissue_lowres_image.png`, `detected_tissue_image.jpg`, `aligned_fiducials.jpg`, `scalefactors_json.json`, and `tissue_positions_list.csv`. There should also be either a sub-directory `raw_feature_bc_matrix` containing `features.tsv.gz`, `barcodes.tsv.gz`, and `matrix.mtx.gz` if the gene-spot count data is in MTX format, or `raw_feature_bc_matrix.h5` HDF5 file geneated with [SpaceRanger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger). See [`nf-core/test-datasets`](https://github.com/nf-core/test-datasets/tree/spatialtranscriptomics) for description of these files. If the path is provided as URL the data will be downloaded to the local environment where the pipeline is executed. |
-| `sc_data_dir` (in future optional, currently required) | Full path to directory with single cell transcriptomics data (a.k.a scRNA-seq data). The path should contain `features.tsv.gz`, `barcodes.tsv.gz`, and `matrix.mtx.gz` if the gene-spot count data is in MTX format, or `*.h5ad` AnnData HDF5 file format generated with [scanpy](https://github.com/theislab/scanpy).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `signature` (optional, not implemented)                | Full path to the transcriptomics signature profiles in the `*.csv` or `*.csv.gz` format.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+> **NB:** You will have to supply the `--run_spaceranger` parameter when you
+> execute the pipeline.
 
-This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
+### Processed data
+
+If your data has already been processed by SpaceRanger the samplesheet will look
+like this:
+
+```no-highlight
+sample,tissue_positions_list,tissue_lowres_image,tissue_hires_image,scale_factors,barcodes,features,
+matrix
+SAMPLE_1,tissue_positions_list_1.csv,tissue_lowres_image_1.png,tissue_hires_image_1.png,scale_factors_1.json,barcodes_1.tsv.gz,features_1.tsv.gz,matrix_1.mtx.gz
+SAMPLE_2,tissue_positions_list_2.csv,tissue_lowres_image_2.png,tissue_hires_image_2.png,scale_factors_2.json,barcodes_2.tsv.gz,features_2.tsv.gz,matrix_2.mtx.gz
+```
+
+| Column                  | Description
+| --------------------    | ----------------------------------------------------
+| `sample`                | Custom sample name.
+| `tissue_positions_list` | Path to the CSV with spot barcodes and their array positions.
+| `tissue_lowres_image`   | Path to the low-resolution image for the sample.
+| `tissue_hires_image`    | Path to the high-resolution image for the sample.
+| `scale_factors`         | Path to the JSON file with scale conversion factors for the spots.
+| `barcodes`              | Path to TSV file with barcode IDs.
+| `features`              | Path to TSV file with features IDs.
+| `matrix`                | Path to MTX file with UMIs, barcodes and features.
+
+The latter three elements should be taken from the `filtered_feature_bc_matrix/`
+directory, *i.e.* only tissue-associated barcodes and their data.
+
+## Space Ranger options
+
+The pipeline exposes several of Space Ranger's parameters when executing with
+raw spatial data (`--run_spaceranger`). Space Ranger requieres a lot of memory
+(64 GB) and several threads (8) to be able to run. You can find the Space Ranger
+documentation at the [10X website](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger).
+
+You are only able to run Space Ranger on the [officially supported organisms](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest):
+human and mouse. If you have already downloaded a reference you may supply the
+path to its directory (or another link from the 10X website above) using the
+`--spaceranger_reference` parameter, otherwise the pipeline will download the
+default human reference for you automatically.
+
+You may optionally supply file paths to probe sets or manual fiducial alignment
+using the `--spaceranger_probeset` and `--spaceranger_manual_alignment`,
+respectively.
+
+## Analysis options
+
+<!-- TODO nf-core: Add documentation section on analysis options/params. -->
+
+[WIP]
+
+## Running the pipeline
+
+The typical command for running the pipeline is as follows:
+
+```bash
+# Run the pipeline with raw data yet to be processed by SpaceRanger
+nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker --run_spaceranger
+
+# Run pipeline with data already processed by SpaceRanger
+nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker
+```
+
+This will launch the pipeline with the docker configuration profile. See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
