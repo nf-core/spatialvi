@@ -27,13 +27,13 @@ SAMPLE_1,fastqs_1/,hires_1.png,V11J26,B1
 SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1
 ```
 
-| Column               | Description
-| -------------------- | -------------------------------------------------------
-| `sample`             | Custom sample name.
-| `fastq_dir`          | Path to directory where the sample FASTQ files are stored.
-| `tissue_hires_image` | Path to the high-resolution image for the sample.
-| `slide`              | The Visium slide ID used for the sequencing.
-| `area`               | Which slide area contains the tissue sample.
+| Column               | Description                                                |
+| -------------------- | ---------------------------------------------------------- |
+| `sample`             | Custom sample name.                                        |
+| `fastq_dir`          | Path to directory where the sample FASTQ files are stored. |
+| `tissue_hires_image` | Path to the high-resolution image for the sample.          |
+| `slide`              | The Visium slide ID used for the sequencing.               |
+| `area`               | Which slide area contains the tissue sample.               |
 
 If you are unsure, please see the Visium documentation for details regarding the
 different variants of [FASTQ directory structures](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/fastq-input)
@@ -55,19 +55,19 @@ SAMPLE_1,tissue_positions_list_1.csv,tissue_lowres_image_1.png,tissue_hires_imag
 SAMPLE_2,tissue_positions_list_2.csv,tissue_lowres_image_2.png,tissue_hires_image_2.png,scale_factors_2.json,barcodes_2.tsv.gz,features_2.tsv.gz,matrix_2.mtx.gz
 ```
 
-| Column                  | Description
-| --------------------    | ----------------------------------------------------
-| `sample`                | Custom sample name.
-| `tissue_positions_list` | Path to the CSV with spot barcodes and their array positions.
-| `tissue_lowres_image`   | Path to the low-resolution image for the sample.
-| `tissue_hires_image`    | Path to the high-resolution image for the sample.
-| `scale_factors`         | Path to the JSON file with scale conversion factors for the spots.
-| `barcodes`              | Path to TSV file with barcode IDs.
-| `features`              | Path to TSV file with features IDs.
-| `matrix`                | Path to MTX file with UMIs, barcodes and features.
+| Column                  | Description                                                        |
+| ----------------------- | ------------------------------------------------------------------ |
+| `sample`                | Custom sample name.                                                |
+| `tissue_positions_list` | Path to the CSV with spot barcodes and their array positions.      |
+| `tissue_lowres_image`   | Path to the low-resolution image for the sample.                   |
+| `tissue_hires_image`    | Path to the high-resolution image for the sample.                  |
+| `scale_factors`         | Path to the JSON file with scale conversion factors for the spots. |
+| `barcodes`              | Path to TSV file with barcode IDs.                                 |
+| `features`              | Path to TSV file with features IDs.                                |
+| `matrix`                | Path to MTX file with UMIs, barcodes and features.                 |
 
 The latter three elements should be taken from the `filtered_feature_bc_matrix/`
-directory, *i.e.* only tissue-associated barcodes and their data.
+directory, _i.e._ only tissue-associated barcodes and their data.
 
 ## Space Ranger options
 
