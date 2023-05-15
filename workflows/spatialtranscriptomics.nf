@@ -124,6 +124,13 @@ workflow ST {
         ST_PREPROCESS.out.st_data_norm
     )
     ch_versions = ch_versions.mix(ST_POSTPROCESS.out.versions)
+
+    //
+    // MODULE: Pipeline reporting
+    //
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 }
 
 /*
