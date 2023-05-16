@@ -1,0 +1,71 @@
+Changes in module 'nf-core/custom/dumpsoftwareversions'
+--- modules/nf-core/custom/dumpsoftwareversions/meta.yml
++++ modules/nf-core/custom/dumpsoftwareversions/meta.yml
+@@ -20,10 +20,6 @@
+       type: file
+       description: Standard YML file containing software versions
+       pattern: "software_versions.yml"
+-  - mqc_yml:
+-      type: file
+-      description: MultiQC custom content YML file containing software versions
+-      pattern: "software_versions_mqc.yml"
+   - versions:
+       type: file
+       description: File containing software versions
+
+--- modules/nf-core/custom/dumpsoftwareversions/main.nf
++++ modules/nf-core/custom/dumpsoftwareversions/main.nf
+@@ -11,9 +11,8 @@
+     path versions
+ 
+     output:
+-    path "software_versions.yml"    , emit: yml
+-    path "software_versions_mqc.yml", emit: mqc_yml
+-    path "versions.yml"             , emit: versions
++    path "software_versions.yml", emit: yml
++    path "versions.yml"         , emit: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+
+--- modules/nf-core/custom/dumpsoftwareversions/templates/dumpsoftwareversions.py
++++ modules/nf-core/custom/dumpsoftwareversions/templates/dumpsoftwareversions.py
+@@ -4,13 +4,14 @@
+ """Provide functions to merge multiple versions.yml files."""
+ 
+ 
+-import yaml
+ import platform
+ from textwrap import dedent
+ 
++import yaml
++
+ 
+ def _make_versions_html(versions):
+-    """Generate a tabular HTML output of all versions for MultiQC."""
++    """Generate a tabular HTML output of all versions."""
+     html = [
+         dedent(
+             """\\
+@@ -79,19 +80,8 @@
+         "$workflow.manifest.name": "$workflow.manifest.version",
+     }
+ 
+-    versions_mqc = {
+-        "id": "software_versions",
+-        "section_name": "${workflow.manifest.name} Software Versions",
+-        "section_href": "https://github.com/${workflow.manifest.name}",
+-        "plot_type": "html",
+-        "description": "are collected at run time from the software output.",
+-        "data": _make_versions_html(versions_by_module),
+-    }
+-
+     with open("software_versions.yml", "w") as f:
+         yaml.dump(versions_by_module, f, default_flow_style=False)
+-    with open("software_versions_mqc.yml", "w") as f:
+-        yaml.dump(versions_mqc, f, default_flow_style=False)
+ 
+     with open("versions.yml", "w") as f:
+         yaml.dump(versions_this_module, f, default_flow_style=False)
+
+************************************************************
