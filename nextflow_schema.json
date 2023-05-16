@@ -34,14 +34,6 @@
                     "help_text": "Use this when your data is raw spatial data that needs to be processed by SpaceRanger before downstream analyses can be executed.",
                     "default": "false"
                 },
-                "spaceranger_input": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the raw spatial samples in the experiment.",
-                    "fa_icon": "fas fa-file-csv"
-                },
                 "spaceranger_reference": {
                     "type": "string",
                     "format": "file-path",
