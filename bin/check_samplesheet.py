@@ -6,9 +6,7 @@
 
 import argparse
 import csv
-import errno
 import logging
-import os
 import sys
 from collections import Counter
 from pathlib import Path
@@ -160,30 +158,8 @@ def sniff_format(handle):
     peek = read_head(handle)
     handle.seek(0)
     sniffer = csv.Sniffer()
-    if not sniffer.has_header(peek):
-        logger.critical("The given sample sheet does not appear to contain a header.")
-        sys.exit(1)
     dialect = sniffer.sniff(peek)
     return dialect
-
-
-def make_dir(path):
-    if len(path) > 0:
-        try:
-            os.makedirs(path)
-        except OSError as exception:
-            if exception.errno != errno.EEXIST:
-                raise exception
-
-
-def print_error(error, context="Line", context_str=""):
-    error_str = "ERROR: Please check samplesheet -> {}".format(error)
-    if context != "" and context_str != "":
-        error_str = "ERROR: Please check samplesheet -> {}\n{}: '{}'".format(
-            error, context.strip(), context_str.strip()
-        )
-    print(error_str)
-    sys.exit(1)
 
 
 def check_samplesheet(file_in, file_out):
@@ -212,105 +188,34 @@ def check_samplesheet(file_in, file_out):
         https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
 
     """
-
-    sample_mapping_dict = {}
-    with open(file_in, "r") as fin:
-        ## Check header
-        MIN_COLS = 7
-        HEADER = [
-            "sample",
-            "tissue_positions_list",
-            "tissue_lowres_image",
-            "tissue_hires_image",
-            "scale_factors",
-            "barcodes",
-            "features",
-            "matrix",
-        ]
-        header = [x.strip('"') for x in fin.readline().strip().split(",")]
-        if header[: len(HEADER)] != HEADER:
-            print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
+    required_columns = {"sample", "tissue_positions_list",
+                        "tissue_lowres_image", "tissue_hires_image",
+                        "scale_factors", "barcodes", "features", "matrix"}
+    # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
+    with file_in.open(newline="") as in_handle:
+        reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
+        # Validate the existence of the expected header columns.
+        if not required_columns.issubset(reader.fieldnames):
+            req_cols = ", ".join(required_columns)
+            logger.critical(f"The sample sheet **must** contain these column headers: {req_cols}.")
             sys.exit(1)
-
-        ## Check sample entries
-        for line in fin:
-            lspl = [x.strip().strip('"') for x in line.strip().split(",")]
-
-            # Check valid number of columns per row
-            if len(lspl) < len(HEADER):
-                print_error(
-                    "Invalid number of columns (minimum = {})!".format(len(HEADER)),
-                    "Line",
-                    line,
-                )
-            num_cols = len([x for x in lspl if x])
-            if num_cols < MIN_COLS:
-                print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(MIN_COLS),
-                    "Line",
-                    line,
-                )
-
-            ## Check sample name entries
-            (
-                sample,
-                tissue_positions_list,
-                tissue_lowres_image,
-                tissue_hires_image,
-                scale_factors,
-                barcodes,
-                features,
-                matrix,
-            ) = lspl[: len(HEADER)]
-            sample = sample.replace(" ", "_")
-            if not sample:
-                print_error("Sample entry has not been specified!", "Line", line)
-
-            ## Auto-detect paired-end/single-end
-            sample_info = [
-                tissue_positions_list,
-                tissue_lowres_image,
-                tissue_hires_image,
-                scale_factors,
-                barcodes,
-                features,
-                matrix,
-            ]  ## [single_end, fastq_1, fastq_2]
-
-            ## Create sample mapping dictionary = { sample: [ single_end, fastq_1, fastq_2 ] }
-            if sample not in sample_mapping_dict:
-                sample_mapping_dict[sample] = [sample_info]
-            else:
-                if sample_info in sample_mapping_dict[sample]:
-                    print_error("Samplesheet contains duplicate rows!", "Line", line)
-                else:
-                    sample_mapping_dict[sample].append(sample_info)
-
-    ## Write validated samplesheet with appropriate columns
-    if len(sample_mapping_dict) > 0:
-        out_dir = os.path.dirname(file_out)
-        make_dir(out_dir)
-        with open(file_out, "w") as fout:
-            fout.write(
-                ",".join(
-                    [
-                        "sample",
-                        "tissue_positions_list",
-                        "tissue_lowres_image",
-                        "tissue_hires_image",
-                        "scale_factors",
-                        "barcodes",
-                        "features",
-                        "matrix",
-                    ]
-                )
-                + "\n"
-            )
-            for sample in sorted(sample_mapping_dict.keys()):
-                for idx, val in enumerate(sample_mapping_dict[sample]):
-                    fout.write(",".join(["{}_T{}".format(sample, idx + 1)] + val) + "\n")
-    else:
-        print_error("No entries to process!", "Samplesheet: {}".format(file_in))
+        # Validate each row.
+        checker = RowChecker()
+        for i, row in enumerate(reader):
+            try:
+                checker.validate_and_transform(row)
+            except AssertionError as error:
+                logger.critical(f"{str(error)} On line {i + 2}.")
+                sys.exit(1)
+        checker.validate_unique_samples()
+    header = list(reader.fieldnames)
+    header.insert(1, "single_end")
+    # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
+    with file_out.open(mode="w", newline="") as out_handle:
+        writer = csv.DictWriter(out_handle, header, delimiter=",")
+        writer.writeheader()
+        for row in checker.modified:
+            writer.writerow(row)
 
 
 def parse_args(argv=None):
