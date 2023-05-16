@@ -9,15 +9,16 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowSpatialtranscriptomics.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 log.info """\
          Project directory:  ${projectDir}
          """
          .stripIndent()
 
-
-def checkPathParamList = [ params.input ]
+def checkPathParamList = [ params.input,
+                           params.spaceranger_reference,
+                           params.spaceranger_probeset,
+                           params.spaceranger_manual_alignment ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
