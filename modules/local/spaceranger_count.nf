@@ -1,5 +1,5 @@
 //
-// Run SpaceRanger count
+// Run Space Ranger count
 //
 
 process SPACERANGER_COUNT {
@@ -45,7 +45,7 @@ process SPACERANGER_COUNT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        SpaceRanger: \$(spaceranger -V | sed -e "s/spaceranger spaceranger-//g")
+        Space Ranger: \$(spaceranger -V | sed -e "s/spaceranger spaceranger-//g")
     END_VERSIONS
     """
 }

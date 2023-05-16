@@ -18,7 +18,7 @@ as shown in the examples below.
 
 ### Raw spatial data
 
-The samplesheet for raw spatial data yet to be analysed with SpaceRanger is
+The samplesheet for raw spatial data yet to be analysed with Space Ranger is
 specified like so:
 
 ```no-highlight
@@ -45,7 +45,7 @@ appropriate for your samples.
 
 ### Processed data
 
-If your data has already been processed by SpaceRanger the samplesheet will look
+If your data has already been processed by Space Ranger the samplesheet will look
 like this:
 
 ```no-highlight
@@ -97,10 +97,10 @@ respectively.
 The typical command for running the pipeline is as follows:
 
 ```bash
-# Run the pipeline with raw data yet to be processed by SpaceRanger
+# Run the pipeline with raw data yet to be processed by Space Ranger
 nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker --run_spaceranger
 
-# Run pipeline with data already processed by SpaceRanger
+# Run pipeline with data already processed by Space Ranger
 nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker
 ```
 

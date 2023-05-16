@@ -14,11 +14,11 @@
 
 **nf-core/spatialtranscriptomics** is a bioinformatics analysis pipeline for
 Spatial Transcriptomics. It can process and analyse 10X spatial data either
-directly from raw data by running [SpaceRanger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger)
-or data already processed by SpaceRanger. The pipeline currently consists of the
+directly from raw data by running [Space Ranger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger)
+or data already processed by Space Ranger. The pipeline currently consists of the
 following steps:
 
-0. Raw data processing with SpaceRanger (optional)
+0. Raw data processing with Space Ranger (optional)
 1. Quality controls and filtering
 2. Normalisation
 3. Dimensionality reduction and clustering

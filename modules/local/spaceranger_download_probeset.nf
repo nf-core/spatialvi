@@ -1,5 +1,5 @@
 //
-// Download SpaceRanger probeset
+// Download Space Ranger probeset
 //
 
 process SPACERANGER_DOWNLOAD_PROBESET {

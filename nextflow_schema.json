@@ -30,14 +30,14 @@
                 },
                 "run_spaceranger": {
                     "type": "boolean",
-                    "description": "Run SpaceRanger on input data",
-                    "help_text": "Use this when your data is raw spatial data that needs to be processed by SpaceRanger before downstream analyses can be executed.",
+                    "description": "Run Space Ranger on input data",
+                    "help_text": "Use this when your data is raw spatial data that needs to be processed by Space Ranger before downstream analyses can be executed.",
                     "default": "false"
                 },
                 "spaceranger_reference": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Location of SpaceRanger reference directory",
+                    "description": "Location of Space Ranger reference directory",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "spaceranger_probeset": {
@@ -45,7 +45,7 @@
                     "format": "file-path",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "description": "Location of SpaceRanger probeset file",
+                    "description": "Location of Space Ranger probeset file",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "spaceranger_manual_alignment": {
@@ -53,7 +53,7 @@
                     "format": "file-path",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.json$",
-                    "description": "Location of SpaceRanger manual alignment file",
+                    "description": "Location of Space Ranger manual alignment file",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "email": {

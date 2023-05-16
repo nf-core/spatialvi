@@ -1,5 +1,5 @@
 //
-// Raw data processing with SpaceRanger
+// Raw data processing with Space Ranger
 //
 
 include { SPACERANGER_DOWNLOAD_PROBESET  } from '../../modules/local/spaceranger_download_probeset'
@@ -50,7 +50,7 @@ workflow SPACERANGER {
     }
 
     //
-    // Run SpaceRanger count
+    // Run Space Ranger count
     //
     SPACERANGER_COUNT (
         ch_st_data,

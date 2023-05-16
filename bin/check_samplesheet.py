@@ -13,7 +13,7 @@ def parse_args(argv=None):
     parser.add_argument("file_in", help="Input samplesheet file.")
     parser.add_argument("file_out", help="Output validated samplesheet file.")
     parser.add_argument(
-        "--is_raw_data", action="store_true", help="Whether input is raw data to be processed by SpaceRanger."
+        "--is_raw_data", action="store_true", help="Whether input is raw data to be processed by Space Ranger."
     )
     return parser.parse_args(argv)
 
@@ -45,7 +45,7 @@ def check_samplesheet(file_in, file_out, is_raw_data):
     Args:
         file_in (pathlib.Path): The given tabular samplesheet.
         file_out (pathlib.Path): Where the validated samplesheet should be created.
-        is_raw_data (boolean): Whether the input is raw spatial data to be processed by SpaceRanger.
+        is_raw_data (boolean): Whether the input is raw spatial data to be processed by Space Ranger.
 
     The following structure is expected:
         sample,tissue_positions_list,tissue_lowres_image,tissue_hires_image,scale_factors,barcodes,features,matrix
