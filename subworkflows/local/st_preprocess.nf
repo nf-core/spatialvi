@@ -8,7 +8,6 @@ workflow ST_PREPROCESS {
 
     take:
     st_raw
-    mito_data
 
     main:
 
@@ -24,8 +23,7 @@ workflow ST_PREPROCESS {
     //
     ST_QC_AND_NORMALISATION (
         report,
-        st_raw,
-        mito_data
+        st_raw
     )
     ch_versions = ch_versions.mix(ST_QC_AND_NORMALISATION.out.versions)
 

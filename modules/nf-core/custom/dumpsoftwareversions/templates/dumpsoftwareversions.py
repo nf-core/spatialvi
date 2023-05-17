@@ -11,7 +11,7 @@ import yaml
 
 
 def _make_versions_html(versions):
-    """Generate a tabular HTML output of all versions for MultiQC."""
+    """Generate a tabular HTML output of all versions."""
     html = [
         dedent(
             """\\
@@ -80,19 +80,8 @@ def main():
         "$workflow.manifest.name": "$workflow.manifest.version",
     }
 
-    versions_mqc = {
-        "id": "software_versions",
-        "section_name": "${workflow.manifest.name} Software Versions",
-        "section_href": "https://github.com/${workflow.manifest.name}",
-        "plot_type": "html",
-        "description": "are collected at run time from the software output.",
-        "data": _make_versions_html(versions_by_module),
-    }
-
     with open("software_versions.yml", "w") as f:
         yaml.dump(versions_by_module, f, default_flow_style=False)
-    with open("software_versions_mqc.yml", "w") as f:
-        yaml.dump(versions_mqc, f, default_flow_style=False)
 
     with open("versions.yml", "w") as f:
         yaml.dump(versions_this_module, f, default_flow_style=False)

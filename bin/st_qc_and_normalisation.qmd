@@ -17,7 +17,6 @@ resolution = 1
 saveFileST = None
 
 rawAdata = None #Name of the h5ad file
-mitoFile = None #Path and name of the mito file
 pltFigSize = 6 #Figure size
 minCounts = 500 #Min counts per spot
 minGenes = 250 #Min genes per spot
@@ -50,12 +49,9 @@ plt.rcParams["figure.figsize"] = (pltFigSize, pltFigSize)
 
 ```{python}
 st_adata = sc.read("./" + rawAdata)
-#st_adata.var_names_make_unique()
 
-mito = pd.read_csv(mitoFile, index_col=["Symbol", "MCARTA2_LIST"], delimiter="\t")["EnsemblGeneID"]
-mito = mito.xs(1, level="MCARTA2_LIST").sort_index().reset_index()
-
-st_adata.var["mt"] = st_adata.var_names.isin(mito["Symbol"])
+# Get mitochondrial percentages
+st_adata.var['mt'] = st_adata.var_names.str.startswith('MT-')
 sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt"], inplace=True)
 ```
 
