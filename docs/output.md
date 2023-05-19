@@ -17,8 +17,6 @@ pipeline has finished. Results for individual samples will be created in
 subdirectories following the `<OUTDIR>/<SAMPLE>/` structure. All paths are
 relative to the top-level results directory.
 
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
-
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes
 data using the following steps:
 
