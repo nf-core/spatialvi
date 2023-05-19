@@ -1,0 +1,103 @@
+---
+title: "Clustering Spatial Transcriptomics data"
+format:
+  html:
+    embed-resources: false
+    page-layout: full
+    code-fold: true
+jupyter: python3
+---
+
+```{python}
+#| tags: [parameters]
+#| echo: false
+
+fileNameST = None
+resolution = 1
+saveFileST = None
+```
+
+```{python}
+#| echo: false
+# Hide warnings in output html.
+import scanpy as sc
+import warnings
+warnings.filterwarnings("ignore")
+sc.settings.verbosity = 0
+```
+
+```{python}
+# Load packages
+import scanpy as sc
+import numpy as np
+import pandas as pd
+from umap import UMAP
+from matplotlib import pyplot as plt
+import seaborn as sns
+
+sc.set_figure_params(dpi_save=300, facecolor="white")
+```
+## Reading the data
+The data has already been filtered and is saved in AnnData format.
+```{python}
+#| echo: true
+#| code-fold: false
+st_adata = sc.read("./" + fileNameST)
+st_adata
+```
+
+## Manifold embedding and clustering based on transcriptional similarity
+
+We embed and cluster the manifold encoded by transcriptional similarity, using Leiden clustering [REF].
+
+```{python}
+sc.pp.pca(st_adata)
+sc.pp.neighbors(st_adata)
+sc.tl.umap(st_adata)
+sc.tl.leiden(st_adata, key_added="clusters", resolution=resolution)
+```
+
+We plot some covariates to check if there is any particular structure in the UMAP associated with total counts and detected genes.
+
+```{python}
+# Make plots of UMAP of ST spots clusters
+plt.rcParams["figure.figsize"] = (4, 4)
+sc.pl.umap(
+    st_adata, color=["total_counts", "n_genes_by_counts", "clusters"], wspace=0.4
+)
+sc.tl.embedding_density(st_adata, basis="umap", groupby="clusters")
+sc.pl.embedding_density(st_adata, groupby="clusters", ncols=4)
+```
+
+## Visualization in spatial coordinates
+We now take a look at how `total_counts` and `n_genes_by_counts` behave in spatial coordinates. We will overlay the circular spots on top of the Hematoxylin and eosin stain (H&E) image provided.
+
+```{python}
+plt.rcParams["figure.figsize"] = (10, 10)
+sc.pl.spatial(
+    st_adata, img_key="hires", color=["total_counts", "n_genes_by_counts"]
+)
+```
+
+Before, we performed clustering in gene expression space, and visualized the results with UMAP. By visualizing clustered samples in spatial dimensions, we can gain insights into tissue organization and, potentially, into inter-cellular communication.
+
+```{python}
+plt.rcParams["figure.figsize"] = (10, 10)
+sc.pl.spatial(
+    st_adata, img_key="hires", color=["clusters"]
+)
+```
+
+Spots belonging to the same cluster in gene expression space often co-occur in spatial dimensions.
+
+```{python}
+#| echo: false
+# Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
+st_adata.uns['log1p']['base'] = None
+```
+
+## Saving anndata file for future use.
+```{python}
+if saveFileST is not None:
+    st_adata.write(saveFileST)
+```

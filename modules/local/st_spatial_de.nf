@@ -3,28 +3,39 @@
 //
 process ST_SPATIAL_DE {
 
-    // TODO: Add proper Conda/container directive
-    // TODO: Export versions
+    // TODO: Add a better description
+    // TODO: Find solution for Quarto with Conda
 
-    tag "${sample_id}"
+    tag "${meta.id}"
     label "process_medium"
 
-    container "erikfas/spatialtranscriptomics"
+    container "docker.io/erikfas/spatialtranscriptomics"
 
     input:
-    tuple val(sample_id), path(st_data_norm)
+    path(report)
+    tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
 
     output:
-    tuple val(sample_id), path("*.csv"), emit: degs
-    path("*.png")                      , emit: figures, optional: true
-    // path("versions.yml")               , emit: versions
+    tuple val(meta), path("*.csv")              , emit: degs
+    tuple val(meta), path("st_spatial_de.html") , emit: html
+    tuple val(meta), path("st_spatial_de_files"), emit: html_files
+    path("versions.yml")                        , emit: versions
 
     script:
     """
-    stSpatialDE.py \
-        --fileName=${st_data_norm} \
-        --numberOfColumns=${params.SpatialDE_numberOfColumns} \
-        --saveFileName=${sample_id}.stSpatialDE.csv \
-        --savePlotName=${sample_id}.stSpatialDE.png
+    quarto render ${report} \
+        --output "st_spatial_de.html" \
+        -P fileNameST:${st_adata_norm} \
+        -P numberOfColumns:${params.st_spatial_de_ncols} \
+        -P saveDEFileName:st_gde.csv \
+        -P saveSpatialDEFileName:st_spatial_de.csv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        quarto: \$(quarto -v)
+        leidenalg: \$(python -c "import leidenalg; print(leidenalg.__version__)")
+        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
+        SpatialDE: \$(python -c "import SpatialDE; print(SpatialDE.__version__)")
+    END_VERSIONS
     """
 }

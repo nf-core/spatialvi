@@ -18,10 +18,12 @@ process SAMPLESHEET_CHECK {
     task.ext.when == null || task.ext.when
 
     script: // This script is bundled with the pipeline, in nf-core/spatialtranscriptomics/bin/
+    def is_raw_data = params.run_spaceranger ? '--is_raw_data' : ''
     """
     check_samplesheet.py \\
-        $samplesheet \\
-        samplesheet.valid.csv
+        ${samplesheet} \\
+        samplesheet.valid.csv \\
+        ${is_raw_data}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

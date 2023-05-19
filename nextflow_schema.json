@@ -28,29 +28,16 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "single_cell": {
-                    "type": "boolean",
-                    "description": "Also run analyses dependent on additional single cell data.",
-                    "default": "false"
-                },
                 "run_spaceranger": {
                     "type": "boolean",
-                    "description": "Run SpaceRanger on input data",
-                    "help_text": "Use this when your data is raw spatial data that needs to be processed by SpaceRanger before downstream analyses can be executed.",
+                    "description": "Run Space Ranger on input data",
+                    "help_text": "Use this when your data is raw spatial data that needs to be processed by Space Ranger before downstream analyses can be executed.",
                     "default": "false"
-                },
-                "spaceranger_input": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the raw spatial samples in the experiment.",
-                    "fa_icon": "fas fa-file-csv"
                 },
                 "spaceranger_reference": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Location of SpaceRanger reference directory",
+                    "description": "Location of Space Ranger reference directory",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "spaceranger_probeset": {
@@ -58,7 +45,7 @@
                     "format": "file-path",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "description": "Location of SpaceRanger probeset file",
+                    "description": "Location of Space Ranger probeset file",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "spaceranger_manual_alignment": {
@@ -66,7 +53,7 @@
                     "format": "file-path",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.json$",
-                    "description": "Location of SpaceRanger manual alignment file",
+                    "description": "Location of Space Ranger manual alignment file",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "email": {
@@ -75,52 +62,79 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "multiqc_title": {
-                    "type": "string",
-                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
-                    "fa_icon": "fas fa-file-signature"
                 }
             }
         },
-        "reference_genome_options": {
-            "title": "Reference genome options",
+
+        "analysis_options": {
+            "title": "Analysis option",
             "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
+            "description": "Define options for each tool in the pipeline",
+            "default": "",
             "properties": {
-                "genome": {
-                    "type": "string",
-                    "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                "st_load_min_counts": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum genes count"
                 },
-                "fasta": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
+                "st_load_min_cells": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum cells count"
                 },
-                "igenomes_base": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Directory / URL base for iGenomes references.",
-                    "default": "s3://ngi-igenomes/igenomes",
-                    "fa_icon": "fas fa-cloud-download-alt",
-                    "hidden": true
+                "st_preprocess_fig_size": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Figure size, inches"
                 },
-                "igenomes_ignore": {
-                    "type": "boolean",
-                    "description": "Do not load the iGenomes reference config.",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                "st_preprocess_min_counts": {
+                    "type": "integer",
+                    "default": 500,
+                    "description": "Minimum UMI count"
+                },
+                "st_preprocess_min_genes": {
+                    "type": "integer",
+                    "default": 250,
+                    "description": "Minimum genes count"
+                },
+                "st_preprocess_min_cells": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum cells count"
+                },
+                "st_preprocess_hist_qc_max_total_counts": {
+                    "type": "integer",
+                    "default": 10000,
+                    "description": "Max total counts cutoff for histogram QC plot"
+                },
+                "st_preprocess_hist_qc_min_gene_counts": {
+                    "type": "integer",
+                    "default": 4000,
+                    "description": "Min total gene counts cutoff for histogram QC plot"
+                },
+                "st_preprocess_hist_qc_bins": {
+                    "type": "integer",
+                    "default": 40,
+                    "description": "Histogram QC plot number of bins"
+                },
+                "st_spatial_de_top_hgv": {
+                    "type": "integer",
+                    "default": 15,
+                    "description": "Number of top highly variable genes to plot"
+                },
+                "st_spatial_de_ncols": {
+                    "type": "integer",
+                    "default": 5,
+                    "description": "Number of columns to group genes plots into"
+                },
+                "st_cluster_resolution": {
+                    "type": "number",
+                    "default": 0.4,
+                    "description": "Clustering resolution for ST spots"
                 }
             }
         },
+
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -246,14 +260,6 @@
                     "fa_icon": "fas fa-remove-format",
                     "hidden": true
                 },
-                "max_multiqc_email_size": {
-                    "type": "string",
-                    "description": "File size limit when attaching MultiQC reports to summary emails.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "default": "25.MB",
-                    "fa_icon": "fas fa-file-upload",
-                    "hidden": true
-                },
                 "monochrome_logs": {
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
@@ -265,30 +271,6 @@
                     "description": "Incoming hook URL for messaging service",
                     "fa_icon": "fas fa-people-group",
                     "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
-                    "hidden": true
-                },
-                "multiqc_config": {
-                    "type": "string",
-                    "description": "Custom config file to supply to MultiQC.",
-                    "fa_icon": "fas fa-cog",
-                    "hidden": true
-                },
-                "multiqc_logo": {
-                    "type": "string",
-                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
-                    "fa_icon": "fas fa-image",
-                    "hidden": true
-                },
-                "multiqc_methods_description": {
-                    "type": "string",
-                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
-                    "fa_icon": "fas fa-cog"
-                },
-                "tracedir": {
-                    "type": "string",
-                    "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/pipeline_info",
-                    "fa_icon": "fas fa-cogs",
                     "hidden": true
                 },
                 "validate_params": {
@@ -313,7 +295,7 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/definitions/analysis_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"

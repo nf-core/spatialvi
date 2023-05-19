@@ -1,7 +1,7 @@
 //
 // Read ST 10x visium and SC 10x data with Scanpy and save to `anndata` file
 //
-process READ_ST_AND_SC_DATA {
+process ST_READ_DATA {
 
     tag "${meta.id}"
     label "process_low"
@@ -12,7 +12,7 @@ process READ_ST_AND_SC_DATA {
         'quay.io/biocontainers/scanpy:1.7.2--pyhdfd78af_0' }"
 
     input:
-    tuple val  (meta),
+    tuple val (meta),
         path (tissue_positions_list, stageAs: "SRCount/spatial/tissue_positions_list.csv"),
         path (tissue_lowres_image  , stageAs: "SRCount/spatial/tissue_lowres_image.png"),
         path (tissue_hires_image   , stageAs: "SRCount/spatial/tissue_hires_image.png"),
@@ -23,22 +23,13 @@ process READ_ST_AND_SC_DATA {
 
     output:
     tuple val(meta), path("st_adata_raw.h5ad"), emit: st_raw
-    tuple val(meta), path("sc_adata_raw.h5ad"), emit: sc_raw
-    tuple val(meta), path("st_counts.npz")    , emit: st_counts
-    tuple val(meta), path("sc_counts.npz")    , emit: sc_counts
     path("versions.yml")                      , emit: versions
 
     script:
     """
-    script_read_st_data.py \
-        --SRCountDir  ./SRCount \
-        --outAnnData  st_adata_raw.h5ad \
-        --outSTCounts st_counts.npz
-
-    script_read_sc_data.py \
-        --SRCountDir  ./SRCount \
-        --outAnnData  sc_adata_raw.h5ad \
-        --outSCCounts sc_counts.npz
+    read_st_data.py \
+        --SRCountDir ./SRCount \
+        --outAnnData st_adata_raw.h5ad
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

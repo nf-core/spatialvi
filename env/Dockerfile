@@ -1,18 +1,24 @@
-FROM nfcore/base:2.1
-LABEL \
-    author = "Erik Fasterius" \
-    description = "Temporary Dockerfile for nf-core/spatialtranscriptomics" \
-    maintainer = "erik.fasterius@nbis.se"
+# First stage: multi-platform Quarto image
+FROM jdutant/quarto-minimal:1.3.313 as quarto
 
-# Copy and install the Conda environment
+# Second stage: multi-platform Mamba image
+FROM condaforge/mambaforge:23.1.0-1
+
+# Copy Quarto installation from first stage and add to PATH
+COPY --from=quarto /opt/quarto /opt/quarto
+ENV PATH="${PATH}:/opt/quarto/bin"
+
+# Install packages using Mamba; also remove static libraries, python bytecode
+# files and javascript source maps that are not required for execution
 COPY environment.yml ./
-RUN conda config --set channel_priority strict \
-    && conda env update --name base --file environment.yml \
-    && conda clean --all --force-pkgs-dirs --yes
+RUN mamba env update --name base --file environment.yml \
+    && mamba clean --all --force-pkgs-dirs --yes \
+    && find /opt/conda -follow -type f -name '*.a' -delete \
+    && find /opt/conda -follow -type f -name '*.pyc' -delete \
+    && find /opt/conda -follow -type f -name '*.js.map' -delete
 
-# Installation of non-Conda packages
-RUN Rscript -e 'devtools::install_github("MarcElosua/SPOTlight", ref="1f364a965ab275ac54a711e28c67554db25d547e")'
-RUN Rscript -e 'remotes::install_github("JEFworks-Lab/STdeconvolve", ref="648d2303bb38002dc6e9a5c9f59487b44d8161d4")'
-
-# Start Bash shell by default
 CMD /bin/bash
+
+LABEL \
+    authors = "Erik Fasterius, Christophe Avenel" \
+    description = "Dockerfile for nf-core/spatialtranscriptomics report modules"

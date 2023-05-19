@@ -10,10 +10,17 @@
 
 ## Pipeline tools
 
-- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- [anndata](https://github.com/theislab/anndata)
 
-- [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
-  > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
+  > Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: <https://doi.org/10.1101/2021.12.16.473007>
+
+- [scanpy](https://github.com/theislab/scanpy)
+
+  > Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol 19, 15 (2018). <https://doi.org/10.1186/s13059-017-1382-0>
+
+- [SpatialDE](https://github.com/Teichlab/SpatialDE)
+
+  > Svensson V, Teichmann S, Stegle O. SpatialDE: identification of spatially variable genes. Nat Methods 15, 343–346 (2018). <https://doi.org/10.1038/nmeth.4636>
 
 ## Software packaging/containerisation tools
 
