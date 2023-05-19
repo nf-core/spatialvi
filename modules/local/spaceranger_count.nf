@@ -7,7 +7,7 @@ process SPACERANGER_COUNT {
     tag "${meta.id}"
     label "process_spaceranger"
 
-    container "nfcore/spaceranger:1.3.0"
+    container "docker.io/nfcore/spaceranger:1.3.0"
 
     input:
     tuple val(meta), path(fastq_dir), path(image), val(slide), val(area)

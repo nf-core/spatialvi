@@ -183,7 +183,6 @@
                 }
             }
         },
-
         "max_job_request_options": {
             "title": "Max job request options",
             "type": "object",
@@ -219,7 +218,6 @@
                 }
             }
         },
-
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -292,11 +290,7 @@
             }
         }
     },
-
     "allOf": [
-        {
-            "$ref": "#/definitions/analysis_option"
-        },
         {
             "$ref": "#/definitions/input_output_options"
         },

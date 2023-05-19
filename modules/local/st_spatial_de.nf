@@ -9,7 +9,7 @@ process ST_SPATIAL_DE {
     tag "${meta.id}"
     label "process_medium"
 
-    container "erikfas/spatialtranscriptomics"
+    container "docker.io/erikfas/spatialtranscriptomics"
 
     input:
     path(report)

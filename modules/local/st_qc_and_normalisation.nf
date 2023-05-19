@@ -9,7 +9,7 @@ process ST_QC_AND_NORMALISATION {
     tag "${meta.id}"
     label "process_low"
 
-    container "erikfas/spatialtranscriptomics"
+    container "docker.io/erikfas/spatialtranscriptomics"
 
     input:
     path(report)

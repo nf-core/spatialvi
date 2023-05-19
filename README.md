@@ -8,7 +8,7 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/spatialtranscriptomics)
 
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23spatialtranscriptomics-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/spatialtranscriptomics)[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
+[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23spatialtranscriptomics-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/spatialtranscriptomics)[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)[![Follow on Mastodon](https://img.shields.io/badge/mastodon-nf__core-6364ff?labelColor=FFFFFF&logo=mastodon)](https://mstdn.science/@nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
 ## Introduction
 
@@ -34,8 +34,6 @@ processes have been submitted to and installed from [nf-core/modules](https://gi
 in order to make them available to all nf-core pipelines, and to everyone within
 the Nextflow community!
 
-<!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
-
 On release, automated continuous integration tests run the pipeline on a
 full-sized dataset on the AWS cloud infrastructure. This ensures that the
 pipeline runs on AWS, has sensible resource allocation defaults set to run on
@@ -43,46 +41,53 @@ real-world datasets, and permits the persistent storage of results to benchmark
 between pipeline releases and other analysis sources. The results obtained from
 the full-sized test can be viewed on the [nf-core website](https://nf-co.re/spatialtranscriptomics/results).
 
-## Quick Start
+## Usage
 
-1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=22.10.1`)
+> **Note** <br>
+> If you are new to nextflow and nf-core, please refer to [this
+> page](https://nf-co.re/docs/usage/installation) on how to set-up nextflow.
+> Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
+> with `-profile test` before running the workflow on actual data.
 
-2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
+You can run the pipeline using:
 
-<!-- TODO nf-core: check that the Conda profile works for all processes or add a note about it -->
+```bash
+nextflow run nf-core/spatialtranscriptomics \
+   -profile <docker/singularity/.../institute> \
+   --input samplesheet.csv \
+   --outdir <OUTDIR>
+```
 
-3. Download the pipeline and test it on a minimal dataset with a single command:
+> **Warning** <br>
+> Please provide pipeline parameters via the CLI or Nextflow
+> `-params-file` option. Custom config files including those provided by the
+> `-c` Nextflow option can be used to provide any configuration **except for
+> parameters**; see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-   > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
-   > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-   > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
-   > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+For more details, please refer to the [usage documentation](https://nf-co.re/rnaseq/usage)
+and the [parameter documentation](https://nf-co.re/rnaseq/parameters).
 
-4. Start running your own analysis!
+## Pipeline output
 
-   ```bash
-   nextflow run nf-core/spatialtranscriptomics -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv
-   ```
-
-> **Note:** Test datasets and their description are located at [`nf-core/test-datasets`](https://github.com/nf-core/test-datasets/tree/spatialtranscriptomics).
-
-## Documentation
-
-> **Note:** The documentation is under development and will be updated as soon as possible.
-
-The nf-core/spatialtranscriptomics pipeline comes with documentation about the pipeline [usage](https://nf-co.re/spatialtranscriptomics/usage), [parameters](https://nf-co.re/spatialtranscriptomics/parameters) and [output](https://nf-co.re/spatialtranscriptomics/output).
+To see the the results of a test run with a full size dataset refer to the [results](https://nf-co.re/spatialtranscriptomics/results) tab on the nf-core website pipeline page.
+For more details about the output files and reports, please refer to the
+[output documentation](https://nf-co.re/spatialtranscriptomics/output).
 
 ## Credits
 
-nf-core/spatialtranscriptomics was originally developed by The Jackson Laboratory. This project has been supported by grants from the US National Institutes of Health [U24CA224067](https://reporter.nih.gov/project-details/10261367) and [U54AG075941](https://reporter.nih.gov/project-details/10376627). Original authors:
+nf-core/spatialtranscriptomics was originally developed by the Jackson
+Laboratory<sup>1</sup>, up to the [0.1.0](https://github.com/nf-core/spatialtranscriptomics/releases/tag/0.1.0)
+tag. It was further developed in a collaboration between the [National
+Bioinformatics Infrastructure Sweden](https://nbis.se/) and [National Genomics
+Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/);
+it is currently developed and maintained by [Erik Fasterius](https://github.com/fasterius)
+and [Christophe Avenel](https://github.com/cavenel).
 
-- [Dr. Sergii Domanskyi](https://github.com/sdomanskyi)
-- Prof. Jeffrey Chuang
-- Dr. Anuj Srivastava
-
-The pipeline is being further developed in collaboration with the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/).
-
-<!-- We thank the following people for their extensive assistance in the development of this pipeline: -->
+<sup>1</sup> Supported by grants from the US National Institutes of Health
+[U24CA224067](https://reporter.nih.gov/project-details/10261367) and
+[U54AG075941](https://reporter.nih.gov/project-details/10376627). Original
+authors [Dr. Sergii Domanskyi](https://github.com/sdomanskyi), Prof. Jeffrey
+Chuang and Dr. Anuj Srivastava.
 
 ## Contributions and Support
 
@@ -94,6 +99,8 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 <!-- If you use  nf-core/spatialtranscriptomics for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+
+<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

@@ -24,7 +24,7 @@ process SPACERANGER_DOWNLOAD_REFERENCE {
     name = reference.split("\\.", 2)[0]
     """
     wget ${address}
-    tar -xzvf ${reference}
+    tar -xvf ${reference}
     rm ${reference}
 
     cat <<-END_VERSIONS > versions.yml
