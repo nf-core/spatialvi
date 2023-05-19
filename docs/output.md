@@ -60,17 +60,15 @@ information about these files at the [10X website](https://support.10xgenomics.c
 <summary>Output files</summary>
 
 - `<SAMPLE>/data/`
-  - `st_adata_norm.h5ad`: Filtered and normalised adata.
-  - `st_adata_plain.h5ad`: Filtered adata.
   - `st_adata_processed.h5ad`: Filtered, normalised and clustered adata.
-  - `st_adata_raw.h5ad`: Raw adata.
 
 </details>
 
 Data in `.h5ad` format as processed by the pipeline, which can be used for
-further downstream analyses if desired. They can also be used by the
-[TissUUmaps](https://tissuumaps.github.io/) browser-based tool for visualisation
-and exploration, allowing you to delve into the data in an interactive way.
+further downstream analyses if desired; unprocessed data is also present in this
+file. It can also be used by the [TissUUmaps](https://tissuumaps.github.io/)
+browser-based tool for visualisation and exploration, allowing you to delve into
+the data in an interactive way.
 
 ## Reports
 
