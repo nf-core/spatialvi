@@ -10,18 +10,10 @@ def parse_args(argv=None):
     Description = "Check contents of nf-core/spatialtranscriptomics samplesheet."
     Epilog = "Example usage: python check_samplesheet.py samplesheet.csv samplesheet.valid.csv"
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
+    parser.add_argument("file_in", help="Input samplesheet file.")
+    parser.add_argument("file_out", help="Output validated samplesheet file.")
     parser.add_argument(
-        "file_in",
-        help="Input samplesheet file."
-    )
-    parser.add_argument(
-        "file_out",
-        help="Output validated samplesheet file."
-    )
-    parser.add_argument(
-        "--is_raw_data",
-        action="store_true",
-        help="Whether input is raw data to be processed by Space Ranger."
+        "--is_raw_data", action="store_true", help="Whether input is raw data to be processed by Space Ranger."
     )
     return parser.parse_args(argv)
 

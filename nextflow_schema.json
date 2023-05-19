@@ -66,7 +66,7 @@
             }
         },
 
-        "analysis_option": {
+        "analysis_options": {
             "title": "Analysis option",
             "type": "object",
             "description": "Define options for each tool in the pipeline",
@@ -293,6 +293,9 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/analysis_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
