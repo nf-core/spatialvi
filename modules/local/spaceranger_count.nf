@@ -10,10 +10,9 @@ process SPACERANGER_COUNT {
     container "docker.io/nfcore/spaceranger:1.3.0"
 
     input:
-    tuple val(meta), path(fastq_dir), path(image), val(slide), val(area)
+    tuple val(meta), path(fastq_dir), path(image), val(slide), val(area), path(manual_alignment)
     path(reference)
     path(probeset)
-    path(manual_alignment)
 
     output:
     path "spaceranger", type: "dir"                          , emit: sr_dir

@@ -48,14 +48,6 @@
                     "description": "Location of Space Ranger probeset file",
                     "fa_icon": "fas fa-file-csv"
                 },
-                "spaceranger_manual_alignment": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Location of Space Ranger manual alignment file",
-                    "fa_icon": "fas fa-file-csv"
-                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",

@@ -31,21 +31,30 @@ def create_spaceranger_channels(LinkedHashMap row) {
     def meta = [:]
     meta.id = row.sample
 
-    def array = []
+    def raw_meta = []
     if (!file(row.fastq_dir).exists()) {
         exit 1, "ERROR: Please check input samplesheet -> fastq_dir directory does not exist!\n${row.fastq_dir}"
     }
     if (!file(row.tissue_hires_image).exists()) {
         exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.tissue_hires_image}"
     }
-    array = [
+    if ( row.manual_alignment.isEmpty() ) {
+        manual_alignment = file ( "EMPTY_ALIGNMENT" )
+    } else {
+        if (!file(row.manual_alignment).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> manual_alignment file does not exist!\n${row.manual_alignment}"
+        }
+        manual_alignment = file ( row.manual_alignment )
+    }
+    raw_meta = [
         meta,
         file(row.fastq_dir),
         file(row.tissue_hires_image),
         row.slide,
         row.area,
+        manual_alignment
     ]
-    return array
+    return raw_meta
 }
 
 // Function to get list of [ meta, [ tissue_positions_list, tissue_hires_image, \

@@ -37,24 +37,12 @@ workflow SPACERANGER {
     }
 
     //
-    // Optional: manual alignment file
-    //
-    ch_manual_alignment = Channel.empty()
-    if (params.spaceranger_manual_alignment) {
-        ch_manual_alignment = Channel
-            .fromPath ( params.spaceranger_manual_alignment, checkIfExists: true )
-    } else {
-        ch_manual_alignment = file ( 'EMPTY_ALIGNMENT' )
-    }
-
-    //
     // Run Space Ranger count
     //
     SPACERANGER_COUNT (
         ch_st_data,
         ch_reference,
-        ch_probeset,
-        ch_manual_alignment
+        ch_probeset
     )
     ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 

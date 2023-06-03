@@ -38,6 +38,7 @@ class RowChecker:
         hires_image_col="tissue_hires_image",
         lowres_image_col="tissue_lowres_image",
         matrix_col = "matrix",
+        manual_alignment_col = "manual_alignment",
         sample_col="sample",
         scale_factors_col="scale_factors",
         slide_col="slide",
@@ -82,6 +83,7 @@ class RowChecker:
         self._features_col = features_col
         self._hires_image_col = hires_image_col
         self._lowres_image_col = lowres_image_col
+        self._manual_alignment_col = manual_alignment_col
         self._matrix_col = matrix_col
         self._sample_col = sample_col
         self._scale_factors_col = scale_factors_col
@@ -104,6 +106,7 @@ class RowChecker:
             self._validate_hires_image(row)
             self._validate_slide(row)
             self._validate_area(row)
+            self._validate_manual_alignment(row)
             self.modified.append(row)
         else:
             self._validate_sample(row)
@@ -147,6 +150,10 @@ class RowChecker:
         # TODO: Possibly add a check for valid area specifications
         if len(row[self._area_col]) <= 0:
             raise AssertionError("The area is required")
+
+    def _validate_manual_alignment(self, row):
+        """Assert that the manual alignment entry has the right format if it exists."""
+        return
 
     def _validate_tissue_positions_list(self, row):
         """Assert that the tissue positions list entry exists."""
@@ -257,7 +264,8 @@ def check_samplesheet(file_in, file_out, is_raw_data):
             "fastq_dir",
             "tissue_hires_image",
             "slide",
-            "area"
+            "area",
+            "manual_alignment"
         }
     else:
         required_columns = {
