@@ -27,6 +27,9 @@ process SPACERANGER_COUNT {
         path ("*/outs/raw_feature_bc_matrix/matrix.mtx.gz")  , emit: sr_out
     path "versions.yml"                                      , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def probeset         = probeset.name != 'EMPTY_PROBESET' ? "--probe-set=${probeset}" : ''
     def manual_alignment = manual_alignment.name != 'EMPTY_ALIGNMENT' ? "--loupe-alignment=${manual_alignment}" : ''

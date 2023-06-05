@@ -21,6 +21,9 @@ process ST_CLUSTERING {
     tuple val(meta), path("st_clustering_files")    , emit: html_files
     path("versions.yml")                            , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     quarto render ${report} \
