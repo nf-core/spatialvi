@@ -8,6 +8,7 @@ import argparse
 import csv
 import logging
 import sys
+
 # from collections import Counter
 from pathlib import Path
 
@@ -24,21 +25,18 @@ class RowChecker:
 
     """
 
-    VALID_FORMATS = (
-        ".fq.gz",
-        ".fastq.gz"
-    )
+    VALID_FORMATS = (".fq.gz", ".fastq.gz")
 
     def __init__(
         self,
         area_col="area",
-        barcodes_col = "barcodes",
+        barcodes_col="barcodes",
         fastq_dir_col="fastq_dir",
-        features_col = "features",
+        features_col="features",
         hires_image_col="tissue_hires_image",
         lowres_image_col="tissue_lowres_image",
-        matrix_col = "matrix",
-        manual_alignment_col = "manual_alignment",
+        matrix_col="matrix",
+        manual_alignment_col="manual_alignment",
         sample_col="sample",
         scale_factors_col="scale_factors",
         slide_col="slide",
@@ -259,14 +257,7 @@ def check_samplesheet(file_in, file_out, is_raw_data):
 
     """
     if is_raw_data:
-        required_columns = {
-            "sample",
-            "fastq_dir",
-            "tissue_hires_image",
-            "slide",
-            "area",
-            "manual_alignment"
-        }
+        required_columns = {"sample", "fastq_dir", "tissue_hires_image", "slide", "area", "manual_alignment"}
     else:
         required_columns = {
             "sample",
@@ -276,7 +267,7 @@ def check_samplesheet(file_in, file_out, is_raw_data):
             "scale_factors",
             "barcodes",
             "features",
-            "matrix"
+            "matrix",
         }
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:

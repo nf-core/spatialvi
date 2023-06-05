@@ -34,7 +34,7 @@ SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1,
 | `tissue_hires_image` | Path to the high-resolution image for the sample.          |
 | `slide`              | The Visium slide ID used for the sequencing.               |
 | `area`               | Which slide area contains the tissue sample.               |
-| `manual_alignment`   | Path to the manual alignment file (optional)
+| `manual_alignment`   | Path to the manual alignment file (optional)               |
 
 > **NB:** The `manual_alignment` column is only required for samples for which a
 > manual alignment file is needed and can be ignored if you're using automatic
