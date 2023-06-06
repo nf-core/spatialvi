@@ -19,6 +19,9 @@ process SPACERANGER_DOWNLOAD_REFERENCE {
     path "${name}", type: "dir", emit: reference
     path "versions.yml"        , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     reference = address.tokenize("/").last()
     name = reference.split("\\.", 2)[0]

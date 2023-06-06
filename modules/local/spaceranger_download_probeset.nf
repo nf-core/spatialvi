@@ -19,6 +19,9 @@ process SPACERANGER_DOWNLOAD_PROBESET {
     path("*.csv")       , emit: probeset
     path("versions.yml"), emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     probeset = address.tokenize("/").last()
     name = probeset.take(probeset.lastIndexOf('.'))

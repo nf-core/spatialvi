@@ -22,6 +22,9 @@ process ST_QC_AND_NORMALISATION {
     tuple val(meta), path("st_qc_and_normalisation_files"), emit: html_files
     path("versions.yml")                                  , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     quarto render ${report} \
