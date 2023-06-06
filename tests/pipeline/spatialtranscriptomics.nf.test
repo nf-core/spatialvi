@@ -1,0 +1,22 @@
+nextflow_pipeline {
+    name "Test Spatialtranscriptomics QC workflow"
+    script "main.nf"
+    tag "pipeline"
+
+    test("QC reports") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            def softwareVersions = path("$outputDir/pipeline_info/software_versions.yml").yaml
+            if (softwareVersions.containsKey("Workflow")) { softwareVersions.Workflow.remove("Nextflow") }
+
+            assertAll(
+                { assert workflow.success },
+            )
+        }
+    }
+}
