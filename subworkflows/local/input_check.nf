@@ -31,12 +31,15 @@ def create_spaceranger_channels(LinkedHashMap row) {
     def meta = [:]
     meta.id = row.sample
 
+    files_to_check = [
+        "fastq_dir",
+        "tissue_hires_image"
+    ]
     def raw_meta = []
-    if (!file(row.fastq_dir).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> fastq_dir directory does not exist!\n${row.fastq_dir}"
-    }
-    if (!file(row.tissue_hires_image).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.tissue_hires_image}"
+    for (entry in row) {
+        if (entry.key in files_to_check && !file(entry.value).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> ${entry.key} file does not exist!\n${entry.value}"
+        }
     }
     if ( row.manual_alignment.isEmpty() ) {
         manual_alignment = []
@@ -46,6 +49,7 @@ def create_spaceranger_channels(LinkedHashMap row) {
         }
         manual_alignment = file ( row.manual_alignment )
     }
+
     raw_meta = [
         meta,
         file(row.fastq_dir),
@@ -63,28 +67,22 @@ def create_visium_channels(LinkedHashMap row) {
     def meta = [:]
     meta.id = row.sample
 
+    files_to_check = [
+        "tissue_positions_list",
+        "tissue_lowres_image",
+        "tissue_hires_image",
+        "scale_factors",
+        "barcodes",
+        "features",
+        "matrix"
+    ]
     def processed_meta = []
-    if (!file(row.tissue_positions_list).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_positions_list file does not exist!\n${row.tissue_positions_list}"
+    for (entry in row) {
+        if (entry.key in files_to_check && !file(entry.value).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> ${entry.key} file does not exist!\n${entry.value}"
+        }
     }
-    if (!file(row.tissue_lowres_image).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_lowres_image file does not exist!\n${row.tissue_lowres_image}"
-    }
-    if (!file(row.tissue_hires_image).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.tissue_hires_image}"
-    }
-    if (!file(row.scale_factors).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> scale_factors file does not exist!\n${row.scale_factors}"
-    }
-    if (!file(row.barcodes).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> barcodes file does not exist!\n${row.barcodes}"
-    }
-    if (!file(row.features).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> features file does not exist!\n${row.features}"
-    }
-    if (!file(row.matrix).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> matrix file does not exist!\n${row.matrix}"
-    }
+
     processed_meta = [
         meta,
         file(row.tissue_positions_list),
