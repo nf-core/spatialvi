@@ -51,4 +51,4 @@ jobs:
         if: failure()
         run: |
           sudo apt install bat > /dev/null
-          batcat --decorations=always --color=always /home/runner/work/fetchngs/fetchngs/.nf-test/tests/*/output/pipeline_info/software_versions.yml
+          batcat --decorations=always --color=always .nf-test/tests/*/output/pipeline_info/software_versions.yml

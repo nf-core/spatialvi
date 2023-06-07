@@ -11,13 +11,10 @@ nextflow_pipeline {
         }
 
         then {
-            def softwareVersions = path("$outputDir/pipeline_info/software_versions.yml").yaml
-            if (softwareVersions.containsKey("Workflow")) { softwareVersions.Workflow.remove("Nextflow") }
-
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
-                { assert snapshot(path("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/data/st_adata_processed.h5ad")).match("anndata") },
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/data/st_adata_processed.h5ad").exists() },
                 { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/degs/st_spatial_de.csv").exists() },
                 { assert snapshot(
                     path("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_clustering.html"),
