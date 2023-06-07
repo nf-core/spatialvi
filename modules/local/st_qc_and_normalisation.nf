@@ -19,7 +19,6 @@ process ST_QC_AND_NORMALISATION {
     tuple val(meta), path("st_adata_norm.h5ad")           , emit: st_data_norm
     tuple val(meta), path("st_adata_plain.h5ad")          , emit: st_data_plain
     tuple val(meta), path("st_qc_and_normalisation.html") , emit: html
-    tuple val(meta), path("st_qc_and_normalisation_files"), emit: html_files
     path("versions.yml")                                  , emit: versions
 
     when:
