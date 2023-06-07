@@ -33,7 +33,7 @@ workflow SPACERANGER {
     if (params.spaceranger_probeset) {
         ch_probeset = file ( params.spaceranger_probeset, checkIfExists: true )
     } else {
-        ch_probeset = file ( 'EMPTY_PROBESET' )
+        ch_probeset = []
     }
 
     //

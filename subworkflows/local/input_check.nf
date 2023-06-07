@@ -39,7 +39,7 @@ def create_spaceranger_channels(LinkedHashMap row) {
         exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.tissue_hires_image}"
     }
     if ( row.manual_alignment.isEmpty() ) {
-        manual_alignment = file ( "EMPTY_ALIGNMENT" )
+        manual_alignment = []
     } else {
         if (!file(row.manual_alignment).exists()) {
             exit 1, "ERROR: Please check input samplesheet -> manual_alignment file does not exist!\n${row.manual_alignment}"
