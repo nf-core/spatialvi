@@ -2,7 +2,6 @@
 // Raw data processing with Space Ranger
 //
 
-include { SPACERANGER_DOWNLOAD_PROBESET  } from '../../modules/local/spaceranger_download_probeset'
 include { SPACERANGER_DOWNLOAD_REFERENCE } from '../../modules/local/spaceranger_download_reference'
 include { SPACERANGER_COUNT              } from '../../modules/local/spaceranger_count'
 
