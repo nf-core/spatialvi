@@ -19,7 +19,7 @@ workflow SPACERANGER {
     //
     ch_reference = Channel.empty()
     if (params.spaceranger_reference) {
-        ch_reference = file(params.spaceranger_reference, type: "dir", checkIfExists: true)
+        ch_reference = file ( params.spaceranger_reference, type: "dir", checkIfExists: true )
     } else {
         SPACERANGER_DOWNLOAD_REFERENCE ([
             [id: "refdata-gex-GRCh38-2020-A"],
@@ -34,20 +34,9 @@ workflow SPACERANGER {
     //
     ch_probeset = Channel.empty()
     if (params.spaceranger_probeset) {
-        ch_probeset = file( params.spaceranger_probeset, checkIfExists: true )
+        ch_probeset = file ( params.spaceranger_probeset, checkIfExists: true )
     } else {
-        ch_probeset = file ( 'EMPTY_PROBESET' )
-    }
-
-    //
-    // Optional: manual alignment file
-    //
-    ch_manual_alignment = Channel.empty()
-    if (params.spaceranger_manual_alignment) {
-        ch_manual_alignment = Channel
-            .fromPath ( params.spaceranger_manual_alignment, checkIfExists: true )
-    } else {
-        ch_manual_alignment = file ( 'EMPTY_ALIGNMENT' )
+        ch_probeset = []
     }
 
     //
@@ -56,8 +45,7 @@ workflow SPACERANGER {
     SPACERANGER_COUNT (
         ch_st_data,
         ch_reference,
-        ch_probeset,
-        ch_manual_alignment
+        ch_probeset
     )
     ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
