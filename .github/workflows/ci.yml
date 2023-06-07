@@ -52,9 +52,3 @@ jobs:
         run: |
           sudo apt install bat > /dev/null
           batcat --decorations=always --color=always /home/runner/work/fetchngs/fetchngs/.nf-test/tests/*/output/pipeline_info/software_versions.yml
-
-      # Comment on the PR with the test results
-      - name: PR comment with file
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          filePath: test.tap
