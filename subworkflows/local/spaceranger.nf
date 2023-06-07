@@ -20,7 +20,7 @@ workflow SPACERANGER {
     //
     ch_reference = Channel.empty()
     if (params.spaceranger_reference) {
-        ch_reference = file(params.spaceranger_reference, type: "dir", checkIfExists: true)
+        ch_reference = file ( params.spaceranger_reference, type: "dir", checkIfExists: true )
     } else {
         address = "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz"
         ch_reference = SPACERANGER_DOWNLOAD_REFERENCE ( address ).reference.collect()
@@ -31,7 +31,7 @@ workflow SPACERANGER {
     //
     ch_probeset = Channel.empty()
     if (params.spaceranger_probeset) {
-        ch_probeset = file( params.spaceranger_probeset, checkIfExists: true )
+        ch_probeset = file ( params.spaceranger_probeset, checkIfExists: true )
     } else {
         ch_probeset = file ( 'EMPTY_PROBESET' )
     }
