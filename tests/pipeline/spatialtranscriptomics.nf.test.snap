@@ -1,0 +1,22 @@
+{
+    "reports": {
+        "content": [
+            "st_clustering.html:md5,c0eef3dad596f1489d30a0172871168d",
+            "st_qc_and_normalisation.html:md5,dc7cbe12e1048f6d913b222e57e0c534",
+            "st_spatial_de.html:md5,b486defdc23bf1f0d2c71b16126cad8c"
+        ],
+        "timestamp": "2023-06-07T07:25:08+0000"
+    },
+    "anndata": {
+        "content": [
+            "st_adata_processed.h5ad:md5,48dea93087c1ad0f78bfd0e65d8ba9f2"
+        ],
+        "timestamp": "2023-06-07T07:25:08+0000"
+    },
+    "spatial_de": {
+        "content": [
+            "st_spatial_de.csv:md5,fd1b6818b859d0d7a58a62b6e26925ae"
+        ],
+        "timestamp": "2023-06-07T07:25:08+0000"
+    }
+}
