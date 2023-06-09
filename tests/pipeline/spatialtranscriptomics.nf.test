@@ -3,7 +3,7 @@ nextflow_pipeline {
     script "main.nf"
     tag "pipeline"
 
-    test("Spatialtranscriptomics outputs") {
+    test("Andersson_Nat_Gen_2021_CID4465") {
         when {
             params {
                 outdir = "$outputDir"
