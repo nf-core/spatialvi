@@ -10,10 +10,9 @@ process SPACERANGER_COUNT {
     container "docker.io/nfcore/spaceranger:1.3.0"
 
     input:
-    tuple val(meta), path(fastq_dir), path(image), val(slide), val(area)
+    tuple val(meta), path(fastq_dir), path(image), val(slide), val(area), path(manual_alignment)
     path(reference)
     path(probeset)
-    path(manual_alignment)
 
     output:
     path "spaceranger", type: "dir"                          , emit: sr_dir
@@ -31,8 +30,8 @@ process SPACERANGER_COUNT {
     task.ext.when == null || task.ext.when
 
     script:
-    def probeset         = probeset.name != 'EMPTY_PROBESET' ? "--probe-set=${probeset}" : ''
-    def manual_alignment = manual_alignment.name != 'EMPTY_ALIGNMENT' ? "--loupe-alignment=${manual_alignment}" : ''
+    def probeset         = probeset ? "--probe-set=${probeset}" : ''
+    def manual_alignment = manual_alignment ? "--loupe-alignment=${manual_alignment}" : ''
     """
     spaceranger count \
         --id=spaceranger \
