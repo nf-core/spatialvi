@@ -14,11 +14,13 @@ workflow INPUT_CHECK {
     if ( params.run_spaceranger ) {
         st_data = SAMPLESHEET_CHECK.out.csv
             .splitCsv ( header: true, sep: ',' )
-            .map      { create_spaceranger_channels(it) }
+            // collapse technical replicates
+            .map { row -> [row.sample, row]}
+            .groupTuple()
+            .map { id, sample_info -> create_spaceranger_channels(sample_info) }
     } else {
         st_data = SAMPLESHEET_CHECK.out.csv
             .splitCsv ( header: true, sep: ',' )
-            .groupTuple ( by: 'id' ).view()
             .map      { create_visium_channels(it) }
     }
 
@@ -27,40 +29,61 @@ workflow INPUT_CHECK {
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
+def get_unique(List<LinkedHashMap> sample_info, String key) {
+    def val = null
+    for (row in sample_info) {
+        if (val != null || val != row[key]) {
+             exit 1, "ERROR: Please check input samplesheet -> ${key} is not consistent for all technical replicates of the same sample. "
+        }
+        val = row[key]
+    }
+    return val
+}
+
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]
-def create_spaceranger_channels(LinkedHashMap row) {
+def create_spaceranger_channels(List<LinkedHashMap> sample_info) {
     def meta = [:]
-    meta.id = row.sample
-    meta.slide = row.slide
-    meta.area = row.area
-
-    files_to_check = [
-        "fastq_1",
-        "fastq_2"
-        "tissue_hires_image"
-    ]
-    def raw_meta = []
-    for (entry in row) {
-        if (entry.key in files_to_check && !file(entry.value).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> ${entry.key} file does not exist!\n${entry.value}"
-        }
+    meta.id = get_unique(sample_info, "sample")
+    meta.slide = get_unique(sample_info, "slide")
+    meta.area = get_unique(sample_info, "area")
+    tissue_hires_image = file(get_unique(sample_info, "tissue_hires_info"), checkIfExists: true)
+    manual_alignment = file(get_unique(sample_info, "manual_alignment"), checkIfExists: true)
+    slidefile = file(get_unique(sample_info, "slidefile"), checkIfExists: true)
+    fastq_files = []
+    for (row in sample_info) {
+        fastq_files.add(file(row.fastq_1, checkIfExists: true))
+        fastq_files.add(file(row.fastq_2, checkIfExists: true))
     }
-    if ( row.manual_alignment.isEmpty() ) {
-        manual_alignment = []
-    } else {
-        if (!file(row.manual_alignment).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> manual_alignment file does not exist!\n${row.manual_alignment}"
-        }
-        manual_alignment = file ( row.manual_alignment )
-    }
+    return [meta, fastq_files, tissue_hires_image, manual_alignment, slidefile]
 
-    raw_meta = [
-        meta,
-        file(row.fastq_dir),
-        file(row.tissue_hires_image),
-        manual_alignment
-    ]
-    return raw_meta
+
+
+    // files_to_check = [
+    //     "tissue_hires_image": tissue_hires_image,
+    //     "tissue_hires_image"
+    // ]
+    // def raw_meta = []
+    // for (entry in row) {
+    //     if (entry.key in files_to_check && !file(entry.value).exists()) {
+    //         exit 1, "ERROR: Please check input samplesheet -> ${entry.key} file does not exist!\n${entry.value}"
+    //     }
+    // }
+    // if ( row.manual_alignment.isEmpty() ) {
+    //     manual_alignment = []
+    // } else {
+    //     if (!file(row.manual_alignment).exists()) {
+    //         exit 1, "ERROR: Please check input samplesheet -> manual_alignment file does not exist!\n${row.manual_alignment}"
+    //     }
+    //     manual_alignment = file ( row.manual_alignment )
+    // }
+
+    // raw_meta = [
+    //     meta,
+    //     file(row.fastq_dir),
+    //     file(row.tissue_hires_image),
+    //     manual_alignment
+    // ]
+    // return raw_meta
 }
 
 // Function to get list of [ meta, [ tissue_positions_list, tissue_hires_image, \

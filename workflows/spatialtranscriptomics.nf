@@ -81,7 +81,7 @@ workflow ST {
         SPACERANGER (
             INPUT_CHECK.out.st_data
         )
-        ch_st_data = SPACERANGER.out.sr_out
+        ch_st_data = SPACERANGER.out.sr_dir
         ch_versions = ch_versions.mix(SPACERANGER.out.versions)
     } else {
         ch_st_data = INPUT_CHECK.out.st_data
