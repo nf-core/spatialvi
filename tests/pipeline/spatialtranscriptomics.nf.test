@@ -1,5 +1,5 @@
 nextflow_pipeline {
-    name "Test Spatialtranscriptomics QC workflow"
+    name "Test Workflow main.nf"
     script "main.nf"
     tag "pipeline"
 
