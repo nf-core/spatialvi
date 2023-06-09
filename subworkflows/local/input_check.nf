@@ -18,6 +18,7 @@ workflow INPUT_CHECK {
     } else {
         st_data = SAMPLESHEET_CHECK.out.csv
             .splitCsv ( header: true, sep: ',' )
+            .groupTuple ( by: 'id' ).view()
             .map      { create_visium_channels(it) }
     }
 
@@ -30,9 +31,12 @@ workflow INPUT_CHECK {
 def create_spaceranger_channels(LinkedHashMap row) {
     def meta = [:]
     meta.id = row.sample
+    meta.slide = row.slide
+    meta.area = row.area
 
     files_to_check = [
-        "fastq_dir",
+        "fastq_1",
+        "fastq_2"
         "tissue_hires_image"
     ]
     def raw_meta = []
@@ -54,8 +58,6 @@ def create_spaceranger_channels(LinkedHashMap row) {
         meta,
         file(row.fastq_dir),
         file(row.tissue_hires_image),
-        row.slide,
-        row.area,
         manual_alignment
     ]
     return raw_meta

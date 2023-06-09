@@ -48,6 +48,14 @@
                     "description": "Location of Space Ranger probeset file",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "spaceranger_image_type": {
+                    "type": "string",
+                    "description": "Image type for spaceranger",
+                    "enum": ["image", "cytaimage", "darkimage"],
+                    "fa_icon": "fas fa-image",
+                    "default": "image",
+                    "help_text": "Choose 'cytaimage' to enable CytAssist mode or 'darkimage' to work with dark field microscopy images."
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",

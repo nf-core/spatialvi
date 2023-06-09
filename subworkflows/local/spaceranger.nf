@@ -3,7 +3,7 @@
 //
 
 include { UNTAR as SPACERANGER_DOWNLOAD_REFERENCE } from "../../modules/nf-core/untar"
-include { SPACERANGER_COUNT              } from '../../modules/local/spaceranger_count'
+include { SPACERANGER_COUNT              } from '../../modules/nf-core/spaceranger/count'
 
 workflow SPACERANGER {
 
