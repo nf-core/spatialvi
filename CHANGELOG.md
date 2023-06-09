@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+[Unreleased]
+
+- Replace custom code to download reference with `untar` module [[#44](https://github.com/nf-core/spatialtranscriptomics/pull/44)]
+
 ## v1.0dev - [date]
 
 Initial release of nf-core/spatialtranscriptomics, created with the [nf-core](https://nf-co.re/) template.

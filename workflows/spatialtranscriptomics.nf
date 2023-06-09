@@ -17,8 +17,7 @@ log.info """\
 
 def checkPathParamList = [ params.input,
                            params.spaceranger_reference,
-                           params.spaceranger_probeset,
-                           params.spaceranger_manual_alignment ]
+                           params.spaceranger_probeset ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
