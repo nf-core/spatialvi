@@ -51,7 +51,7 @@
                 "spaceranger_image_type": {
                     "type": "string",
                     "description": "Image type for spaceranger",
-                    "enum": ["image", "cytaimage", "darkimage"],
+                    "enum": ["image", "cytaimage", "darkimage", "colorizedimage"],
                     "fa_icon": "fas fa-image",
                     "default": "image",
                     "help_text": "Choose 'cytaimage' to enable CytAssist mode or 'darkimage' to work with dark field microscopy images."

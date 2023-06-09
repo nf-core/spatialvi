@@ -81,7 +81,18 @@ workflow ST {
         SPACERANGER (
             INPUT_CHECK.out.st_data
         )
-        ch_st_data = SPACERANGER.out.sr_dir
+        ch_st_data = SPACERANGER.out.sr_dir.map {
+            meta, out -> [
+                meta,
+                out.findAll{ it -> it.name == "tissue_positions.csv"},
+                out.findAll{ it -> it.name == "tissue_lowres_image.png"},
+                out.findAll{ it -> it.name == "tissue_hires_image.png"},
+                out.findAll{ it -> it.name == "scalefactors_json.json"},
+                out.findAll{ it -> it ==~ /.*\/raw_feature_bc_matrix\/barcodes\.tsv\.gz$/},
+                out.findAll{ it -> it ==~ /.*\/raw_feature_bc_matrix\/features\.tsv\.gz$/},
+                out.findAll{ it -> it ==~ /.*\/raw_feature_bc_matrix\/matrix\.mtx\.gz$/}
+            ]
+        }
         ch_versions = ch_versions.mix(SPACERANGER.out.versions)
     } else {
         ch_st_data = INPUT_CHECK.out.st_data

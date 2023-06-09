@@ -32,8 +32,8 @@ workflow INPUT_CHECK {
 def get_unique(List<LinkedHashMap> sample_info, String key) {
     def val = null
     for (row in sample_info) {
-        if (val != null || val != row[key]) {
-             exit 1, "ERROR: Please check input samplesheet -> ${key} is not consistent for all technical replicates of the same sample. "
+        if (val != null && val != row[key]) {
+             exit 1, "ERROR: Please check input samplesheet -> '${key}' is not consistent for all technical replicates of the same sample. Actual: '${row[key]}'. Expected: '${val}'."
         }
         val = row[key]
     }
@@ -46,14 +46,18 @@ def create_spaceranger_channels(List<LinkedHashMap> sample_info) {
     meta.id = get_unique(sample_info, "sample")
     meta.slide = get_unique(sample_info, "slide")
     meta.area = get_unique(sample_info, "area")
-    tissue_hires_image = file(get_unique(sample_info, "tissue_hires_info"), checkIfExists: true)
-    manual_alignment = file(get_unique(sample_info, "manual_alignment"), checkIfExists: true)
-    slidefile = file(get_unique(sample_info, "slidefile"), checkIfExists: true)
+    tissue_hires_image = get_unique(sample_info, "tissue_hires_image")
+    manual_alignment = get_unique(sample_info, "manual_alignment")
+    slidefile = get_unique(sample_info, "slidefile")
     fastq_files = []
     for (row in sample_info) {
         fastq_files.add(file(row.fastq_1, checkIfExists: true))
         fastq_files.add(file(row.fastq_2, checkIfExists: true))
     }
+
+    tissue_hires_image = file(tissue_hires_image, checkIfExists: true)
+    manual_alignment = manual_alignment ? file(manual_alignment, checkIfExists: true) : []
+    slidefile = slidefile ? file(slidefile, checkIfExists: true) : []
     return [meta, fastq_files, tissue_hires_image, manual_alignment, slidefile]
 
 
