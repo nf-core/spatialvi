@@ -109,20 +109,11 @@ def read_visium_mtx(
         adata.uns["spatial"][library_id]["metadata"] = {k: "NA" for k in ("chemistry_description", "software_version")}
 
         # Read coordinates
-        positions = pd.read_csv(files["tissue_positions_file"], header=None)
-        positions.columns = [
-            "barcode",
-            "in_tissue",
-            "array_row",
-            "array_col",
-            "pxl_col_in_fullres",
-            "pxl_row_in_fullres",
-        ]
-        positions.index = positions["barcode"]
+        positions = pd.read_csv(files["tissue_positions_file"], index_col="barcode", dtype={'in_tissue': bool})
         adata.obs = adata.obs.join(positions, how="left")
         adata.obsm["spatial"] = adata.obs[["pxl_row_in_fullres", "pxl_col_in_fullres"]].to_numpy()
         adata.obs.drop(
-            columns=["barcode", "pxl_row_in_fullres", "pxl_col_in_fullres"],
+            columns=["pxl_row_in_fullres", "pxl_col_in_fullres"],
             inplace=True,
         )
 
@@ -133,17 +124,17 @@ def read_visium_mtx(
 
     return adata
 
+if __name__ == "__main__":
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Load spatial transcriptomics data from MTX matrices and aligned images.")
+    parser.add_argument(
+        "--SRCountDir", metavar="SRCountDir", type=str, default=None, help="Input directory with Spaceranger data."
+    )
+    parser.add_argument("--outAnnData", metavar="outAnnData", type=str, default=None, help="Output h5ad file path.")
+    args = parser.parse_args()
 
-# Parse command-line arguments
-parser = argparse.ArgumentParser(description="Load spatial transcriptomics data from MTX matrices and aligned images.")
-parser.add_argument(
-    "--SRCountDir", metavar="SRCountDir", type=str, default=None, help="Input directory with Spaceranger data."
-)
-parser.add_argument("--outAnnData", metavar="outAnnData", type=str, default=None, help="Output h5ad file path.")
-args = parser.parse_args()
+    # Read Visium data
+    st_adata = read_visium_mtx(args.SRCountDir, library_id=None, load_images=True, source_image_path=None)
 
-# Read Visium data
-st_adata = read_visium_mtx(args.SRCountDir, library_id=None, load_images=True, source_image_path=None)
-
-# Write raw anndata to file
-st_adata.write(args.outAnnData)
+    # Write raw anndata to file
+    st_adata.write(args.outAnnData)
