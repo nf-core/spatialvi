@@ -27,7 +27,6 @@ jobs:
     strategy:
       matrix:
         NXF_VER: ["latest-everything"]
-        profile: ["docker"]
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
@@ -46,7 +45,7 @@ jobs:
 
       # Run nf-test
       - name: Run nf-test
-        run: nf-test test tests/pipeline/ --profile=${{ matrix.profile }} --tap=test.tap
+        run: nf-test test tests/pipeline/ --profile=test,docker --tap=test.tap
 
       # If the test fails, output the software_versions.yml using the 'batcat' utility
       - name: Output log on failure
