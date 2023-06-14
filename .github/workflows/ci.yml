@@ -34,6 +34,7 @@ jobs:
           else
             echo matrix='["latest-everything", "22.10.1"]' >> $GITHUB_OUTPUT
           fi
+          cat $GITHUB_OUTPUT
 
   test:
     name: Run pipeline with test data
