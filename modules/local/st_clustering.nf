@@ -4,7 +4,7 @@
 process ST_CLUSTERING {
 
     // TODO: Add a better description
-    // TODO: Find solution for Quarto with Conda
+    // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
     label "process_low"
