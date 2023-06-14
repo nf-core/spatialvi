@@ -30,9 +30,9 @@ jobs:
       - id: nxf_versions
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.base_ref }}" == "dev" && "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
-            echo "['latest-everything']" >> $GITHUB_OUTPUT
+            echo matrix='["latest-everything"]' >> $GITHUB_OUTPUT
           else
-            echo "['latest-everything', '22.10.1']" >> $GITHUB_OUTPUT
+            echo matrix='["latest-everything", "22.10.1"]' >> $GITHUB_OUTPUT
           fi
 
   test:
