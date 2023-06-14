@@ -26,9 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      NXF_VER:
-        - "22.10.1"
-        - "latest-everything"
+      matrix:
+        NXF_VER:
+          - "22.10.1"
+          - "latest-everything"
     steps:
       # Skip if it's a pull_request to dev and NXF_VER is '22.10.1'
       - name: Skip condition
