@@ -9,8 +9,16 @@ process ST_SPATIAL_DE {
     tag "${meta.id}"
     label "process_medium"
 
+    conda "env/st_spatial_de/environment.yml"
     container "docker.io/erikfas/spatialtranscriptomics"
 
+    // Exit if running this module with -profile conda / -profile mamba on ARM64
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        architecture = System.getProperty("os.arch")
+        if (architecture == "arm64" || architecture == "aarch64") {
+            exit 1, "The ST_SPATIAL_DE module does not support Conda on ARM64. Please use Docker / Singularity / Podman instead."
+        }
+    }
     input:
     path(report)
     tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
