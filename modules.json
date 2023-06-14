@@ -11,6 +11,11 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/custom/dumpsoftwareversions/custom-dumpsoftwareversions.diff"
                     },
+                    "spaceranger/count": {
+                        "branch": "master",
+                        "git_sha": "f874515c9b49c07b68cf1bf06d711fe46d8ab2aa",
+                        "installed_by": ["modules"]
+                    },
                     "untar": {
                         "branch": "master",
                         "git_sha": "5c460c5a4736974abde2843294f35307ee2b0e5e",
