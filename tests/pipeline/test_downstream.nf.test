@@ -1,11 +1,17 @@
 nextflow_pipeline {
-    name "Test Workflow main.nf"
+    name "Test workflow (only downstream part)"
     script "main.nf"
     tag "pipeline"
 
     test("Andersson_Nat_Gen_2021_CID4465") {
         when {
             params {
+                input = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/test-dataset-subsampled/samplesheet.csv'
+                run_spaceranger = false
+                spaceranger_probeset = null
+                spaceranger_image_type = null
+                st_preprocess_min_counts = 500
+                st_preprocess_min_genes = 250
                 outdir = "$outputDir"
             }
         }

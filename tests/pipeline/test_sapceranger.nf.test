@@ -1,0 +1,61 @@
+nextflow_pipeline {
+    name "Test full workflow including spaceranger"
+    script "main.nf"
+    tag "pipeline"
+
+       test("spaceranger ffpe v2 cytassist (default `-profile test`)") {
+        when {
+            params {
+                // This is the default `test` profile, no need to specify additional parameters
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/degs/st_spatial_de.csv").exists() },
+                { assert snapshot(
+                    path("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_clustering.html"),
+                    path("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_qc_and_normalisation.html"),
+                ).match("reports")},
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_spatial_de.html").exists() }
+            )
+        }
+    }
+
+
+    test("spaceranger ffpe v1") {
+        when {
+            params {
+                // TODO nf-core: this should be a link pointing to github
+                input  = './assets/samplesheet_spaceranger_ffpe_v1.csv'
+                run_spaceranger = true
+                spaceranger_probeset = null
+                st_preprocess_min_counts = 5
+                st_preprocess_min_genes = 3
+                spaceranger_image_type = "image"
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/degs/st_spatial_de.csv").exists() },
+                { assert snapshot(
+                    path("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_clustering.html"),
+                    path("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_qc_and_normalisation.html"),
+                ).match("reports")},
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_spatial_de.html").exists() }
+            )
+        }
+    }
+
+
+
+}
