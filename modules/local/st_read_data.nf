@@ -12,14 +12,7 @@ process ST_READ_DATA {
         'quay.io/biocontainers/scanpy:1.7.2--pyhdfd78af_0' }"
 
     input:
-    tuple val (meta),
-        path (tissue_positions_list, stageAs: "SRCount/spatial/tissue_positions_list.csv"),
-        path (tissue_lowres_image  , stageAs: "SRCount/spatial/tissue_lowres_image.png"),
-        path (tissue_hires_image   , stageAs: "SRCount/spatial/tissue_hires_image.png"),
-        path (scale_factors        , stageAs: "SRCount/spatial/scalefactors_json.json"),
-        path (barcodes             , stageAs: "SRCount/raw_feature_bc_matrix/barcodes.tsv.gz"),
-        path (features             , stageAs: "SRCount/raw_feature_bc_matrix/features.tsv.gz"),
-        path (matrix               , stageAs: "SRCount/raw_feature_bc_matrix/matrix.mtx.gz")
+    tuple val (meta), path("${meta.id}")
 
     output:
     tuple val(meta), path("st_adata_raw.h5ad"), emit: st_raw
@@ -30,8 +23,8 @@ process ST_READ_DATA {
 
     script:
     """
-    read_st_data.py \
-        --SRCountDir ./SRCount \
+    read_st_data.py \\
+        --SRCountDir "${meta.id}" \\
         --outAnnData st_adata_raw.h5ad
 
     cat <<-END_VERSIONS > versions.yml

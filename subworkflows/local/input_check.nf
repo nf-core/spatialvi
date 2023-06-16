@@ -11,22 +11,33 @@ workflow INPUT_CHECK {
 
     main:
     SAMPLESHEET_CHECK ( samplesheet )
-    st_data = SAMPLESHEET_CHECK.out.csv.splitCsv(
+    ch_st = SAMPLESHEET_CHECK.out.csv.splitCsv(
         header: true,
         sep: ','
-    ).map{
-        create_channel(it)
+    ).branch {
+        spaceranger: !it.containsKey("spaceranger_dir")
+        downstream: it.containsKey("spaceranger_dir")
     }
+    ch_spaceranger_input = ch_st.spaceranger.map(create_channel_spaceranger)
+    ch_downstream_input = ch_st.downstream.map(create_channel_downstream)
 
     emit:
-    st_data                                   // channel: [ val(meta), [ st data ] ]
+    ch_spaceranger_input                      // channel: [ val(meta), [ st data ] ]
+    ch_downstream_input                       // channel: [ val(meta), [ st data ] ]
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
-
+def create_channel_downstream(LinkedHashMap meta) {
+    meta["id"] = meta.remove("sample")
+    spaceranger_dir = file(meta.remove("spaceranger_dir"))
+    if(!spaceranger_dir.exists()) {
+        error "Spaceranger output dir does not exist for sample ${meta['id']}."
+    }
+    return [meta, spaceranger_dir]
+}
 
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]
-def create_channel(LinkedHashMap meta) {
+def create_channel_spaceranger(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
 
     // Convert a path in `meta` to a file object and return it. If `key` is not contained in `meta`
@@ -36,39 +47,31 @@ def create_channel(LinkedHashMap meta) {
          return v ? file(v) : []
     }
 
-    if(meta.containsKey("spaceranger_dir")) {
-        spaceranger_dir = file(meta.remove("spaceranger_dir"))
-        if(!spaceranger_dir.exists()) {
-            error "Spaceranger output dir does not exist for sample ${meta['id']}."
-        }
-        return [meta, spaceranger_dir]
+    fastq_dir = meta.remove("fastq_dir")
+    fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
+    manual_alignment = get_file_from_meta("manual_alignment")
+    slidefile = get_file_from_meta("slidefile")
+    image = get_file_from_meta("image")
+    cytaimage = get_file_from_meta("cytaimage")
+    colorizedimage = get_file_from_meta("colorizedimage")
+    darkimage = get_file_from_meta("darkimage")
+
+    if(!fastq_files.size()) {
+        error "No `fastq_dir` specified or no samples found in folder."
     } else {
-        fastq_dir = meta.remove("fastq_dir")
-        fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
-        manual_alignment = get_file_from_meta("manual_alignment")
-        slidefile = get_file_from_meta("slidefile")
-        image = get_file_from_meta("image")
-        cytaimage = get_file_from_meta("cytaimage")
-        colorizedimage = get_file_from_meta("colorizedimage")
-        darkimage = get_file_from_meta("darkimage")
-
-        if(!fastq_files.size()) {
-            error "No `fastq_dir` specified or no samples found in folder."
-        } else {
-            log.info "${fastq_files.size()} FASTQ files found for sample ${meta['id']}."
-        }
-
-        check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]
-        for(k in check_optional_files) {
-            if(this.binding[k] && !this.binding[k].exists()) {
-                error "File for `${k}` is specified, but does not exist: ${this.binding[k]}."
-            }
-        }
-        if(!(image || cytaimage || colorizedimage || darkimage)) {
-            error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
-        }
-
-        return [meta, fastq_files, image, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
+        log.info "${fastq_files.size()} FASTQ files found for sample ${meta['id']}."
     }
+
+    check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]
+    for(k in check_optional_files) {
+        if(this.binding[k] && !this.binding[k].exists()) {
+            error "File for `${k}` is specified, but does not exist: ${this.binding[k]}."
+        }
+    }
+    if(!(image || cytaimage || colorizedimage || darkimage)) {
+        error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
+    }
+
+    return [meta, fastq_files, image, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
 }
 
