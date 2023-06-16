@@ -30,8 +30,7 @@ workflow INPUT_CHECK {
 
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]
 def create_spaceranger_channels(LinkedHashMap meta) {
-    meta["id"] = meta["sample"]
-    meta.remove("sample")
+    meta["id"] = meta.remove("sample")
 
     def get_file_from_meta = {key ->
          v = meta.remove(key);

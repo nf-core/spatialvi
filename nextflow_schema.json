@@ -37,8 +37,9 @@
                 "spaceranger_reference": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Location of Space Ranger reference directory",
-                    "fa_icon": "fas fa-folder-open"
+                    "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz"
                 },
                 "spaceranger_probeset": {
                     "type": "string",
@@ -47,14 +48,6 @@
                     "pattern": "^\\S+\\.csv$",
                     "description": "Location of Space Ranger probeset file",
                     "fa_icon": "fas fa-file-csv"
-                },
-                "spaceranger_image_type": {
-                    "type": "string",
-                    "description": "Image type for spaceranger",
-                    "enum": ["image", "cytaimage", "darkimage", "colorizedimage"],
-                    "fa_icon": "fas fa-image",
-                    "default": "image",
-                    "help_text": "Choose 'cytaimage' to enable CytAssist mode or 'darkimage' to work with dark field microscopy images."
                 },
                 "email": {
                     "type": "string",
