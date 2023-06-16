@@ -12,7 +12,7 @@ process ST_READ_DATA {
         'quay.io/biocontainers/scanpy:1.7.2--pyhdfd78af_0' }"
 
     input:
-    tuple val (meta), path("${meta.id}")
+    tuple val (meta), path("${meta.id}/*")
 
     output:
     tuple val(meta), path("st_adata_raw.h5ad"), emit: st_raw

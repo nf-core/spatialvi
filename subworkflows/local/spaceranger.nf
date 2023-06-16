@@ -52,6 +52,5 @@ workflow SPACERANGER {
 
     emit:
     sr_dir   = SPACERANGER_COUNT.out.outs
-
     versions = ch_versions                  // channel: [ versions.yml ]
 }

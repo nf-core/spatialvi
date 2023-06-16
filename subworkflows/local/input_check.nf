@@ -18,8 +18,8 @@ workflow INPUT_CHECK {
         spaceranger: !it.containsKey("spaceranger_dir")
         downstream: it.containsKey("spaceranger_dir")
     }
-    ch_spaceranger_input = ch_st.spaceranger.map(create_channel_spaceranger)
-    ch_downstream_input = ch_st.downstream.map(create_channel_downstream)
+    ch_spaceranger_input = ch_st.spaceranger.map{create_channel_spaceranger(it)}
+    ch_downstream_input = ch_st.downstream.map{create_channel_downstream(it)}
 
     emit:
     ch_spaceranger_input                      // channel: [ val(meta), [ st data ] ]
@@ -29,7 +29,7 @@ workflow INPUT_CHECK {
 
 def create_channel_downstream(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
-    spaceranger_dir = file(meta.remove("spaceranger_dir"))
+    spaceranger_dir = file("${meta.remove("spaceranger_dir")}/*")
     if(!spaceranger_dir.exists()) {
         error "Spaceranger output dir does not exist for sample ${meta['id']}."
     }
