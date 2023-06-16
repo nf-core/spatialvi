@@ -39,31 +39,29 @@ def create_spaceranger_channels(LinkedHashMap meta) {
     }
 
     fastq_dir = meta.remove("fastq_dir")
+    fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
     manual_alignment = get_file_from_meta("manual_alignment")
-    println("${fastq_dir}/${meta['id']}*.fastq.gz")
-    fastq_files = Channel.fromPath("${fastq_dir}/${meta['id']}*.fastq.gz").view().to_list().view()
     slidefile = get_file_from_meta("slidefile")
     image = get_file_from_meta("image")
     cytaimage = get_file_from_meta("cytaimage")
     colorizedimage = get_file_from_meta("colorizedimage")
     darkimage = get_file_from_meta("darkimage")
 
-    // if(!fastq_files.length) {
-    //     error "No `fastq_dir` specified or no samples found in folder."
-    // } else {
-    //     log.info "${fastq_files.length} FASTQ files found for sample ${meta['id']}."
-    // }
+    if(!fastq_files.size()) {
+        error "No `fastq_dir` specified or no samples found in folder."
+    } else {
+        log.info "${fastq_files.size()} FASTQ files found for sample ${meta['id']}."
+    }
 
-    // if(manual_alignment && !manual_alignment.exist()) {
-    //     error "Manual alignment file does not exist: ${manual_alignment}"
-    // }
-    // if(slidefile && !slidefile.exist()) {
-    //     error "Slidefile does not exist: ${manual_alignment}"
-    // }
-    // if(!(image || cytaimage || colorizedimage || darkimage)) {
-    //     error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
-    // }
-    // println(this.binding)
+    check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]
+    for(k in check_optional_files) {
+        if(this.binding[k] && !this.binding[k].exists()) {
+            error "File for `${k}` is specified, but does not exist: ${this.binding[k]}."
+        }
+    }
+    if(!(image || cytaimage || colorizedimage || darkimage)) {
+        error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
+    }
 
     return [meta, fastq_files, image, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
 }
