@@ -26,44 +26,46 @@ workflow INPUT_CHECK {
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
+
+
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]
 def create_spaceranger_channels(LinkedHashMap meta) {
     meta["id"] = meta["sample"]
     meta.remove("sample")
 
+    def get_file_from_meta = {key ->
+         v = meta.remove(key);
+         return v ? file(v) : []
+    }
+
     fastq_dir = meta.remove("fastq_dir")
+    manual_alignment = get_file_from_meta("manual_alignment")
+    println("${fastq_dir}/${meta['id']}*.fastq.gz")
+    fastq_files = Channel.fromPath("${fastq_dir}/${meta['id']}*.fastq.gz").view().to_list().view()
+    slidefile = get_file_from_meta("slidefile")
+    image = get_file_from_meta("image")
+    cytaimage = get_file_from_meta("cytaimage")
+    colorizedimage = get_file_from_meta("colorizedimage")
+    darkimage = get_file_from_meta("darkimage")
 
-    files_to_check = [
-        "fastq_dir",
-        "image",
-        "cytaimage",
-        "colorizedimage",
-        "darkimage"
-    ]
-    def raw_meta = []
-    for (entry in row) {
-        if (entry.key in files_to_check && !file(entry.value).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> ${entry.key} file does not exist!\n${entry.value}"
-        }
-    }
-    if ( row.manual_alignment.isEmpty() ) {
-        manual_alignment = []
-    } else {
-        if (!file(row.manual_alignment).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> manual_alignment file does not exist!\n${row.manual_alignment}"
-        }
-        manual_alignment = file ( row.manual_alignment )
-    }
+    // if(!fastq_files.length) {
+    //     error "No `fastq_dir` specified or no samples found in folder."
+    // } else {
+    //     log.info "${fastq_files.length} FASTQ files found for sample ${meta['id']}."
+    // }
 
-    raw_meta = [
-        meta,
-        file(row.fastq_dir),
-        file(row.tissue_hires_image),
-        row.slide,
-        row.area,
-        manual_alignment
-    ]
-    return raw_meta
+    // if(manual_alignment && !manual_alignment.exist()) {
+    //     error "Manual alignment file does not exist: ${manual_alignment}"
+    // }
+    // if(slidefile && !slidefile.exist()) {
+    //     error "Slidefile does not exist: ${manual_alignment}"
+    // }
+    // if(!(image || cytaimage || colorizedimage || darkimage)) {
+    //     error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
+    // }
+    // println(this.binding)
+
+    return [meta, fastq_files, image, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
 }
 
 // Function to get list of [ meta, [ tissue_positions_list, tissue_hires_image, \
