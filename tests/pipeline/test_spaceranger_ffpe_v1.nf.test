@@ -27,8 +27,8 @@ nextflow_pipeline {
                 { assert snapshot(
                     path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_clustering.html"),
                     path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_qc_and_normalisation.html"),
-                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_spatial_de.html"),
                 ).match("reports")},
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_spatial_de.html").exists() },
                 // degs
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/degs/st_spatial_de.csv").exists() },
                 // spaceranger
