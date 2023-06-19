@@ -101,7 +101,7 @@ def read_visium_mtx(
         adata.uns["spatial"][library_id]["metadata"] = {k: "NA" for k in ("chemistry_description", "software_version")}
 
         # Read coordinates
-        positions = pd.read_csv(files["tissue_positions_file"], index_col="barcode", dtype={'in_tissue': bool})
+        positions = pd.read_csv(files["tissue_positions_file"], index_col="barcode", dtype={"in_tissue": bool})
         adata.obs = adata.obs.join(positions, how="left")
         adata.obsm["spatial"] = adata.obs[["pxl_row_in_fullres", "pxl_col_in_fullres"]].to_numpy()
         adata.obs.drop(
@@ -109,12 +109,14 @@ def read_visium_mtx(
             inplace=True,
         )
 
-
     return adata
+
 
 if __name__ == "__main__":
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Load spatial transcriptomics data from MTX matrices and aligned images.")
+    parser = argparse.ArgumentParser(
+        description="Load spatial transcriptomics data from MTX matrices and aligned images."
+    )
     parser.add_argument(
         "--SRCountDir", metavar="SRCountDir", type=str, default=None, help="Input directory with Spaceranger data."
     )

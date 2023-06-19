@@ -272,6 +272,7 @@ def check_samplesheet(file_in, file_out, is_raw_data):
 
     # TODO nf-core: re-enable validation
     import shutil
+
     shutil.copy(file_in, file_out)
     return
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
