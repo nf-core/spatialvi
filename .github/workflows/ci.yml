@@ -74,7 +74,7 @@ jobs:
 
       # Run nf-test
       - name: Run nf-test
-        run: nf-test test tests/pipeline/ --profile=test,docker --tap=test.tap ${{ matrix.test }}
+        run: nf-test test --profile=test,docker --tap=test.tap ${{ matrix.test }}
 
       # If the test fails, output the software_versions.yml using the 'batcat' utility
       - name: Output log on failure
