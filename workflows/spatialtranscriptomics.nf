@@ -81,15 +81,8 @@ workflow ST {
         INPUT_CHECK.out.ch_spaceranger_input
     )
     ch_versions = ch_versions.mix(SPACERANGER.out.versions)
-    required_spaceranger_files = [
-        "raw_feature_bc_matrix.h5",
-        "tissue_positions.csv",
-        "scalefactors_json.json",
-        "tissue_hires_image.png",
-        "tissue_lowres_image.png"
-    ]
     ch_downstream_input = INPUT_CHECK.out.ch_downstream_input.concat(SPACERANGER.out.sr_dir).map{
-        meta, outs -> [meta, outs.findAll{ it -> required_spaceranger_files.contains(it.name) }]
+        meta, outs -> [meta, outs.findAll{ it -> Utils.DOWNSTREAM_REQUIRED_SPACERANGER_FILES.contains(it.name) }]
     }
 
     //

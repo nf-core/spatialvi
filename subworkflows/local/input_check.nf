@@ -29,9 +29,11 @@ workflow INPUT_CHECK {
 
 def create_channel_downstream(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
-    spaceranger_dir = file("${meta.remove("spaceranger_dir")}/*")
-    if(!spaceranger_dir.exists()) {
-        error "Spaceranger output dir does not exist for sample ${meta['id']}."
+    spaceranger_dir = file("${meta.remove('spaceranger_dir')}/**")
+    for (f in Utils.DOWNSTREAM_REQUIRED_SPACERANGER_FILES) {
+        if(!spaceranger_dir*.name.contains(f)) {
+            error "The specified spaceranger output directory doesn't contain the required file `${f}` for sample `${meta.id}`"
+        }
     }
     return [meta, spaceranger_dir]
 }
