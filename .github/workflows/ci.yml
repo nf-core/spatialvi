@@ -43,6 +43,10 @@ jobs:
       fail-fast: false
       matrix:
         NXF_VER: ${{ fromJson(needs.define_nxf_versions.outputs.matrix) }}
+        test:
+          - tests/pipeline/test_spaceranger_ffpe_v1.nf.test
+          - tests/pipeline/test_spaceranger_ffpe_v2_cytassist.nf.test
+          - tests/pipeline/test_downstream.nf.test
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
@@ -70,7 +74,7 @@ jobs:
 
       # Run nf-test
       - name: Run nf-test
-        run: nf-test test tests/pipeline/ --profile=test,docker --tap=test.tap
+        run: nf-test test tests/pipeline/ --profile=test,docker --tap=test.tap ${{ matrix.test }}
 
       # If the test fails, output the software_versions.yml using the 'batcat' utility
       - name: Output log on failure

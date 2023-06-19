@@ -1,0 +1,42 @@
+nextflow_pipeline {
+    name "Test full workflow including spaceranger"
+    script "main.nf"
+    tag "pipeline"
+
+    test("spaceranger ffpe v2 cytassist (default `-profile test`)") {
+        when {
+            params {
+                // This is the default `test` profile, no need to specify additional parameters
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                // data
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_norm.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_plain.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_raw.h5ad").exists() },
+                // reports
+                { assert snapshot(
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html"),
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_qc_and_normalisation.html"),
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatial_de.html"),
+                ).match("reports")},
+                // degs
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_spatial_de.csv").exists() },
+                // spaceranger
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/web_summary.html").exists() },
+                { assert snapshot(
+                   path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/raw_feature_bc_matrix.h5"),
+                   path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/filtered_feature_bc_matrix.h5"),
+                )},
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/raw_feature_bc_matrix.h5").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/spatial/tissue_positions.csv").exists() }
+            )
+        }
+    }
+}
