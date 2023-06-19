@@ -34,8 +34,8 @@ nextflow_pipeline {
                 // spaceranger
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/web_summary.html").exists() },
                 { assert snapshot(
-                   path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/raw_feature_bc_matrix.h5"),
-                   path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/filtered_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/filtered_feature_bc_matrix.h5"),
                 )},
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/raw_feature_bc_matrix.h5").exists() },
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/spatial/tissue_positions.csv").exists() }
