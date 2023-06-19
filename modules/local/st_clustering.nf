@@ -4,12 +4,21 @@
 process ST_CLUSTERING {
 
     // TODO: Add a better description
-    // TODO: Find solution for Quarto with Conda
+    // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
     label "process_low"
 
+    conda "conda-forge::quarto=1.3.353 conda-forge::scanpy=1.9.3 conda-forge::papermill=2.3.4 conda-forge::jupyter=1.0.0 conda-forge::leidenalg=0.9.1"
     container "docker.io/erikfas/spatialtranscriptomics"
+
+    // Exit if running this module with -profile conda / -profile mamba on ARM64
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        architecture = System.getProperty("os.arch")
+        if (architecture == "arm64" || architecture == "aarch64") {
+            exit 1, "The ST_CLUSTERING module does not support Conda on ARM64. Please use Docker / Singularity / Podman instead."
+        }
+    }
 
     input:
     path(report)
