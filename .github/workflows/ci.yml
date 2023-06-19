@@ -47,6 +47,15 @@ jobs:
       - name: Check out pipeline code
         uses: actions/checkout@v3
 
+      - name: Checkout test data
+        uses: actions/checkout@v3
+        with:
+          # TODO grst: update to nf-core after merge.
+          repository: grst/test-datasets
+          ref: spatialtranscriptomics
+          fetch-depth: 1
+          path: test-datasets
+
       # Install Nextflow
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
