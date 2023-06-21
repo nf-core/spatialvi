@@ -47,7 +47,7 @@ process ST_SPATIAL_DE {
         quarto: \$(quarto -v)
         leidenalg: \$(python -c "import leidenalg; print(leidenalg.version)")
         scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
-        SpatialDE: \$(python -c "import SpatialDE; print(SpatialDE.__version__)")
+        SpatialDE: \$(python -c "import SpatialDE; from importlib.metadata import version; print(version('SpatialDE'))")
     END_VERSIONS
     """
 }
