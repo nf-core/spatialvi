@@ -31,21 +31,34 @@ def create_spaceranger_channels(LinkedHashMap row) {
     def meta = [:]
     meta.id = row.sample
 
-    def array = []
-    if (!file(row.fastq_dir).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> fastq_dir directory does not exist!\n${row.fastq_1}"
+    files_to_check = [
+        "fastq_dir",
+        "tissue_hires_image"
+    ]
+    def raw_meta = []
+    for (entry in row) {
+        if (entry.key in files_to_check && !file(entry.value).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> ${entry.key} file does not exist!\n${entry.value}"
+        }
     }
-    if (!file(row.tissue_hires_image).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.fastq_1}"
+    if ( row.manual_alignment.isEmpty() ) {
+        manual_alignment = []
+    } else {
+        if (!file(row.manual_alignment).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> manual_alignment file does not exist!\n${row.manual_alignment}"
+        }
+        manual_alignment = file ( row.manual_alignment )
     }
-    array = [
+
+    raw_meta = [
         meta,
         file(row.fastq_dir),
         file(row.tissue_hires_image),
         row.slide,
         row.area,
+        manual_alignment
     ]
-    return array
+    return raw_meta
 }
 
 // Function to get list of [ meta, [ tissue_positions_list, tissue_hires_image, \
@@ -54,29 +67,23 @@ def create_visium_channels(LinkedHashMap row) {
     def meta = [:]
     meta.id = row.sample
 
-    def array = []
-    if (!file(row.tissue_positions_list).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_positions_list file does not exist!\n${row.fastq_1}"
+    files_to_check = [
+        "tissue_positions_list",
+        "tissue_lowres_image",
+        "tissue_hires_image",
+        "scale_factors",
+        "barcodes",
+        "features",
+        "matrix"
+    ]
+    def processed_meta = []
+    for (entry in row) {
+        if (entry.key in files_to_check && !file(entry.value).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> ${entry.key} file does not exist!\n${entry.value}"
+        }
     }
-    if (!file(row.tissue_lowres_image).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_lowres_image file does not exist!\n${row.fastq_1}"
-    }
-    if (!file(row.tissue_hires_image).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> tissue_hires_image file does not exist!\n${row.fastq_1}"
-    }
-    if (!file(row.scale_factors).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> scale_factors file does not exist!\n${row.fastq_1}"
-    }
-    if (!file(row.barcodes).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> barcodes file does not exist!\n${row.fastq_1}"
-    }
-    if (!file(row.features).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> features file does not exist!\n${row.fastq_1}"
-    }
-    if (!file(row.matrix).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> matrix file does not exist!\n${row.fastq_1}"
-    }
-    array = [
+
+    processed_meta = [
         meta,
         file(row.tissue_positions_list),
         file(row.tissue_lowres_image),
@@ -86,5 +93,5 @@ def create_visium_channels(LinkedHashMap row) {
         file(row.features),
         file(row.matrix)
     ]
-    return array
+    return processed_meta
 }

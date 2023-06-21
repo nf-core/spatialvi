@@ -1,2 +1,2 @@
-sample,fastq_dir,tissue_hires_image,slide,area
-Visium_FFPE_Human_Cervical_Cancer,data/Visium_FFPE_Human_Cervical_Cancer,data/Visium_FFPE_Human_Cervical_Cancer/Visium_FFPE_Human_Cervical_Cancer_image.jpg,V10L13-019,A1
+sample,fastq_dir,tissue_hires_image,slide,area,manual_alignment
+Visium_FFPE_Human_Cervical_Cancer,data/Visium_FFPE_Human_Cervical_Cancer,data/Visium_FFPE_Human_Cervical_Cancer/Visium_FFPE_Human_Cervical_Cancer_image.jpg,V10L13-019,A1,

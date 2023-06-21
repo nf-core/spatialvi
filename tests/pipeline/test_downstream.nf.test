@@ -1,0 +1,27 @@
+nextflow_pipeline {
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Andersson_Nat_Gen_2021_CID4465") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/degs/st_spatial_de.csv").exists() },
+                { assert snapshot(
+                    path("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_clustering.html"),
+                    path("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_qc_and_normalisation.html"),
+                ).match("reports")},
+                { assert file("$outputDir/Andersson_Nat_Gen_2021_CID4465_subsampled/reports/st_spatial_de.html").exists() }
+            )
+        }
+    }
+}

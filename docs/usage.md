@@ -22,9 +22,9 @@ The samplesheet for raw spatial data yet to be analysed with Space Ranger is
 specified like so:
 
 ```no-highlight
-sample,fastq_dir,tissue_hires_image,slide,area
-SAMPLE_1,fastqs_1/,hires_1.png,V11J26,B1
-SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1
+sample,fastq_dir,tissue_hires_image,slide,area,manual_alignment
+SAMPLE_1,fastqs_1/,hires_1.png,V11J26,B1,
+SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1,
 ```
 
 | Column               | Description                                                |
@@ -34,6 +34,11 @@ SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1
 | `tissue_hires_image` | Path to the high-resolution image for the sample.          |
 | `slide`              | The Visium slide ID used for the sequencing.               |
 | `area`               | Which slide area contains the tissue sample.               |
+| `manual_alignment`   | Path to the manual alignment file (optional)               |
+
+> **NB:** The `manual_alignment` column is only required for samples for which a
+> manual alignment file is needed and can be ignored if you're using automatic
+> alignment.
 
 If you are unsure, please see the Visium documentation for details regarding the
 different variants of [FASTQ directory structures](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/fastq-input)
@@ -82,9 +87,8 @@ path to its directory (or another link from the 10X website above) using the
 `--spaceranger_reference` parameter, otherwise the pipeline will download the
 default human reference for you automatically.
 
-You may optionally supply file paths to probe sets or manual fiducial alignment
-using the `--spaceranger_probeset` and `--spaceranger_manual_alignment`,
-respectively.
+You may optionally supply file path to a probe sets using the
+`--spaceranger_probeset` parameter.
 
 ## Analysis options
 
@@ -166,7 +170,11 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
-> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+> We highly recommend the use of Docker or Singularity containers for full
+> pipeline reproducibility, however when this is not possible, Conda is also
+> supported. Please note that Conda is not at all supported for Space Ranger
+> processing, and only supported on non-ARM64 architectures for analyses
+> downstream of Space Ranger.
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 
