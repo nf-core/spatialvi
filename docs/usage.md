@@ -7,77 +7,91 @@
 ## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you
-would like to analyse before running the pipeline. Use this parameter to specify
-its location. It has to be a comma-separated file with at least 5 or 8 columns
-(depending on input data type, [see below](#raw-spatial-data)), and a header row
-as shown in the examples below.
+would like to analyse before running the pipeline. It has to be a comma-separated file as described
+in the examples below and depends on the input data type. Use this parameter to specify its location.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
+The workflow will automatically detect the samplesheet type and run the appropriate analysis steps.
+
 ### Raw spatial data
 
-The samplesheet for raw spatial data yet to be analysed with Space Ranger is
-specified like so:
+This section describes samplesheets for processing *raw spatial data* yet to be analyzed with Space Ranger.
+
+Here is an example of a typical samplesheet for analyzing FFPE or fresh frozen (FF) data with bright field microscopy
+imagery:
 
 ```no-highlight
-sample,fastq_dir,tissue_hires_image,slide,area,manual_alignment
-SAMPLE_1,fastqs_1/,hires_1.png,V11J26,B1,
-SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1,
+sample,fastq_dir,image,slide,area
+SAMPLE_1,fastqs_1/,hires_1.png,V11J26,B1
+SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1
 ```
 
-| Column               | Description                                                |
-| -------------------- | ---------------------------------------------------------- |
-| `sample`             | Custom sample name.                                        |
-| `fastq_dir`          | Path to directory where the sample FASTQ files are stored. |
-| `tissue_hires_image` | Path to the high-resolution image for the sample.          |
-| `slide`              | The Visium slide ID used for the sequencing.               |
-| `area`               | Which slide area contains the tissue sample.               |
-| `manual_alignment`   | Path to the manual alignment file (optional)               |
+For Cytassist samples, the `image` column gets replaced with the `cytaimage` column:
 
-> **NB:** The `manual_alignment` column is only required for samples for which a
-> manual alignment file is needed and can be ignored if you're using automatic
-> alignment.
+```no-highlight
+sample,fastq_dir,cytaimage,slide,area
+SAMPLE_1,fastqs_1/,cytassist_1.tif,V11J26,B1
+SAMPLE_2,fastqs_2/,cytassist_2.tif,V11J26,B1
+```
+
+Depending on the experimental setup, (additional) color composite fluorescence images or dark background
+fluorescence images can be supplied using the `colorizedimage` or `darkimage` columns, respectively.
+
+Please refer to the following table for an overview of all supported columns:
+
+
+|       Column       |                                                     Description                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `sample`           | Unique sample identifier. MUST match the prefix of the fastq files                                                  |
+| `fastq_dir`        | Path to directory where the sample FASTQ files are stored.                                                          |
+| `image`            | Brightfield microscopy image                                                                                        |
+| `cytaimage`        | Brightfield tissue image captured with Cytassist device                                                             |
+| `colorizedimage`   | A color composite of one or more fluorescence image channels saved as a single-page, single-file color TIFF or JPEG |
+| `darkimage`        | Dark background fluorescence microscopy image                                                                       |
+| `slide`            | The Visium slide ID used for the sequencing.                                                                        |
+| `area`             | Which slide area contains the tissue sample.                                                                        |
+| `manual_alignment` | Path to the manual alignment file (optional)                                                                        |
+| `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. (optional)                                  |
+
+> **NB:**
+> * You need to specify *at least one* of `image`, `cytaimage`, `darkimage`, `colorizedimage`. Most commonly, you'll
+>   specify `image` for bright field microscopy data, or `cytaimage` for tissue scans generated with the 10x Cyatassist
+>   device. Please refer to the [Space Ranger documentation](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger), how multiple image types can be combined.
+> * The `manual_alignment` column is only required for samples for which a
+>   manual alignment file is needed and can be ignored if you're using automatic
+>   alignment.
+>
 
 If you are unsure, please see the Visium documentation for details regarding the
 different variants of [FASTQ directory structures](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/fastq-input)
 and [slide parameters](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/slide-info)
 appropriate for your samples.
 
-> **NB:** You will have to supply the `--run_spaceranger` parameter when you
-> execute the pipeline.
 
 ### Processed data
 
-If your data has already been processed by Space Ranger the samplesheet will look
-like this:
+If your data has already been processed by Space Ranger and you are only interested in running downstream QC steps,
+the samplesheet looks as follows:
 
 ```no-highlight
-sample,tissue_positions_list,tissue_lowres_image,tissue_hires_image,scale_factors,barcodes,features,
-matrix
-SAMPLE_1,tissue_positions_list_1.csv,tissue_lowres_image_1.png,tissue_hires_image_1.png,scale_factors_1.json,barcodes_1.tsv.gz,features_1.tsv.gz,matrix_1.mtx.gz
-SAMPLE_2,tissue_positions_list_2.csv,tissue_lowres_image_2.png,tissue_hires_image_2.png,scale_factors_2.json,barcodes_2.tsv.gz,features_2.tsv.gz,matrix_2.mtx.gz
+sample,spaceranger_dir
+SAMPLE_1,results/SAMPLE_1/outs
+SAMPLE_2,results/SAMPLE_2/outs
 ```
 
-| Column                  | Description                                                        |
-| ----------------------- | ------------------------------------------------------------------ |
-| `sample`                | Custom sample name.                                                |
-| `tissue_positions_list` | Path to the CSV with spot barcodes and their array positions.      |
-| `tissue_lowres_image`   | Path to the low-resolution image for the sample.                   |
-| `tissue_hires_image`    | Path to the high-resolution image for the sample.                  |
-| `scale_factors`         | Path to the JSON file with scale conversion factors for the spots. |
-| `barcodes`              | Path to TSV file with barcode IDs.                                 |
-| `features`              | Path to TSV file with features IDs.                                |
-| `matrix`                | Path to MTX file with UMIs, barcodes and features.                 |
+|      Column       |                                                                 Description                                                                  |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`          | Unique sample identifier.                                                                                                                    |
+| `spaceranger_dir` | Output directory generated by spaceranger. This is typically caled `outs` and contains both gene expression matrices and spatial information |
 
-The latter three elements should be taken from the `filtered_feature_bc_matrix/`
-directory, _i.e._ only tissue-associated barcodes and their data.
 
-## Space Ranger options
+## Space Ranger
 
 The pipeline exposes several of Space Ranger's parameters when executing with
-raw spatial data (`--run_spaceranger`). Space Ranger requieres a lot of memory
+raw spatial data. Space Ranger requieres a lot of memory
 (64 GB) and several threads (8) to be able to run. You can find the Space Ranger
 documentation at the [10X website](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger).
 
@@ -87,8 +101,11 @@ path to its directory (or another link from the 10X website above) using the
 `--spaceranger_reference` parameter, otherwise the pipeline will download the
 default human reference for you automatically.
 
-You may optionally supply file path to a probe sets using the
-`--spaceranger_probeset` parameter.
+> **Important**:
+>
+> For FFPE and Cytassist experiments, you need to manually supply the appropriate probset using the `--spaceranger_probeset` parameter
+> Please refer to the [Spaceranger Downloads page](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest)
+>  to obtain the correct probeset.
 
 ## Analysis options
 
