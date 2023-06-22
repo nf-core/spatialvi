@@ -2,16 +2,13 @@
 // Check input samplesheet and get read channels
 //
 
-include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
-
 workflow INPUT_CHECK {
 
     take:
     samplesheet // file: /path/to/samplesheet.csv
 
     main:
-    SAMPLESHEET_CHECK ( samplesheet )
-    ch_st = SAMPLESHEET_CHECK.out.csv.splitCsv(
+    ch_st = Channel.from(samplesheet).splitCsv(
         header: true,
         sep: ','
     ).branch {
@@ -24,7 +21,6 @@ workflow INPUT_CHECK {
     emit:
     ch_spaceranger_input                      // channel: [ val(meta), [ st data ] ]
     ch_downstream_input                       // channel: [ val(meta), [ st data ] ]
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
 def create_channel_downstream(LinkedHashMap meta) {

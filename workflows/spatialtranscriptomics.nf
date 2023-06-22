@@ -72,7 +72,6 @@ workflow ST {
     INPUT_CHECK (
         ch_input
     )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // SUBWORKFLOW: Space Ranger raw data processing
