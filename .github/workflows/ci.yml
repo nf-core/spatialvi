@@ -54,8 +54,7 @@ jobs:
       - name: Checkout test data
         uses: actions/checkout@v3
         with:
-          # TODO grst: update to nf-core after merge.
-          repository: grst/test-datasets
+          repository: nf-core/test-datasets
           ref: spatialtranscriptomics
           fetch-depth: 1
           path: test-datasets
