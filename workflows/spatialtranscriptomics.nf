@@ -72,26 +72,23 @@ workflow ST {
     INPUT_CHECK (
         ch_input
     )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // SUBWORKFLOW: Space Ranger raw data processing
     //
-    if ( params.run_spaceranger ) {
-        SPACERANGER (
-            INPUT_CHECK.out.st_data
-        )
-        ch_st_data = SPACERANGER.out.sr_out
-        ch_versions = ch_versions.mix(SPACERANGER.out.versions)
-    } else {
-        ch_st_data = INPUT_CHECK.out.st_data
+    SPACERANGER (
+        INPUT_CHECK.out.ch_spaceranger_input
+    )
+    ch_versions = ch_versions.mix(SPACERANGER.out.versions)
+    ch_downstream_input = INPUT_CHECK.out.ch_downstream_input.concat(SPACERANGER.out.sr_dir).map{
+        meta, outs -> [meta, outs.findAll{ it -> Utils.DOWNSTREAM_REQUIRED_SPACERANGER_FILES.contains(it.name) }]
     }
 
     //
     // MODULE: Read ST data and save as `anndata`
     //
     ST_READ_DATA (
-        ch_st_data
+        ch_downstream_input
     )
     ch_versions = ch_versions.mix(ST_READ_DATA.out.versions)
 

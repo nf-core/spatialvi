@@ -2,8 +2,8 @@
 // Raw data processing with Space Ranger
 //
 
-include { UNTAR as SPACERANGER_DOWNLOAD_REFERENCE } from "../../modules/nf-core/untar"
-include { SPACERANGER_COUNT              } from '../../modules/local/spaceranger_count'
+include { UNTAR as SPACERANGER_UNTAR_REFERENCE } from "../../modules/nf-core/untar"
+include { SPACERANGER_COUNT              } from '../../modules/nf-core/spaceranger/count'
 
 workflow SPACERANGER {
 
@@ -18,15 +18,16 @@ workflow SPACERANGER {
     // Reference files
     //
     ch_reference = Channel.empty()
-    if (params.spaceranger_reference) {
-        ch_reference = file ( params.spaceranger_reference, type: "dir", checkIfExists: true )
-    } else {
-        SPACERANGER_DOWNLOAD_REFERENCE ([
-            [id: "refdata-gex-GRCh38-2020-A"],
-            file("https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz")
+    if (params.spaceranger_reference ==~ /.*\.tar\.gz$/) {
+        ref_file = file(params.spaceranger_reference)
+        SPACERANGER_UNTAR_REFERENCE ([
+            [id: "reference"],
+            ref_file
         ])
-        ch_reference = SPACERANGER_DOWNLOAD_REFERENCE.out.untar.map({meta, ref -> ref})
-        ch_versions = ch_versions.mix(SPACERANGER_DOWNLOAD_REFERENCE.out.versions)
+        ch_reference = SPACERANGER_UNTAR_REFERENCE.out.untar.map({meta, ref -> ref})
+        ch_versions = ch_versions.mix(SPACERANGER_UNTAR_REFERENCE.out.versions)
+    } else {
+        ch_reference = file ( params.spaceranger_reference, type: "dir", checkIfExists: true )
     }
 
     //
@@ -50,8 +51,6 @@ workflow SPACERANGER {
     ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
     emit:
-    sr_dir   = SPACERANGER_COUNT.out.sr_dir // channel: [ dir ]
-    sr_out   = SPACERANGER_COUNT.out.sr_out // channel: [ val(meta), positions, tissue_lowres_image, tissue_hires_image, scale_factors, barcodes, features, matrix ]
-
+    sr_dir   = SPACERANGER_COUNT.out.outs
     versions = ch_versions                  // channel: [ versions.yml ]
 }

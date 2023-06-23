@@ -1,0 +1,48 @@
+nextflow_pipeline {
+    name "Test full workflow including spaceranger"
+    script "main.nf"
+    tag "pipeline"
+
+    test("spaceranger ffpe v1") {
+        when {
+            params {
+                input  = 'test-datasets/testdata/human-ovarian-cancer-1-standard_v1_ffpe/samplesheet_spaceranger.csv'
+                spaceranger_probeset = 'test-datasets/testdata/human-ovarian-cancer-1-standard_v1_ffpe/Visium_Human_Transcriptome_Probe_Set_v1.0_GRCh38-2020-A.csv'
+                st_preprocess_min_counts = 5
+                st_preprocess_min_genes = 3
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                // data
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_norm.h5ad").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_plain.h5ad").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_raw.h5ad").exists() },
+                // reports
+                { assert snapshot(
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_clustering.html"),
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_qc_and_normalisation.html"),
+                ).match("reports")},
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_spatial_de.html").exists() },
+                // degs
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/degs/st_spatial_de.csv").exists() },
+                // spaceranger
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/web_summary.html").exists() },
+                { assert snapshot(
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/filtered_feature_bc_matrix.h5"),
+                )},
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/raw_feature_bc_matrix.h5").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/spatial/tissue_positions.csv").exists() }
+            )
+        }
+    }
+
+
+
+}
