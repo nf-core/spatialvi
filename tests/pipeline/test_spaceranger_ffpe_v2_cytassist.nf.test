@@ -1,13 +1,12 @@
 nextflow_pipeline {
-    name "Test workflow (only downstream part)"
+    name "Test full workflow including spaceranger"
     script "main.nf"
     tag "pipeline"
 
-    test("CytAssist_11mm_FFPE_Human_Glioblastoma_2") {
+    test("spaceranger ffpe v2 cytassist (default `-profile test`)") {
         when {
             params {
-                input = 'test-datasets/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/samplesheet_downstream.csv'
-                spaceranger_probeset = null
+                // This is the default `test` profile, no need to specify additional parameters
                 outdir = "$outputDir"
             }
         }
@@ -29,6 +28,14 @@ nextflow_pipeline {
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatial_de.html").exists() },
                 // degs
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_spatial_de.csv").exists() },
+                // spaceranger
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/web_summary.html").exists() },
+                { assert snapshot(
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/filtered_feature_bc_matrix.h5"),
+                )},
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/raw_feature_bc_matrix.h5").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/spatial/tissue_positions.csv").exists() }
             )
         }
     }
