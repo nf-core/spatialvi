@@ -28,17 +28,12 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "run_spaceranger": {
-                    "type": "boolean",
-                    "description": "Run Space Ranger on input data",
-                    "help_text": "Use this when your data is raw spatial data that needs to be processed by Space Ranger before downstream analyses can be executed.",
-                    "default": "false"
-                },
                 "spaceranger_reference": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Location of Space Ranger reference directory",
-                    "fa_icon": "fas fa-folder-open"
+                    "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz"
                 },
                 "spaceranger_probeset": {
                     "type": "string",

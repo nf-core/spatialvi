@@ -6,6 +6,14 @@ import org.yaml.snakeyaml.Yaml
 
 class Utils {
 
+    public static List DOWNSTREAM_REQUIRED_SPACERANGER_FILES = [
+        "raw_feature_bc_matrix.h5",
+        "tissue_positions.csv",
+        "scalefactors_json.json",
+        "tissue_hires_image.png",
+        "tissue_lowres_image.png"
+    ]
+
     //
     // When running with -profile conda, warn if channels have not been set-up appropriately
     //
