@@ -1,15 +1,15 @@
 {
     "reports": {
         "content": [
-            "st_clustering.html:md5,4125e3d54838133dd439f5ab516c6b10",
-            "st_qc_and_normalisation.html:md5,b7d00e43923f76ead51e48e4064ae875"
+            "st_clustering.html:md5,d4b686cb4c71aa2a24b5ead39c295a76",
+            "st_qc_and_normalisation.html:md5,5c6683d34030ccfd9c0626ff4b00e8d6"
         ],
-        "timestamp": "2023-06-22T09:27:49+0000"
+        "timestamp": "2023-06-23T09:52:35+0000"
     },
     "software_versions": {
         "content": [
             "{CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, SPACERANGER_UNTAR_REFERENCE={untar=1.30}, ST_CLUSTERING={quarto=1.3.302, scanpy=1.9.3}, ST_QC_AND_NORMALISATION={quarto=1.3.302, scanpy=1.9.3}, ST_READ_DATA={scanpy=1.7.2}, ST_SPATIAL_DE={SpatialDE=, leidenalg=, quarto=1.3.302, scanpy=1.9.3}, Workflow={nf-core/spatialtranscriptomics=1.0dev}}"
         ],
-        "timestamp": "2023-06-22T09:27:49+0000"
+        "timestamp": "2023-06-23T09:52:35+0000"
     }
 }
