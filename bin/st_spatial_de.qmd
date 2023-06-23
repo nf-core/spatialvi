@@ -39,12 +39,12 @@ plt.rcParams["figure.figsize"] = (5, 5)
 st_adata.uns['log1p']['base'] = None
 
 sc.tl.rank_genes_groups(st_adata, 'clusters', method='t-test')
-sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False)
+sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False, gene_symbols="gene_symbol")
 ```
 
 ```{python}
 sc.tl.rank_genes_groups(st_adata, 'clusters', method='wilcoxon')
-sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False)
+sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False, gene_symbols="gene_symbol")
 ```
 
 ## Spatially variable genes
@@ -70,12 +70,12 @@ st_adata.var = pd.concat([st_adata.var, results.loc[st_adata.var.index.values, :
 Then we can inspect significant genes that varies in space and visualize them with `sc.pl.spatial` function.
 
 ```{python}
-results = results.sort_values("qval", ascending=True)
-results.to_csv(saveSpatialDEFileName)
-results.head(10)
+results_tab = st_adata.var.sort_values("qval", ascending=True)
+results_tab.to_csv(saveSpatialDEFileName)
+results_tab.head(10)
 ```
 
 ```{python}
-keys = results.index.values[: plotTopHVG]
-sc.pl.spatial(st_adata, img_key="hires", color=keys, alpha=0.7, ncols=numberOfColumns)
+symbols = results_tab.iloc[: plotTopHVG]["gene_symbol"]
+sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7, ncols=numberOfColumns, title=symbols)
 ```
