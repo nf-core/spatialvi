@@ -31,6 +31,8 @@ or bespoke user code.
 
 - [#38](https://github.com/nf-core/spatialtranscriptomics/issues/38): Specify manual alignment files in samplesheet
 - [#20](https://github.com/nf-core/spatialtranscriptomics/issues/20) and [#22](https://github.com/nf-core/spatialtranscriptomics/issues/22): Add missing Groovy module
+- [#53](https://github.com/nf-core/spatialtranscriptomics/pull/53): Use ensemble IDs as index in adata.var and fix related
+  issue with SpatialDE
 
 ### `Dependencies`
 
