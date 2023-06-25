@@ -8,7 +8,7 @@ process ST_SPATIAL_DE {
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
-    label "process_medium"
+    label 'process_medium'
 
     conda "env/st_spatial_de/environment.yml"
     container "docker.io/erikfas/spatialtranscriptomics"
