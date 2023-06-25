@@ -21,11 +21,9 @@ nextflow_pipeline {
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_plain.h5ad").exists() },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_raw.h5ad").exists() },
                 // reports
-                { assert snapshot(
-                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html"),
-                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_qc_and_normalisation.html"),
-                ).match("reports")},
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatial_de.html").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html").text.contains("Saving anndata file for future use") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_qc_and_normalisation.html").text.contains("Distribution after filtering") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatial_de.html").text.contains("Spatially variable genes") },
                 // degs
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_spatial_de.csv").exists() },
                 // spaceranger

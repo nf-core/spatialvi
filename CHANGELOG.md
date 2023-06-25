@@ -5,6 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Initial release of nf-core/spatialtranscriptomics, created with the [nf-core](https://nf-co.re/) template.
 This marks the point at which the pipeline development was moved to nf-core and
 NBIS. The pipeline has undergone several iterations regarding its functionality
 and content; there are a significant number of changes, of which not all are
@@ -26,6 +27,7 @@ or bespoke user code.
 - Use a more standardised practice to find mitochondrial genes [[#30](https://github.com/nf-core/spatialtranscriptomics/pull/30)]
 - Make pipeline output compatible with TissUUmaps [[#31](https://github.com/nf-core/spatialtranscriptomics/pull/31)]
 - Add custom Quarto-based reports for all downstream processing [[#31](https://github.com/nf-core/spatialtranscriptomics/pull/31)]
+- Embed resources in quarto reports [[#43](https://github.com/nf-core/spatialtranscriptomics/pull/43)]
 
 ### `Fixed`
 

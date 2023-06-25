@@ -26,7 +26,6 @@ process ST_SPATIAL_DE {
     output:
     tuple val(meta), path("*.csv")              , emit: degs
     tuple val(meta), path("st_spatial_de.html") , emit: html
-    tuple val(meta), path("st_spatial_de_files"), emit: html_files
     path("versions.yml")                        , emit: versions
 
     when:
