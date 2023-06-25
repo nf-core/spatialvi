@@ -3,7 +3,6 @@
 //
 process ST_SPATIAL_DE {
 
-    // TODO nf-core: fix exporting of SpatialDE version, which does not work with `__version__`
     // TODO: Add a better description
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 

@@ -54,8 +54,6 @@ information about these files at the [10X website](https://support.10xgenomics.c
 
 ## Data
 
-<!-- TODO nf-core: Change section after deciding whether to keep all H5 files. -->
-
 <details markdown="1">
 <summary>Output files</summary>
 
