@@ -18,6 +18,8 @@ or bespoke user code.
 
 ### `Added`
 
+- Implement tests with nf-test [[#42](https://github.com/nf-core/spatialtranscriptomics/pull/42)]
+- Replace custom code to download reference with `untar` module [[#44](https://github.com/nf-core/spatialtranscriptomics/pull/44)]
 - Replace custom code to download reference with `untar` module [[#44](https://github.com/nf-core/spatialtranscriptomics/pull/44)]
 - Embed resources in quarto reports [[#43](https://github.com/nf-core/spatialtranscriptomics/pull/43)]
 - Implement tests with nf-test [[#42](https://github.com/nf-core/spatialtranscriptomics/pull/42)]
@@ -31,6 +33,7 @@ or bespoke user code.
 
 ### `Fixed`
 
+- [#51](https://github.com/nf-core/spatialtranscriptomics/issues/51): Fix version export of `leidenalg` and `SpatialDE` Python modules
 - [#38](https://github.com/nf-core/spatialtranscriptomics/issues/38): Specify manual alignment files in samplesheet
 - [#20](https://github.com/nf-core/spatialtranscriptomics/issues/20) and [#22](https://github.com/nf-core/spatialtranscriptomics/issues/22): Add missing Groovy module
 
