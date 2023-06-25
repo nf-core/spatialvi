@@ -2,7 +2,7 @@
 title: "Pre-processing and filtering of Spatial Transcriptomics data"
 format:
   html:
-    embed-resources: false
+    embed-resources: true
     page-layout: full
     code-fold: true
 jupyter: python3
