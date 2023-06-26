@@ -106,7 +106,7 @@ def read_visium_mtx(
         # Read coordinates
         positions = pd.read_csv(files["tissue_positions_file"], index_col="barcode", dtype={"in_tissue": bool})
         adata.obs = adata.obs.join(positions, how="left")
-        adata.obsm["spatial"] = adata.obs[["pxl_row_in_fullres", "pxl_col_in_fullres"]].to_numpy()
+        adata.obsm["spatial"] = adata.obs[["pxl_col_in_fullres", "pxl_row_in_fullres"]].to_numpy()
         adata.obs.drop(
             columns=["pxl_row_in_fullres", "pxl_col_in_fullres"],
             inplace=True,

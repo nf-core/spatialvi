@@ -7,7 +7,7 @@ process ST_CLUSTERING {
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
-    label "process_low"
+    label 'process_low'
 
     conda "conda-forge::quarto=1.3.353 conda-forge::scanpy=1.9.3 conda-forge::papermill=2.3.4 conda-forge::jupyter=1.0.0 conda-forge::leidenalg=0.9.1"
     container "docker.io/erikfas/spatialtranscriptomics"
@@ -27,7 +27,6 @@ process ST_CLUSTERING {
     output:
     tuple val(meta), path("st_adata_processed.h5ad"), emit: st_adata_processed
     tuple val(meta), path("st_clustering.html")     , emit: html
-    tuple val(meta), path("st_clustering_files")    , emit: html_files
     path("versions.yml")                            , emit: versions
 
     when:

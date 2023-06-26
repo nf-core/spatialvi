@@ -7,7 +7,7 @@ process ST_QC_AND_NORMALISATION {
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
-    label "process_low"
+    label 'process_low'
 
     conda "conda-forge::quarto=1.3.353 conda-forge::scanpy=1.9.3 conda-forge::papermill=2.3.4 conda-forge::jupyter=1.0.0"
     container "docker.io/erikfas/spatialtranscriptomics"
@@ -28,7 +28,6 @@ process ST_QC_AND_NORMALISATION {
     tuple val(meta), path("st_adata_norm.h5ad")           , emit: st_data_norm
     tuple val(meta), path("st_adata_plain.h5ad")          , emit: st_data_plain
     tuple val(meta), path("st_qc_and_normalisation.html") , emit: html
-    tuple val(meta), path("st_qc_and_normalisation_files"), emit: html_files
     path("versions.yml")                                  , emit: versions
 
     when:

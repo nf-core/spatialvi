@@ -7,7 +7,7 @@ process ST_SPATIAL_DE {
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
-    label "process_medium"
+    label 'process_medium'
 
     conda "env/st_spatial_de/environment.yml"
     container "docker.io/erikfas/spatialtranscriptomics"
@@ -26,7 +26,6 @@ process ST_SPATIAL_DE {
     output:
     tuple val(meta), path("*.csv")              , emit: degs
     tuple val(meta), path("st_spatial_de.html") , emit: html
-    tuple val(meta), path("st_spatial_de_files"), emit: html_files
     path("versions.yml")                        , emit: versions
 
     when:
@@ -44,9 +43,9 @@ process ST_SPATIAL_DE {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         quarto: \$(quarto -v)
-        leidenalg: \$(python -c "import leidenalg; print(leidenalg.__version__)")
+        leidenalg: \$(python -c "import leidenalg; print(leidenalg.version)")
         scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
-        SpatialDE: \$(python -c "import SpatialDE; print(SpatialDE.__version__)")
+        SpatialDE: \$(python -c "from importlib.metadata import version; print(version('SpatialDE'))")
     END_VERSIONS
     """
 }

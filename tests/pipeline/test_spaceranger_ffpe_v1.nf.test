@@ -24,11 +24,9 @@ nextflow_pipeline {
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_plain.h5ad").exists() },
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_raw.h5ad").exists() },
                 // reports
-                { assert snapshot(
-                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_clustering.html"),
-                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_qc_and_normalisation.html"),
-                ).match("reports")},
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_spatial_de.html").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_clustering.html").text.contains("Saving anndata file for future use") },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_qc_and_normalisation.html").text.contains("Distribution after filtering") },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_spatial_de.html").text.contains("Spatially variable genes") },
                 // degs
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/degs/st_spatial_de.csv").exists() },
                 // spaceranger

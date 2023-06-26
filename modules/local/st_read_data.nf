@@ -4,7 +4,7 @@
 process ST_READ_DATA {
 
     tag "${meta.id}"
-    label "process_low"
+    label 'process_low'
 
     conda "conda-forge::scanpy=1.7.2 conda-forge::matplotlib=3.6.3 conda-forge::pandas=1.5.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
