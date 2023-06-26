@@ -63,6 +63,9 @@ def read_visium_mtx(
 
     path = Path(path)
     adata = read_10x_h5(path / "raw_feature_bc_matrix.h5")
+    # use ensemble IDs as index, because they are unique
+    adata.var["gene_symbol"] = adata.var_names
+    adata.var.set_index("gene_ids", inplace=True)
 
     adata.uns["spatial"] = dict()
 
