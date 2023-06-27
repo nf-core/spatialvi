@@ -1,17 +1,7 @@
 Changes in module 'nf-core/custom/dumpsoftwareversions'
 --- modules/nf-core/custom/dumpsoftwareversions/meta.yml
 +++ modules/nf-core/custom/dumpsoftwareversions/meta.yml
-@@ -1,7 +1,9 @@
-+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/yaml-schema.json
- name: custom_dumpsoftwareversions
- description: Custom module used to dump software versions within the nf-core pipeline template
- keywords:
-   - custom
-+  - dump
-   - version
- tools:
-   - custom:
-@@ -20,10 +22,6 @@
+@@ -22,10 +22,6 @@
        type: file
        description: Standard YML file containing software versions
        pattern: "software_versions.yml"
@@ -25,19 +15,7 @@ Changes in module 'nf-core/custom/dumpsoftwareversions'
 
 --- modules/nf-core/custom/dumpsoftwareversions/main.nf
 +++ modules/nf-core/custom/dumpsoftwareversions/main.nf
-@@ -2,18 +2,17 @@
-     label 'process_single'
- 
-     // Requires `pyyaml` which does not have a dedicated container but is in the MultiQC container
--    conda "bioconda::multiqc=1.13"
-+    conda "bioconda::multiqc=1.14"
-     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
--        'https://depot.galaxyproject.org/singularity/multiqc:1.13--pyhdfd78af_0' :
--        'quay.io/biocontainers/multiqc:1.13--pyhdfd78af_0' }"
-+        'https://depot.galaxyproject.org/singularity/multiqc:1.14--pyhdfd78af_0' :
-+        'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0' }"
- 
-     input:
+@@ -11,9 +11,8 @@
      path versions
  
      output:
@@ -52,16 +30,8 @@ Changes in module 'nf-core/custom/dumpsoftwareversions'
 
 --- modules/nf-core/custom/dumpsoftwareversions/templates/dumpsoftwareversions.py
 +++ modules/nf-core/custom/dumpsoftwareversions/templates/dumpsoftwareversions.py
-@@ -4,13 +4,14 @@
- """Provide functions to merge multiple versions.yml files."""
+@@ -10,7 +10,7 @@
  
- 
--import yaml
- import platform
- from textwrap import dedent
- 
-+import yaml
-+
  
  def _make_versions_html(versions):
 -    """Generate a tabular HTML output of all versions for MultiQC."""
@@ -69,7 +39,7 @@ Changes in module 'nf-core/custom/dumpsoftwareversions'
      html = [
          dedent(
              """\\
-@@ -79,19 +80,8 @@
+@@ -79,19 +79,8 @@
          "$workflow.manifest.name": "$workflow.manifest.version",
      }
  
