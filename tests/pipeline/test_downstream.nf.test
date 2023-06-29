@@ -27,6 +27,8 @@ nextflow_pipeline {
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatial_de.html").text.contains("Spatially variable genes") },
                 // degs
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_spatial_de.csv").exists() },
+                // multiqc
+                { assert file("$outputDir/multiqc/multiqc_report.html").exists() }
             )
         }
     }
