@@ -94,7 +94,7 @@ workflow ST {
     FASTQC(
         INPUT_CHECK.out.ch_spaceranger_input.map{ it -> [it[0] /* meta */, it[1] /* reads */]}
     )
-    ch_versions = ch_versions.mix(FASTQ.out.versions)
+    ch_versions = ch_versions.mix(FASTQC.out.versions)
 
     //
     // SUBWORKFLOW: Space Ranger raw data processing
