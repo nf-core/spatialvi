@@ -82,6 +82,9 @@ Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://sci
 it is currently developed and maintained by [Erik Fasterius](https://github.com/fasterius)
 and [Christophe Avenel](https://github.com/cavenel).
 
+Many thanks to others who have helped out along the way too, especially [Gregor
+Sturm](https://github.com/grst)!
+
 <sup>1</sup> Supported by grants from the US National Institutes of Health
 [U24CA224067](https://reporter.nih.gov/project-details/10261367) and
 [U54AG075941](https://reporter.nih.gov/project-details/10376627). Original
