@@ -263,12 +263,6 @@
                     "fa_icon": "fas fa-file-upload",
                     "hidden": true
                 },
-                "plaintext_email": {
-                    "type": "boolean",
-                    "description": "Send plain-text email instead of HTML.",
-                    "fa_icon": "fas fa-remove-format",
-                    "hidden": true
-                },
                 "monochrome_logs": {
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
