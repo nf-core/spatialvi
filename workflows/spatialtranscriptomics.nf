@@ -70,8 +70,8 @@ include { ST_POSTPROCESS } from '../subworkflows/local/st_postprocess'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC } from "../modules/nf-core/fastqc/main"
-include { MULTIQC } from "../modules/nf-core/multiqc/main"
+include { FASTQC                      } from "../modules/nf-core/fastqc/main"
+include { MULTIQC                     } from "../modules/nf-core/multiqc/main"
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 /*
