@@ -15,9 +15,9 @@
                 "input": {
                     "type": "string",
                     "format": "file-path",
+                    "exists": true,
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/spatialtranscriptomics/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
@@ -204,7 +204,7 @@
                     "description": "Maximum amount of time that can be requested for any single job.",
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
@@ -221,12 +221,14 @@
                     "type": "boolean",
                     "description": "Display help text.",
                     "fa_icon": "fas fa-question-circle",
+                    "default": false,
                     "hidden": true
                 },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
+                    "default": false,
                     "hidden": true
                 },
                 "publish_dir_mode": {
@@ -244,6 +246,13 @@
                     "fa_icon": "fas fa-exclamation-triangle",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "help_text": "An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.",
+                    "hidden": true
+                },
+                "plaintext_email": {
+                    "type": "boolean",
+                    "description": "Send plain-text email instead of HTML.",
+                    "fa_icon": "fas fa-remove-format",
+                    "default": false,
                     "hidden": true
                 },
                 "max_multiqc_email_size": {
@@ -264,6 +273,7 @@
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
+                    "default": false,
                     "hidden": true
                 },
                 "hook_url": {
@@ -275,6 +285,7 @@
                 },
                 "multiqc_config": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Custom config file to supply to MultiQC.",
                     "fa_icon": "fas fa-cog",
                     "hidden": true
@@ -297,12 +308,29 @@
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
-                "show_hidden_params": {
+                "validationShowHiddenParams": {
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
                     "description": "Show all params when using `--help`",
+                    "default": false,
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "validationFailUnrecognisedParams": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters fails when an unrecognised parameter is found.",
+                    "default": false,
+                    "hidden": true,
+                    "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
+                },
+                "validationLenientMode": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters in lenient more.",
+                    "default": false,
+                    "hidden": true,
+                    "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 }
             }
         }
