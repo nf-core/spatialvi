@@ -1,5 +1,5 @@
 ---
-title: "Pre-processing and filtering of Spatial Transcriptomics data"
+title: "Pre-processing and quality control of Spatial Transcriptomics data"
 format:
   html:
     embed-resources: true
@@ -7,6 +7,13 @@ format:
     code-fold: true
 jupyter: python3
 ---
+
+## Introduction
+
+Spatial Transcriptomics data analysis involves several steps, including quality control (QC) and pre-processing, to ensure the reliability of downstream analyses. This report outlines the QC and pre-processing steps for Visium Spatial Transcriptomics data using the (https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html)[anndata format].
+
+Quality control is an essential step in spatial transcriptomics to identify and filter out spots and genes that may introduce noise or bias into the analysis.
+
 
 ```{python}
 #| tags: [parameters]
@@ -16,30 +23,23 @@ fileNameST = None
 resolution = 1
 saveFileST = None
 
-rawAdata = None #Name of the h5ad file
-pltFigSize = 6 #Figure size
-minCounts = 500 #Min counts per spot
-minGenes = 250 #Min genes per spot
-minCells = 1 #Min cells per gene
-histplotQCmaxTotalCounts = 10000 #Max total counts
-histplotQCminGeneCounts = 4000 #Min gene counts
-histplotQCbins = 40 #Number of bins
-nameDataPlain = "st_adata_plain.h5ad" #Name of the raw data save file
-nameDataNorm = "st_adata_norm.h5ad" #Name of the normalized data save file
+rawAdata = None  # Name of the h5ad file
+pltFigSize = 6  # Figure size
+minCounts = 500  # Min counts per spot
+minGenes = 250  # Min genes per spot
+minCells = 1  # Min cells per gene
+histplotQCmaxTotalCounts = 10000  # Max total counts
+histplotQCminGeneCounts = 4000  # Min gene counts
+histplotQCbins = 40  # Number of bins
+nameDataPlain = "st_adata_plain.h5ad"  # Name of the raw data save file
+nameDataNorm = "st_adata_norm.h5ad"  # Name of the normalized data save file
 ```
 
 ```{python}
-#| echo: false
+###| echo: false
 # Hide warnings in output html.
 import scanpy as sc
-import warnings
-warnings.filterwarnings("ignore")
-sc.settings.verbosity = 0
-```
-
-Importing modules
-```{python}
-import scanpy as sc
+import scipy
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -47,66 +47,194 @@ import seaborn as sns
 plt.rcParams["figure.figsize"] = (pltFigSize, pltFigSize)
 ```
 
+## Anndata object
+
+The anndata format is utilized to organize and store the Spatial Transcriptomics data. It includes information about counts, features, observations, and additional metadata. The anndata format ensures compatibility with various analysis tools and facilitates seamless integration into existing workflows.
+
 ```{python}
 st_adata = sc.read("./" + rawAdata)
 
+# Convert X matrix from csr to csc dense matrix for output compatibility:
+st_adata.X = scipy.sparse.csc_matrix(st_adata.X)
+
 # Get mitochondrial percentages
 st_adata.var['mt'] = st_adata.var_names.str.startswith('MT-')
-sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt"], inplace=True)
-```
+st_adata.var['hb'] = st_adata.var_names.str.contains(("^Hb.*-"))
 
-This is how the adata structure looks like for Visium data
+sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt", "hb"], inplace=True)
 
-```{python}
+print ("Content of the anndata object:")
 st_adata
 ```
 
-## QC and preprocessing
+## Quality Control
 
-We perform some basic filtering of spots based on total counts and expressed genes
+The following plots show the distribution of the number of genes per counts and counts per spot, as well as the percentage of counts from mitochondrial genes and hemoglobin genes.
 
 ```{python}
-fig, axs = plt.subplots(2, 2, figsize=(8, 7))
-p = sns.distplot(st_adata.obs["total_counts"], kde=True, ax=axs[0, 0])
-p = sns.distplot(st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts], kde=True, bins=histplotQCbins, ax=axs[0, 1])
-p = sns.distplot(st_adata.obs["n_genes_by_counts"], kde=True, bins=histplotQCbins, ax=axs[1, 0])
-p = sns.distplot(st_adata.obs["n_genes_by_counts"][st_adata.obs["n_genes_by_counts"] < histplotQCminGeneCounts], kde=True, bins=histplotQCbins, ax=axs[1, 1])
+sc.pl.violin(st_adata, ['n_genes_by_counts', 'total_counts'], multi_panel=True, jitter=0.4, rotation= 45)
+sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_hb'], multi_panel=True, jitter=0.4, rotation= 45)
 ```
 
+The same can be plotted on top of the tissue:
+
 ```{python}
+sc.pl.spatial(st_adata, color = ["total_counts", "n_genes_by_counts"])
+sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_hb"])
+```
+
+## Filtering
+
+### In-tissue Filtering
+
+Spots outside the tissue are removed:
+
+```{python}
+# Create a string observation "obs/in_tissue_str" with "In tissue" and "Outside tissue":
+st_adata.obs["in_tissue_str"] = ["In tissue" if x == 1 else "Outside tissue" for x in st_adata.obs["in_tissue"]]
+
+sc.pl.spatial(st_adata, color=["in_tissue_str"], title="Spots in tissue")
+del st_adata.obs["in_tissue_str"]
+
 # Remove spots outside tissue
+Number_spots = st_adata.shape[0]
 st_adata = st_adata[st_adata.obs["in_tissue"] == 1]
-
-sc.pp.filter_cells(st_adata, min_counts=minCounts)
-#sc.pp.filter_cells(st_adata, max_counts=maxCounts)
-sc.pp.filter_cells(st_adata, min_genes=minGenes)
-#st_adata = st_adata[st_adata.obs["pct_counts_mt"] < 20]
-print(f"#cells after MT filter: {st_adata.n_obs}")
-sc.pp.filter_genes(st_adata, min_cells=minCells)
-print("Filtered out spots outside tissue:", st_adata.shape)
+Number_spots_in_tissue = st_adata.shape[0]
+print (f"{Number_spots_in_tissue} spots in tissue on {Number_spots} spots in total.")
 ```
 
-Distribution after filtering:
+Distribution of counts per spots and genes per counts.
+
 ```{python}
 fig, axs = plt.subplots(2, 2, figsize=(8, 7))
-p = sns.distplot(st_adata.obs["total_counts"], kde=True, ax=axs[0, 0])
-p = sns.distplot(st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts], kde=True, bins=histplotQCbins, ax=axs[0, 1])
-p = sns.distplot(st_adata.obs["n_genes_by_counts"], kde=True, bins=histplotQCbins, ax=axs[1, 0])
-p = sns.distplot(st_adata.obs["n_genes_by_counts"][st_adata.obs["n_genes_by_counts"] < histplotQCminGeneCounts], kde=True, bins=histplotQCbins, ax=axs[1, 1])
+p = sns.histplot(
+  st_adata.obs["total_counts"], kde=True, ax=axs[0, 0]
+).set(title=f"Total counts")
+p = sns.histplot(
+  st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts], 
+  kde=True,
+  bins=histplotQCbins,
+  ax=axs[0, 1]
+).set(title=f"Total counts < {histplotQCmaxTotalCounts}")
+p = sns.histplot(
+  st_adata.obs["n_genes_by_counts"], 
+  kde=True, 
+  bins=histplotQCbins, 
+  ax=axs[1, 0]
+).set(title=f"Genes by counts")
+p = sns.histplot(
+  st_adata.obs["n_genes_by_counts"][st_adata.obs["n_genes_by_counts"] < histplotQCminGeneCounts],
+  kde=True,
+  bins=histplotQCbins,
+  ax=axs[1, 1]
+).set(title=f"Genes by counts < {histplotQCminGeneCounts}")
+fig.tight_layout()
 ```
 
-We proceed to normalize Visium counts data with the built-in `normalize_total` method from Scanpy, and detect highly-variable genes (for later). Note that there are alternatives for normalization (see discussion in [[Luecken19](https://www.embopress.org/doi/full/10.15252/msb.20188746)], and more recent alternatives such as [SCTransform](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1874-1) or [GLM-PCA](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1861-6)).
+_Top row: Distribution of the number of counts per spots._
+_Bottom row: Distribution of the number of genes with at least 1 count in a spot._
+
+### Cell and Gene Filtering
+
+We filter cells based on minimum counts and genes, and filter genes based on minimum cells.
 
 ```{python}
-st_adata.write(nameDataPlain)
+# Filter cells based on counts
+Number_spots = st_adata.shape[0]
+Number_genes = st_adata.shape[1]
+sc.pp.filter_cells(st_adata, min_counts=minCounts)
+Number_spots_filtered_minCounts = st_adata.shape[0]
+print (f"Removed {Number_spots - Number_spots_filtered_minCounts} spots with less than {minCounts} total counts.")
+
+# Filter cells based on genes
+sc.pp.filter_cells(st_adata, min_genes=minGenes)
+Number_spots_filtered_minGenes = st_adata.shape[0]
+print (f"Removed {Number_spots_filtered_minCounts - Number_spots_filtered_minGenes} spots with less than {minGenes} genes expressed.")
+
+# Filter genes based on cells
+sc.pp.filter_genes(st_adata, min_cells=minCells)
+Number_genes_filtered_minCells = st_adata.shape[1]
+print (f"Removed {Number_genes - Number_genes_filtered_minCells} genes expressed in less than {minCells} spots.")
+
+print (f"{Number_spots_filtered_minGenes} out of {Number_spots} spots remaining after filtering.")
+print (f"{Number_genes_filtered_minCells} out of {Number_genes} genes remaining after filtering.")
 ```
+
+Distributions after filtering:
+
+```{python}
+fig, axs = plt.subplots(2, 2, figsize=(8, 7))
+p = sns.histplot(
+  st_adata.obs["total_counts"], kde=True, ax=axs[0, 0]
+).set(title=f"Total counts")
+p = sns.histplot(
+  st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts], 
+  kde=True,
+  bins=histplotQCbins,
+  ax=axs[0, 1]
+).set(title=f"Total counts < {histplotQCmaxTotalCounts}")
+p = sns.histplot(
+  st_adata.obs["n_genes_by_counts"], 
+  kde=True, 
+  bins=histplotQCbins, 
+  ax=axs[1, 0]
+).set(title=f"Genes by counts")
+p = sns.histplot(
+  st_adata.obs["n_genes_by_counts"][st_adata.obs["n_genes_by_counts"] < histplotQCminGeneCounts],
+  kde=True,
+  bins=histplotQCbins,
+  ax=axs[1, 1]
+).set(title=f"Genes by counts < {histplotQCminGeneCounts}")
+fig.tight_layout()
+```
+
+_Top row: Distribution of the number of counts per spots._
+_Bottom row: Distribution of the number of genes with at least 1 count in a spot._
+
+```{python}
+# Write pre-processed data to files
+st_adata.write(nameDataPlain)
+print (f"Non-normalized Anndata object saved to data/{nameDataPlain}.")
+```
+
+### Normalization
+
+We proceed to normalize Visium counts data using the built-in `normalize_total` method from Scanpy followed by a log-transformation.
 
 ```{python}
 sc.pp.normalize_total(st_adata, inplace=True)
 sc.pp.log1p(st_adata)
-sc.pp.highly_variable_genes(st_adata, flavor="seurat", n_top_genes=2000)
 ```
 
+### Top expressed genes
+
 ```{python}
+sc.pl.highest_expr_genes(st_adata, n_top=20)
+```
+
+### Highly variable genes
+
+Highly variable genes are detected for subsequent analysis.
+
+```{python}
+sc.pp.highly_variable_genes(st_adata, flavor="seurat", n_top_genes=2000)
+var_genes_all = st_adata.var.highly_variable
+print("Extracted highly variable genes: %d"%sum(var_genes_all))
+```
+
+Plot of highly variable genes dispersion:
+
+```{python}
+# plot the table of highly variable genes
+sc.pl.highly_variable_genes(st_adata)
+```
+
+### Anndata export
+
+All anndata files saved can be found in the `data` directory.
+
+```{python}
+# Write normalized data to files
 st_adata.write(nameDataNorm)
+print (f"Normalized Anndata object saved to data/{nameDataPlain}.")
 ```
