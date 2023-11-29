@@ -6,6 +6,6 @@ dependencies:
   - leidenalg=0.9.1
   - papermill=2.3.4
   - pip=23.0.1
-  - scanpy=1.9.3
+  - scanpy=1.9.6
   - pip:
       - SpatialDE==1.1.3
