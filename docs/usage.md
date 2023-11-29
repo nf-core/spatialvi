@@ -106,9 +106,27 @@ default human reference for you automatically.
 
 ## Analysis options
 
-<!-- TODO nf-core: Add documentation section on analysis options/params. -->
+The pipeline is using Python and the scverse tools to do the downstream analysis (quality control, filtering, clustering, spatial differential equations).
 
-[WIP]
+### Parameters for Quality Control and Filtering:
+
+The following parameters are exposed for preprocessing:
+
+ - `--st_preprocess_min_counts`: Minimum number of counts for a spot to be considered in the analysis.
+ - `--st_preprocess_min_genes`: Minimum number of genes expressed in a spot for the spot to be considered.
+ - `--st_preprocess_min_cells`: Minimum number of spots expressing a gene for the gene to be considered.
+ - `--st_preprocess_fig_size`: The figure size for the plots generated during preprocessing (e.g., quality control plots).
+ - `--st_preprocess_hist_qc_max_total_counts`: Maximum total counts for the histogram plot in quality control.
+ - `--st_preprocess_hist_qc_min_gene_counts`: Minimum gene counts for the histogram plot in quality control.
+ - `--st_preprocess_hist_qc_bins`: Number of bins for the histogram plot in quality control.
+
+### Parameters for Clustering :
+
+ - `--st_cluster_resolution`: Resolution parameter for the clustering algorithm, controlling granularity.
+
+### Parameters for Spatial Differential Expression :
+
+ - `st_spatial_de_ncols`: Number of columns in the output figure.
 
 ## Running the pipeline
 
