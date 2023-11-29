@@ -48,12 +48,13 @@ st_adata
 
 ## Manifold embedding and clustering based on transcriptional similarity
 
-To uncover the underlying structure of the transcriptional landscape, we perform manifold embedding and clustering based on transcriptional similarity. Principal Component Analysis (PCA) is applied to reduce dimensionality, and UMAP (Uniform Manifold Approximation and Projection) is used for visualization. The Leiden algorithm is employed for clustering with a specified resolution of {{< var resolution >}}.
+To uncover the underlying structure of the transcriptional landscape, we perform manifold embedding and clustering based on transcriptional similarity. Principal Component Analysis (PCA) is applied to reduce dimensionality, and UMAP (Uniform Manifold Approximation and Projection) is used for visualization. The Leiden algorithm is employed for clustering with a givent resolution.
 
 ```{python}
 sc.pp.pca(st_adata)
 sc.pp.neighbors(st_adata)
 sc.tl.umap(st_adata)
+print (f"Resolution for Leiden clustering: {resolution}")
 sc.tl.leiden(st_adata, key_added="clusters", resolution=resolution)
 ```
 
