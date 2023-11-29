@@ -5,6 +5,8 @@ format:
     embed-resources: true
     page-layout: full
     code-fold: true
+execute:
+  keep-ipynb: true
 jupyter: python3
 ---
 
@@ -21,34 +23,32 @@ saveFileST = None
 #| echo: false
 # Hide warnings in output html.
 import scanpy as sc
-import warnings
-warnings.filterwarnings("ignore")
-sc.settings.verbosity = 0
-```
-
-```{python}
-# Load packages
-import scanpy as sc
 import numpy as np
 import pandas as pd
 from umap import UMAP
 from matplotlib import pyplot as plt
 import seaborn as sns
+import warnings
 
+warnings.filterwarnings("ignore")
+sc.settings.verbosity = 0
 sc.set_figure_params(dpi_save=300, facecolor="white")
 ```
+
 ## Reading the data
-The data has already been filtered and is saved in AnnData format.
+The data has already been filtered (see `st_qc_and_normalisation` report) and is saved in AnnData format.
+
 ```{python}
 #| echo: true
 #| code-fold: false
 st_adata = sc.read("./" + fileNameST)
+print (f"Loading {fileNameST}:")
 st_adata
 ```
 
 ## Manifold embedding and clustering based on transcriptional similarity
 
-We embed and cluster the manifold encoded by transcriptional similarity, using Leiden clustering [REF].
+To uncover the underlying structure of the transcriptional landscape, we perform manifold embedding and clustering based on transcriptional similarity. Principal Component Analysis (PCA) is applied to reduce dimensionality, and UMAP (Uniform Manifold Approximation and Projection) is used for visualization. The Leiden algorithm is employed for clustering with a specified resolution of {{< var resolution >}}.
 
 ```{python}
 sc.pp.pca(st_adata)
@@ -57,7 +57,9 @@ sc.tl.umap(st_adata)
 sc.tl.leiden(st_adata, key_added="clusters", resolution=resolution)
 ```
 
-We plot some covariates to check if there is any particular structure in the UMAP associated with total counts and detected genes.
+## Exploratory Data Analysis
+
+We generate UMAP plots to visualize the spatial distribution of clusters and investigate potential associations with total counts and detected genes.
 
 ```{python}
 # Make plots of UMAP of ST spots clusters
@@ -70,7 +72,8 @@ sc.pl.embedding_density(st_adata, groupby="clusters", ncols=4)
 ```
 
 ## Visualization in spatial coordinates
-We now take a look at how `total_counts` and `n_genes_by_counts` behave in spatial coordinates. We will overlay the circular spots on top of the Hematoxylin and eosin stain (H&E) image provided.
+
+Next, we examine how total counts and the number of detected genes behave in spatial coordinates. We overlay the circular spots on the Hematoxylin and Eosin stain (H&E) image to provide a spatial context.
 
 ```{python}
 plt.rcParams["figure.figsize"] = (10, 10)
@@ -79,7 +82,9 @@ sc.pl.spatial(
 )
 ```
 
-Before, we performed clustering in gene expression space, and visualized the results with UMAP. By visualizing clustered samples in spatial dimensions, we can gain insights into tissue organization and, potentially, into inter-cellular communication.
+## Spatial Clustering Visualization
+
+To gain insights into tissue organization and potential inter-cellular communication, we visualize the spatial distribution of clusters on the H&E image.
 
 ```{python}
 plt.rcParams["figure.figsize"] = (10, 10)
@@ -88,7 +93,7 @@ sc.pl.spatial(
 )
 ```
 
-Spots belonging to the same cluster in gene expression space often co-occur in spatial dimensions.
+Spots belonging to the same cluster in gene expression space often co-occur in spatial dimensions, providing valuable information about the spatial organization of cells.
 
 ```{python}
 #| echo: false
@@ -96,8 +101,12 @@ Spots belonging to the same cluster in gene expression space often co-occur in s
 st_adata.uns['log1p']['base'] = None
 ```
 
-## Saving anndata file for future use.
+## Data Saving
+
+To facilitate future analyses and reproducibility, the processed AnnData object is saved in the `data` directory.
+
 ```{python}
 if saveFileST is not None:
     st_adata.write(saveFileST)
+    print (f"Anndata object saved to data/{saveFileST}.")
 ```
