@@ -1,3 +1,7 @@
+<!--
+TODO: Make report more complete, add descriptions, etc.
+-->
+
 ---
 title: "Differential Gene Expression and spatially variable genes"
 format:
