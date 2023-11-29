@@ -9,11 +9,10 @@ from typing import Union, Optional
 import json
 import pandas as pd
 from matplotlib.image import imread
-from anndata import (
-    AnnData
-)
+from anndata import AnnData
 
 from scanpy import logging as logg
+
 
 def read_visium(
     path: Union[str, Path],
@@ -106,35 +105,28 @@ def read_visium(
         )
         files = dict(
             tissue_positions_file=tissue_positions_file,
-            scalefactors_json_file=path / 'spatial/scalefactors_json.json',
-            hires_image=path / 'spatial/tissue_hires_image.png',
-            lowres_image=path / 'spatial/tissue_lowres_image.png',
+            scalefactors_json_file=path / "spatial/scalefactors_json.json",
+            hires_image=path / "spatial/tissue_hires_image.png",
+            lowres_image=path / "spatial/tissue_lowres_image.png",
         )
 
         # check if files exists, continue if images are missing
         for f in files.values():
             if not f.exists():
                 if any(x in str(f) for x in ["hires_image", "lowres_image"]):
-                    logg.warning(
-                        f"You seem to be missing an image file.\n"
-                        f"Could not find '{f}'."
-                    )
+                    logg.warning(f"You seem to be missing an image file.\n" f"Could not find '{f}'.")
                 else:
                     raise OSError(f"Could not find '{f}'")
 
-        adata.uns["spatial"][library_id]['images'] = dict()
-        for res in ['hires', 'lowres']:
+        adata.uns["spatial"][library_id]["images"] = dict()
+        for res in ["hires", "lowres"]:
             try:
-                adata.uns["spatial"][library_id]['images'][res] = imread(
-                    str(files[f'{res}_image'])
-                )
+                adata.uns["spatial"][library_id]["images"][res] = imread(str(files[f"{res}_image"]))
             except Exception:
                 raise OSError(f"Could not find '{res}_image'")
 
         # read json scalefactors
-        adata.uns["spatial"][library_id]['scalefactors'] = json.loads(
-            files['scalefactors_json_file'].read_bytes()
-        )
+        adata.uns["spatial"][library_id]["scalefactors"] = json.loads(files["scalefactors_json_file"].read_bytes())
 
         adata.uns["spatial"][library_id]["metadata"] = {
             k: (str(attrs[k], "utf-8") if isinstance(attrs[k], bytes) else attrs[k])
@@ -144,25 +136,23 @@ def read_visium(
 
         # read coordinates
         positions = pd.read_csv(
-            files['tissue_positions_file'],
+            files["tissue_positions_file"],
             header=0 if tissue_positions_file.name == "tissue_positions.csv" else None,
             index_col=0,
         )
         positions.columns = [
-            'in_tissue',
-            'array_row',
-            'array_col',
-            'pxl_col_in_fullres',
-            'pxl_row_in_fullres',
+            "in_tissue",
+            "array_row",
+            "array_col",
+            "pxl_col_in_fullres",
+            "pxl_row_in_fullres",
         ]
 
         adata.obs = adata.obs.join(positions, how="left")
 
-        adata.obsm['spatial'] = adata.obs[
-            ['pxl_row_in_fullres', 'pxl_col_in_fullres']
-        ].to_numpy()
+        adata.obsm["spatial"] = adata.obs[["pxl_row_in_fullres", "pxl_col_in_fullres"]].to_numpy()
         adata.obs.drop(
-            columns=['pxl_row_in_fullres', 'pxl_col_in_fullres'],
+            columns=["pxl_row_in_fullres", "pxl_col_in_fullres"],
             inplace=True,
         )
 
@@ -170,9 +160,7 @@ def read_visium(
         if source_image_path is not None:
             # get an absolute path
             source_image_path = str(Path(source_image_path).resolve())
-            adata.uns["spatial"][library_id]["metadata"]["source_image_path"] = str(
-                source_image_path
-            )
+            adata.uns["spatial"][library_id]["metadata"]["source_image_path"] = str(source_image_path)
 
     return adata
 
@@ -187,14 +175,9 @@ if __name__ == "__main__":
     )
     parser.add_argument("--outAnnData", metavar="outAnnData", type=str, default=None, help="Output h5ad file path.")
     args = parser.parse_args()
-    
+
     # Read Visium data
-    st_adata = read_visium(
-        args.SRCountDir, 
-        count_file='raw_feature_bc_matrix.h5',
-        library_id=None, 
-        load_images=True
-    )
+    st_adata = read_visium(args.SRCountDir, count_file="raw_feature_bc_matrix.h5", library_id=None, load_images=True)
 
     # Write raw anndata to file
     st_adata.write(args.outAnnData)
