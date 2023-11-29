@@ -36,13 +36,13 @@ nameDataNorm = "st_adata_norm.h5ad"  # Name of the normalized data save file
 ```
 
 ```{python}
-###| echo: false
-# Hide warnings in output html.
+#| echo: false
 import scanpy as sc
 import scipy
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from IPython.display import display, Markdown
 
 plt.rcParams["figure.figsize"] = (pltFigSize, pltFigSize)
 ```
@@ -62,6 +62,8 @@ st_adata.var['mt'] = st_adata.var_names.str.startswith('MT-')
 st_adata.var['hb'] = st_adata.var_names.str.contains(("^Hb.*-"))
 
 sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt", "hb"], inplace=True)
+
+st_adata_before_filtering = st_adata.copy()
 
 print ("Content of the anndata object:")
 st_adata
@@ -139,6 +141,8 @@ _Bottom row: Distribution of the number of genes with at least 1 count in a spot
 We filter cells based on minimum counts and genes, and filter genes based on minimum cells.
 
 ```{python}
+#| warning: false
+
 # Filter cells based on counts
 Number_spots = st_adata.shape[0]
 Number_genes = st_adata.shape[1]
@@ -158,6 +162,20 @@ print (f"Removed {Number_genes - Number_genes_filtered_minCells} genes expressed
 
 print (f"{Number_spots_filtered_minGenes} out of {Number_spots} spots remaining after filtering.")
 print (f"{Number_genes_filtered_minCells} out of {Number_genes} genes remaining after filtering.")
+
+if (Number_genes_filtered_minCells == 0 or Number_spots_filtered_minGenes == 0):
+  st_adata = st_adata_before_filtering
+  display(
+    Markdown("""
+::: {.callout-important .content-visible when-format="html"}
+## Issue: No Spots Remain After Filtering
+
+An anomaly has been detected in the data: following the filtering process, all spots have been excluded. It is imperative to assess the data quality and carefully review the Analysis Options outlined in `docs/usage.md`.
+
+To ensure the smooth progression of downstream analysis, the exported AnnData will, for the time being, remain unfiltered. This precautionary measure is implemented to facilitate continued analysis while investigating and resolving the cause of the unexpected removal of all spots during filtering.
+:::"""
+    )
+  )
 ```
 
 Distributions after filtering:
