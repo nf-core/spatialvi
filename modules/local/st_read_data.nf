@@ -29,11 +29,11 @@ process ST_READ_DATA {
         "${meta.id}/tissue_lowres_image.png" \\
         "${meta.id}/tissue_positions.csv" \\
         "${meta.id}/spatial/"
-        
+
     read_st_data.py \\
         --SRCountDir "${meta.id}" \\
         --outAnnData st_adata_raw.h5ad
-    
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
