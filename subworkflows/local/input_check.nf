@@ -2,27 +2,62 @@
 // Check input samplesheet and get read channels
 //
 
+include { UNTAR as UNTAR_COMPRESSED_INPUT } from "../../modules/nf-core/untar"
+
 workflow INPUT_CHECK {
 
     take:
     samplesheet // file: /path/to/samplesheet.csv
 
     main:
-    ch_st = Channel.from(samplesheet).splitCsv(
-        header: true,
-        sep: ','
-    ).branch {
-        spaceranger: !it.containsKey("spaceranger_dir")
-        downstream: it.containsKey("spaceranger_dir")
+    ch_st = Channel.from(samplesheet)
+        .splitCsv ( header: true, sep: ',')
+        .branch   {
+            spaceranger: !it.containsKey("spaceranger_dir")
+            downstream: it.containsKey("spaceranger_dir")
+        }
+
+    // Pre-Space Ranger analysis: create meta map and check input existance
+    ch_spaceranger_input = ch_st.spaceranger.map { create_channel_spaceranger(it) }
+
+    // Post-Space Ranger analysis:
+    // Check if running the `test` profile, which uses a tarball of the testdata
+    if ( workflow.profile.contains('test') ) {
+
+        // Untar Space Ranger output stored as tarball
+        ch_downstream_tar = ch_st.downstream.map { create_channel_downstream_tar(it) }
+        UNTAR_COMPRESSED_INPUT (
+            ch_downstream_tar
+        )
+
+        // Create meta map corresponding to non-tarballed input
+        ch_downstream = UNTAR_COMPRESSED_INPUT.out.untar
+            .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
+
+    } else {
+
+        // Non-tarballed input data
+        ch_downstream = ch_st.downstream
+
     }
-    ch_spaceranger_input = ch_st.spaceranger.map{create_channel_spaceranger(it)}
-    ch_downstream_input = ch_st.downstream.map{create_channel_downstream(it)}
+
+    // Create meta map and check input existance
+    ch_downstream_input = ch_downstream.map { create_channel_downstream(it) }
 
     emit:
     ch_spaceranger_input                      // channel: [ val(meta), [ st data ] ]
     ch_downstream_input                       // channel: [ val(meta), [ st data ] ]
 }
 
+// Function to get list of [ meta, [ spaceranger_dir ]]
+def create_channel_downstream_tar(LinkedHashMap meta) {
+    meta['id'] = meta.remove('sample')
+    spaceranger_dir = meta.remove('spaceranger_dir')
+    return [meta, spaceranger_dir]
+}
+
+// Function to get list of [ meta, [ raw_feature_bc_matrix, tissue_positions,
+//                                   scalefactors, hires_image, lowres_image ]]
 def create_channel_downstream(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
     spaceranger_dir = file("${meta.remove('spaceranger_dir')}/**")
@@ -34,7 +69,7 @@ def create_channel_downstream(LinkedHashMap meta) {
     return [meta, spaceranger_dir]
 }
 
-// Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]
+// Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
 
