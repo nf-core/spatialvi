@@ -21,28 +21,27 @@ workflow INPUT_CHECK {
     ch_spaceranger_input = ch_st.spaceranger.map { create_channel_spaceranger(it) }
 
     // Post-Space Ranger analysis:
-    // Check if running the `test` profile, which uses a tarball of the testdata
-    if ( workflow.profile.contains('test') ) {
 
-        // Untar Space Ranger output stored as tarball
-        ch_downstream_tar = ch_st.downstream.map { create_channel_downstream_tar(it) }
-        UNTAR_COMPRESSED_INPUT (
-            ch_downstream_tar
-        )
+    // Split channel into tarballed and directory inputs
+    ch_downstream = ch_st.downstream
+        .map    { create_channel_downstream_tar(it) }
+        .branch {
+            tar: it[1].contains(".tar.gz")
+            dir: !it[1].contains(".tar.gz")
+        }
 
-        // Create meta map corresponding to non-tarballed input
-        ch_downstream = UNTAR_COMPRESSED_INPUT.out.untar
-            .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
+    // Extract tarballed inputs
+    UNTAR_COMPRESSED_INPUT (
+        ch_downstream.tar
+    )
 
-    } else {
+    // Combine extracted and directory inputs into one channel
+    ch_downstream_combined = UNTAR_COMPRESSED_INPUT.out.untar
+        .mix ( ch_downstream.dir )
+        .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
 
-        // Non-tarballed input data
-        ch_downstream = ch_st.downstream
-
-    }
-
-    // Create meta map and check input existance
-    ch_downstream_input = ch_downstream.map { create_channel_downstream(it) }
+    // Create final meta map and check input file existance
+    ch_downstream_input = ch_downstream_combined.map { create_channel_downstream(it) }
 
     emit:
     ch_spaceranger_input                      // channel: [ val(meta), [ st data ] ]
