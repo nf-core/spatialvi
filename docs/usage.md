@@ -134,7 +134,7 @@ The typical command for running the pipeline is as follows:
 
 ```bash
 # Run the pipeline with raw data yet to be processed by Space Ranger
-nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker --run_spaceranger
+nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker
 
 # Run pipeline with data already processed by Space Ranger
 nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker
