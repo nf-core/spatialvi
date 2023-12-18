@@ -8,8 +8,8 @@
     },
     "software_versions": {
         "content": [
-            "{CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, SPACERANGER_UNTAR_REFERENCE={untar=1.30}, ST_CLUSTERING={quarto=1.3.302, scanpy=1.9.3}, ST_QC_AND_NORMALISATION={quarto=1.3.302, scanpy=1.9.3}, ST_READ_DATA={scanpy=1.7.2}, ST_SPATIAL_DE={SpatialDE=1.1.3, leidenalg=0.9.1, quarto=1.3.302, scanpy=1.9.3}, Workflow={nf-core/spatialtranscriptomics=1.0dev}}"
+            "{CUSTOM_DUMPSOFTWAREVERSIONS={python=3.12.0, yaml=6.0.1}, SPACERANGER_UNTAR_REFERENCE={untar=1.30}, ST_CLUSTERING={quarto=1.3.302, scanpy=1.9.3}, ST_QC_AND_NORMALISATION={quarto=1.3.302, scanpy=1.9.3}, ST_READ_DATA={scanpy=1.7.2}, ST_SPATIAL_DE={SpatialDE=1.1.3, leidenalg=0.9.1, quarto=1.3.302, scanpy=1.9.3}, Workflow={nf-core/spatialtranscriptomics=1.0dev}}"
         ],
-        "timestamp": "2023-06-25T06:54:28+0000"
+        "timestamp": "2023-12-18T16:46:26.313038"
     }
 }
