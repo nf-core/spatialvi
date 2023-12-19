@@ -2,7 +2,8 @@
 // Check input samplesheet and get read channels
 //
 
-include { UNTAR as UNTAR_COMPRESSED_INPUT } from "../../modules/nf-core/untar"
+include { UNTAR as UNTAR_SPACERANGER_INPUT } from "../../modules/nf-core/untar"
+include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../modules/nf-core/untar"
 
 workflow INPUT_CHECK {
 
@@ -17,10 +18,28 @@ workflow INPUT_CHECK {
             downstream: it.containsKey("spaceranger_dir")
         }
 
-    // Pre-Space Ranger analysis: create meta map and check input existance
-    ch_spaceranger_input = ch_st.spaceranger.map { create_channel_spaceranger(it) }
+    // Space Ranger analysis: --------------------------------------------------
 
-    // Post-Space Ranger analysis:
+    // Split channel into tarballed and directory inputs
+    ch_spaceranger = ch_st.spaceranger
+        .map { it -> [it, it.fastq_dir]}
+        .branch {
+            tar: it[1].contains(".tar.gz")
+            dir: !it[1].contains(".tar.gz")
+        }
+
+    // Extract tarballed inputs
+    UNTAR_SPACERANGER_INPUT ( ch_spaceranger.tar )
+
+    // Combine extracted and directory inputs into one channel
+    ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
+        .mix ( ch_spaceranger.dir )
+        .map { meta, dir -> meta + [fastq_dir: dir] }
+
+    // Create final meta map and check input existance
+    ch_spaceranger_input = ch_spaceranger_combined.map { create_channel_spaceranger(it) }
+
+    // Downstream analysis: ----------------------------------------------------
 
     // Split channel into tarballed and directory inputs
     ch_downstream = ch_st.downstream
@@ -31,12 +50,10 @@ workflow INPUT_CHECK {
         }
 
     // Extract tarballed inputs
-    UNTAR_COMPRESSED_INPUT (
-        ch_downstream.tar
-    )
+    UNTAR_DOWNSTREAM_INPUT ( ch_downstream.tar )
 
     // Combine extracted and directory inputs into one channel
-    ch_downstream_combined = UNTAR_COMPRESSED_INPUT.out.untar
+    ch_downstream_combined = UNTAR_DOWNSTREAM_INPUT.out.untar
         .mix ( ch_downstream.dir )
         .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
 
