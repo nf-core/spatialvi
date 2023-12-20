@@ -1,11 +1,12 @@
 nextflow_pipeline {
-    name "Test workflow (only downstream part)"
+    name "Test downstream workflow (excl. Space Ranger)"
     script "main.nf"
     tag "pipeline"
 
-    test("CytAssist_11mm_FFPE_Human_Glioblastoma_2") {
+    test("Downstream FFPE v2 CytAssist") {
         when {
             params {
+                // This is the default `test` profile; params are not necessary
                 outdir = "$outputDir"
             }
         }
