@@ -10,4 +10,5 @@ log
 reports
 .nf-test/
 nf-test
+.nf-test*
 test-datasets

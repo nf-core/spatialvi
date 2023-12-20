@@ -5,24 +5,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Initial release of nf-core/spatialtranscriptomics, created with the [nf-core](https://nf-co.re/) template.
-This marks the point at which the pipeline development was moved to nf-core and
-NBIS. The pipeline has undergone several iterations regarding its functionality
-and content; there are a significant number of changes, of which not all are
-listed here. In summary, the pipeline contains best-practice processing and
-analyses of pre- and post-Space Ranger-processed data, including quality
-controls, normalisation, dimensionality reduction, clustering, differential
-expression testing as well as output files compatible with further downstream
-analyses and/or exploration in _e.g._ [TissUUmaps](https://tissuumaps.github.io/)
-or bespoke user code.
+Initial release of nf-core/spatialtranscriptomics, created with the
+[nf-core](https://nf-co.re/) template. This marks the point at which the
+pipeline development was moved to nf-core and NBIS. The pipeline has undergone
+several iterations regarding its functionality and content; there are a
+significant number of changes, of which not all are listed here. In summary, the
+pipeline contains best-practice processing and analyses of pre- and post-Space
+Ranger-processed data, including quality controls, normalisation, dimensionality
+reduction, clustering, differential expression testing as well as output files
+compatible with further downstream analyses and/or exploration in _e.g._
+[TissUUmaps](https://tissuumaps.github.io/) or bespoke user code.
 
 ### `Added`
 
+- Allow input directories `fastq_dir` and `spaceranger_dir` to be specified as tar archives (`.tar.gz`)
+- Add a check to make sure that there are spots left after filtering [[#46](https://github.com/nf-core/spatialtranscriptomics/issues/46)]
 - Implement tests with nf-test [[#42](https://github.com/nf-core/spatialtranscriptomics/pull/42)]
-- Replace custom code to download reference with `untar` module [[#44](https://github.com/nf-core/spatialtranscriptomics/pull/44)]
 - Replace custom code to download reference with `untar` module [[#44](https://github.com/nf-core/spatialtranscriptomics/pull/44)]
 - Embed resources in quarto reports [[#43](https://github.com/nf-core/spatialtranscriptomics/pull/43)]
-- Implement tests with nf-test [[#42](https://github.com/nf-core/spatialtranscriptomics/pull/42)]
 - Use a samplesheet for input specification [[#30](https://github.com/nf-core/spatialtranscriptomics/pull/30), [#31](https://github.com/nf-core/spatialtranscriptomics/pull/31) and [#45](https://github.com/nf-core/spatialtranscriptomics/pull/45)]
 - Add Space Ranger pre-processing as an optional pipeline step using the `spaceranger` nf-core module [[#17](https://github.com/nf-core/spatialtranscriptomics/pull/17) and [#45](https://github.com/nf-core/spatialtranscriptomics/pull/45)]
 - Add `env/` directory with pipeline-specific container and Conda environment specifications [[#17](https://github.com/nf-core/spatialtranscriptomics/pull/17) and [#28](https://github.com/nf-core/spatialtranscriptomics/pull/28)]
@@ -50,7 +50,7 @@ versions of the same tool.
 | ----------- | ------- |
 | `SpatialDE` | 1.1.3   |
 | `leidenalg` | 0.9.1   |
-| `python`    | 3.11.0  |
+| `python`    | 3.12.0  |
 | `quarto`    | 1.3.302 |
 | `scanpy`    | 1.9.3   |
 

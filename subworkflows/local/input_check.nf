@@ -2,27 +2,78 @@
 // Check input samplesheet and get read channels
 //
 
+include { UNTAR as UNTAR_SPACERANGER_INPUT } from "../../modules/nf-core/untar"
+include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../modules/nf-core/untar"
+
 workflow INPUT_CHECK {
 
     take:
     samplesheet // file: /path/to/samplesheet.csv
 
     main:
-    ch_st = Channel.from(samplesheet).splitCsv(
-        header: true,
-        sep: ','
-    ).branch {
-        spaceranger: !it.containsKey("spaceranger_dir")
-        downstream: it.containsKey("spaceranger_dir")
-    }
-    ch_spaceranger_input = ch_st.spaceranger.map{create_channel_spaceranger(it)}
-    ch_downstream_input = ch_st.downstream.map{create_channel_downstream(it)}
+    ch_st = Channel.from(samplesheet)
+        .splitCsv ( header: true, sep: ',')
+        .branch   {
+            spaceranger: !it.containsKey("spaceranger_dir")
+            downstream: it.containsKey("spaceranger_dir")
+        }
+
+    // Space Ranger analysis: --------------------------------------------------
+
+    // Split channel into tarballed and directory inputs
+    ch_spaceranger = ch_st.spaceranger
+        .map { it -> [it, it.fastq_dir]}
+        .branch {
+            tar: it[1].contains(".tar.gz")
+            dir: !it[1].contains(".tar.gz")
+        }
+
+    // Extract tarballed inputs
+    UNTAR_SPACERANGER_INPUT ( ch_spaceranger.tar )
+
+    // Combine extracted and directory inputs into one channel
+    ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
+        .mix ( ch_spaceranger.dir )
+        .map { meta, dir -> meta + [fastq_dir: dir] }
+
+    // Create final meta map and check input existance
+    ch_spaceranger_input = ch_spaceranger_combined.map { create_channel_spaceranger(it) }
+
+    // Downstream analysis: ----------------------------------------------------
+
+    // Split channel into tarballed and directory inputs
+    ch_downstream = ch_st.downstream
+        .map    { create_channel_downstream_tar(it) }
+        .branch {
+            tar: it[1].contains(".tar.gz")
+            dir: !it[1].contains(".tar.gz")
+        }
+
+    // Extract tarballed inputs
+    UNTAR_DOWNSTREAM_INPUT ( ch_downstream.tar )
+
+    // Combine extracted and directory inputs into one channel
+    ch_downstream_combined = UNTAR_DOWNSTREAM_INPUT.out.untar
+        .mix ( ch_downstream.dir )
+        .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
+
+    // Create final meta map and check input file existance
+    ch_downstream_input = ch_downstream_combined.map { create_channel_downstream(it) }
 
     emit:
     ch_spaceranger_input                      // channel: [ val(meta), [ st data ] ]
     ch_downstream_input                       // channel: [ val(meta), [ st data ] ]
 }
 
+// Function to get list of [ meta, [ spaceranger_dir ]]
+def create_channel_downstream_tar(LinkedHashMap meta) {
+    meta['id'] = meta.remove('sample')
+    spaceranger_dir = meta.remove('spaceranger_dir')
+    return [meta, spaceranger_dir]
+}
+
+// Function to get list of [ meta, [ raw_feature_bc_matrix, tissue_positions,
+//                                   scalefactors, hires_image, lowres_image ]]
 def create_channel_downstream(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
     spaceranger_dir = file("${meta.remove('spaceranger_dir')}/**")
@@ -34,7 +85,7 @@ def create_channel_downstream(LinkedHashMap meta) {
     return [meta, spaceranger_dir]
 }
 
-// Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]
+// Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
 

@@ -49,15 +49,7 @@ jobs:
           - tests/pipeline/test_downstream.nf.test
     steps:
       - name: Check out pipeline code
-        uses: actions/checkout@v3
-
-      - name: Checkout test data
-        uses: actions/checkout@v3
-        with:
-          repository: nf-core/test-datasets
-          ref: spatialtranscriptomics
-          fetch-depth: 1
-          path: test-datasets
+        uses: actions/checkout@v4
 
       # Install Nextflow
       - name: Install Nextflow
