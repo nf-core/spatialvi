@@ -49,7 +49,7 @@ jobs:
           - tests/pipeline/test_downstream.nf.test
     steps:
       - name: Check out pipeline code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Install Nextflow
       - name: Install Nextflow
