@@ -6,27 +6,38 @@ nextflow_pipeline {
     test("spaceranger ffpe v2 cytassist (default `-profile test`)") {
         when {
             params {
-                // This is the default `test` profile, no need to specify additional parameters
+                input = "https://raw.githubusercontent.com/fasterius/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/samplesheet_spaceranger.csv"
+                spaceranger_probeset = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs/probe_set.csv"
+                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/homo_sapiens_chr22_reference.tar.gz"
+                st_preprocess_min_counts = 5
+                st_preprocess_min_genes = 3
                 outdir = "$outputDir"
             }
         }
 
         then {
             assertAll(
+
+                // Workflow
                 { assert workflow.success },
                 { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
-                // data
+
+                // Data
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_processed.h5ad").exists() },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_norm.h5ad").exists() },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_plain.h5ad").exists() },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_raw.h5ad").exists() },
-                // reports
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html").text.contains("Saving anndata file for future use") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_qc_and_normalisation.html").text.contains("Distribution after filtering") },
+
+                // Reports
+                { assert
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_qc_and_normalisation.html").text.contains("Distributions after filtering") },
+                file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html").text.contains("AnnData object is saved in the") },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatial_de.html").text.contains("Spatially variable genes") },
-                // degs
+
+                // DEGs
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_spatial_de.csv").exists() },
-                // spaceranger
+
+                // Space Ranger
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/web_summary.html").exists() },
                 { assert snapshot(
                     path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/raw_feature_bc_matrix.h5"),
@@ -34,7 +45,8 @@ nextflow_pipeline {
                 )},
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/raw_feature_bc_matrix.h5").exists() },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/outs/spatial/tissue_positions.csv").exists() },
-                // multiqc
+
+                // MultiQC
                 { assert file("$outputDir/multiqc/multiqc_report.html").text.contains("CytAssist_11mm_FFPE_Human_Glioblastoma_2_4")}
             )
         }
