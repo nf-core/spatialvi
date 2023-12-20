@@ -12,7 +12,7 @@
 
 - [anndata](https://github.com/theislab/anndata)
 
-  > Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: <https://doi.org/10.1101/2021.12.16.473007>
+  > Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: https://doi.org/10.1101/2021.12.16.473007
 
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
@@ -28,7 +28,7 @@
 
 - [scanpy](https://github.com/theislab/scanpy)
 
-  > Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol 19, 15 (2018). <https://doi.org/10.1186/s13059-017-1382-0>
+  > Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol 19, 15 (2018). doi: https://doi.org/10.1186/s13059-017-1382-0
 
 - [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger)
 
@@ -36,7 +36,7 @@
 
 - [SpatialDE](https://github.com/Teichlab/SpatialDE)
 
-  > Svensson V, Teichmann S, Stegle O. SpatialDE: identification of spatially variable genes. Nat Methods 15, 343–346 (2018). <https://doi.org/10.1038/nmeth.4636>
+  > Svensson V, Teichmann S, Stegle O. SpatialDE: identification of spatially variable genes. Nat Methods 15, 343–346 (2018). doi: https://doi.org/10.1038/nmeth.4636
 
 ## Software packaging/containerisation tools
 
