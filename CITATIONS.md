@@ -10,7 +10,7 @@
 
 ## Pipeline tools
 
-- [anndata](https://github.com/theislab/anndata)
+- [AnnData](https://github.com/theislab/anndata)
 
   > Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: https://doi.org/10.1101/2021.12.16.473007
 
@@ -26,7 +26,7 @@
 
   > Allaire J, Teague C, Scheidegger C, Xie Y, Dervieux C. Quarto (2022). doi: 10.5281/zenodo.5960048
 
-- [scanpy](https://github.com/theislab/scanpy)
+- [Scanpy](https://github.com/theislab/scanpy)
 
   > Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol 19, 15 (2018). doi: https://doi.org/10.1186/s13059-017-1382-0
 
