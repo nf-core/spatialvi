@@ -43,6 +43,11 @@
                     "description": "Location of Space Ranger probeset file",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "keep_untar_output": {
+                    "type": "boolean",
+                    "description": "Keep output files from extracted tar archives.",
+                    "fa_icon": "fas fa-box-archive"
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",
