@@ -19,9 +19,6 @@ nextflow_pipeline {
 
                 // Data
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_processed.h5ad").exists() },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_norm.h5ad").exists() },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_plain.h5ad").exists() },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_raw.h5ad").exists() },
 
                 // Reports
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_qc_and_normalisation.html").text.contains("Distributions after filtering") },

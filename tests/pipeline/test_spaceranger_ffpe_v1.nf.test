@@ -24,9 +24,6 @@ nextflow_pipeline {
 
                 // Data
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_processed.h5ad").exists() },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_norm.h5ad").exists() },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_plain.h5ad").exists() },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_raw.h5ad").exists() },
 
                 // Reports
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_qc_and_normalisation.html").text.contains("Distributions after filtering") },
@@ -37,20 +34,17 @@ nextflow_pipeline {
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/degs/st_spatial_de.csv").exists() },
 
                 // Space Ranger
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/web_summary.html").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/web_summary.html").exists() },
                 { assert snapshot(
-                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/raw_feature_bc_matrix.h5"),
-                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/filtered_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/filtered_feature_bc_matrix.h5"),
                 )},
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/raw_feature_bc_matrix.h5").exists() },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/outs/spatial/tissue_positions.csv").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/raw_feature_bc_matrix.h5").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/spatial/tissue_positions.csv").exists() },
 
                 // MultiQC
                 { assert file("$outputDir/multiqc/multiqc_report.html").text.contains("Visium_FFPE_Human_Ovarian_Cancer")}
             )
         }
     }
-
-
-
 }
