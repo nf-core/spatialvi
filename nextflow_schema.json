@@ -5,6 +5,7 @@
     "description": "Spatial Transcriptomics",
     "type": "object",
     "definitions": {
+
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -90,33 +91,33 @@
         },
 
         "analysis_options": {
-            "title": "Analysis option",
+            "title": "Analysis options",
             "type": "object",
             "fa_icon": "fas fa-magnifying-glass-chart",
-            "description": "Define options for each tool in the pipeline",
+            "description": "Options related to the downstream analyses performed by the pipeline.",
             "properties": {
                 "st_preprocess_fig_size": {
                     "type": "integer",
                     "default": 6,
-                    "description": "Figure size, inches.",
+                    "description": "The size of the QC figures, in inches.",
                     "fa_icon": "fas fa-up-right-and-down-left-from-center"
                 },
                 "st_preprocess_min_counts": {
                     "type": "integer",
                     "default": 500,
-                    "description": "Minimum UMI count.",
+                    "description": "The minimum number of UMIs needed in a spot for that spot to pass the filtering.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_min_genes": {
                     "type": "integer",
                     "default": 250,
-                    "description": "Minimum genes count.",
+                    "description": "The minimum number of expressed genes in a spot needed for that spot to pass the filtering.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_min_cells": {
                     "type": "integer",
                     "default": 1,
-                    "description": "Minimum cells count.",
+                    "description": "The minimum number of spots in which a gene is expressed for that gene to pass the filtering.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_hist_qc_max_total_counts": {
@@ -134,25 +135,27 @@
                 "st_preprocess_hist_qc_bins": {
                     "type": "integer",
                     "default": 40,
-                    "description": "Histogram QC plot number of bins.",
+                    "description": "The number of bins for the QC histogram plots.",
                     "fa_icon": "fas fa-chart-simple"
                 },
                 "st_cluster_resolution": {
                     "type": "number",
                     "default": 0.4,
-                    "description": "Clustering resolution for ST spots.",
+                    "description": "The resolution for the clustering of the spots.",
+                    "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
                     "fa_icon": "fas fa-circle-nodes"
                 },
-                "st_spatial_de_top_hgv": {
+                "st_spatial_de_top_hvg": {
                     "type": "integer",
                     "default": 15,
-                    "description": "Number of top highly variable genes to plot.",
+                    "description": "The number of top spatially highly variable genes to plot.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_spatial_de_ncols": {
                     "type": "integer",
                     "default": 5,
-                    "description": "Number of columns to group genes plots into.",
+                    "description": "Number of columns to group gene plots into.",
+                    "help_text": "The default, 5, will plot the top spatially highly variable genes into groups of 5 plots per row. This, in combinationation with the default number of top HVGs to plot (15) will yield three rows with 5 plots each.",
                     "fa_icon": "fas fa-hashtag"
                 }
             }
