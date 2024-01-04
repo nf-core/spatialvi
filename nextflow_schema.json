@@ -95,18 +95,6 @@
             "fa_icon": "fas fa-magnifying-glass-chart",
             "description": "Define options for each tool in the pipeline",
             "properties": {
-                "st_load_min_counts": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Minimum genes count.",
-                    "fa_icon": "fas fa-hashtag"
-                },
-                "st_load_min_cells": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Minimum cells count.",
-                    "fa_icon": "fas fa-hashtag"
-                },
                 "st_preprocess_fig_size": {
                     "type": "integer",
                     "default": 6,
