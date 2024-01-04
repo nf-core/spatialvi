@@ -40,7 +40,7 @@
                     "format": "file-path",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "description": "Location of Space Ranger probeset file",
+                    "description": "Location of Space Ranger probeset file.",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "spaceranger_save_reference": {
@@ -77,73 +77,73 @@
                 "st_load_min_counts": {
                     "type": "integer",
                     "default": 1,
-                    "description": "Minimum genes count",
+                    "description": "Minimum genes count.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_load_min_cells": {
                     "type": "integer",
                     "default": 1,
-                    "description": "Minimum cells count",
+                    "description": "Minimum cells count.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_fig_size": {
                     "type": "integer",
                     "default": 6,
-                    "description": "Figure size, inches",
+                    "description": "Figure size, inches.",
                     "fa_icon": "fas fa-up-right-and-down-left-from-center"
                 },
                 "st_preprocess_min_counts": {
                     "type": "integer",
                     "default": 500,
-                    "description": "Minimum UMI count",
+                    "description": "Minimum UMI count.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_min_genes": {
                     "type": "integer",
                     "default": 250,
-                    "description": "Minimum genes count",
+                    "description": "Minimum genes count.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_min_cells": {
                     "type": "integer",
                     "default": 1,
-                    "description": "Minimum cells count",
+                    "description": "Minimum cells count.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_hist_qc_max_total_counts": {
                     "type": "integer",
                     "default": 10000,
-                    "description": "Max total counts cutoff for histogram QC plot",
+                    "description": "Max total counts cutoff for histogram QC plot.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_hist_qc_min_gene_counts": {
                     "type": "integer",
                     "default": 4000,
-                    "description": "Min total gene counts cutoff for histogram QC plot",
+                    "description": "Min total gene counts cutoff for histogram QC plot.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_preprocess_hist_qc_bins": {
                     "type": "integer",
                     "default": 40,
-                    "description": "Histogram QC plot number of bins",
+                    "description": "Histogram QC plot number of bins.",
                     "fa_icon": "fas fa-chart-simple"
                 },
                 "st_cluster_resolution": {
                     "type": "number",
                     "default": 0.4,
-                    "description": "Clustering resolution for ST spots",
+                    "description": "Clustering resolution for ST spots.",
                     "fa_icon": "fas fa-circle-nodes"
                 },
                 "st_spatial_de_top_hgv": {
                     "type": "integer",
                     "default": 15,
-                    "description": "Number of top highly variable genes to plot",
+                    "description": "Number of top highly variable genes to plot.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_spatial_de_ncols": {
                     "type": "integer",
                     "default": 5,
-                    "description": "Number of columns to group genes plots into",
+                    "description": "Number of columns to group genes plots into.",
                     "fa_icon": "fas fa-hashtag"
                 }
             }
