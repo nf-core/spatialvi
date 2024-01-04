@@ -57,8 +57,7 @@ nextflow run nf-core/spatialtranscriptomics \
 ```
 
 > [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
-> see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
 For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/spatialtranscriptomics/usage) and the [parameter documentation](https://nf-co.re/spatialtranscriptomics/parameters).
 
@@ -74,18 +73,18 @@ nf-core/spatialtranscriptomics was originally developed by the Jackson
 Laboratory<sup>1</sup>, up to the [0.1.0](https://github.com/nf-core/spatialtranscriptomics/releases/tag/0.1.0)
 tag. It was further developed in a collaboration between the [National
 Bioinformatics Infrastructure Sweden](https://nbis.se/) and [National Genomics
-Infastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/);
+Infrastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/);
 it is currently developed and maintained by [Erik Fasterius](https://github.com/fasterius)
 and [Christophe Avenel](https://github.com/cavenel).
 
 Many thanks to others who have helped out along the way too, especially [Gregor
 Sturm](https://github.com/grst)!
 
-<sup>1</sup> Supported by grants from the US National Institutes of Health
+_<sup>1</sup> Supported by grants from the US National Institutes of Health
 [U24CA224067](https://reporter.nih.gov/project-details/10261367) and
 [U54AG075941](https://reporter.nih.gov/project-details/10376627). Original
 authors [Dr. Sergii Domanskyi](https://github.com/sdomanskyi), Prof. Jeffrey
-Chuang and Dr. Anuj Srivastava.
+Chuang and Dr. Anuj Srivastava._
 
 ## Contributions and Support
 
