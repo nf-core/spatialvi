@@ -69,6 +69,7 @@ Please refer to the following table for an overview of all supported columns:
 | `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. (optional)                                    |
 
 > [!NOTE]
+>
 > - You need to specify _at least one_ of `image`, `cytaimage`, `darkimage`,
 >   `colorizedimage`. Most commonly, you'll specify `image` for bright field
 >   microscopy data, or `cytaimage` for tissue scans generated with the 10x
