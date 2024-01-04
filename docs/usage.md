@@ -14,13 +14,17 @@ in the examples below and depends on the input data type. Use this parameter to 
 --input '[path to samplesheet file]'
 ```
 
-The workflow will automatically detect the samplesheet type and run the appropriate analysis steps.
+There are two types of samplesheets that the pipeline can handle: those
+specifying _raw data_ (to be analysed by Space Ranger) and _processed data_
+(_i.e._ already analysed by Space Ranger). The workflow will automatically
+detect the samplesheet type and run the appropriate analysis steps. The two
+types of samplesheet are described in the following sections.
 
 ### Raw spatial data
 
-This section describes samplesheets for processing _raw spatial data_ yet to be analyzed with Space Ranger.
+This section describes samplesheets for processing _raw spatial data_ yet to be analysed with Space Ranger.
 
-Here is an example of a typical samplesheet for analyzing FFPE or fresh frozen (FF) data with bright field microscopy
+Here is an example of a typical samplesheet for analysing FFPE or fresh frozen (FF) data with bright field microscopy
 imagery:
 
 ```no-highlight
@@ -46,29 +50,31 @@ SAMPLE_1,fastqs_1/,cytassist_1.tif,V11J26,B1
 SAMPLE_2,fastqs_2/,cytassist_2.tif,V11J26,B1
 ```
 
-Depending on the experimental setup, (additional) color composite fluorescence images or dark background
+Depending on the experimental setup, (additional) colour composite fluorescence images or dark background
 fluorescence images can be supplied using the `colorizedimage` or `darkimage` columns, respectively.
 
 Please refer to the following table for an overview of all supported columns:
 
-| Column             | Description                                                                                                         |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `sample`           | Unique sample identifier. MUST match the prefix of the fastq files                                                  |
-| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar.gz` file instead of a directory.          |
-| `image`            | Brightfield microscopy image                                                                                        |
-| `cytaimage`        | Brightfield tissue image captured with Cytassist device                                                             |
-| `colorizedimage`   | A color composite of one or more fluorescence image channels saved as a single-page, single-file color TIFF or JPEG |
-| `darkimage`        | Dark background fluorescence microscopy image                                                                       |
-| `slide`            | The Visium slide ID used for the sequencing.                                                                        |
-| `area`             | Which slide area contains the tissue sample.                                                                        |
-| `manual_alignment` | Path to the manual alignment file (optional)                                                                        |
-| `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. (optional)                                  |
+| Column             | Description                                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `sample`           | Unique sample identifier. MUST match the prefix of the fastq files                                                    |
+| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar.gz` file instead of a directory.            |
+| `image`            | Brightfield microscopy image                                                                                          |
+| `cytaimage`        | Brightfield tissue image captured with Cytassist device                                                               |
+| `colorizedimage`   | A colour composite of one or more fluorescence image channels saved as a single-page, single-file colour TIFF or JPEG |
+| `darkimage`        | Dark background fluorescence microscopy image                                                                         |
+| `slide`            | The Visium slide ID used for the sequencing.                                                                          |
+| `area`             | Which slide area contains the tissue sample.                                                                          |
+| `manual_alignment` | Path to the manual alignment file (optional)                                                                          |
+| `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. (optional)                                    |
 
-> **NB:**
+> [!NOTE]
 >
-> - You need to specify _at least one_ of `image`, `cytaimage`, `darkimage`, `colorizedimage`. Most commonly, you'll
->   specify `image` for bright field microscopy data, or `cytaimage` for tissue scans generated with the 10x Cyatassist
->   device. Please refer to the [Space Ranger documentation](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger), how multiple image types can be combined.
+> - You need to specify _at least one_ of `image`, `cytaimage`, `darkimage`,
+>   `colorizedimage`. Most commonly, you'll specify `image` for bright field
+>   microscopy data, or `cytaimage` for tissue scans generated with the 10x
+>   Cyatassist device. Please refer to the [Space Ranger documentation](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger),
+>   how multiple image types can be combined.
 > - The `manual_alignment` column is only required for samples for which a
 >   manual alignment file is needed and can be ignored if you're using automatic
 >   alignment.
@@ -80,8 +86,8 @@ appropriate for your samples.
 
 ### Processed data
 
-If your data has already been processed by Space Ranger and you are only interested in running downstream QC steps,
-the samplesheet looks as follows:
+If your data has already been processed by Space Ranger and you are only
+interested in running downstream steps, the samplesheet looks as follows:
 
 ```no-highlight
 sample,spaceranger_dir
@@ -118,15 +124,15 @@ path to its directory (or another link from the 10X website above) using the
 `--spaceranger_reference` parameter, otherwise the pipeline will download the
 default human reference for you automatically.
 
-> **Important**:
->
+> [!NOTE]
 > For FFPE and Cytassist experiments, you need to manually supply the appropriate probset using the `--spaceranger_probeset` parameter
 > Please refer to the [Spaceranger Downloads page](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest)
 > to obtain the correct probeset.
 
 ## Analysis options
 
-The pipeline is using Python and the scverse tools to do the downstream analysis (quality control, filtering, clustering, spatial differential equations).
+The pipeline uses Python and the `scverse` tools to do the downstream analysis
+(quality control, filtering, clustering, spatial differential equations).
 
 ### Parameters for Quality Control and Filtering:
 
@@ -135,7 +141,7 @@ The following parameters are exposed for preprocessing:
 - `--st_preprocess_min_counts`: Minimum number of counts for a spot to be considered in the analysis.
 - `--st_preprocess_min_genes`: Minimum number of genes expressed in a spot for the spot to be considered.
 - `--st_preprocess_min_cells`: Minimum number of spots expressing a gene for the gene to be considered.
-- `--st_preprocess_fig_size`: The figure size for the plots generated during preprocessing (e.g., quality control plots).
+- `--st_preprocess_fig_size`: The figure size for the plots generated during preprocessing (_e.g._, quality control plots).
 - `--st_preprocess_hist_qc_max_total_counts`: Maximum total counts for the histogram plot in quality control.
 - `--st_preprocess_hist_qc_min_gene_counts`: Minimum gene counts for the histogram plot in quality control.
 - `--st_preprocess_hist_qc_bins`: Number of bins for the histogram plot in quality control.
@@ -153,14 +159,14 @@ The following parameters are exposed for preprocessing:
 The typical command for running the pipeline is as follows:
 
 ```bash
-# Run the pipeline with raw data yet to be processed by Space Ranger
-nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker
-
-# Run pipeline with data already processed by Space Ranger
-nextflow run nf-core/spatialtranscriptomics --input samplesheet.csv --outdir <OUTDIR> -profile docker
+nextflow run \
+    nf-core/spatialtranscriptomics \
+    --input <SAMPLESHEET> \
+    --outdir <OUTDIR> \
+    -profile docker
 ```
 
-This will launch the pipeline with the docker configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -188,8 +194,8 @@ nextflow run nf-core/spatialtranscriptomics -profile docker -params-file params.
 with `params.yaml` containing:
 
 ```yaml
-input: './samplesheet.csv'
-outdir: './results/'
+input: '<SAMPLESHEET>'
+outdir: '<OUTDIR>'
 <...>
 ```
 
@@ -211,7 +217,7 @@ First, go to the [nf-core/spatialtranscriptomics releases page](https://github.c
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
-To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
+To further assist in reproducibility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
 
 :::tip
 If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
@@ -229,10 +235,11 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
+> [!INFO]
 > We highly recommend the use of Docker or Singularity containers for full
-> pipeline reproducibility, however when this is not possible, Conda is also
-> supported. Please note that Conda is not at all supported for Space Ranger
-> processing, and only supported on non-ARM64 architectures for analyses
+> pipeline reproducibility, however when this is not possible, Conda is
+> partially supported. Please note that Conda is not at all supported for Space
+> Ranger processing, and only supported on non-ARM64 architectures for analyses
 > downstream of Space Ranger.
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
@@ -240,7 +247,7 @@ The pipeline also dynamically loads configurations from [https://github.com/nf-c
 Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
 They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
-If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended, since it can lead to different results on different machines dependent on the computer enviroment.
+If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended, since it can lead to different results on different machines dependent on the computer environment.
 
 - `test`
   - A profile with a complete configuration for automated testing

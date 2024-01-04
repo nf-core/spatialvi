@@ -76,7 +76,7 @@ Then we can inspect significant genes that varies in space and visualize them wi
 ```{python}
 results_tab = st_adata.var.sort_values("qval", ascending=True)
 results_tab.to_csv(saveSpatialDEFileName)
-results_tab.head(10)
+results_tab.head(plotTopHVG)
 ```
 
 ```{python}
