@@ -12,7 +12,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "65ad3e0b9a4099592e1102e92e10455dc661cf53",
+                        "git_sha": "617777a807a1770f73deb38c80004bac06807eef",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
