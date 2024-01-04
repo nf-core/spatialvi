@@ -5,6 +5,7 @@
     "description": "Spatial Transcriptomics",
     "type": "object",
     "definitions": {
+
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -28,33 +29,6 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "spaceranger_reference": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
-                    "fa_icon": "fas fa-folder-open",
-                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz"
-                },
-                "spaceranger_probeset": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Location of Space Ranger probeset file.",
-                    "fa_icon": "fas fa-file-csv"
-                },
-                "spaceranger_save_reference": {
-                    "type": "boolean",
-                    "description": "Save the extracted tar archive of the Space Ranger reference.",
-                    "help_text": "By default, extracted versions of archived Space Ranger reference data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-floppy-disk"
-                },
-                "save_untar_output": {
-                    "type": "boolean",
-                    "description": "Save extracted tar archives of input data.",
-                    "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-floppy-disk"
-                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",
@@ -70,11 +44,57 @@
             }
         },
 
+        "spaceranger_options": {
+            "title": "Space Ranger options",
+            "type": "object",
+            "fa_icon": "fas fa-rocket",
+            "description": "Options related to Space Ranger execution and raw spatial data processing",
+            "properties": {
+                "spaceranger_probeset": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Location of Space Ranger probeset file.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "spaceranger_reference": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
+                    "help_text": "Please see the [10x website](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest) to download either of the supported human or mouse references. If not specified the GRCh38 human reference is automatically downladed and used.",
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz"
+                }
+            }
+        },
+
+        "optional_outputs": {
+            "title": "Optional outputs",
+            "type": "object",
+            "fa_icon": "fas fa-floppy-disk",
+            "description": "Additional intermediate output files that can be optionally saved.",
+            "properties": {
+                "spaceranger_save_reference": {
+                    "type": "boolean",
+                    "description": "Save the extracted tar archive of the Space Ranger reference.",
+                    "help_text": "By default, extracted versions of archived Space Ranger reference data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-floppy-disk"
+                },
+                "save_untar_output": {
+                    "type": "boolean",
+                    "description": "Save extracted tar archives of input data.",
+                    "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-floppy-disk"
+                }
+            }
+        },
+
         "analysis_options": {
             "title": "Analysis option",
             "type": "object",
+            "fa_icon": "fas fa-magnifying-glass-chart",
             "description": "Define options for each tool in the pipeline",
-            "default": "",
             "properties": {
                 "st_load_min_counts": {
                     "type": "integer",
@@ -199,6 +219,7 @@
                 }
             }
         },
+
         "max_job_request_options": {
             "title": "Max job request options",
             "type": "object",
@@ -234,6 +255,7 @@
                 }
             }
         },
+
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -349,6 +371,12 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/spaceranger_options"
+        },
+        {
+            "$ref": "#/definitions/optional_outputs"
         },
         {
             "$ref": "#/definitions/analysis_options"
