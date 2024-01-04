@@ -5,7 +5,6 @@
     "description": "Spatial Transcriptomics",
     "type": "object",
     "definitions": {
-
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
