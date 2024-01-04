@@ -19,7 +19,7 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/spatialtranscriptomics/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline, use this parameter to specify its location. It has to be a comma-separated file with 2 or 5 columns, plus a header row. See [usage docs](https://nf-co.re/spatialtranscriptomics/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -46,11 +46,13 @@
                 "spaceranger_save_reference": {
                     "type": "boolean",
                     "description": "Save the extracted tar archive of the Space Ranger reference.",
+                    "help_text": "By default, extracted versions of archived Space Ranger reference data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-floppy-disk"
                 },
                 "save_untar_output": {
                     "type": "boolean",
                     "description": "Save extracted tar archives of input data.",
+                    "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-floppy-disk"
                 },
                 "email": {
