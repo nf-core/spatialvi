@@ -38,7 +38,6 @@ process ST_QC_AND_NORMALISATION {
     quarto render ${report} \
         --output st_qc_and_normalisation.html \
         -P rawAdata:${st_raw} \
-        -P pltFigSize:${params.st_preprocess_fig_size} \
         -P minCounts:${params.st_preprocess_min_counts} \
         -P minGenes:${params.st_preprocess_min_genes} \
         -P minCells:${params.st_preprocess_min_cells} \

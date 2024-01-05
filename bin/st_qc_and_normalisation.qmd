@@ -24,7 +24,6 @@ resolution = 1
 saveFileST = None
 
 rawAdata = None  # Name of the h5ad file
-pltFigSize = 6  # Figure size
 minCounts = 500  # Min counts per spot
 minGenes = 250  # Min genes per spot
 minCells = 1  # Min cells per gene
@@ -44,7 +43,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from IPython.display import display, Markdown
 
-plt.rcParams["figure.figsize"] = (pltFigSize, pltFigSize)
+plt.rcParams["figure.figsize"] = (6, 6)
 ```
 
 ## Anndata object
@@ -113,15 +112,15 @@ p = sns.histplot(
   st_adata.obs["total_counts"], kde=True, ax=axs[0, 0]
 ).set(title=f"Total counts")
 p = sns.histplot(
-  st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts], 
+  st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts],
   kde=True,
   bins=histplotQCbins,
   ax=axs[0, 1]
 ).set(title=f"Total counts < {histplotQCmaxTotalCounts}")
 p = sns.histplot(
-  st_adata.obs["n_genes_by_counts"], 
-  kde=True, 
-  bins=histplotQCbins, 
+  st_adata.obs["n_genes_by_counts"],
+  kde=True,
+  bins=histplotQCbins,
   ax=axs[1, 0]
 ).set(title=f"Genes by counts")
 p = sns.histplot(
@@ -186,15 +185,15 @@ p = sns.histplot(
   st_adata.obs["total_counts"], kde=True, ax=axs[0, 0]
 ).set(title=f"Total counts")
 p = sns.histplot(
-  st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts], 
+  st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts],
   kde=True,
   bins=histplotQCbins,
   ax=axs[0, 1]
 ).set(title=f"Total counts < {histplotQCmaxTotalCounts}")
 p = sns.histplot(
-  st_adata.obs["n_genes_by_counts"], 
-  kde=True, 
-  bins=histplotQCbins, 
+  st_adata.obs["n_genes_by_counts"],
+  kde=True,
+  bins=histplotQCbins,
   ax=axs[1, 0]
 ).set(title=f"Genes by counts")
 p = sns.histplot(

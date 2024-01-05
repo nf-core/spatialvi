@@ -95,12 +95,6 @@
             "fa_icon": "fas fa-magnifying-glass-chart",
             "description": "Options related to the downstream analyses performed by the pipeline.",
             "properties": {
-                "st_preprocess_fig_size": {
-                    "type": "integer",
-                    "default": 6,
-                    "description": "The size of the QC figures, in inches.",
-                    "fa_icon": "fas fa-up-right-and-down-left-from-center"
-                },
                 "st_preprocess_min_counts": {
                     "type": "integer",
                     "default": 500,
