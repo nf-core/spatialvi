@@ -1,5 +1,5 @@
 nextflow_pipeline {
-    name "Test full workflow (incl. Space Ranger)"
+    name "Test full workflow (incl. Space Ranger v1)"
     script "main.nf"
     tag "pipeline"
 

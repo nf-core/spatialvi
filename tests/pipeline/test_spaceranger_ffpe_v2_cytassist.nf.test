@@ -1,16 +1,12 @@
 nextflow_pipeline {
-    name "Test full workflow (incl. Space Ranger)"
+    name "Test full workflow (incl. Space Ranger v2)"
     script "main.nf"
     tag "pipeline"
 
     test("Space Ranger FFPE v2 CytAssist") {
         when {
             params {
-                input = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/samplesheet_spaceranger.csv"
-                spaceranger_probeset = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs/probe_set.csv"
-                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/homo_sapiens_chr22_reference.tar.gz"
-                st_preprocess_min_counts = 5
-                st_preprocess_min_genes = 3
+                // This is the default `test` profile; params are not necessary
                 outdir = "$outputDir"
             }
         }
