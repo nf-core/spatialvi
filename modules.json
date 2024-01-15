@@ -22,7 +22,7 @@
                     },
                     "spaceranger/count": {
                         "branch": "master",
-                        "git_sha": "e89a3110141cdf77abd4fbc85cd0d7cb8f01b49b",
+                        "git_sha": "3bd057bfdfb64578636ff3ae7f7cb8eeab3c0cb6",
                         "installed_by": ["modules"]
                     },
                     "untar": {
