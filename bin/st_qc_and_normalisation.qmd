@@ -7,7 +7,7 @@ jupyter: python3
 
 ## Introduction
 
-Spatial Transcriptomics data analysis involves several steps, including quality control (QC) and pre-processing, to ensure the reliability of downstream analyses. This report outlines the QC and pre-processing steps for Visium Spatial Transcriptomics data using the (https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html)[anndata format].
+Spatial Transcriptomics data analysis involves several steps, including quality control (QC) and pre-processing, to ensure the reliability of downstream analyses. This report outlines the QC and pre-processing steps for Visium Spatial Transcriptomics data using the [anndata format](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html).
 
 Quality control is an essential step in spatial transcriptomics to identify and filter out spots and genes that may introduce noise or bias into the analysis.
 
