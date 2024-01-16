@@ -32,7 +32,6 @@ nameDataNorm = "st_adata_norm.h5ad"  # Name of the normalized data save file
 ```
 
 ```{python}
-#| echo: false
 import scanpy as sc
 import scipy
 import pandas as pd
