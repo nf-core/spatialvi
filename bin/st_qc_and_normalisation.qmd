@@ -36,7 +36,6 @@ minCells = 1  # Min cells per gene
 histplotQCmaxTotalCounts = 10000  # Max total counts
 histplotQCminGeneCounts = 4000  # Min gene counts
 histplotQCbins = 40  # Number of bins
-nameDataPlain = "st_adata_plain.h5ad"  # Name of the raw data save file
 nameDataNorm = "st_adata_norm.h5ad"  # Name of the normalized data save file
 ```
 
@@ -218,7 +217,7 @@ p = sns.histplot(
 fig.tight_layout()
 ```
 
-## Normalization
+### Normalization
 
 We proceed to normalize Visium counts data using the built-in `normalize_total`
 method from [Scanpy](https://scanpy.readthedocs.io/en/stable/) followed by a

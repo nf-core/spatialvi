@@ -27,7 +27,6 @@ process ST_QC_AND_NORMALISATION {
 
     output:
     tuple val(meta), path("st_adata_norm.h5ad")           , emit: st_data_norm
-    tuple val(meta), path("st_adata_plain.h5ad")          , emit: st_data_plain
     tuple val(meta), path("st_qc_and_normalisation.html") , emit: html
     path("versions.yml")                                  , emit: versions
 
@@ -45,7 +44,6 @@ process ST_QC_AND_NORMALISATION {
         -P histplotQCmaxTotalCounts:${params.st_preprocess_hist_qc_max_total_counts} \
         -P histplotQCminGeneCounts:${params.st_preprocess_hist_qc_min_gene_counts} \
         -P histplotQCbins:${params.st_preprocess_hist_qc_bins} \
-        -P nameDataPlain:st_adata_plain.h5ad \
         -P nameDataNorm:st_adata_norm.h5ad
 
     cat <<-END_VERSIONS > versions.yml

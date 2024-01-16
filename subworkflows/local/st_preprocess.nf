@@ -31,7 +31,6 @@ workflow ST_PREPROCESS {
 
     emit:
     st_data_norm  = ST_QC_AND_NORMALISATION.out.st_data_norm  // channel: [ val(sample), h5ad ]
-    st_data_plain = ST_QC_AND_NORMALISATION.out.st_data_plain // channel: [ val(sample), h5ad ]
 
     versions      = ch_versions                               // channel: [ version.yml ]
 }
