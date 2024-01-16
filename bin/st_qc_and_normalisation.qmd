@@ -1,10 +1,7 @@
 ---
 title: "Pre-processing and quality control of Spatial Transcriptomics data"
 format:
-  html:
-    embed-resources: true
-    page-layout: full
-    code-fold: true
+  nf-core-html: default
 jupyter: python3
 ---
 

@@ -19,12 +19,14 @@ workflow ST_POSTPROCESS {
     //
     report_clustering = file("${projectDir}/bin/st_clustering.qmd")
     report_spatial_de = file("${projectDir}/bin/st_spatial_de.qmd")
+    report_template = Channel.fromPath("${projectDir}/assets/_extensions")
 
     //
     // Clustering
     //
     ST_CLUSTERING (
         report_clustering,
+        report_template,
         st_adata_norm
     )
     ch_versions = ch_versions.mix(ST_CLUSTERING.out.versions)
@@ -34,6 +36,7 @@ workflow ST_POSTPROCESS {
     //
     ST_SPATIAL_DE (
         report_spatial_de,
+        report_template,
         ST_CLUSTERING.out.st_adata_processed
     )
     ch_versions = ch_versions.mix(ST_SPATIAL_DE.out.versions)

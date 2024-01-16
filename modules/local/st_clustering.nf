@@ -22,6 +22,7 @@ process ST_CLUSTERING {
 
     input:
     path(report)
+    path(report_template)
     tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
 
     output:

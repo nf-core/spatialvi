@@ -17,12 +17,14 @@ workflow ST_PREPROCESS {
     // Report files
     //
     report = file("${projectDir}/bin/st_qc_and_normalisation.qmd")
+    report_template = Channel.fromPath("${projectDir}/assets/_extensions")
 
     //
     // Spatial pre-processing
     //
     ST_QC_AND_NORMALISATION (
         report,
+        report_template,
         st_raw
     )
     ch_versions = ch_versions.mix(ST_QC_AND_NORMALISATION.out.versions)

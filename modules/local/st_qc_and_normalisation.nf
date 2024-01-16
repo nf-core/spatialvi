@@ -22,6 +22,7 @@ process ST_QC_AND_NORMALISATION {
 
     input:
     path(report)
+    path(report_template)
     tuple val(meta), path(st_raw, stageAs: "adata_raw.h5ad")
 
     output:

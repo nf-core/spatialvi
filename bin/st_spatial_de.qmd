@@ -5,10 +5,7 @@ TODO: Make report more complete, add descriptions, etc.
 ---
 title: "Differential Gene Expression and spatially variable genes"
 format:
-  html:
-    embed-resources: true
-    page-layout: full
-    code-fold: true
+  nf-core-html: default
 jupyter: python3
 ---
 
