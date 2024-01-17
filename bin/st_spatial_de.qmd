@@ -1,9 +1,6 @@
-<!--
-TODO: Make report more complete, add descriptions, etc.
--->
-
 ---
-title: "Differential Gene Expression and spatially variable genes"
+title: "nf-core/spatialtranscriptomics"
+subtitle: "Differential gene expression"
 format:
   nf-core-html: default
 jupyter: python3
@@ -12,7 +9,6 @@ jupyter: python3
 ```{python}
 #| tags: [parameters]
 #| echo: false
-
 fileNameST = ""
 numberOfColumns = 5
 saveDEFileName = ""
@@ -21,7 +17,6 @@ plotTopHVG = 15
 ```
 
 ```{python}
-# Load packages
 import scanpy as sc
 import pandas as pd
 import SpatialDE
@@ -33,32 +28,39 @@ st_adata = sc.read(fileNameST)
 st_adata
 ```
 
-## Differential Gene Expression
+# Differential gene expression
+
+We first find differentially expressed genes across the different clusters found
+in the dataset.
 
 ```{python}
+#| warning: false
 plt.rcParams["figure.figsize"] = (5, 5)
 st_adata.uns['log1p']['base'] = None
-
 sc.tl.rank_genes_groups(st_adata, 'clusters', method='t-test')
 sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False, gene_symbols="gene_symbol")
 ```
 
-```{python}
-sc.tl.rank_genes_groups(st_adata, 'clusters', method='wilcoxon')
-sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False, gene_symbols="gene_symbol")
-```
+# Spatially variable genes
 
-## Spatially variable genes
+Spatial transcriptomics allows researchers to investigate how gene expression
+trends varies in space, thus identifying spatial patterns of gene expression.
+For this purpose, we use SpatialDE
+[Svensson18](https://www.nature.com/articles/nmeth.4636)
+([code](https://github.com/Teichlab/SpatialDE)), a Gaussian process-based
+statistical framework that aims to identify spatially variable genes.
 
-Spatial transcriptomics allows researchers to investigate how gene expression trends varies in space, thus identifying spatial patterns of gene expression. For this purpose, we use SpatialDE [Svensson18](https://www.nature.com/articles/nmeth.4636) ([code](https://github.com/Teichlab/SpatialDE)), a Gaussian process-based statistical framework that aims to identify spatially variable genes.
-
-First, we convert normalized counts and coordinates to pandas dataframe, needed for inputs to spatialDE.
+First, we convert normalized counts and coordinates to pandas dataframe, needed
+for inputs to spatialDE.
 
 ```{python}
 results = SpatialDE.run(st_adata.obsm["spatial"], st_adata.to_df())
 ```
 
-We concatenate the results with the DataFrame of annotations of variables: `st_adata.var`.
+We concatenate the results with the DataFrame of annotations of variables:
+`st_adata.var`. We can then inspect significant genes that varies in space and
+visualize them with `sc.pl.spatial` function.
+
 
 ```{python}
 results.set_index("g", inplace=True)
@@ -66,11 +68,7 @@ results.set_index("g", inplace=True)
 results = results.loc[~results.index.duplicated(keep="first")]
 
 st_adata.var = pd.concat([st_adata.var, results.loc[st_adata.var.index.values, :]], axis=1)
-```
 
-Then we can inspect significant genes that varies in space and visualize them with `sc.pl.spatial` function.
-
-```{python}
 results_tab = st_adata.var.sort_values("qval", ascending=True)
 results_tab.to_csv(saveSpatialDEFileName)
 results_tab.head(plotTopHVG)
@@ -78,5 +76,6 @@ results_tab.head(plotTopHVG)
 
 ```{python}
 symbols = results_tab.iloc[: plotTopHVG]["gene_symbol"]
-sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7, ncols=numberOfColumns, title=symbols)
+sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7,
+              ncols=numberOfColumns, title=symbols)
 ```
