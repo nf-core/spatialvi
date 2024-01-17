@@ -1,5 +1,6 @@
 ---
-title: "Clustering Spatial Transcriptomics data"
+title: "nf-core/spatialtranscriptomics"
+subtitle: "Dimensionality reduction and clustering"
 format:
   nf-core-html: default
 execute:
@@ -16,36 +17,37 @@ resolution = 1
 saveFileST = None
 ```
 
+# Reading the data
+
+The data has already been filtered (see the `st_qc_and_normalisation` report)
+and is saved in AnnData format.
+
 ```{python}
-#| echo: false
-# Hide warnings in output html.
+#| warning: false
 import scanpy as sc
 import numpy as np
 import pandas as pd
 from umap import UMAP
 from matplotlib import pyplot as plt
 import seaborn as sns
-import warnings
 
-warnings.filterwarnings("ignore")
 sc.settings.verbosity = 0
 sc.set_figure_params(dpi_save=300, facecolor="white")
 ```
 
-## Reading the data
-The data has already been filtered (see `st_qc_and_normalisation` report) and is saved in AnnData format.
-
 ```{python}
-#| echo: true
-#| code-fold: false
 st_adata = sc.read("./" + fileNameST)
 print (f"Loading {fileNameST}:")
 st_adata
 ```
 
-## Manifold embedding and clustering based on transcriptional similarity
+# Manifold embedding and clustering
 
-To uncover the underlying structure of the transcriptional landscape, we perform manifold embedding and clustering based on transcriptional similarity. Principal Component Analysis (PCA) is applied to reduce dimensionality, and UMAP (Uniform Manifold Approximation and Projection) is used for visualization. The Leiden algorithm is employed for clustering with a givent resolution.
+To uncover the underlying structure of the transcriptional landscape, we perform
+manifold embedding and clustering based on transcriptional similarity. Principal
+Component Analysis (PCA) is applied to reduce dimensionality, and UMAP (Uniform
+Manifold Approximation and Projection) is used for visualization. The Leiden
+algorithm is employed for clustering with a given resolution.
 
 ```{python}
 sc.pp.pca(st_adata)
@@ -55,9 +57,8 @@ print (f"Resolution for Leiden clustering: {resolution}")
 sc.tl.leiden(st_adata, key_added="clusters", resolution=resolution)
 ```
 
-## Exploratory Data Analysis
-
-We generate UMAP plots to visualize the spatial distribution of clusters and investigate potential associations with total counts and detected genes.
+We then generate UMAP plots to visualize the spatial distribution of clusters
+and investigate potential associations with total counts and detected genes.
 
 ```{python}
 # Make plots of UMAP of ST spots clusters
@@ -69,9 +70,10 @@ sc.tl.embedding_density(st_adata, basis="umap", groupby="clusters")
 sc.pl.embedding_density(st_adata, groupby="clusters", ncols=4)
 ```
 
-## Visualization in spatial coordinates
+# Visualization in spatial coordinates
 
-Next, we examine how total counts and the number of detected genes behave in spatial coordinates. We overlay the circular spots on the Hematoxylin and Eosin stain (H&E) image to provide a spatial context.
+Next, we examine how total counts and the number of detected genes behave in
+spatial coordinates by overlaying the spots on the image itself.
 
 ```{python}
 plt.rcParams["figure.figsize"] = (10, 10)
@@ -80,9 +82,11 @@ sc.pl.spatial(
 )
 ```
 
-## Spatial Clustering Visualization
-
-To gain insights into tissue organization and potential inter-cellular communication, we visualize the spatial distribution of clusters on the H&E image.
+To gain insights into tissue organization and potential inter-cellular
+communication, we visualize the spatial distribution of clusters on the image.
+Spots belonging to the same cluster in gene expression space often co-occur in
+spatial dimensions, providing valuable information about the spatial
+organization of cells.
 
 ```{python}
 plt.rcParams["figure.figsize"] = (10, 10)
@@ -91,20 +95,14 @@ sc.pl.spatial(
 )
 ```
 
-Spots belonging to the same cluster in gene expression space often co-occur in spatial dimensions, providing valuable information about the spatial organization of cells.
-
 ```{python}
 #| echo: false
 # Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
 st_adata.uns['log1p']['base'] = None
 ```
 
-## Data Saving
-
-To facilitate future analyses and reproducibility, the processed AnnData object is saved in the `data` directory.
-
 ```{python}
+#| echo: false
 if saveFileST is not None:
     st_adata.write(saveFileST)
-    print (f"Anndata object saved to data/{saveFileST}.")
 ```
