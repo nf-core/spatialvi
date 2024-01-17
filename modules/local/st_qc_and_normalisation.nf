@@ -44,6 +44,7 @@ process ST_QC_AND_NORMALISATION {
         -P histplotQCmaxTotalCounts:${params.st_preprocess_hist_qc_max_total_counts} \
         -P histplotQCminGeneCounts:${params.st_preprocess_hist_qc_min_gene_counts} \
         -P histplotQCbins:${params.st_preprocess_hist_qc_bins} \
+        -P nHighlyVariableGenes:${params.st_preprocess_n_hvgs} \
         -P nameDataNorm:st_adata_norm.h5ad
 
     cat <<-END_VERSIONS > versions.yml

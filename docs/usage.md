@@ -144,6 +144,7 @@ The following parameters are exposed for preprocessing:
 - `--st_preprocess_hist_qc_max_total_counts`: Maximum total counts for the histogram plot in quality control.
 - `--st_preprocess_hist_qc_min_gene_counts`: Minimum gene counts for the histogram plot in quality control.
 - `--st_preprocess_hist_qc_bins`: Number of bins for the histogram plot in quality control.
+- `--st_preprocess_n_hvgs`: Number of top highly variable genes to use for the analyses.
 
 ### Parameters for Clustering :
 

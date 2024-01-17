@@ -131,6 +131,12 @@
                     "description": "The number of bins for the QC histogram plots.",
                     "fa_icon": "fas fa-chart-simple"
                 },
+                "st_preprocess_n_hvgs": {
+                    "type": "integer",
+                    "default": 2000,
+                    "description": "The number of top highly variable genes to use for the analyses.",
+                    "fa_icon": "fas fa-hashtag"
+                },
                 "st_cluster_resolution": {
                     "type": "number",
                     "default": 0.4,
