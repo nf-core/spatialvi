@@ -70,7 +70,7 @@ print ("Content of the anndata object:")
 st_adata
 ```
 
-## Quality Controls
+## Quality controls
 
 The following plots show the distribution of the number of genes per counts and
 counts per spot, as well as the percentage of counts from mitochondrial genes
@@ -94,7 +94,7 @@ sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_hb"])
 
 ## Filtering
 
-### In-tissue Filtering
+### In-tissue filtering
 
 Spots outside the tissue are not needed and are thus removed.
 
@@ -144,7 +144,7 @@ sns.histplot(
 fig.tight_layout()
 ```
 
-### Cell and Gene Filtering
+### Cell and gene filtering
 
 We filter cells based on minimum counts and genes, and filter genes based on minimum cells.
 
