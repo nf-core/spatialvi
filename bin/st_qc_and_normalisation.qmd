@@ -65,9 +65,10 @@ st_adata
 
 ## Quality controls
 
-The following plots show the distribution of the number of genes per counts and
-counts per spot, as well as the percentage of counts from mitochondrial,
-ribosomal and haemoglobin genes.
+There are several different quality metrics that are normally computed for
+spatial data. The following plots show the distribution of the number of genes
+per counts and counts per spot, as well as the percentage of counts from
+mitochondrial, ribosomal and haemoglobin genes:
 
 ```{python}
 #| layout-nrow: 2
@@ -89,12 +90,23 @@ sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
              multi_panel=True, jitter=0.4, rotation= 45)
 ```
 
-The same quality metrics can also be plotted on top of the tissue:
+The same quality metrics can also be plotted on top of the tissue so that
+spatial patterns may be discerned:
 
 ```{python}
 #| layout-nrow: 2
 sc.pl.spatial(st_adata, color = ["total_counts", "n_genes_by_counts"])
 sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts_hb"])
+```
+
+It is also useful to some of these quality metrics against each other, such as
+mitochondrial versus ribosomal content and the total counts versus the number of
+genes:
+
+```{python}
+#| layout-ncol: 2
+sc.pl.scatter(st_adata, x='pct_counts_ribo', y='pct_counts_mt')
+sc.pl.scatter(st_adata, x='total_counts', y='n_genes_by_counts')
 ```
 
 ## Filtering
