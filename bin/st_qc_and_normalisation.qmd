@@ -15,7 +15,8 @@ identify and filter out spots and genes that may introduce noise and/or bias
 into the analysis.
 
 This report outlines the QC and pre-processing steps for Visium Spatial
-Transcriptomics data using the [anndata format](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html).
+Transcriptomics data using the [AnnData format](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html)
+and the [`scanpy` Python package](https://scanpy.readthedocs.io/en/stable/).
 The anndata format is utilized to organize and store the Spatial Transcriptomics
 data. It includes information about counts, features, observations, and
 additional metadata. The anndata format ensures compatibility with various
@@ -57,14 +58,6 @@ st_adata = sc.read("./" + rawAdata)
 # Convert X matrix from csr to csc dense matrix for output compatibility:
 st_adata.X = scipy.sparse.csc_matrix(st_adata.X)
 
-# Calculate mitochondrial and haemoglobin percentages
-st_adata.var['mt'] = st_adata.var_names.str.startswith('MT-')
-st_adata.var['hb'] = st_adata.var_names.str.contains(("^Hb.*-"))
-sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt", "hb"], inplace=True)
-
-# Save a copy of data as a restore-point if filtering results in 0 spots left
-st_adata_before_filtering = st_adata.copy()
-
 # Print the anndata object for inspection
 print ("Content of the anndata object:")
 st_adata
@@ -73,23 +66,35 @@ st_adata
 ## Quality controls
 
 The following plots show the distribution of the number of genes per counts and
-counts per spot, as well as the percentage of counts from mitochondrial genes
-and haemoglobin genes.
+counts per spot, as well as the percentage of counts from mitochondrial,
+ribosomal and haemoglobin genes.
 
 ```{python}
 #| layout-nrow: 2
+
+# Calculate mitochondrial, ribosomal and haemoglobin percentages
+st_adata.var['mt'] = st_adata.var_names.str.startswith('MT-')
+st_adata.var['ribo'] = st_adata.var_names.str.contains(("^RP[LS]"))
+st_adata.var['hb'] = st_adata.var_names.str.contains(("^HB[AB]"))
+sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt", "ribo", "hb"],
+                           inplace=True, log1p=False)
+
+# Save a copy of data as a restore-point if filtering results in 0 spots left
+st_adata_before_filtering = st_adata.copy()
+
+# Plot QC metrics
 sc.pl.violin(st_adata, ['n_genes_by_counts', 'total_counts'],
              multi_panel=True, jitter=0.4, rotation= 45)
-sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_hb'],
+sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
              multi_panel=True, jitter=0.4, rotation= 45)
 ```
 
-The same can be plotted on top of the tissue:
+The same quality metrics can also be plotted on top of the tissue:
 
 ```{python}
 #| layout-nrow: 2
 sc.pl.spatial(st_adata, color = ["total_counts", "n_genes_by_counts"])
-sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_hb"])
+sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts_hb"])
 ```
 
 ## Filtering
