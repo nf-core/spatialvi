@@ -177,8 +177,6 @@ fig.tight_layout()
 We filter cells based on minimum counts and genes, and filter genes based on minimum cells.
 
 ```{python}
-#| warning: false
-
 # Filter cells based on counts
 Number_spots = st_adata.shape[0]
 Number_genes = st_adata.shape[1]
