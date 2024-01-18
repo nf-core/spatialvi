@@ -63,7 +63,7 @@ print ("Content of the anndata object:")
 st_adata
 ```
 
-## Quality controls
+# Quality controls
 
 There are several different quality metrics that are normally computed for
 spatial data. The following plots show the distribution of the number of genes
@@ -109,9 +109,9 @@ sc.pl.scatter(st_adata, x='pct_counts_ribo', y='pct_counts_mt')
 sc.pl.scatter(st_adata, x='total_counts', y='n_genes_by_counts')
 ```
 
-## Filtering
+# Filtering
 
-### In-tissue filtering
+## In-tissue filtering
 
 Spots outside the tissue are not needed and are thus removed.
 
@@ -161,7 +161,7 @@ sns.histplot(
 fig.tight_layout()
 ```
 
-### Cell and gene filtering
+## Cell and gene filtering
 
 We filter cells based on minimum counts and genes, and filter genes based on minimum cells.
 
@@ -244,7 +244,7 @@ sns.histplot(
 fig.tight_layout()
 ```
 
-### Normalization
+# Normalization
 
 We proceed to normalize Visium counts data using the built-in `normalize_total`
 method from [Scanpy](https://scanpy.readthedocs.io/en/stable/) followed by a
@@ -255,14 +255,14 @@ sc.pp.normalize_total(st_adata, inplace=True)
 sc.pp.log1p(st_adata)
 ```
 
-### Top expressed genes
+# Top expressed genes
 
 ```{python}
 # Plot top 20 most highly expressed genes
 sc.pl.highest_expr_genes(st_adata, n_top=20)
 ```
 
-### Highly variable genes
+# Highly variable genes
 
 The top highly variable genes are detected for use in subsequent analyses.
 
