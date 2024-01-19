@@ -136,36 +136,40 @@ del st_adata.obs["in_tissue_str"]
 Number_spots = st_adata.shape[0]
 st_adata = st_adata[st_adata.obs["in_tissue"] == 1]
 Number_spots_in_tissue = st_adata.shape[0]
-Markdown(f"""A total of {Number_spots_in_tissue} spots are situated inside the
-tissue, out of {Number_spots} spots in total.""")
+Markdown(f"""A total of `{Number_spots_in_tissue}` spots are situated inside the
+tissue, out of `{Number_spots}` spots in total.""")
 ```
 
 ## Cell and gene filtering
 
-We filter cells based on minimum counts and genes, but also filter genes based
-on minimum cells; exactly what filtering criteria is reasonable is up to you and
+We filter spots based on minimum counts and genes, but also filter genes based
+on minimum spots; exactly what filtering criteria is reasonable is up to you and
 your knowledge of the specific tissue at hand.
 
 ```{python}
+#| warning: false
 # Filter cells based on counts
 Number_spots = st_adata.shape[0]
 Number_genes = st_adata.shape[1]
 sc.pp.filter_cells(st_adata, min_counts=minCounts)
 Number_spots_filtered_minCounts = st_adata.shape[0]
-print (f"Removed {Number_spots - Number_spots_filtered_minCounts} spots with less than {minCounts} total counts.")
 
 # Filter cells based on genes
 sc.pp.filter_cells(st_adata, min_genes=minGenes)
 Number_spots_filtered_minGenes = st_adata.shape[0]
-print (f"Removed {Number_spots_filtered_minCounts - Number_spots_filtered_minGenes} spots with less than {minGenes} genes expressed.")
 
 # Filter genes based on cells
 sc.pp.filter_genes(st_adata, min_cells=minCells)
 Number_genes_filtered_minCells = st_adata.shape[1]
-print (f"Removed {Number_genes - Number_genes_filtered_minCells} genes expressed in less than {minCells} spots.")
 
-print (f"{Number_spots_filtered_minGenes} out of {Number_spots} spots remaining after filtering.")
-print (f"{Number_genes_filtered_minCells} out of {Number_genes} genes remaining after filtering.")
+# Print results
+Markdown(f"""
+- Removed `{Number_spots - Number_spots_filtered_minCounts}` spots with less than `{minCounts}` total counts.
+- Removed `{Number_spots_filtered_minCounts - Number_spots_filtered_minGenes}` spots with less than `{minGenes}` genes expressed.
+- Removed `{Number_genes - Number_genes_filtered_minCells}` genes expressed in less than `{minCells}` spots.
+- A total of `{Number_spots_filtered_minGenes}` spots out of `{Number_spots}` remain after filtering.
+- A total of `{Number_genes_filtered_minCells}` genes out of `{Number_genes}` remain after filtering.
+""")
 ```
 
 ```{python}
