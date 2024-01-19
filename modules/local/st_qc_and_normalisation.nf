@@ -41,7 +41,6 @@ process ST_QC_AND_NORMALISATION {
         -P minCounts:${params.st_preprocess_min_counts} \
         -P minGenes:${params.st_preprocess_min_genes} \
         -P minCells:${params.st_preprocess_min_spots} \
-        -P nHighlyVariableGenes:${params.st_preprocess_n_hvgs} \
         -P nameDataNorm:st_adata_norm.h5ad
 
     cat <<-END_VERSIONS > versions.yml

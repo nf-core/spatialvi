@@ -39,6 +39,7 @@ process ST_CLUSTERING {
         --output "st_clustering.html" \
         -P fileNameST:${st_adata_norm} \
         -P resolution:${params.st_cluster_resolution} \
+        -P nHighlyVariableGenes:${params.st_preprocess_n_hvgs} \
         -P saveFileST:st_adata_processed.h5ad
 
     cat <<-END_VERSIONS > versions.yml
