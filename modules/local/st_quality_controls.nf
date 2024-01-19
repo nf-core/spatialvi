@@ -1,7 +1,7 @@
 //
 // Spatial data pre-processing
 //
-process ST_QC_AND_NORMALISATION {
+process ST_QUALITY_CONTROLS {
 
     // TODO: Add a better description
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
@@ -16,7 +16,7 @@ process ST_QC_AND_NORMALISATION {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         architecture = System.getProperty("os.arch")
         if (architecture == "arm64" || architecture == "aarch64") {
-            exit 1, "The ST_QC_AND_NORMALISATION module does not support Conda on ARM64. Please use Docker / Singularity / Podman instead."
+            exit 1, "The ST_QUALITY_CONTROLS module does not support Conda on ARM64. Please use Docker / Singularity / Podman instead."
         }
     }
 
@@ -27,7 +27,7 @@ process ST_QC_AND_NORMALISATION {
 
     output:
     tuple val(meta), path("st_adata_norm.h5ad")           , emit: st_data_norm
-    tuple val(meta), path("st_qc_and_normalisation.html") , emit: html
+    tuple val(meta), path("st_quality_controls.html") , emit: html
     path("versions.yml")                                  , emit: versions
 
     when:
@@ -36,7 +36,7 @@ process ST_QC_AND_NORMALISATION {
     script:
     """
     quarto render ${report} \
-        --output st_qc_and_normalisation.html \
+        --output st_quality_controls.html \
         -P rawAdata:${st_raw} \
         -P minCounts:${params.st_preprocess_min_counts} \
         -P minGenes:${params.st_preprocess_min_genes} \

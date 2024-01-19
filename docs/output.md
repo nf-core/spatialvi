@@ -76,8 +76,8 @@ the data in an interactive way.
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `st_qc_and_normalisation.html`: HTML report.
-  - `st_qc_and_normalisation_files/`: Data needed for the HTML report.
+  - `st_quality_controls.html`: HTML report.
+  - `st_quality_controls_files/`: Data needed for the HTML report.
 
 </details>
 
