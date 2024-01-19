@@ -81,21 +81,39 @@ algorithm is employed for clustering with a given resolution.
 sc.pp.pca(st_adata)
 sc.pp.neighbors(st_adata)
 sc.tl.umap(st_adata)
-print (f"Resolution for Leiden clustering: {resolution}")
 sc.tl.leiden(st_adata, key_added="clusters", resolution=resolution)
+Markdown(f"Resolution for Leiden clustering: `{resolution}`")
 ```
 
-We then generate UMAP plots to visualize the spatial distribution of clusters
-and investigate potential associations with total counts and detected genes.
+## All clusters
+
+We then generate UMAP plots to visualize the distribution of clusters:
+
+```{python}
+#| warning: false
+plt.rcParams["figure.figsize"] = (7, 7)
+sc.pl.umap(st_adata, color="clusters")
+```
+
+## Counts and genes
+
+We can also visualise the total counts and the genes with at least 1 count in
+the UMAP:
 
 ```{python}
 # Make plots of UMAP of ST spots clusters
-plt.rcParams["figure.figsize"] = (4, 4)
-sc.pl.umap(
-    st_adata, color=["total_counts", "n_genes_by_counts", "clusters"], wspace=0.4
-)
+plt.rcParams["figure.figsize"] = (3.5, 3.5)
+sc.pl.umap(st_adata, color=["total_counts", "n_genes_by_counts"])
+```
+
+## Individual clusters
+
+An additional visualisation is to show where the various spots are in each
+individual cluster while ignoring all other cluster:
+
+```{python}
 sc.tl.embedding_density(st_adata, basis="umap", groupby="clusters")
-sc.pl.embedding_density(st_adata, groupby="clusters", ncols=4)
+sc.pl.embedding_density(st_adata, groupby="clusters", ncols=2)
 ```
 
 # Visualization in spatial coordinates
