@@ -34,9 +34,6 @@ rawAdata = None  # Name of the h5ad file
 minCounts = 500  # Min counts per spot
 minGenes = 250  # Min genes per spot
 minCells = 1  # Min cells per gene
-histplotQCmaxTotalCounts = 10000  # Max total counts
-histplotQCminGeneCounts = 4000  # Min gene counts
-histplotQCbins = 40  # Number of bins
 nHighlyVariableGenes = 2000  # Number of HVGs to use for analyses
 nameDataNorm = "st_adata_norm.h5ad"  # Name of the normalized data save file
 ```
@@ -122,9 +119,10 @@ sc.pl.scatter(st_adata, x='total_counts', y='n_genes_by_counts')
 
 # Filtering
 
-## In-tissue filtering
+## Non-tissue spots
 
-Spots outside the tissue are not needed and are thus removed.
+The following plot indicates which spots are outside of the tissue. These spots
+are uninformative and are thus removed.
 
 ```{python}
 # Create a string observation "obs/in_tissue_str" with "In tissue" and "Outside tissue":
@@ -138,43 +136,15 @@ del st_adata.obs["in_tissue_str"]
 Number_spots = st_adata.shape[0]
 st_adata = st_adata[st_adata.obs["in_tissue"] == 1]
 Number_spots_in_tissue = st_adata.shape[0]
-print (f"{Number_spots_in_tissue} spots in tissue on {Number_spots} spots in total.")
-```
-
-Distribution of counts per spots and genes per counts.
-
-```{python}
-#| fig-cap: "Top row: Distribution of the number of counts per spots. Bottom row: Distribution of the number of genes with at least 1 count in a spot."
-fig, axs = plt.subplots(2, 2, figsize=(8, 7))
-sns.histplot(
-    st_adata.obs["total_counts"],
-    kde=True,
-    ax=axs[0, 0]
-    ).set(title=f"Total counts")
-sns.histplot(
-    st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts],
-    kde=True,
-    bins=histplotQCbins,
-    ax=axs[0, 1]
-    ).set(title=f"Total counts < {histplotQCmaxTotalCounts}")
-sns.histplot(
-    st_adata.obs["n_genes_by_counts"],
-    kde=True,
-    bins=histplotQCbins,
-    ax=axs[1, 0]
-    ).set(title=f"Genes by counts")
-sns.histplot(
-    st_adata.obs["n_genes_by_counts"][st_adata.obs["n_genes_by_counts"] < histplotQCminGeneCounts],
-    kde=True,
-    bins=histplotQCbins,
-    ax=axs[1, 1]
-    ).set(title=f"Genes by counts < {histplotQCminGeneCounts}")
-fig.tight_layout()
+Markdown(f"""A total of {Number_spots_in_tissue} spots are situated inside the
+tissue, out of {Number_spots} spots in total.""")
 ```
 
 ## Cell and gene filtering
 
-We filter cells based on minimum counts and genes, and filter genes based on minimum cells.
+We filter cells based on minimum counts and genes, but also filter genes based
+on minimum cells; exactly what filtering criteria is reasonable is up to you and
+your knowledge of the specific tissue at hand.
 
 ```{python}
 # Filter cells based on counts
@@ -206,7 +176,7 @@ if (Number_genes_filtered_minCells == 0 or Number_spots_filtered_minGenes == 0):
     display(
         Markdown("""
 ::: {.callout-important .content-visible when-format="html"}
-## Issue: No Spots Remain After Filtering
+## Issue: no spots remain after filtering
 
 An anomaly has been detected in the data: following the filtering process,
 all spots have been excluded. It is imperative to assess the data quality
@@ -222,35 +192,15 @@ spots during filtering.
     )
 ```
 
-Distributions after filtering:
+Following the filtering we can look at the same violin plots as above to see the
+new distributions:
 
 ```{python}
-#| fig-cap: "Top row: Distribution of the number of counts per spots. Bottom row: Distribution of the number of genes with at least 1 count in a spot."
-fig, axs = plt.subplots(2, 2, figsize=(8, 7))
-sns.histplot(
-    st_adata.obs["total_counts"],
-    kde=True,
-    ax=axs[0, 0]
-    ).set(title=f"Total counts")
-sns.histplot(
-    st_adata.obs["total_counts"][st_adata.obs["total_counts"] < histplotQCmaxTotalCounts],
-    kde=True,
-    bins=histplotQCbins,
-    ax=axs[0, 1]
-    ).set(title=f"Total counts < {histplotQCmaxTotalCounts}")
-sns.histplot(
-    st_adata.obs["n_genes_by_counts"],
-    kde=True,
-    bins=histplotQCbins,
-    ax=axs[1, 0]
-    ).set(title=f"Genes by counts")
-sns.histplot(
-    st_adata.obs["n_genes_by_counts"][st_adata.obs["n_genes_by_counts"] < histplotQCminGeneCounts],
-    kde=True,
-    bins=histplotQCbins,
-    ax=axs[1, 1]
-    ).set(title=f"Genes by counts < {histplotQCminGeneCounts}")
-fig.tight_layout()
+#| layout-nrow: 2
+sc.pl.violin(st_adata, ['n_genes_by_counts', 'total_counts'],
+             multi_panel=True, jitter=0.4, rotation= 45)
+sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
+             multi_panel=True, jitter=0.4, rotation= 45)
 ```
 
 # Normalization

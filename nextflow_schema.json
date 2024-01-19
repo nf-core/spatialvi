@@ -113,24 +113,6 @@
                     "description": "The minimum number of spots in which a gene is expressed for that gene to pass the filtering.",
                     "fa_icon": "fas fa-hashtag"
                 },
-                "st_preprocess_hist_qc_max_total_counts": {
-                    "type": "integer",
-                    "default": 10000,
-                    "description": "Max total counts cutoff for histogram QC plot.",
-                    "fa_icon": "fas fa-hashtag"
-                },
-                "st_preprocess_hist_qc_min_gene_counts": {
-                    "type": "integer",
-                    "default": 4000,
-                    "description": "Min total gene counts cutoff for histogram QC plot.",
-                    "fa_icon": "fas fa-hashtag"
-                },
-                "st_preprocess_hist_qc_bins": {
-                    "type": "integer",
-                    "default": 40,
-                    "description": "The number of bins for the QC histogram plots.",
-                    "fa_icon": "fas fa-chart-simple"
-                },
                 "st_preprocess_n_hvgs": {
                     "type": "integer",
                     "default": 2000,
