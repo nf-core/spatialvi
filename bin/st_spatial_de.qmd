@@ -24,8 +24,12 @@ from matplotlib import pyplot as plt
 ```
 
 ```{python}
+# Read data
 st_adata = sc.read(fileNameST)
 st_adata
+
+# Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
+st_adata.uns['log1p']['base'] = None
 ```
 
 # Differential gene expression
@@ -36,7 +40,6 @@ in the dataset.
 ```{python}
 #| warning: false
 plt.rcParams["figure.figsize"] = (5, 5)
-st_adata.uns['log1p']['base'] = None
 sc.tl.rank_genes_groups(st_adata, 'clusters', method='t-test')
 sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False, gene_symbols="gene_symbol")
 ```

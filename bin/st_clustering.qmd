@@ -140,12 +140,6 @@ sc.pl.spatial(st_adata, img_key="hires", color="clusters", size=1.25)
 
 ```{python}
 #| echo: false
-# Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
-st_adata.uns['log1p']['base'] = None
-```
-
-```{python}
-#| echo: false
 if saveFileST is not None:
     st_adata.write(saveFileST)
 ```
