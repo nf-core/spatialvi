@@ -33,7 +33,7 @@ saveFileST = None
 rawAdata = None  # Name of the h5ad file
 minCounts = 500  # Min counts per spot
 minGenes = 250  # Min genes per spot
-minCells = 1  # Min cells per gene
+minSpots = 1  # Min spots per gene
 nHighlyVariableGenes = 2000  # Number of HVGs to use for analyses
 nameDataNorm = "st_adata_norm.h5ad"  # Name of the normalized data save file
 ```
@@ -140,7 +140,7 @@ Markdown(f"""A total of `{Number_spots_in_tissue}` spots are situated inside the
 tissue, out of `{Number_spots}` spots in total.""")
 ```
 
-## Cell and gene filtering
+## Counts, genes and spots
 
 We filter spots based on minimum counts and genes, but also filter genes based
 on minimum spots; exactly what filtering criteria is reasonable is up to you and
@@ -148,34 +148,34 @@ your knowledge of the specific tissue at hand.
 
 ```{python}
 #| warning: false
-# Filter cells based on counts
+# Filter spots based on counts
 Number_spots = st_adata.shape[0]
 Number_genes = st_adata.shape[1]
 sc.pp.filter_cells(st_adata, min_counts=minCounts)
 Number_spots_filtered_minCounts = st_adata.shape[0]
 
-# Filter cells based on genes
+# Filter spots based on genes
 sc.pp.filter_cells(st_adata, min_genes=minGenes)
 Number_spots_filtered_minGenes = st_adata.shape[0]
 
-# Filter genes based on cells
-sc.pp.filter_genes(st_adata, min_cells=minCells)
-Number_genes_filtered_minCells = st_adata.shape[1]
+# Filter genes based on spots
+sc.pp.filter_genes(st_adata, min_cells=minSpots)
+Number_genes_filtered_minSpots = st_adata.shape[1]
 
 # Print results
 Markdown(f"""
 - Removed `{Number_spots - Number_spots_filtered_minCounts}` spots with less than `{minCounts}` total counts.
 - Removed `{Number_spots_filtered_minCounts - Number_spots_filtered_minGenes}` spots with less than `{minGenes}` genes expressed.
-- Removed `{Number_genes - Number_genes_filtered_minCells}` genes expressed in less than `{minCells}` spots.
+- Removed `{Number_genes - Number_genes_filtered_minSpots}` genes expressed in less than `{minSpots}` spots.
 - A total of `{Number_spots_filtered_minGenes}` spots out of `{Number_spots}` remain after filtering.
-- A total of `{Number_genes_filtered_minCells}` genes out of `{Number_genes}` remain after filtering.
+- A total of `{Number_genes_filtered_minSpots}` genes out of `{Number_genes}` remain after filtering.
 """)
 ```
 
 ```{python}
 #| echo: false
 # Restore non-filtered data if filtering results in 0 spots left
-if (Number_genes_filtered_minCells == 0 or Number_spots_filtered_minGenes == 0):
+if (Number_genes_filtered_minSpots == 0 or Number_spots_filtered_minGenes == 0):
     st_adata = st_adata_before_filtering
     display(
         Markdown("""

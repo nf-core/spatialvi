@@ -107,7 +107,7 @@
                     "description": "The minimum number of expressed genes in a spot needed for that spot to pass the filtering.",
                     "fa_icon": "fas fa-hashtag"
                 },
-                "st_preprocess_min_cells": {
+                "st_preprocess_min_spots": {
                     "type": "integer",
                     "default": 1,
                     "description": "The minimum number of spots in which a gene is expressed for that gene to pass the filtering.",
