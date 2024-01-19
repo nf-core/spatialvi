@@ -122,8 +122,8 @@ spatial coordinates by overlaying the spots on the tissue image itself.
 ```{python}
 #| layout-nrow: 2
 plt.rcParams["figure.figsize"] = (8, 8)
-sc.pl.spatial(st_adata, img_key="hires", color="total_counts")
-sc.pl.spatial(st_adata, img_key="hires", color="n_genes_by_counts")
+sc.pl.spatial(st_adata, img_key="hires", color="total_counts", size=1.25)
+sc.pl.spatial(st_adata, img_key="hires", color="n_genes_by_counts", size=1.25)
 ```
 
 To gain insights into tissue organization and potential inter-cellular
@@ -135,7 +135,7 @@ organization of cells.
 ```{python}
 # TODO nf-core: Can the colour bar on this figure be fit to the figure?
 plt.rcParams["figure.figsize"] = (7, 7)
-sc.pl.spatial(st_adata, img_key="hires", color="clusters")
+sc.pl.spatial(st_adata, img_key="hires", color="clusters", size=1.25)
 ```
 
 ```{python}

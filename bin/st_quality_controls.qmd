@@ -99,8 +99,8 @@ spatial patterns may be discerned:
 
 ```{python}
 #| layout-nrow: 2
-sc.pl.spatial(st_adata, color = ["total_counts", "n_genes_by_counts"])
-sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts_hb"])
+sc.pl.spatial(st_adata, color = ["total_counts", "n_genes_by_counts"], size=1.25)
+sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts_hb"], size=1.25)
 ```
 
 ## Scatter plots
@@ -136,7 +136,7 @@ are uninformative and are thus removed.
 st_adata.obs["in_tissue_str"] = ["In tissue" if x == 1 else "Outside tissue" for x in st_adata.obs["in_tissue"]]
 
 # Plot spots inside tissue
-sc.pl.spatial(st_adata, color=["in_tissue_str"], title="Spots in tissue")
+sc.pl.spatial(st_adata, color=["in_tissue_str"], title="Spots in tissue", size=1.25)
 del st_adata.obs["in_tissue_str"]
 
 # Remove spots outside tissue and print results
