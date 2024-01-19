@@ -18,8 +18,6 @@ nHighlyVariableGenes = 2000  # Number of HVGs to use for analyses
 saveFileST = None
 ```
 
-# Input data
-
 The data has already been filtered in the _quality controls_ reports and is
 saved in the AnnData format:
 
@@ -116,16 +114,16 @@ sc.tl.embedding_density(st_adata, basis="umap", groupby="clusters")
 sc.pl.embedding_density(st_adata, groupby="clusters", ncols=2)
 ```
 
-# Visualization in spatial coordinates
+# Spatial visualisation
 
 Next, we examine how total counts and the number of detected genes behave in
-spatial coordinates by overlaying the spots on the image itself.
+spatial coordinates by overlaying the spots on the tissue image itself.
 
 ```{python}
-plt.rcParams["figure.figsize"] = (10, 10)
-sc.pl.spatial(
-    st_adata, img_key="hires", color=["total_counts", "n_genes_by_counts"]
-)
+#| layout-nrow: 2
+plt.rcParams["figure.figsize"] = (8, 8)
+sc.pl.spatial(st_adata, img_key="hires", color="total_counts")
+sc.pl.spatial(st_adata, img_key="hires", color="n_genes_by_counts")
 ```
 
 To gain insights into tissue organization and potential inter-cellular
@@ -135,10 +133,8 @@ spatial dimensions, providing valuable information about the spatial
 organization of cells.
 
 ```{python}
-plt.rcParams["figure.figsize"] = (10, 10)
-sc.pl.spatial(
-    st_adata, img_key="hires", color=["clusters"]
-)
+plt.rcParams["figure.figsize"] = (7, 7)
+sc.pl.spatial(st_adata, img_key="hires", color="clusters")
 ```
 
 ```{python}
