@@ -131,13 +131,6 @@
                     "default": 15,
                     "description": "The number of top spatially highly variable genes to plot.",
                     "fa_icon": "fas fa-hashtag"
-                },
-                "st_spatial_de_ncols": {
-                    "type": "integer",
-                    "default": 5,
-                    "description": "Number of columns to group gene plots into.",
-                    "help_text": "The default, 5, will plot the top spatially highly variable genes into groups of 5 plots per row. This, in combinationation with the default number of top HVGs to plot (15) will yield three rows with 5 plots each.",
-                    "fa_icon": "fas fa-hashtag"
                 }
             }
         },

@@ -149,7 +149,6 @@ The following parameters are exposed for preprocessing:
 
 ### Parameters for Spatial Differential Expression :
 
-- `st_spatial_de_ncols`: Number of columns in the output figure.
 
 ## Running the pipeline
 

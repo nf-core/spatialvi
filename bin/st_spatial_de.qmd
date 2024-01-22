@@ -10,7 +10,6 @@ jupyter: python3
 #| tags: [parameters]
 #| echo: false
 fileNameST = ""
-numberOfColumns = 5
 saveDEFileName = ""
 saveSpatialDEFileName = ""
 plotTopHVG = 15
@@ -61,41 +60,40 @@ height and width depends on the number of clusters as well as the number and
 intersection of the DEGs that are being plotted.
 :::
 
-# Spatially variable genes
+# Spatial gene expression
 
-Spatial transcriptomics allows researchers to investigate how gene expression
-trends varies in space, thus identifying spatial patterns of gene expression.
-For this purpose, we use SpatialDE
-[Svensson18](https://www.nature.com/articles/nmeth.4636)
-([code](https://github.com/Teichlab/SpatialDE)), a Gaussian process-based
-statistical framework that aims to identify spatially variable genes.
-
-First, we convert normalized counts and coordinates to pandas dataframe, needed
-for inputs to SpatialDE.
+Spatial transcriptomics data can give insight into how genes are expressed in
+different areas in a tissue, allowing identification of spatial gene expression
+patterns. Here we use [SpatialDE](https://www.nature.com/articles/nmeth.4636) to
+identify such patterns.
 
 ```{python}
+#| output: false
 results = SpatialDE.run(st_adata.obsm["spatial"], st_adata.to_df())
 ```
 
-We concatenate the results with the dataframe of annotations of variables:
-`st_adata.var`. We can then inspect significant genes that varies in space and
-visualize them with `sc.pl.spatial` function.
-
+We can then inspect the spatial DEGs in a table:
 
 ```{python}
 results.set_index("g", inplace=True)
 # workaround for https://github.com/Teichlab/SpatialDE/issues/36
 results = results.loc[~results.index.duplicated(keep="first")]
 
+# Add annotations
 st_adata.var = pd.concat([st_adata.var, results.loc[st_adata.var.index.values, :]], axis=1)
 
+# Print results table
 results_tab = st_adata.var.sort_values("qval", ascending=True)
 results_tab.to_csv(saveSpatialDEFileName)
 results_tab.head(plotTopHVG)
 ```
 
+We can also plot the top spatially variable genes on top of the tissue image
+itself to visualize the patterns:
+
 ```{python}
 symbols = results_tab.iloc[: plotTopHVG]["gene_symbol"]
+plt.rcParams["figure.figsize"] = (3.5, 4)
 sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7,
-              ncols=numberOfColumns, title=symbols)
+              ncols=2, title=symbols, size=1.25)
 ```
