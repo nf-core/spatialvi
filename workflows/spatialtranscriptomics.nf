@@ -58,8 +58,7 @@ include { ST_READ_DATA } from '../modules/local/st_read_data'
 //
 include { INPUT_CHECK    } from '../subworkflows/local/input_check'
 include { SPACERANGER    } from '../subworkflows/local/spaceranger'
-include { ST_PREPROCESS  } from '../subworkflows/local/st_preprocess'
-include { ST_POSTPROCESS } from '../subworkflows/local/st_postprocess'
+include { ST_DOWNSTREAM  } from '../subworkflows/local/st_downstream'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,20 +121,12 @@ workflow ST {
     ch_versions = ch_versions.mix(ST_READ_DATA.out.versions)
 
     //
-    // SUBWORKFLOW: Pre-processing of ST  data
+    // SUBWORKFLOW: Downstream analyses of ST data
     //
-    ST_PREPROCESS (
+    ST_DOWNSTREAM (
         ST_READ_DATA.out.st_adata_raw
     )
-    ch_versions = ch_versions.mix(ST_PREPROCESS.out.versions)
-
-    //
-    // SUBWORKFLOW: Post-processing and reporting
-    //
-    ST_POSTPROCESS (
-        ST_PREPROCESS.out.st_data_norm
-    )
-    ch_versions = ch_versions.mix(ST_POSTPROCESS.out.versions)
+    ch_versions = ch_versions.mix(ST_DOWNSTREAM.out.versions)
 
     //
     // MODULE: Pipeline reporting
