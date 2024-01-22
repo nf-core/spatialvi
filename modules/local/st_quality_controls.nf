@@ -36,11 +36,11 @@ process ST_QUALITY_CONTROLS {
     """
     quarto render ${report} \
         --output st_quality_controls.html \
-        -P rawAdata:${st_raw} \
-        -P minCounts:${params.st_preprocess_min_counts} \
-        -P minGenes:${params.st_preprocess_min_genes} \
-        -P minCells:${params.st_preprocess_min_spots} \
-        -P nameDataNorm:st_adata_norm.h5ad
+        -P input_adata:${st_raw} \
+        -P min_counts:${params.st_preprocess_min_counts} \
+        -P min_genes:${params.st_preprocess_min_genes} \
+        -P min_spots:${params.st_preprocess_min_spots} \
+        -P output_adata:st_adata_norm.h5ad
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

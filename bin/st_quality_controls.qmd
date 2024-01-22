@@ -26,11 +26,11 @@ analysis tools and facilitates seamless integration into existing workflows.
 #| tags: [parameters]
 #| echo: false
 
-rawAdata = None  # Name of the h5ad file
-minCounts = 500  # Min counts per spot
-minGenes = 250  # Min genes per spot
-minSpots = 1  # Min spots per gene
-nameDataNorm = "st_adata_norm.h5ad"  # Name of the normalized data save file
+input_adata = None  # Name of the h5ad file
+min_counts = 500  # Min counts per spot
+min_genes = 250  # Min genes per spot
+min_spots = 1  # Min spots per gene
+output_adata = "st_adata_norm.h5ad"  # Name of the normalized data save file
 ```
 
 ```{python}
@@ -45,7 +45,7 @@ plt.rcParams["figure.figsize"] = (6, 6)
 
 ```{python}
 # Read the data
-st_adata = sc.read("./" + rawAdata)
+st_adata = sc.read("./" + input_adata)
 
 # Convert X matrix from csr to csc dense matrix for output compatibility:
 st_adata.X = scipy.sparse.csc_matrix(st_adata.X)
@@ -137,11 +137,11 @@ sc.pl.spatial(st_adata, color=["in_tissue_str"], title="Spots in tissue", size=1
 del st_adata.obs["in_tissue_str"]
 
 # Remove spots outside tissue and print results
-Number_spots = st_adata.shape[0]
+n_spots = st_adata.shape[0]
 st_adata = st_adata[st_adata.obs["in_tissue"] == 1]
-Number_spots_in_tissue = st_adata.shape[0]
-Markdown(f"""A total of `{Number_spots_in_tissue}` spots are situated inside the
-tissue, out of `{Number_spots}` spots in total.""")
+n_spots_in_tissue = st_adata.shape[0]
+Markdown(f"""A total of `{n_spots_in_tissue}` spots are situated inside the
+tissue, out of `{n_spots}` spots in total.""")
 ```
 
 ## Counts, genes and spots
@@ -153,33 +153,33 @@ your knowledge of the specific tissue at hand.
 ```{python}
 #| warning: false
 # Filter spots based on counts
-Number_spots = st_adata.shape[0]
-Number_genes = st_adata.shape[1]
-sc.pp.filter_cells(st_adata, min_counts=minCounts)
-Number_spots_filtered_minCounts = st_adata.shape[0]
+n_spots = st_adata.shape[0]
+n_genes = st_adata.shape[1]
+sc.pp.filter_cells(st_adata, min_counts=min_counts)
+n_spots_filtered_min_counts = st_adata.shape[0]
 
 # Filter spots based on genes
-sc.pp.filter_cells(st_adata, min_genes=minGenes)
-Number_spots_filtered_minGenes = st_adata.shape[0]
+sc.pp.filter_cells(st_adata, min_genes=min_genes)
+n_spots_filtered_min_genes = st_adata.shape[0]
 
 # Filter genes based on spots
-sc.pp.filter_genes(st_adata, min_cells=minSpots)
-Number_genes_filtered_minSpots = st_adata.shape[1]
+sc.pp.filter_genes(st_adata, min_cells=min_spots)
+n_genes_filtered_min_spots = st_adata.shape[1]
 
 # Print results
 Markdown(f"""
-- Removed `{Number_spots - Number_spots_filtered_minCounts}` spots with less than `{minCounts}` total counts.
-- Removed `{Number_spots_filtered_minCounts - Number_spots_filtered_minGenes}` spots with less than `{minGenes}` genes expressed.
-- Removed `{Number_genes - Number_genes_filtered_minSpots}` genes expressed in less than `{minSpots}` spots.
-- A total of `{Number_spots_filtered_minGenes}` spots out of `{Number_spots}` remain after filtering.
-- A total of `{Number_genes_filtered_minSpots}` genes out of `{Number_genes}` remain after filtering.
+- Removed `{n_spots - n_spots_filtered_min_counts}` spots with less than `{min_counts}` total counts.
+- Removed `{n_spots - n_spots_filtered_min_genes}` spots with less than `{min_genes}` genes expressed.
+- Removed `{n_genes - n_genes_filtered_min_spots}` genes expressed in less than `{min_spots}` spots.
+- A total of `{n_spots_filtered_min_genes}` spots out of `{n_spots}` remain after filtering.
+- A total of `{n_genes_filtered_min_spots}` genes out of `{n_genes}` remain after filtering.
 """)
 ```
 
 ```{python}
 #| echo: false
 # Restore non-filtered data if filtering results in 0 spots left
-if (Number_genes_filtered_minSpots == 0 or Number_spots_filtered_minGenes == 0):
+if (n_genes_filtered_min_spots == 0 or n_spots_filtered_min_genes == 0):
     st_adata = st_adata_before_filtering
     display(
         Markdown("""
@@ -214,5 +214,5 @@ sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 ```{python}
 #| echo: false
 # Write normalized data to disk
-st_adata.write(nameDataNorm)
+st_adata.write(output_adata)
 ```

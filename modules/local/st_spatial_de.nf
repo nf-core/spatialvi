@@ -21,7 +21,7 @@ process ST_SPATIAL_DE {
     input:
     path(report)
     path(report_template)
-    tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
+    tuple val(meta), path(st_adata_processed)
 
     output:
     tuple val(meta), path("*.csv")             , emit: degs
@@ -34,10 +34,9 @@ process ST_SPATIAL_DE {
     script:
     """
     quarto render ${report} \
-        --output "st_spatial_de.html" \
-        -P fileNameST:${st_adata_norm} \
-        -P nTopSpatialDEGs:${params.st_n_top_spatial_degs} \
-        -P saveSpatialDEFileName:st_spatial_de.csv
+        -P input_adata_processed:${st_adata_processed} \
+        -P n_top_spatial_degs:${params.st_n_top_spatial_degs} \
+        -P output_spatial_degs:st_spatial_de.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

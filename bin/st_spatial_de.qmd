@@ -9,9 +9,9 @@ jupyter: python3
 ```{python}
 #| tags: [parameters]
 #| echo: false
-fileNameST = ""
-saveSpatialDEFileName = ""
-nTopSpatialDEGs = 14
+input_adata_processed = "st_adata_processed.h5ad"
+output_spatial_degs = "st_spatial_de.csv"
+n_top_spatial_degs = 14
 ```
 
 ```{python}
@@ -23,7 +23,7 @@ from matplotlib import pyplot as plt
 
 ```{python}
 # Read data
-st_adata = sc.read(fileNameST)
+st_adata = sc.read(input_adata_processed)
 st_adata
 
 # Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
@@ -83,15 +83,15 @@ st_adata.var = pd.concat([st_adata.var, results.loc[st_adata.var.index.values, :
 
 # Print results table
 results_tab = st_adata.var.sort_values("qval", ascending=True)
-results_tab.to_csv(saveSpatialDEFileName)
-results_tab.head(nTopSpatialDEGs)
+results_tab.to_csv(output_spatial_degs)
+results_tab.head(n_top_spatial_degs)
 ```
 
 We can also plot the top spatially variable genes on top of the tissue image
 itself to visualize the patterns:
 
 ```{python}
-symbols = results_tab.iloc[: nTopSpatialDEGs]["gene_symbol"]
+symbols = results_tab.iloc[: n_top_spatial_degs]["gene_symbol"]
 plt.rcParams["figure.figsize"] = (3.5, 4)
 sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7,
               ncols=2, title=symbols, size=1.25)
