@@ -70,14 +70,13 @@ the data in an interactive way.
 
 ## Reports
 
-### Quality controls and normalisation
+### Quality controls and filtering
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
   - `st_quality_controls.html`: HTML report.
-  - `st_quality_controls_files/`: Data needed for the HTML report.
 
 </details>
 
@@ -93,7 +92,6 @@ you can find more details in the report itself.
 
 - `<SAMPLE>/reports/`
   - `st_clustering.html`: HTML report.
-  - `st_clustering_files/`: Data needed for the HTML report.
 
 </details>
 
@@ -108,7 +106,6 @@ option; you can find more details in the report itself.
 
 - `<SAMPLE>/reports/`
   - `st_spatial_de.html`: HTML report.
-  - `st_spatial_de_files/`: Data needed for the HTML report.
 - `<SAMPLE>/degs/`
   - `st_spatial_de.csv`: List of spatially varying genes.
 
