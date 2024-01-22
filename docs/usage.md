@@ -114,7 +114,7 @@ gene expression matrices as well as spatial information.
 ## Space Ranger
 
 The pipeline exposes several of Space Ranger's parameters when executing with
-raw spatial data. Space Ranger requieres a lot of memory
+raw spatial data. Space Ranger requires a lot of memory
 (64 GB) and several threads (8) to be able to run. You can find the Space Ranger
 documentation at the [10X website](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger).
 
@@ -125,29 +125,10 @@ path to its directory (or another link from the 10X website above) using the
 default human reference for you automatically.
 
 > [!NOTE]
-> For FFPE and Cytassist experiments, you need to manually supply the appropriate probset using the `--spaceranger_probeset` parameter
-> Please refer to the [Spaceranger Downloads page](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest)
+> For FFPE and Cytassist experiments, you need to manually supply the
+> appropriate probeset using the `--spaceranger_probeset` parameter Please refer
+> to the [Space Ranger Downloads page](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest)
 > to obtain the correct probeset.
-
-## Analysis options
-
-The pipeline uses Python and the `scverse` tools to do the downstream analysis
-(quality control, filtering, clustering, spatial differential equations).
-
-### Parameters for Quality Control and Filtering:
-
-The following parameters are exposed for preprocessing:
-
-- `--st_preprocess_min_counts`: Minimum number of counts for a spot to be considered in the analysis.
-- `--st_preprocess_min_genes`: Minimum number of genes expressed in a spot for the spot to be considered.
-- `--st_preprocess_min_spots`: Minimum number of spots expressing a gene for the gene to be considered.
-- `--st_preprocess_n_hvgs`: Number of top highly variable genes to use for the analyses.
-
-### Parameters for Clustering :
-
-- `--st_cluster_resolution`: Resolution parameter for the clustering algorithm, controlling granularity.
-
-### Parameters for Spatial Differential Expression :
 
 ## Running the pipeline
 
