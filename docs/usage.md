@@ -149,7 +149,6 @@ The following parameters are exposed for preprocessing:
 
 ### Parameters for Spatial Differential Expression :
 
-
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:

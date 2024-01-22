@@ -3,7 +3,6 @@
 //
 process ST_SPATIAL_DE {
 
-    // TODO: Add a better description
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
@@ -25,9 +24,9 @@ process ST_SPATIAL_DE {
     tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
 
     output:
-    tuple val(meta), path("*.csv")              , emit: degs
-    tuple val(meta), path("st_spatial_de.html") , emit: html
-    path("versions.yml")                        , emit: versions
+    tuple val(meta), path("*.csv")             , emit: degs
+    tuple val(meta), path("st_spatial_de.html"), emit: html
+    path("versions.yml")                       , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

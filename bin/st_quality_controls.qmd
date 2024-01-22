@@ -65,8 +65,8 @@ percentage of counts from mitochondrial, ribosomal and haemoglobin genes
 
 ## Violin plots
 
-The following violin plots show the distribution of the number of
-genes per counts and counts per spot, as well as the percentage of counts from
+The following violin plots show the distribution of the number of genes per
+counts and counts per spot, as well as the percentage of counts from
 mitochondrial, ribosomal and haemoglobin genes:
 
 ```{python}

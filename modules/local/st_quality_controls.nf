@@ -1,9 +1,8 @@
 //
-// Spatial data pre-processing
+// Quality controls and filtering
 //
 process ST_QUALITY_CONTROLS {
 
-    // TODO: Add a better description
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
@@ -26,9 +25,9 @@ process ST_QUALITY_CONTROLS {
     tuple val(meta), path(st_raw, stageAs: "adata_raw.h5ad")
 
     output:
-    tuple val(meta), path("st_adata_norm.h5ad")           , emit: st_data_norm
-    tuple val(meta), path("st_quality_controls.html") , emit: html
-    path("versions.yml")                                  , emit: versions
+    tuple val(meta), path("st_adata_norm.h5ad")      , emit: st_data_norm
+    tuple val(meta), path("st_quality_controls.html"), emit: html
+    path("versions.yml")                             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

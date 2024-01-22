@@ -1,9 +1,8 @@
 //
-// Clustering etc.
+// Dimensionality reduction and clustering
 //
 process ST_CLUSTERING {
 
-    // TODO: Add a better description
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"

@@ -133,7 +133,7 @@ spatial dimensions, providing valuable information about the spatial
 organization of cells.
 
 ```{python}
-# TODO nf-core: Can the colour bar on this figure be fit to the figure?
+# TODO: Can the colour bar on this figure be fit to the figure?
 plt.rcParams["figure.figsize"] = (7, 7)
 sc.pl.spatial(st_adata, img_key="hires", color="clusters", size=1.25)
 ```
