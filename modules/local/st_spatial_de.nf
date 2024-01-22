@@ -38,7 +38,6 @@ process ST_SPATIAL_DE {
         --output "st_spatial_de.html" \
         -P fileNameST:${st_adata_norm} \
         -P nTopSpatialDEGs:${params.st_n_top_spatial_degs} \
-        -P saveDEFileName:st_gde.csv \
         -P saveSpatialDEFileName:st_spatial_de.csv
 
     cat <<-END_VERSIONS > versions.yml

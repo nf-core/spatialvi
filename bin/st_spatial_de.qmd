@@ -10,7 +10,6 @@ jupyter: python3
 #| tags: [parameters]
 #| echo: false
 fileNameST = ""
-saveDEFileName = ""
 saveSpatialDEFileName = ""
 nTopSpatialDEGs = 14
 ```

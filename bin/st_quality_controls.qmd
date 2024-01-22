@@ -26,9 +26,6 @@ analysis tools and facilitates seamless integration into existing workflows.
 #| tags: [parameters]
 #| echo: false
 
-fileNameST = None
-saveFileST = None
-
 rawAdata = None  # Name of the h5ad file
 minCounts = 500  # Min counts per spot
 minGenes = 250  # Min genes per spot
