@@ -129,7 +129,7 @@
                 "st_n_top_spatial_degs": {
                     "type": "integer",
                     "default": 14,
-                    "description": "The number of top spatially highly variable genes to plot.",
+                    "description": "The number of top spatial differentially expressed genes to plot.",
                     "fa_icon": "fas fa-hashtag"
                 }
             }
