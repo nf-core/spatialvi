@@ -30,6 +30,9 @@ st_adata
 
 # Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
 st_adata.uns['log1p']['base'] = None
+
+# Suppress scanpy-specific warnings
+sc.settings.verbosity = 0
 ```
 
 # Differential gene expression
@@ -68,13 +71,13 @@ For this purpose, we use SpatialDE
 statistical framework that aims to identify spatially variable genes.
 
 First, we convert normalized counts and coordinates to pandas dataframe, needed
-for inputs to spatialDE.
+for inputs to SpatialDE.
 
 ```{python}
 results = SpatialDE.run(st_adata.obsm["spatial"], st_adata.to_df())
 ```
 
-We concatenate the results with the DataFrame of annotations of variables:
+We concatenate the results with the dataframe of annotations of variables:
 `st_adata.var`. We can then inspect significant genes that varies in space and
 visualize them with `sc.pl.spatial` function.
 
