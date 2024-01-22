@@ -126,9 +126,9 @@
                     "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
                     "fa_icon": "fas fa-circle-nodes"
                 },
-                "st_spatial_de_top_hvg": {
+                "st_n_top_spatial_degs": {
                     "type": "integer",
-                    "default": 15,
+                    "default": 14,
                     "description": "The number of top spatially highly variable genes to plot.",
                     "fa_icon": "fas fa-hashtag"
                 }

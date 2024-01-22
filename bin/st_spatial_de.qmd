@@ -12,7 +12,7 @@ jupyter: python3
 fileNameST = ""
 saveDEFileName = ""
 saveSpatialDEFileName = ""
-plotTopHVG = 15
+nTopSpatialDEGs = 14
 ```
 
 ```{python}
@@ -85,14 +85,14 @@ st_adata.var = pd.concat([st_adata.var, results.loc[st_adata.var.index.values, :
 # Print results table
 results_tab = st_adata.var.sort_values("qval", ascending=True)
 results_tab.to_csv(saveSpatialDEFileName)
-results_tab.head(plotTopHVG)
+results_tab.head(nTopSpatialDEGs)
 ```
 
 We can also plot the top spatially variable genes on top of the tissue image
 itself to visualize the patterns:
 
 ```{python}
-symbols = results_tab.iloc[: plotTopHVG]["gene_symbol"]
+symbols = results_tab.iloc[: nTopSpatialDEGs]["gene_symbol"]
 plt.rcParams["figure.figsize"] = (3.5, 4)
 sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7,
               ncols=2, title=symbols, size=1.25)

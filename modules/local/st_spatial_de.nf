@@ -37,7 +37,7 @@ process ST_SPATIAL_DE {
     quarto render ${report} \
         --output "st_spatial_de.html" \
         -P fileNameST:${st_adata_norm} \
-        -P plotTopHVG:${params.st_spatial_de_top_hvg} \
+        -P nTopSpatialDEGs:${params.st_n_top_spatial_degs} \
         -P saveDEFileName:st_gde.csv \
         -P saveSpatialDEFileName:st_spatial_de.csv
 
