@@ -22,7 +22,7 @@ process ST_CLUSTERING {
     input:
     path(report)
     path(report_template)
-    tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
+    tuple val(meta), path(st_adata_filtered)
 
     output:
     tuple val(meta), path("st_adata_processed.h5ad"), emit: st_adata_processed
@@ -35,11 +35,10 @@ process ST_CLUSTERING {
     script:
     """
     quarto render ${report} \
-        --output "st_clustering.html" \
-        -P input_adata:${st_adata_norm} \
+        -P input_adata_filtered:${st_adata_filtered} \
         -P cluster_resolution:${params.st_cluster_resolution} \
         -P n_hvgs:${params.st_preprocess_n_hvgs} \
-        -P output_anndata:st_adata_processed.h5ad
+        -P output_adata_processed:st_adata_processed.h5ad
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

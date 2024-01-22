@@ -8,7 +8,7 @@ include { ST_CLUSTERING } from '../../modules/local/st_clustering'
 workflow ST_POSTPROCESS {
 
     take:
-    st_adata_norm
+    st_adata_filtered
 
     main:
 
@@ -22,12 +22,12 @@ workflow ST_POSTPROCESS {
     report_template = Channel.fromPath("${projectDir}/assets/_extensions")
 
     //
-    // Clustering
+    // Normalisation, dimensionality reduction and clustering
     //
     ST_CLUSTERING (
         report_clustering,
         report_template,
-        st_adata_norm
+        st_adata_filtered
     )
     ch_versions = ch_versions.mix(ST_CLUSTERING.out.versions)
 
@@ -42,7 +42,11 @@ workflow ST_POSTPROCESS {
     ch_versions = ch_versions.mix(ST_SPATIAL_DE.out.versions)
 
     emit:
-    spatial_degs    = ST_SPATIAL_DE.out.degs    // channel: [ val(sample), csv ]
+    st_adata_processed = ST_CLUSTERING.out.st_adata_processed // channel: [ meta, h5ad]
+    html               = ST_CLUSTERING.out.html               // channel: [ html ]
 
-    versions        = ch_versions               // channel: [ versions.yml ]
+    degs               = ST_SPATIAL_DE.out.degs               // channel: [ meta, csv ]
+    html               = ST_SPATIAL_DE.out.html               // channel: [ html ]
+
+    versions           = ch_versions                          // channel: [ versions.yml ]
 }

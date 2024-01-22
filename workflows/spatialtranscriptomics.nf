@@ -125,7 +125,7 @@ workflow ST {
     // SUBWORKFLOW: Pre-processing of ST  data
     //
     ST_PREPROCESS (
-        ST_READ_DATA.out.st_raw
+        ST_READ_DATA.out.st_adata_raw
     )
     ch_versions = ch_versions.mix(ST_PREPROCESS.out.versions)
 

@@ -25,12 +25,11 @@ analysis tools and facilitates seamless integration into existing workflows.
 ```{python}
 #| tags: [parameters]
 #| echo: false
-
-input_adata = None  # Name of the h5ad file
+input_adata_raw = "st_adata_raw.h5ad"  # Name of the input anndata file
 min_counts = 500  # Min counts per spot
 min_genes = 250  # Min genes per spot
 min_spots = 1  # Min spots per gene
-output_adata = "st_adata_norm.h5ad"  # Name of the normalized data save file
+output_adata_filtered = "st_adata_filtered.h5ad"  # Name of the output anndata file
 ```
 
 ```{python}
@@ -45,7 +44,7 @@ plt.rcParams["figure.figsize"] = (6, 6)
 
 ```{python}
 # Read the data
-st_adata = sc.read("./" + input_adata)
+st_adata = sc.read("./" + input_adata_raw)
 
 # Convert X matrix from csr to csc dense matrix for output compatibility:
 st_adata.X = scipy.sparse.csc_matrix(st_adata.X)
@@ -213,6 +212,6 @@ sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 
 ```{python}
 #| echo: false
-# Write normalized data to disk
-st_adata.write(output_adata)
+# Write filtered data to disc
+st_adata.write(output_adata_filtered)
 ```

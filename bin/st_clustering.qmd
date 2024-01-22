@@ -12,10 +12,10 @@ jupyter: python3
 #| tags: [parameters]
 #| echo: false
 
-input_adata = None
+input_adata_filtered = "st_adata_filtered.h5ad"  # Name of the input anndata file
 cluster_resolution = 1  # Resolution for Leiden clustering
 n_hvgs = 2000  # Number of HVGs to use for analyses
-output_anndata = None
+output_adata_processed = "st_adata_processed.h5ad"  # Name of the output anndata file
 ```
 
 The data has already been filtered in the _quality controls_ reports and is
@@ -33,7 +33,7 @@ from IPython.display import display, Markdown
 ```
 
 ```{python}
-st_adata = sc.read("./" + input_adata)
+st_adata = sc.read("./" + input_adata_filtered)
 st_adata
 ```
 
@@ -140,6 +140,5 @@ sc.pl.spatial(st_adata, img_key="hires", color="clusters", size=1.25)
 
 ```{python}
 #| echo: false
-if output_anndata is not None:
-    st_adata.write(output_anndata)
+st_adata.write(output_adata_processed)
 ```

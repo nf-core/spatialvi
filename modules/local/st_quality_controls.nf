@@ -22,10 +22,10 @@ process ST_QUALITY_CONTROLS {
     input:
     path(report)
     path(report_template)
-    tuple val(meta), path(st_raw, stageAs: "adata_raw.h5ad")
+    tuple val(meta), path(st_adata_raw)
 
     output:
-    tuple val(meta), path("st_adata_norm.h5ad")      , emit: st_data_norm
+    tuple val(meta), path("st_adata_filtered.h5ad")  , emit: st_adata_filtered
     tuple val(meta), path("st_quality_controls.html"), emit: html
     path("versions.yml")                             , emit: versions
 
@@ -35,12 +35,11 @@ process ST_QUALITY_CONTROLS {
     script:
     """
     quarto render ${report} \
-        --output st_quality_controls.html \
-        -P input_adata:${st_raw} \
+        -P input_adata_raw:${st_adata_raw} \
         -P min_counts:${params.st_preprocess_min_counts} \
         -P min_genes:${params.st_preprocess_min_genes} \
         -P min_spots:${params.st_preprocess_min_spots} \
-        -P output_adata:st_adata_norm.h5ad
+        -P output_adata_filtered:st_adata_filtered.h5ad
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

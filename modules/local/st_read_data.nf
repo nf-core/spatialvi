@@ -15,7 +15,7 @@ process ST_READ_DATA {
     tuple val (meta), path("${meta.id}/*")
 
     output:
-    tuple val(meta), path("st_adata_raw.h5ad"), emit: st_raw
+    tuple val(meta), path("st_adata_raw.h5ad"), emit: st_adata_raw
     path("versions.yml")                      , emit: versions
 
     when:

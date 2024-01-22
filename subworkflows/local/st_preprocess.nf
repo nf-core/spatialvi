@@ -7,7 +7,7 @@ include { ST_QUALITY_CONTROLS } from '../../modules/local/st_quality_controls'
 workflow ST_PREPROCESS {
 
     take:
-    st_raw
+    st_adata_raw
 
     main:
 
@@ -25,12 +25,12 @@ workflow ST_PREPROCESS {
     ST_QUALITY_CONTROLS (
         report,
         report_template,
-        st_raw
+        st_adata_raw
     )
     ch_versions = ch_versions.mix(ST_QUALITY_CONTROLS.out.versions)
 
     emit:
-    st_data_norm  = ST_QUALITY_CONTROLS.out.st_data_norm  // channel: [ val(sample), h5ad ]
+    st_data_norm  = ST_QUALITY_CONTROLS.out.st_adata_filtered  // channel: [ meta, h5ad ]
 
-    versions      = ch_versions                               // channel: [ version.yml ]
+    versions      = ch_versions                                // channel: [ version.yml ]
 }
