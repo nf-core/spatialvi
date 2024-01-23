@@ -21,7 +21,7 @@ workflow ST_DOWNSTREAM {
     report_quality_controls = file("${projectDir}/bin/st_quality_controls.qmd")
     report_clustering = file("${projectDir}/bin/st_clustering.qmd")
     report_spatial_de = file("${projectDir}/bin/st_spatial_de.qmd")
-    report_template = Channel.fromPath("${projectDir}/assets/_extensions")
+    report_template = Channel.fromPath("${projectDir}/assets/_extensions").collect()
 
     //
     // Quality controls and filtering
