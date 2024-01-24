@@ -49,6 +49,9 @@ st_adata = sc.read("./" + input_adata_raw)
 # Convert X matrix from csr to csc dense matrix for output compatibility:
 st_adata.X = scipy.sparse.csc_matrix(st_adata.X)
 
+# Store the raw data so that it can be used for analyses from scratch if desired
+st_adata.layers['raw'] = st_adata.X.copy()
+
 # Print the anndata object for inspection
 print("Content of the AnnData object:")
 print(st_adata)
