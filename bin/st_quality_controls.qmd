@@ -65,15 +65,7 @@ spatial data. Common metrics include the number of genes with a least 1 count
 percentage of counts from mitochondrial, ribosomal and haemoglobin genes
 (`pct_counts_[mt/ribo/hb]`).
 
-## Violin plots
-
-The following violin plots show the distribution of the number of genes per
-counts and counts per spot, as well as the percentage of counts from
-mitochondrial, ribosomal and haemoglobin genes:
-
 ```{python}
-#| layout-nrow: 2
-
 # Calculate mitochondrial, ribosomal and haemoglobin percentages
 st_adata.var['mt'] = st_adata.var_names.str.startswith('MT-')
 st_adata.var['ribo'] = st_adata.var_names.str.contains(("^RP[LS]"))
@@ -83,8 +75,16 @@ sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt", "ribo", "hb"],
 
 # Save a copy of data as a restore-point if filtering results in 0 spots left
 st_adata_before_filtering = st_adata.copy()
+```
 
-# Plot QC metrics
+## Violin plots
+
+The following violin plots show the distribution of the number of genes per
+counts and counts per spot, as well as the percentage of counts from
+mitochondrial, ribosomal and haemoglobin genes:
+
+```{python}
+#| layout-nrow: 2
 sc.pl.violin(st_adata, ['n_genes_by_counts', 'total_counts'],
              multi_panel=True, jitter=0.4, rotation= 45)
 sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
@@ -201,6 +201,8 @@ spots during filtering.
         )
     )
 ```
+
+## Violin plots
 
 Following the filtering we can look at the same violin plots as above to see the
 new distributions:
