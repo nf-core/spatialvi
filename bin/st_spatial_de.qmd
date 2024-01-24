@@ -24,7 +24,8 @@ from matplotlib import pyplot as plt
 ```{python}
 # Read data
 st_adata = sc.read(input_adata_processed)
-st_adata
+print("Content of the AnnData object:")
+print(st_adata)
 
 # Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
 st_adata.uns['log1p']['base'] = None

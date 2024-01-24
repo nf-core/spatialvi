@@ -34,7 +34,8 @@ from IPython.display import display, Markdown
 
 ```{python}
 st_adata = sc.read("./" + input_adata_filtered)
-st_adata
+print("Content of the AnnData object:")
+print(st_adata)
 ```
 
 # Normalization

@@ -50,8 +50,8 @@ st_adata = sc.read("./" + input_adata_raw)
 st_adata.X = scipy.sparse.csc_matrix(st_adata.X)
 
 # Print the anndata object for inspection
-print ("Content of the anndata object:")
-st_adata
+print("Content of the AnnData object:")
+print(st_adata)
 ```
 
 # Quality controls
