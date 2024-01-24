@@ -6,7 +6,7 @@ format:
 jupyter: python3
 ---
 
-## Introduction
+# Introduction
 
 Spatial Transcriptomics data analysis involves several steps, including quality
 controls (QC) and pre-processing, to ensure the reliability of downstream
@@ -114,7 +114,7 @@ sc.pl.scatter(st_adata, x='pct_counts_ribo', y='pct_counts_mt')
 sc.pl.scatter(st_adata, x='total_counts', y='n_genes_by_counts')
 ```
 
-# Top expressed genes
+## Top expressed genes
 
 It can also be informative to see which genes are the most expressed in the
 dataset; the following figure shows the top 20 most expressed genes.
