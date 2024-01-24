@@ -9,8 +9,8 @@ nextflow_pipeline {
                 input  = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-ovarian-cancer-1-standard_v1_ffpe/samplesheet_spaceranger.csv'
                 spaceranger_probeset = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-ovarian-cancer-1-standard_v1_ffpe/Visium_Human_Transcriptome_Probe_Set_v1.0_GRCh38-2020-A.csv'
                 spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/homo_sapiens_chr22_reference.tar.gz"
-                st_preprocess_min_counts = 5
-                st_preprocess_min_genes = 3
+                st_qc_min_counts = 5
+                st_qc_min_genes = 3
                 outdir = "$outputDir"
             }
         }

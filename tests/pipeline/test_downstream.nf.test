@@ -12,8 +12,8 @@ nextflow_pipeline {
                 spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/homo_sapiens_chr22_reference.tar.gz"
 
                 // Parameters
-                st_preprocess_min_counts = 5
-                st_preprocess_min_genes = 3
+                st_qc_min_counts = 5
+                st_qc_min_genes = 3
                 outdir = "$outputDir"
             }
         }

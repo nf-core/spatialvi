@@ -36,9 +36,9 @@ process ST_QUALITY_CONTROLS {
     """
     quarto render ${report} \
         -P input_adata_raw:${st_adata_raw} \
-        -P min_counts:${params.st_preprocess_min_counts} \
-        -P min_genes:${params.st_preprocess_min_genes} \
-        -P min_spots:${params.st_preprocess_min_spots} \
+        -P min_counts:${params.st_qc_min_counts} \
+        -P min_genes:${params.st_qc_min_genes} \
+        -P min_spots:${params.st_qc_min_spots} \
         -P mito_threshold:${params.st_qc_mito_threshold} \
         -P output_adata_filtered:st_adata_filtered.h5ad
 

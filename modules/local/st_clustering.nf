@@ -37,7 +37,7 @@ process ST_CLUSTERING {
     quarto render ${report} \
         -P input_adata_filtered:${st_adata_filtered} \
         -P cluster_resolution:${params.st_cluster_resolution} \
-        -P n_hvgs:${params.st_preprocess_n_hvgs} \
+        -P n_hvgs:${params.st_cluster_n_hvgs} \
         -P output_adata_processed:st_adata_processed.h5ad
 
     cat <<-END_VERSIONS > versions.yml
