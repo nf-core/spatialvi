@@ -181,7 +181,7 @@ Markdown(f"""
 ```{python}
 #| echo: false
 # Restore non-filtered data if filtering results in 0 spots left
-if (n_genes_filtered_min_spots == 0 or n_spots_filtered_min_genes == 0):
+if (st_adata.shape[0] == 0 or st_adata.shape[1] == 0):
     st_adata = st_adata_before_filtering
     display(
         Markdown("""
