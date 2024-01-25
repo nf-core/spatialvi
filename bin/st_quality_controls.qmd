@@ -201,8 +201,6 @@ Markdown(f"""
 - Removed `{st_adata.shape[0] - n_spots_filtered_mito}` spots with more than `{mito_threshold}%` mitochondrial content.
 - Removed `{n_spots_filtered_mito - n_spots_filtered_ribo}` spots with less than `{ribo_threshold}%` ribosomal content.
 - Removed `{n_spots_filtered_ribo - n_spots_filtered_hb}` spots with more than `{hb_threshold}%` haemoglobin content.
-- A total of `{n_spots_filtered_min_genes}` spots out of `{n_spots}` remain after filtering.
-- A total of `{n_genes_filtered_min_spots}` genes out of `{n_genes}` remain after filtering.
 """)
 ```
 
@@ -233,10 +231,17 @@ if (st_adata.shape[0] == 0 or st_adata.shape[1] == 0):
     )
 ```
 
-## Violin plots
+## Filtering results
 
-Following the filtering we can look at the same violin plots as above to see the
-new distributions:
+```{python}
+# Print filtering results
+Markdown(f"""
+The final results of all the filtering is as follows:
+
+- A total of `{st_adata.shape[0]}` spots out of `{n_spots}` remain after filtering.
+- A total of `{st_adata.shape[1]}` genes out of `{n_genes}` remain after filtering.
+""")
+```
 
 ```{python}
 #| layout-nrow: 2
@@ -248,6 +253,6 @@ sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 
 ```{python}
 #| echo: false
-# Write filtered data to disc
+# Write filtered data to disk
 st_adata.write(output_adata_filtered)
 ```
