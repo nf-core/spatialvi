@@ -41,6 +41,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from IPython.display import display, Markdown
+from textwrap import dedent
 plt.rcParams["figure.figsize"] = (6, 6)
 ```
 
@@ -206,21 +207,24 @@ Markdown(f"""
 if (st_adata.shape[0] == 0 or st_adata.shape[1] == 0):
     st_adata = st_adata_before_filtering
     display(
-        Markdown("""
-::: {.callout-important .content-visible when-format="html"}
-## Issue: no spots remain after filtering
+        Markdown(dedent(
+            """
+            ::: {.callout-important .content-visible when-format="html"}
+            ## Issue: no spots remain after filtering
 
-An anomaly has been detected in the data: following the filtering process,
-all spots have been excluded. It is imperative to assess the data quality
-and carefully review the Analysis Options outlined in `docs/usage.md`.
+            An anomaly has been detected in the data: following the filtering
+            process, all spots have been excluded. It is imperative to assess
+            the data quality and carefully review the values of the filtering
+            parameters.
 
-To ensure the smooth progression of downstream analysis, the exported
-AnnData will, for the time being, remain unfiltered. This precautionary
-measure is implemented to facilitate continued analysis while
-investigating and resolving the cause of the unexpected removal of all
-spots during filtering.
-:::"""
-        )
+            To ensure the smooth progression of downstream analysis, the
+            exported AnnData will, for the time being, remain unfiltered. This
+            precautionary measure is implemented to facilitate continued
+            analysis while investigating and resolving the cause of the
+            unexpected removal of all spots during filtering.
+            :::
+            """
+        ))
     )
 ```
 
