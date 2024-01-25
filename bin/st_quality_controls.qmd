@@ -30,6 +30,7 @@ min_counts = 500  # Min counts per spot
 min_genes = 250  # Min genes per spot
 min_spots = 1  # Min spots per gene
 mito_threshold = 20  # Mitochondrial content threshold (%)
+ribo_threshold = 0  # Ribosomal content threshold (%)
 output_adata_filtered = "st_adata_filtered.h5ad"  # Name of the output anndata file
 ```
 
@@ -182,16 +183,20 @@ Markdown(f"""
 ## Mito, ribo and Hb
 
 We can also filter for mitochondrial, ribosomal and haemoglobin content of the
-cells:
+cells; exactly which filtering threshold should be used are, again, up to you
+and your biological knowledge of the sample at hand.
 
 ```{python}
 # Filter spots
 st_adata = st_adata[st_adata.obs["pct_counts_mt"] < mito_threshold]
 n_spots_filtered_mito = st_adata.shape[0]
+st_adata = st_adata[st_adata.obs["pct_counts_ribo"] >= ribo_threshold]
+n_spots_filtered_ribo = st_adata.shape[0]
 
 # Print results
 Markdown(f"""
-- Removed `{n_spots - n_spots_filtered_mito}` spots with less than `{mito_threshold}%` mitochondrial content.
+- Removed `{n_spots - n_spots_filtered_mito}` spots with more than `{mito_threshold}%` mitochondrial content.
+- Removed `{n_spots - n_spots_filtered_ribo}` spots with less than `{ribo_threshold}%` ribosomal content.
 """)
 ```
 
