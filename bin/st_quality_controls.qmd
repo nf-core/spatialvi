@@ -174,10 +174,8 @@ n_genes_filtered_min_spots = st_adata.shape[1]
 # Print results
 Markdown(f"""
 - Removed `{n_spots - n_spots_filtered_min_counts}` spots with less than `{min_counts}` total counts.
-- Removed `{n_spots - n_spots_filtered_min_genes}` spots with less than `{min_genes}` genes expressed.
+- Removed `{n_spots_filtered_min_counts - n_spots_filtered_min_genes}` spots with less than `{min_genes}` genes expressed.
 - Removed `{n_genes - n_genes_filtered_min_spots}` genes expressed in less than `{min_spots}` spots.
-- A total of `{n_spots_filtered_min_genes}` spots out of `{n_spots}` remain after filtering.
-- A total of `{n_genes_filtered_min_spots}` genes out of `{n_genes}` remain after filtering.
 """)
 ```
 
@@ -196,8 +194,10 @@ n_spots_filtered_ribo = st_adata.shape[0]
 
 # Print results
 Markdown(f"""
-- Removed `{n_spots - n_spots_filtered_mito}` spots with more than `{mito_threshold}%` mitochondrial content.
-- Removed `{n_spots - n_spots_filtered_ribo}` spots with less than `{ribo_threshold}%` ribosomal content.
+- Removed `{st_adata.shape[0] - n_spots_filtered_mito}` spots with more than `{mito_threshold}%` mitochondrial content.
+- Removed `{n_spots_filtered_mito - n_spots_filtered_ribo}` spots with less than `{ribo_threshold}%` ribosomal content.
+- A total of `{n_spots_filtered_min_genes}` spots out of `{n_spots}` remain after filtering.
+- A total of `{n_genes_filtered_min_spots}` genes out of `{n_genes}` remain after filtering.
 """)
 ```
 
