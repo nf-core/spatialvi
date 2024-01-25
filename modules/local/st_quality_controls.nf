@@ -41,6 +41,7 @@ process ST_QUALITY_CONTROLS {
         -P min_spots:${params.st_qc_min_spots} \
         -P mito_threshold:${params.st_qc_mito_threshold} \
         -P ribo_threshold:${params.st_qc_ribo_threshold} \
+        -P hb_threshold:${params.st_qc_hb_threshold} \
         -P output_adata_filtered:st_adata_filtered.h5ad
 
     cat <<-END_VERSIONS > versions.yml
