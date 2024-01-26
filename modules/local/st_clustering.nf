@@ -1,9 +1,8 @@
 //
-// Clustering etc.
+// Dimensionality reduction and clustering
 //
 process ST_CLUSTERING {
 
-    // TODO: Add a better description
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
@@ -22,7 +21,8 @@ process ST_CLUSTERING {
 
     input:
     path(report)
-    tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
+    path(report_template)
+    tuple val(meta), path(st_adata_filtered)
 
     output:
     tuple val(meta), path("st_adata_processed.h5ad"), emit: st_adata_processed
@@ -35,10 +35,10 @@ process ST_CLUSTERING {
     script:
     """
     quarto render ${report} \
-        --output "st_clustering.html" \
-        -P fileNameST:${st_adata_norm} \
-        -P resolution:${params.st_cluster_resolution} \
-        -P saveFileST:st_adata_processed.h5ad
+        -P input_adata_filtered:${st_adata_filtered} \
+        -P cluster_resolution:${params.st_cluster_resolution} \
+        -P n_hvgs:${params.st_cluster_n_hvgs} \
+        -P output_adata_processed:st_adata_processed.h5ad
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

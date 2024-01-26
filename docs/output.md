@@ -1,10 +1,5 @@
 # nf-core/spatialtranscriptomics: Output
 
-<!-- TODO nf-core: More details for each analytical step should probably be added, -->
-<!-- containing (roughly) the same information and level of detail as inside the -->
-<!-- reports themselves, so that everything is documented without having to run the -->
-<!-- pipeline. -->
-
 ## Introduction
 
 This document describes the output produced by the pipeline. Most of the output
@@ -70,21 +65,19 @@ the data in an interactive way.
 
 ## Reports
 
-### Quality controls and normalisation
+### Quality controls and filtering
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `st_qc_and_normalisation.html`: HTML report.
-  - `st_qc_and_normalisation_files/`: Data needed for the HTML report.
+  - `st_quality_controls.html`: HTML report.
 
 </details>
 
-Report containing analyses related to quality controls, filtering and
-normalisation of spatial data. Spots are filtered based on total counts,
-number of expressed genes, mitochondrial content as well as presence in tissue;
-you can find more details in the report itself.
+Report containing analyses related to quality controls and filtering of spatial
+data. Spots are filtered based on total counts, number of expressed genes as
+well as presence in tissue; you can find more details in the report itself.
 
 ### Clustering
 
@@ -93,12 +86,11 @@ you can find more details in the report itself.
 
 - `<SAMPLE>/reports/`
   - `st_clustering.html`: HTML report.
-  - `st_clustering_files/`: Data needed for the HTML report.
 
 </details>
 
-Report containing analyses related to dimensionality reduction, clustering and
-spatial visualisation. Leiden clustering is currently the only clustering
+Report containing analyses related to normalisation, dimensionality reduction,
+clustering and spatial visualisation. Leiden clustering is currently the only
 option; you can find more details in the report itself.
 
 ### Differential expression
@@ -108,9 +100,8 @@ option; you can find more details in the report itself.
 
 - `<SAMPLE>/reports/`
   - `st_spatial_de.html`: HTML report.
-  - `st_spatial_de_files/`: Data needed for the HTML report.
 - `<SAMPLE>/degs/`
-  - `st_spatial_de.csv`: List of spatially varying genes.
+  - `st_spatial_de.csv`: List of spatially differentially expressed genes.
 
 </details>
 

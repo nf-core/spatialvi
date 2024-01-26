@@ -12,3 +12,4 @@ testing*
 bin/
 test-datasets/
 .nf-test/
+*.scss

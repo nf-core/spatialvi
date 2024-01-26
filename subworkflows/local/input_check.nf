@@ -107,8 +107,6 @@ def create_channel_spaceranger(LinkedHashMap meta) {
 
     if(!fastq_files.size()) {
         error "No `fastq_dir` specified or no samples found in folder."
-    } else {
-        log.info "${fastq_files.size()} FASTQ files found for sample ${meta['id']}."
     }
 
     check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]

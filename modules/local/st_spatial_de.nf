@@ -3,7 +3,6 @@
 //
 process ST_SPATIAL_DE {
 
-    // TODO: Add a better description
     // TODO: Update Conda directive when Quarto/Pandoc works on ARM64
 
     tag "${meta.id}"
@@ -21,12 +20,13 @@ process ST_SPATIAL_DE {
     }
     input:
     path(report)
-    tuple val(meta), path(st_adata_norm, stageAs: "adata_norm.h5ad")
+    path(report_template)
+    tuple val(meta), path(st_adata_processed)
 
     output:
-    tuple val(meta), path("*.csv")              , emit: degs
-    tuple val(meta), path("st_spatial_de.html") , emit: html
-    path("versions.yml")                        , emit: versions
+    tuple val(meta), path("*.csv")             , emit: degs
+    tuple val(meta), path("st_spatial_de.html"), emit: html
+    path("versions.yml")                       , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -34,12 +34,9 @@ process ST_SPATIAL_DE {
     script:
     """
     quarto render ${report} \
-        --output "st_spatial_de.html" \
-        -P fileNameST:${st_adata_norm} \
-        -P numberOfColumns:${params.st_spatial_de_ncols} \
-        -P plotTopHVG:${params.st_spatial_de_top_hvg} \
-        -P saveDEFileName:st_gde.csv \
-        -P saveSpatialDEFileName:st_spatial_de.csv
+        -P input_adata_processed:${st_adata_processed} \
+        -P n_top_spatial_degs:${params.st_n_top_spatial_degs} \
+        -P output_spatial_degs:st_spatial_de.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -1,30 +1,20 @@
-<!--
-TODO: Make report more complete, add descriptions, etc.
--->
-
 ---
-title: "Differential Gene Expression and spatially variable genes"
+title: "nf-core/spatialtranscriptomics"
+subtitle: "Differential gene expression"
 format:
-  html:
-    embed-resources: true
-    page-layout: full
-    code-fold: true
+  nf-core-html: default
 jupyter: python3
 ---
 
 ```{python}
 #| tags: [parameters]
 #| echo: false
-
-fileNameST = ""
-numberOfColumns = 5
-saveDEFileName = ""
-saveSpatialDEFileName = ""
-plotTopHVG = 15
+input_adata_processed = "st_adata_processed.h5ad"
+output_spatial_degs = "st_spatial_de.csv"
+n_top_spatial_degs = 14
 ```
 
 ```{python}
-# Load packages
 import scanpy as sc
 import pandas as pd
 import SpatialDE
@@ -32,54 +22,78 @@ from matplotlib import pyplot as plt
 ```
 
 ```{python}
-st_adata = sc.read(fileNameST)
-st_adata
-```
+# Read data
+st_adata = sc.read(input_adata_processed)
+print("Content of the AnnData object:")
+print(st_adata)
 
-## Differential Gene Expression
-
-```{python}
-plt.rcParams["figure.figsize"] = (5, 5)
+# Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
 st_adata.uns['log1p']['base'] = None
 
+# Suppress scanpy-specific warnings
+sc.settings.verbosity = 0
+```
+
+# Differential gene expression
+
+Before we look for spatially variable genes we first find differentially
+expressed genes across the different clusters found in the data. We can
+visualize the top DEGs in a heatmap:
+
+```{python}
+#| warning: false
 sc.tl.rank_genes_groups(st_adata, 'clusters', method='t-test')
-sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False, gene_symbols="gene_symbol")
+sc.pl.rank_genes_groups_heatmap(st_adata, n_genes=5, groupby="clusters")
 ```
 
+A different but similar visualization of the DEGs is the dot plot, where we can
+also include the gene names:
+
 ```{python}
-sc.tl.rank_genes_groups(st_adata, 'clusters', method='wilcoxon')
-sc.pl.rank_genes_groups(st_adata, n_genes=25, sharey=False, gene_symbols="gene_symbol")
+#| warning: false
+sc.pl.rank_genes_groups_dotplot(st_adata, n_genes=5, groupby="clusters")
 ```
 
-## Spatially variable genes
+::: {.callout-note}
+Please note that you may need to scroll sidewise in these figures, as their
+height and width depends on the number of clusters as well as the number and
+intersection of the DEGs that are being plotted.
+:::
 
-Spatial transcriptomics allows researchers to investigate how gene expression trends varies in space, thus identifying spatial patterns of gene expression. For this purpose, we use SpatialDE [Svensson18](https://www.nature.com/articles/nmeth.4636) ([code](https://github.com/Teichlab/SpatialDE)), a Gaussian process-based statistical framework that aims to identify spatially variable genes.
+# Spatial gene expression
 
-First, we convert normalized counts and coordinates to pandas dataframe, needed for inputs to spatialDE.
+Spatial transcriptomics data can give insight into how genes are expressed in
+different areas in a tissue, allowing identification of spatial gene expression
+patterns. Here we use [SpatialDE](https://www.nature.com/articles/nmeth.4636) to
+identify such patterns.
 
 ```{python}
+#| output: false
 results = SpatialDE.run(st_adata.obsm["spatial"], st_adata.to_df())
 ```
 
-We concatenate the results with the DataFrame of annotations of variables: `st_adata.var`.
+We can then inspect the spatial DEGs in a table:
 
 ```{python}
 results.set_index("g", inplace=True)
 # workaround for https://github.com/Teichlab/SpatialDE/issues/36
 results = results.loc[~results.index.duplicated(keep="first")]
 
+# Add annotations
 st_adata.var = pd.concat([st_adata.var, results.loc[st_adata.var.index.values, :]], axis=1)
-```
 
-Then we can inspect significant genes that varies in space and visualize them with `sc.pl.spatial` function.
-
-```{python}
+# Print results table
 results_tab = st_adata.var.sort_values("qval", ascending=True)
-results_tab.to_csv(saveSpatialDEFileName)
-results_tab.head(plotTopHVG)
+results_tab.to_csv(output_spatial_degs)
+results_tab.head(n_top_spatial_degs)
 ```
 
+We can also plot the top spatially variable genes on top of the tissue image
+itself to visualize the patterns:
+
 ```{python}
-symbols = results_tab.iloc[: plotTopHVG]["gene_symbol"]
-sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7, ncols=numberOfColumns, title=symbols)
+symbols = results_tab.iloc[: n_top_spatial_degs]["gene_symbol"]
+plt.rcParams["figure.figsize"] = (3.5, 4)
+sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7,
+              ncols=2, title=symbols, size=1.25)
 ```

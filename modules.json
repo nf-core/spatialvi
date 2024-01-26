@@ -12,7 +12,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "617777a807a1770f73deb38c80004bac06807eef",
+                        "git_sha": "c9488585ce7bd35ccd2a30faa2371454c8112fb9",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
@@ -27,7 +27,7 @@
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "8e6960947b6647952b97667173805b34b40f25d6",
+                        "git_sha": "e719354ba77df0a1bd310836aa2039b45c29d620",
                         "installed_by": ["modules"]
                     }
                 }
