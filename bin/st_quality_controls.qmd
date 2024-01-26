@@ -108,9 +108,9 @@ sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts
 
 ## Scatter plots
 
-It is also useful to some of these quality metrics against each other in scatter
-plots, such as mitochondrial versus ribosomal content and the total counts
-versus the number of genes:
+It is also useful to compare some of these quality metrics against each other in
+scatter plots, such as mitochondrial versus ribosomal content and the total
+counts versus the number of genes:
 
 ```{python}
 #| layout-ncol: 2
