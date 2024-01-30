@@ -1,1 +1,7 @@
 repository_type: pipeline
+lint:
+  actions_ci: False
+  files_exist:
+    - conf/igenomes.config
+  files_unchanged:
+    - .gitattributes

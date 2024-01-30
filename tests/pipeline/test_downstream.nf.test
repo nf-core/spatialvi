@@ -1,0 +1,48 @@
+nextflow_pipeline {
+    name "Test downstream workflow (excl. Space Ranger)"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Downstream FFPE v2 CytAssist") {
+        when {
+            params {
+                // Input and output
+                input  = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/samplesheet_downstream.csv'
+                spaceranger_probeset = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs/probe_set.csv"
+                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/homo_sapiens_chr22_reference.tar.gz"
+
+                // Parameters
+                st_qc_min_counts = 5
+                st_qc_min_genes = 3
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                // Workflow
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+
+                // Data
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/st_adata_processed.h5ad").exists() },
+
+                // Reports
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html").text.contains("spatial distribution of clusters") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatial_de.html").text.contains("plot the top spatially variable genes") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_clustering.html").text.contains("spatial distribution of clusters") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_spatial_de.html").text.contains("plot the top spatially variable genes") },
+
+                // DEGs
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_spatial_de.csv").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/degs/st_spatial_de.csv").exists() },
+
+                // MultiQC
+                { assert file("$outputDir/multiqc/multiqc_report.html").exists() }
+            )
+        }
+    }
+}

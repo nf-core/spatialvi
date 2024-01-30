@@ -12,12 +12,9 @@ class WorkflowSpatialtranscriptomics {
     //
     public static void initialise(params, log) {
 
-        genomeExistsError(params, log)
-
-
-        if (!params.fasta) {
-            Nextflow.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
-        }
+        // if (!params.fasta) {
+        //     Nextflow.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
+        // }
     }
 
     //
@@ -53,14 +50,15 @@ class WorkflowSpatialtranscriptomics {
 
     public static String toolCitationText(params) {
 
-        // TODO nf-core: Optionally add in-text citation tools to this list.
-        // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
-        // Uncomment function in methodsDescriptionText to render in MultiQC report
         def citation_text = [
                 "Tools used in the workflow included:",
+                "AnnData (Virshup et al. 2021),",
                 "FastQC (Andrews 2010),",
-                "MultiQC (Ewels et al. 2016)",
-                "."
+                "MultiQC (Ewels et al. 2016),",
+                "Quarto (Allaire et al. 2022),",
+                "Scanpy (Wolf et al. 2018),",
+                "Space Ranger (10x Genomics) and",
+                "SpatialDE (Svensson et al. 2018)."
             ].join(' ').trim()
 
         return citation_text
@@ -68,12 +66,14 @@ class WorkflowSpatialtranscriptomics {
 
     public static String toolBibliographyText(params) {
 
-        // TODO Optionally add bibliographic entries to this list.
-        // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
-        // Uncomment function in methodsDescriptionText to render in MultiQC report
         def reference_text = [
-                "<li>Andrews S, (2010) FastQC, URL: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).</li>",
-                "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>"
+                "<li>Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: <a href=https://doi.org/10.1101/2021.12.16.473007>10.1101/2021.12.16.473007</a></li>",
+                "<li>Andrews S, (2010) FastQC, URL: <a href=https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>bioinformatics.babraham.ac.uk</a>.</li>",
+                "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: <a href=https://doi.org/10.1093/bioinformatics/btw354>10.1093/bioinformatics/btw354</a></li>",
+                "<li>Allaire J, Teague C, Scheidegger C, Xie Y, Dervieux C. Quarto (2022). doi: <a href=https://doi.org/10.5281/zenodo.5960048>10.5281/zenodo.5960048</a></li>",
+                "<li>Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol 19, 15 (2018). doi: <a href=https://doi.org/10.1186/s13059-017-1382-0>10.1186/s13059-017-1382-0</a></li>",
+                "<li>10x Genomics Space Ranger 2.1.0, URL: <a href=https://www.10xgenomics.com/support/software/space-ranger>10xgenomics.com/support/software/space-ranger</a></li>",
+                "<li>Svensson V, Teichmann S, Stegle O. SpatialDE: identification of spatially variable genes. Nat Methods 15, 343–346 (2018). doi: <a href=https://doi.org/10.1038/nmeth.4636>10.1038/nmeth.4636</a></li>",
             ].join(' ').trim()
 
         return reference_text
@@ -92,10 +92,8 @@ class WorkflowSpatialtranscriptomics {
         // Tool references
         meta["tool_citations"] = ""
         meta["tool_bibliography"] = ""
-
-        // TODO Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
-        //meta["tool_citations"] = toolCitationText(params).replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
-        //meta["tool_bibliography"] = toolBibliographyText(params)
+        meta["tool_citations"] = toolCitationText(params).replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
+        meta["tool_bibliography"] = toolBibliographyText(params)
 
 
         def methods_text = mqc_methods_yaml.text
@@ -106,17 +104,4 @@ class WorkflowSpatialtranscriptomics {
         return description_html
     }
 
-    //
-    // Exit pipeline if incorrect --genome key provided
-    //
-    private static void genomeExistsError(params, log) {
-        if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
-            def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-                "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" +
-                "  Currently, the available genome keys are:\n" +
-                "  ${params.genomes.keySet().join(", ")}\n" +
-                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            Nextflow.error(error_string)
-        }
-    }
 }

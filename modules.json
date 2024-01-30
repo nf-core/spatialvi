@@ -19,6 +19,16 @@
                         "branch": "master",
                         "git_sha": "8ec825f465b9c17f9d83000022995b4f7de6fe93",
                         "installed_by": ["modules"]
+                    },
+                    "spaceranger/count": {
+                        "branch": "master",
+                        "git_sha": "3bd057bfdfb64578636ff3ae7f7cb8eeab3c0cb6",
+                        "installed_by": ["modules"]
+                    },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "e719354ba77df0a1bd310836aa2039b45c29d620",
+                        "installed_by": ["modules"]
                     }
                 }
             }

@@ -5,39 +5,71 @@ on:
     branches:
       - dev
   pull_request:
+    branches:
+      - dev
+      - master
   release:
     types: [published]
 
 env:
   NXF_ANSI_LOG: false
+  CAPSULE_LOG: none
+  NFTEST_VER: "0.7.3"
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
   cancel-in-progress: true
 
 jobs:
+  define_nxf_versions:
+    name: Choose nextflow versions to test against depending on target branch
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.nxf_versions.outputs.matrix }}
+    steps:
+      - id: nxf_versions
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.base_ref }}" == "dev" && "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
+            echo matrix='["latest-everything"]' | tee -a $GITHUB_OUTPUT
+          else
+            echo matrix='["latest-everything", "23.04.0"]' | tee -a $GITHUB_OUTPUT
+          fi
+
   test:
     name: Run pipeline with test data
-    # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/spatialtranscriptomics') }}"
+    needs: define_nxf_versions
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        NXF_VER:
-          - "23.04.0"
-          - "latest-everything"
+        NXF_VER: ${{ fromJson(needs.define_nxf_versions.outputs.matrix) }}
+        test:
+          - tests/pipeline/test_spaceranger_ffpe_v1.nf.test
+          - tests/pipeline/test_spaceranger_ffpe_v2_cytassist.nf.test
+          - tests/pipeline/test_downstream.nf.test
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v4
 
+      # Install Nextflow
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Run pipeline with test data
-        # TODO nf-core: You can customise CI pipeline run tests as required
-        # For example: adding multiple test runs with different parameters
-        # Remember that you can parallelise this by using strategy.matrix
+      # Install nf-test
+      - name: Install nf-test
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+          wget -qO- https://code.askimed.com/install/nf-test | bash -s $NFTEST_VER
+          sudo mv nf-test /usr/local/bin/
+
+      # Run nf-test
+      - name: Run nf-test
+        run: nf-test test --profile=test,docker --tap=test.tap ${{ matrix.test }}
+
+      # If the test fails, output the software_versions.yml using the 'batcat' utility
+      - name: Output log on failure
+        if: failure()
+        run: |
+          sudo apt install bat > /dev/null
+          batcat --decorations=always --color=always .nf-test/tests/*/output/pipeline_info/software_versions.yml

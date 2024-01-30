@@ -15,6 +15,21 @@ log.info logo + paramsSummaryLog(workflow) + citation
 
 WorkflowSpatialtranscriptomics.initialise(params, log)
 
+// Check input path parameters to see if they exist
+log.info """\
+         Project directory:  ${projectDir}
+         """
+         .stripIndent()
+
+def checkPathParamList = [ params.input,
+                           params.spaceranger_reference,
+                           params.spaceranger_probeset ]
+for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+
+// Check mandatory parameters
+if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES
@@ -26,6 +41,7 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
@@ -33,9 +49,16 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 */
 
 //
+// MODULE: Loaded from modules/local/
+//
+include { ST_READ_DATA } from '../modules/local/st_read_data'
+
+//
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_CHECK    } from '../subworkflows/local/input_check'
+include { SPACERANGER    } from '../subworkflows/local/spaceranger'
+include { ST_DOWNSTREAM  } from '../subworkflows/local/st_downstream'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,8 +69,8 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                      } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { FASTQC                      } from "../modules/nf-core/fastqc/main"
+include { MULTIQC                     } from "../modules/nf-core/multiqc/main"
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 /*
@@ -56,32 +79,58 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Info required for completion email and summary
-def multiqc_report = []
-
-workflow SPATIALTRANSCRIPTOMICS {
+//
+// Spatial transcriptomics workflow
+//
+workflow ST {
 
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    // SUBWORKFLOW: Read and validate samplesheet
     //
     INPUT_CHECK (
-        file(params.input)
+        ch_input
     )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-    // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
-    // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-    // ! There is currently no tooling to help you write a sample sheet schema
 
     //
-    // MODULE: Run FastQC
+    // MODULE: FastQC
     //
-    FASTQC (
-        INPUT_CHECK.out.reads
+    FASTQC(
+        INPUT_CHECK.out.ch_spaceranger_input.map{ it -> [it[0] /* meta */, it[1] /* reads */]}
     )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    ch_versions = ch_versions.mix(FASTQC.out.versions)
 
+    //
+    // SUBWORKFLOW: Space Ranger raw data processing
+    //
+    SPACERANGER (
+        INPUT_CHECK.out.ch_spaceranger_input
+    )
+    ch_versions = ch_versions.mix(SPACERANGER.out.versions)
+    ch_downstream_input = INPUT_CHECK.out.ch_downstream_input.concat(SPACERANGER.out.sr_dir).map{
+        meta, outs -> [meta, outs.findAll{ it -> Utils.DOWNSTREAM_REQUIRED_SPACERANGER_FILES.contains(it.name) }]
+    }
+
+    //
+    // MODULE: Read ST data and save as `anndata`
+    //
+    ST_READ_DATA (
+        ch_downstream_input
+    )
+    ch_versions = ch_versions.mix(ST_READ_DATA.out.versions)
+
+    //
+    // SUBWORKFLOW: Downstream analyses of ST data
+    //
+    ST_DOWNSTREAM (
+        ST_READ_DATA.out.st_adata_raw
+    )
+    ch_versions = ch_versions.mix(ST_DOWNSTREAM.out.versions)
+
+    //
+    // MODULE: Pipeline reporting
+    //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
@@ -95,11 +144,11 @@ workflow SPATIALTRANSCRIPTOMICS {
     methods_description    = WorkflowSpatialtranscriptomics.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
     ch_methods_description = Channel.value(methods_description)
 
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml').mix(
+        ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'),
+        CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect(),
+        FASTQC.out.zip.collect{ meta, qcfile -> qcfile }
+    )
 
     MULTIQC (
         ch_multiqc_files.collect(),

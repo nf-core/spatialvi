@@ -11,16 +11,6 @@
 
 nextflow.enable.dsl = 2
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,13 +42,13 @@ WorkflowMain.initialise(workflow, params, log, args)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SPATIALTRANSCRIPTOMICS } from './workflows/spatialtranscriptomics'
+include { ST } from './workflows/spatialtranscriptomics'
 
 //
 // WORKFLOW: Run main nf-core/spatialtranscriptomics analysis pipeline
 //
 workflow NFCORE_SPATIALTRANSCRIPTOMICS {
-    SPATIALTRANSCRIPTOMICS ()
+    ST ()
 }
 
 /*
