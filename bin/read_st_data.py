@@ -114,19 +114,26 @@ def read_visium(
         for f in files.values():
             if not f.exists():
                 if any(x in str(f) for x in ["hires_image", "lowres_image"]):
-                    logg.warning(f"You seem to be missing an image file.\n" f"Could not find '{f}'.")
+                    logg.warning(
+                        f"You seem to be missing an image file.\n"
+                        f"Could not find '{f}'."
+                    )
                 else:
                     raise OSError(f"Could not find '{f}'")
 
         adata.uns["spatial"][library_id]["images"] = dict()
         for res in ["hires", "lowres"]:
             try:
-                adata.uns["spatial"][library_id]["images"][res] = imread(str(files[f"{res}_image"]))
+                adata.uns["spatial"][library_id]["images"][res] = imread(
+                    str(files[f"{res}_image"])
+                )
             except Exception:
                 raise OSError(f"Could not find '{res}_image'")
 
         # read json scalefactors
-        adata.uns["spatial"][library_id]["scalefactors"] = json.loads(files["scalefactors_json_file"].read_bytes())
+        adata.uns["spatial"][library_id]["scalefactors"] = json.loads(
+            files["scalefactors_json_file"].read_bytes()
+        )
 
         adata.uns["spatial"][library_id]["metadata"] = {
             k: (str(attrs[k], "utf-8") if isinstance(attrs[k], bytes) else attrs[k])
@@ -150,7 +157,9 @@ def read_visium(
 
         adata.obs = adata.obs.join(positions, how="left")
 
-        adata.obsm["spatial"] = adata.obs[["pxl_row_in_fullres", "pxl_col_in_fullres"]].to_numpy()
+        adata.obsm["spatial"] = adata.obs[
+            ["pxl_row_in_fullres", "pxl_col_in_fullres"]
+        ].to_numpy()
         adata.obs.drop(
             columns=["pxl_row_in_fullres", "pxl_col_in_fullres"],
             inplace=True,
@@ -160,7 +169,9 @@ def read_visium(
         if source_image_path is not None:
             # get an absolute path
             source_image_path = str(Path(source_image_path).resolve())
-            adata.uns["spatial"][library_id]["metadata"]["source_image_path"] = str(source_image_path)
+            adata.uns["spatial"][library_id]["metadata"]["source_image_path"] = str(
+                source_image_path
+            )
 
     return adata
 
@@ -171,13 +182,28 @@ if __name__ == "__main__":
         description="Load spatial transcriptomics data from MTX matrices and aligned images."
     )
     parser.add_argument(
-        "--SRCountDir", metavar="SRCountDir", type=str, default=None, help="Input directory with Spaceranger data."
+        "--SRCountDir",
+        metavar="SRCountDir",
+        type=str,
+        default=None,
+        help="Input directory with Spaceranger data.",
     )
-    parser.add_argument("--outAnnData", metavar="outAnnData", type=str, default=None, help="Output h5ad file path.")
+    parser.add_argument(
+        "--outAnnData",
+        metavar="outAnnData",
+        type=str,
+        default=None,
+        help="Output h5ad file path.",
+    )
     args = parser.parse_args()
 
     # Read Visium data
-    st_adata = read_visium(args.SRCountDir, count_file="raw_feature_bc_matrix.h5", library_id=None, load_images=True)
+    st_adata = read_visium(
+        args.SRCountDir,
+        count_file="raw_feature_bc_matrix.h5",
+        library_id=None,
+        load_images=True,
+    )
 
     # Write raw anndata to file
     st_adata.write(args.outAnnData)
