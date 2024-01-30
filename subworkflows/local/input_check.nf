@@ -92,8 +92,8 @@ def create_channel_spaceranger(LinkedHashMap meta) {
     // Convert a path in `meta` to a file object and return it. If `key` is not contained in `meta`
     // return an empty list which is recognized as 'no file' by nextflow.
     def get_file_from_meta = {key ->
-         v = meta.remove(key);
-         return v ? file(v) : []
+        v = meta.remove(key);
+        return v ? file(v) : []
     }
 
     fastq_dir = meta.remove("fastq_dir")
