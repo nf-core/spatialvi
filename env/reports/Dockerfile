@@ -2,7 +2,7 @@
 FROM jdutant/quarto-minimal:1.3.313 as quarto
 
 # Second stage: multi-platform Mamba image
-FROM condaforge/mambaforge:23.1.0-1
+FROM condaforge/mambaforge:23.11.0-0
 
 # Copy Quarto installation from first stage and add to PATH
 COPY --from=quarto /opt/quarto /opt/quarto

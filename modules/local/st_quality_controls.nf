@@ -9,7 +9,7 @@ process ST_QUALITY_CONTROLS {
     label 'process_low'
 
     conda "conda-forge::quarto=1.3.353 conda-forge::scanpy=1.9.3 conda-forge::papermill=2.3.4 conda-forge::jupyter=1.0.0"
-    container "docker.io/erikfas/spatialtranscriptomics"
+    container "docker.io/cavenel/spatialtranscriptomics"
 
     // Exit if running this module with -profile conda / -profile mamba on ARM64
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
@@ -22,10 +22,10 @@ process ST_QUALITY_CONTROLS {
     input:
     path(report)
     path(report_template)
-    tuple val(meta), path(st_adata_raw)
+    tuple val(meta), path(st_sdata_raw)
 
     output:
-    tuple val(meta), path("st_adata_filtered.h5ad")  , emit: st_adata_filtered
+    tuple val(meta), path("st_sdata_filtered.zarr")  , emit: st_sdata_filtered
     tuple val(meta), path("st_quality_controls.html"), emit: html
     path("versions.yml")                             , emit: versions
 
@@ -35,14 +35,14 @@ process ST_QUALITY_CONTROLS {
     script:
     """
     quarto render ${report} \
-        -P input_adata_raw:${st_adata_raw} \
+        -P input_sdata:${st_sdata_raw} \
         -P min_counts:${params.st_qc_min_counts} \
         -P min_genes:${params.st_qc_min_genes} \
         -P min_spots:${params.st_qc_min_spots} \
         -P mito_threshold:${params.st_qc_mito_threshold} \
         -P ribo_threshold:${params.st_qc_ribo_threshold} \
         -P hb_threshold:${params.st_qc_hb_threshold} \
-        -P output_adata_filtered:st_adata_filtered.h5ad
+        -P output_sdata:st_sdata_filtered.zarr
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

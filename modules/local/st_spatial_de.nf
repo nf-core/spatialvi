@@ -9,7 +9,7 @@ process ST_SPATIAL_DE {
     label 'process_medium'
 
     conda "env/st_spatial_de/environment.yml"
-    container "docker.io/erikfas/spatialtranscriptomics"
+    container "docker.io/cavenel/spatialtranscriptomics"
 
     // Exit if running this module with -profile conda / -profile mamba on ARM64
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
@@ -21,7 +21,7 @@ process ST_SPATIAL_DE {
     input:
     path(report)
     path(report_template)
-    tuple val(meta), path(st_adata_processed)
+    tuple val(meta), path(st_sdata)
 
     output:
     tuple val(meta), path("*.csv")             , emit: degs
@@ -34,7 +34,7 @@ process ST_SPATIAL_DE {
     script:
     """
     quarto render ${report} \
-        -P input_adata_processed:${st_adata_processed} \
+        -P input_sdata:${st_sdata} \
         -P n_top_spatial_degs:${params.st_n_top_spatial_degs} \
         -P output_spatial_degs:st_spatial_de.csv
 

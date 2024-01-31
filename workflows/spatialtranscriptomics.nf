@@ -124,7 +124,7 @@ workflow ST {
     // SUBWORKFLOW: Downstream analyses of ST data
     //
     ST_DOWNSTREAM (
-        ST_READ_DATA.out.st_adata_raw
+        ST_READ_DATA.out.st_sdata_raw
     )
     ch_versions = ch_versions.mix(ST_DOWNSTREAM.out.versions)
 

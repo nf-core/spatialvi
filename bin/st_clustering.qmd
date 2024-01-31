@@ -12,10 +12,11 @@ jupyter: python3
 #| tags: [parameters]
 #| echo: false
 
-input_adata_filtered = "st_adata_filtered.h5ad"  # Name of the input anndata file
+input_sdata = "st_sdata_filtered.zarr"  # Name of the input anndata file
 cluster_resolution = 1  # Resolution for Leiden clustering
 n_hvgs = 2000  # Number of HVGs to use for analyses
 output_adata_processed = "st_adata_processed.h5ad"  # Name of the output anndata file
+output_sdata = "st_sdata_processed.zarr"  # Name of the input anndata file
 ```
 
 The data has already been filtered in the _quality controls_ reports and is
@@ -23,9 +24,11 @@ saved in the AnnData format:
 
 ```{python}
 #| warning: false
+import spatialdata
 import scanpy as sc
 import numpy as np
 import pandas as pd
+from anndata import AnnData
 from umap import UMAP
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -33,7 +36,33 @@ from IPython.display import display, Markdown
 ```
 
 ```{python}
-st_adata = sc.read("./" + input_adata_filtered)
+# Make sure we can use scanpy plots with the AnnData object exported from sdata.table
+# This code is taken from the early version of https://github.com/scverse/spatialdata-io/pull/102/
+# Once the PR will be merged in spatialdata-io, we should use spatialdata_io.to_legacy_anndata(sdata).
+def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
+    adata = sdata.table
+    for dataset_id in adata.uns["spatial"]:
+        adata.uns["spatial"][dataset_id]["images"] = {
+            "hires": np.array(sdata.images[f"{dataset_id}_hires_image"]).transpose([1, 2, 0]),
+            "lowres": np.array(sdata.images[f"{dataset_id}_lowres_image"]).transpose([1, 2, 0]),
+        }
+        adata.uns["spatial"][dataset_id]["scalefactors"] = {
+            "tissue_hires_scalef": spatialdata.transformations.get_transformation(
+                sdata.shapes[dataset_id], to_coordinate_system="downscaled_hires"
+            ).scale[0],
+            "tissue_lowres_scalef": spatialdata.transformations.get_transformation(
+                sdata.shapes[dataset_id], to_coordinate_system="downscaled_lowres"
+            ).scale[0],
+            "spot_diameter_fullres": sdata.shapes[dataset_id]["radius"][0] * 2,
+        }
+    return adata
+```
+
+```{python}
+st_sdata = spatialdata.read_zarr("./" + input_sdata, ["images", "table", "shapes"])
+
+st_adata = to_legacy_anndata(st_sdata)
+
 print("Content of the AnnData object:")
 print(st_adata)
 ```
@@ -142,4 +171,8 @@ sc.pl.spatial(st_adata, img_key="hires", color="clusters", size=1.25)
 ```{python}
 #| echo: false
 st_adata.write(output_adata_processed)
+```
+
+```{python}
+st_sdata.write("./" + output_sdata)
 ```

@@ -9,7 +9,7 @@ include { ST_CLUSTERING       } from '../../modules/local/st_clustering'
 workflow ST_DOWNSTREAM {
 
     take:
-    st_adata_raw
+    st_sdata_raw
 
     main:
 
@@ -29,7 +29,7 @@ workflow ST_DOWNSTREAM {
     ST_QUALITY_CONTROLS (
         report_quality_controls,
         report_template,
-        st_adata_raw
+        st_sdata_raw
     )
     ch_versions = ch_versions.mix(ST_QUALITY_CONTROLS.out.versions)
 
@@ -39,7 +39,7 @@ workflow ST_DOWNSTREAM {
     ST_CLUSTERING (
         report_clustering,
         report_template,
-        ST_QUALITY_CONTROLS.out.st_adata_filtered
+        ST_QUALITY_CONTROLS.out.st_sdata_filtered
     )
     ch_versions = ch_versions.mix(ST_CLUSTERING.out.versions)
 
@@ -49,15 +49,14 @@ workflow ST_DOWNSTREAM {
     ST_SPATIAL_DE (
         report_spatial_de,
         report_template,
-        ST_CLUSTERING.out.st_adata_processed
+        ST_CLUSTERING.out.st_sdata_processed
     )
     ch_versions = ch_versions.mix(ST_SPATIAL_DE.out.versions)
 
     emit:
-    st_data_norm       = ST_QUALITY_CONTROLS.out.st_adata_filtered  // channel: [ meta, h5ad ]
     html               = ST_QUALITY_CONTROLS.out.html               // channel: [ html ]
 
-    st_adata_processed = ST_CLUSTERING.out.st_adata_processed       // channel: [ meta, h5ad]
+    st_sdata_processed = ST_CLUSTERING.out.st_sdata_processed       // channel: [ meta, h5ad]
     html               = ST_CLUSTERING.out.html                     // channel: [ html ]
 
     degs               = ST_SPATIAL_DE.out.degs                     // channel: [ meta, csv ]

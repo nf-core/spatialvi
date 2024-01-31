@@ -1,13 +1,11 @@
 ---
 title: "nf-core/spatialtranscriptomics"
 subtitle: "Pre-processing and quality controls"
-format:
-  nf-core-html: default
 jupyter: python3
 ---
 
 # Introduction
-
+<!-- TODO: Add SpatialData in intro -->
 Spatial Transcriptomics data analysis involves several steps, including quality
 controls (QC) and pre-processing, to ensure the reliability of downstream
 analyses. This is an essential step in spatial transcriptomics to
@@ -25,30 +23,59 @@ analysis tools and facilitates seamless integration into existing workflows.
 ```{python}
 #| tags: [parameters]
 #| echo: false
-input_adata_raw = "st_adata_raw.h5ad"  # Name of the input anndata file
+input_sdata = "st_sdata_raw.zarr"  # Name of the input anndata file
 min_counts = 500  # Min counts per spot
 min_genes = 250  # Min genes per spot
 min_spots = 1  # Min spots per gene
 mito_threshold = 20  # Mitochondrial content threshold (%)
 ribo_threshold = 0  # Ribosomal content threshold (%)
 hb_threshold = 100  # content threshold (%)
-output_adata_filtered = "st_adata_filtered.h5ad"  # Name of the output anndata file
+output_sdata = "st_sdata_filtered.zarr"  # Name of the input anndata file
 ```
 
 ```{python}
+import spatialdata
 import scanpy as sc
 import scipy
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
+from anndata import AnnData
 from IPython.display import display, Markdown
 from textwrap import dedent
 plt.rcParams["figure.figsize"] = (6, 6)
 ```
 
 ```{python}
+# Make sure we can use scanpy plots with the AnnData object exported from sdata.table
+# This code is taken from the early version of https://github.com/scverse/spatialdata-io/pull/102/
+# Once the PR will be merged in spatialdata-io, we should use spatialdata_io.to_legacy_anndata(sdata).
+def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
+    adata = sdata.table
+    for dataset_id in adata.uns["spatial"]:
+        adata.uns["spatial"][dataset_id]["images"] = {
+            "hires": np.array(sdata.images[f"{dataset_id}_hires_image"]).transpose([1, 2, 0]),
+            "lowres": np.array(sdata.images[f"{dataset_id}_lowres_image"]).transpose([1, 2, 0]),
+        }
+        adata.uns["spatial"][dataset_id]["scalefactors"] = {
+            "tissue_hires_scalef": spatialdata.transformations.get_transformation(
+                sdata.shapes[dataset_id], to_coordinate_system="downscaled_hires"
+            ).scale[0],
+            "tissue_lowres_scalef": spatialdata.transformations.get_transformation(
+                sdata.shapes[dataset_id], to_coordinate_system="downscaled_lowres"
+            ).scale[0],
+            "spot_diameter_fullres": sdata.shapes[dataset_id]["radius"][0] * 2,
+        }
+    return adata
+```
+
+```{python}
 # Read the data
-st_adata = sc.read("./" + input_adata_raw)
+
+st_sdata = spatialdata.read_zarr("./" + input_sdata, ["images", "table", "shapes"])
+
+st_adata = to_legacy_anndata(st_sdata)
 
 # Convert X matrix from csr to csc dense matrix for output compatibility:
 st_adata.X = scipy.sparse.csc_matrix(st_adata.X)
@@ -252,7 +279,8 @@ sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 ```
 
 ```{python}
-#| echo: false
-# Write filtered data to disk
-st_adata.write(output_adata_filtered)
+st_sdata.write("./" + output_sdata)
 ```
+
+
+

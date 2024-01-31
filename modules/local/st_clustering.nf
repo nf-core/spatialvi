@@ -9,7 +9,7 @@ process ST_CLUSTERING {
     label 'process_low'
 
     conda "conda-forge::quarto=1.3.353 conda-forge::scanpy=1.9.3 conda-forge::papermill=2.3.4 conda-forge::jupyter=1.0.0 conda-forge::leidenalg=0.9.1"
-    container "docker.io/erikfas/spatialtranscriptomics"
+    container "docker.io/cavenel/spatialtranscriptomics"
 
     // Exit if running this module with -profile conda / -profile mamba on ARM64
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
@@ -22,10 +22,11 @@ process ST_CLUSTERING {
     input:
     path(report)
     path(report_template)
-    tuple val(meta), path(st_adata_filtered)
+    tuple val(meta), path(st_sdata)
 
     output:
     tuple val(meta), path("st_adata_processed.h5ad"), emit: st_adata_processed
+    tuple val(meta), path("st_sdata_processed.zarr"), emit: st_sdata_processed
     tuple val(meta), path("st_clustering.html")     , emit: html
     path("versions.yml")                            , emit: versions
 
@@ -35,10 +36,11 @@ process ST_CLUSTERING {
     script:
     """
     quarto render ${report} \
-        -P input_adata_filtered:${st_adata_filtered} \
+        -P input_sdata:${st_sdata} \
         -P cluster_resolution:${params.st_cluster_resolution} \
         -P n_hvgs:${params.st_cluster_n_hvgs} \
-        -P output_adata_processed:st_adata_processed.h5ad
+        -P output_adata_processed:st_adata_processed.h5ad \
+        -P output_sdata:st_sdata_processed.zarr \
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
