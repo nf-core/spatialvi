@@ -123,13 +123,13 @@
                 "st_qc_ribo_threshold": {
                     "type": "number",
                     "default": 0,
-                    "description": "The minimum proportion of ribosomal content that a spot is needs to have to pass the filtering (no filtering is done by defeault).",
+                    "description": "The minimum proportion of ribosomal content that a spot is needs to have to pass the filtering (no filtering is done by default).",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_qc_hb_threshold": {
                     "type": "number",
                     "default": 100,
-                    "description": "The maximum proportion of haemoglobin content that a spot is allowed to have to pass the filtering (no filtering is done by defeault).",
+                    "description": "The maximum proportion of haemoglobin content that a spot is allowed to have to pass the filtering (no filtering is done by default).",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "st_cluster_n_hvgs": {
