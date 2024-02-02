@@ -2,7 +2,7 @@
 title: "nf-core/spatialtranscriptomics"
 subtitle: "Differential gene expression"
 format:
-  nf-core-html: default
+    nf-core-html: default
 jupyter: python3
 ---
 
@@ -95,5 +95,5 @@ itself to visualize the patterns:
 symbols = results_tab.iloc[: n_top_spatial_degs]["gene_symbol"]
 plt.rcParams["figure.figsize"] = (3.5, 4)
 sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7,
-              ncols=2, title=symbols, size=1.25)
+    ncols=2, title=symbols, size=1.25)
 ```

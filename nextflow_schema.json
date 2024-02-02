@@ -140,7 +140,7 @@
                 },
                 "st_cluster_resolution": {
                     "type": "number",
-                    "default": 0.4,
+                    "default": 1,
                     "description": "The resolution for the clustering of the spots.",
                     "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
                     "fa_icon": "fas fa-circle-nodes"
@@ -213,7 +213,7 @@
                 "max_cpus": {
                     "type": "integer",
                     "description": "Maximum number of CPUs that can be requested for any single job.",
-                    "default": 16,
+                    "default": 64,
                     "fa_icon": "fas fa-microchip",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
