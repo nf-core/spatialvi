@@ -20,6 +20,12 @@
                         "git_sha": "9e71d8519dfbfc328c078bba14d4bd4c99e39a94",
                         "installed_by": ["modules"]
                     },
+                    "quartonotebook": {
+                        "branch": "master",
+                        "git_sha": "07ecae35e5675ac4c1e2d84cf22021490f8b7947",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/quartonotebook/quartonotebook.diff"
+                    },
                     "spaceranger/count": {
                         "branch": "master",
                         "git_sha": "3bd057bfdfb64578636ff3ae7f7cb8eeab3c0cb6",

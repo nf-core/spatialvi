@@ -1,0 +1,14 @@
+Changes in module 'nf-core/quartonotebook'
+--- modules/nf-core/quartonotebook/main.nf
++++ modules/nf-core/quartonotebook/main.nf
+@@ -8,7 +8,7 @@
+     // required dependencies for your analyses. You'll at least need Quarto
+     // itself, Papermill and whatever language you are running your analyses on;
+     // you can see an example in this module's Dockerfile.
+-    container "docker.io/erikfas/quartonotebook"
++    container "docker.io/erikfas/spatialtranscriptomics"
+ 
+     input:
+     tuple val(meta), path(notebook)
+
+************************************************************
