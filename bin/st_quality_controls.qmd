@@ -32,10 +32,12 @@ min_spots = 1  # Min spots per gene
 mito_threshold = 20  # Mitochondrial content threshold (%)
 ribo_threshold = 0  # Ribosomal content threshold (%)
 hb_threshold = 100  # content threshold (%)
+artifact_dir = "artifacts"
 output_adata_filtered = "st_adata_filtered.h5ad"  # Name of the output anndata file
 ```
 
 ```{python}
+import os
 import scanpy as sc
 import scipy
 import pandas as pd
@@ -254,5 +256,5 @@ sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 ```{python}
 #| echo: false
 # Write filtered data to disk
-st_adata.write(output_adata_filtered)
+st_adata.write(os.path.join(artifact_dir, output_adata_filtered))
 ```
