@@ -1,10 +1,24 @@
-# First stage: multi-platform Quarto image
-FROM jdutant/quarto-minimal:1.3.313 as quarto
+#
+# First stage: Quarto installation
+#
+FROM ubuntu:20.04 as quarto
+ARG QUARTO_VERSION=1.4.549
+ARG TARGETARCH
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+    && apt-get clean
 
-# Second stage: multi-platform Mamba image
-FROM condaforge/mambaforge:23.1.0-1
+RUN mkdir -p /opt/quarto \
+    && curl -o quarto.tar.gz -L "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${TARGETARCH}.tar.gz" \
+    && tar -zxvf quarto.tar.gz -C /opt/quarto/ --strip-components=1 \
+    && rm quarto.tar.gz
 
-# Copy Quarto installation from first stage and add to PATH
+#
+# Second stage: Conda environment
+#
+FROM condaforge/mambaforge:23.11.0-0
 COPY --from=quarto /opt/quarto /opt/quarto
 ENV PATH="${PATH}:/opt/quarto/bin"
 
