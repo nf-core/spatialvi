@@ -18,6 +18,7 @@ compatible with further downstream analyses and/or exploration in _e.g._
 
 ### `Added`
 
+- Use the QUARTONOTEBOOK nf-core module instead of local Quarto-based modules [[#68](https://github.com/nf-core/spatialtranscriptomics/pull/68)]
 - Add a custom nf-core Quarto template for the downstream analysis reports [[#64](https://github.com/nf-core/spatialtranscriptomics/pull/64)]
 - Allow input directories `fastq_dir` and `spaceranger_dir` to be specified as tar archives (`.tar.gz`)
 - Add a check to make sure that there are spots left after filtering [[#46](https://github.com/nf-core/spatialtranscriptomics/issues/46)]
