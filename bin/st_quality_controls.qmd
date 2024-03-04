@@ -279,6 +279,8 @@ sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 ```
 
 ```{python}
+del st_sdata.table
+st_sdata.table = st_adata
 st_sdata.write("./" + output_sdata)
 ```
 
