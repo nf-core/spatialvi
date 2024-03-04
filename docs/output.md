@@ -99,15 +99,15 @@ option; you can find more details in the report itself.
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `st_spatial_de.html`: HTML report.
+  - `st_svg.html`: HTML report.
 - `<SAMPLE>/degs/`
-  - `st_spatial_de.csv`: List of spatially differentially expressed genes.
+  - `st_svg.csv`: List of spatially variable genes.
 
 </details>
 
 Report containing analyses related to differential expression testing and
-spatially varying genes. The [SpatialDE](https://github.com/Teichlab/SpatialDE)
-package is currently the only option for spatial testing; you can find more
+spatially varying genes. The [Moran 1](https://en.wikipedia.org/wiki/Moran%27s_I)
+score is currently the only option for spatial testing; you can find more
 details in the report itself.
 
 ## Workflow reporting

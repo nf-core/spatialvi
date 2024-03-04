@@ -1,6 +1,6 @@
 ---
 title: "nf-core/spatialtranscriptomics"
-subtitle: "Differential gene expression"
+subtitle: "Neighborhood enrichment analysis and Spatially variable genes"
 format:
   nf-core-html: default
 jupyter: python3
@@ -10,14 +10,16 @@ jupyter: python3
 #| tags: [parameters]
 #| echo: false
 input_sdata = "st_sdata.zarr"
-output_spatial_degs = "st_spatial_de.csv"
+output_adata_svg = "st_adata_svg.h5ad"  # Name of the output anndata file
+output_sdata = "st_sdata_svg.zarr"  # Name of the input anndata file
+output_spatial_degs = "st_svg.csv"
 n_top_spatial_degs = 14
 ```
 
 ```{python}
 import scanpy as sc
 import pandas as pd
-import SpatialDE
+import squidpy as sq
 import numpy as np
 import spatialdata
 from anndata import AnnData
@@ -88,40 +90,46 @@ height and width depends on the number of clusters as well as the number and
 intersection of the DEGs that are being plotted.
 :::
 
-# Spatial gene expression
+# Neighborhood enrichment analysis
+
+We can perform a neighborhood enrichment analysis to find out which
+genes are enriched in the neighborhood of each cluster:
+
+```{python}
+sq.gr.spatial_neighbors(st_adata, coord_type="generic")
+sq.gr.nhood_enrichment(st_adata, cluster_key="clusters")
+sq.pl.nhood_enrichment(st_adata, cluster_key="clusters", method="ward", vmin=-100, vmax=100)
+```
+
+We visualize the interaction matrix between the different clusters:
+
+```{python}
+sq.gr.interaction_matrix(st_adata, cluster_key="clusters")
+sq.pl.interaction_matrix(st_adata, cluster_key="clusters", method="ward", vmax=20000)
+```
+
+# Spatially variable genes with spatial autocorrelation statistics
 
 Spatial transcriptomics data can give insight into how genes are expressed in
 different areas in a tissue, allowing identification of spatial gene expression
-patterns. Here we use [SpatialDE](https://www.nature.com/articles/nmeth.4636) to
-identify such patterns.
+patterns. Here we use [Moran's I](https://en.wikipedia.org/wiki/Moran%27s_I) autocorrelation score to identify such patterns.
 
 ```{python}
-#| output: false
-results = SpatialDE.run(st_adata.obsm["spatial"], st_adata.to_df())
+st_adata.var_names_make_unique()
+sq.gr.spatial_autocorr(st_adata, mode="moran")
+st_adata.uns["moranI"].head(n_top_spatial_degs)
+#[TODO] add gearyC as optional mode
 ```
 
-We can then inspect the spatial DEGs in a table:
 
 ```{python}
-results.set_index("g", inplace=True)
-# workaround for https://github.com/Teichlab/SpatialDE/issues/36
-results = results.loc[~results.index.duplicated(keep="first")]
-
-# Add annotations
-st_adata.var = pd.concat([st_adata.var, results.loc[st_adata.var.index.values, :]], axis=1)
-
-# Print results table
-results_tab = st_adata.var.sort_values("qval", ascending=True)
-results_tab.to_csv(output_spatial_degs)
-results_tab.head(n_top_spatial_degs)
+#| echo: false
+st_adata.write(output_adata_svg)
+del st_sdata.table
+st_sdata.table = st_adata
+st_sdata.write("./" + output_sdata)
 ```
 
-We can also plot the top spatially variable genes on top of the tissue image
-itself to visualize the patterns:
-
 ```{python}
-symbols = results_tab.iloc[: n_top_spatial_degs]["gene_symbol"]
-plt.rcParams["figure.figsize"] = (3.5, 4)
-sc.pl.spatial(st_adata, img_key="hires", color=symbols.index, alpha=0.7,
-              ncols=2, title=symbols, size=1.25)
+st_adata.uns["moranI"].to_csv(output_spatial_degs)
 ```

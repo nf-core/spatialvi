@@ -13,6 +13,7 @@ dependencies:
   - imagecodecs=2024.1.1
   - pip:
       - scanpy==1.9.8
+      - squidpy==1.4.1
       - spatialdata==0.0.15
       - spatialdata-io==0.0.9
       - spatialdata-plot==0.1.0
