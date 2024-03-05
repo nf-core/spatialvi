@@ -46,7 +46,7 @@ workflow SPATIALTRANSCRIPTOMICS {
         INPUT_CHECK.out.ch_spaceranger_input.map{ it -> [it[0] /* meta */, it[1] /* reads */]}
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions)
-    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
 
     //
     // SUBWORKFLOW: Space Ranger raw data processing
@@ -81,7 +81,6 @@ workflow SPATIALTRANSCRIPTOMICS {
         ST_READ_DATA.out.st_adata_raw
     )
     ch_versions = ch_versions.mix(ST_DOWNSTREAM.out.versions)
-
 
     //
     // Collate and save software versions
