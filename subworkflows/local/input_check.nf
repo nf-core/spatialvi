@@ -8,10 +8,10 @@ include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../modules/nf-core/untar"
 workflow INPUT_CHECK {
 
     take:
-    samplesheet // file: /path/to/samplesheet.csv
+    samplesheet // file: samplesheet read in from --input
 
     main:
-    ch_st = Channel.from(samplesheet)
+    ch_st = Channel.fromPath(samplesheet)
         .splitCsv ( header: true, sep: ',')
         .branch   {
             spaceranger: !it.containsKey("spaceranger_dir")
@@ -72,12 +72,20 @@ def create_channel_downstream_tar(LinkedHashMap meta) {
     return [meta, spaceranger_dir]
 }
 
+
 // Function to get list of [ meta, [ raw_feature_bc_matrix, tissue_positions,
 //                                   scalefactors, hires_image, lowres_image ]]
 def create_channel_downstream(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
     spaceranger_dir = file("${meta.remove('spaceranger_dir')}/**")
-    for (f in Utils.DOWNSTREAM_REQUIRED_SPACERANGER_FILES) {
+    DOWNSTREAM_REQUIRED_SPACERANGER_FILES = [
+        "raw_feature_bc_matrix.h5",
+        "tissue_positions.csv",
+        "scalefactors_json.json",
+        "tissue_hires_image.png",
+        "tissue_lowres_image.png"
+    ]
+    for (f in DOWNSTREAM_REQUIRED_SPACERANGER_FILES) {
         if(!spaceranger_dir*.name.contains(f)) {
             error "The specified spaceranger output directory doesn't contain the required file `${f}` for sample `${meta.id}`"
         }
