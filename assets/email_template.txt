@@ -4,7 +4,7 @@
   |\\ | |__  __ /  ` /  \\ |__) |__         }  {
   | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                         `._,._,'
-  nf-core/spatialtranscriptomics v${version}
+  nf-core/spatialtranscriptomics ${version}
 ----------------------------------------------------
 Run Name: $runName
 

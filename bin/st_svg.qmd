@@ -2,7 +2,7 @@
 title: "nf-core/spatialtranscriptomics"
 subtitle: "Neighborhood enrichment analysis and Spatially variable genes"
 format:
-  nf-core-html: default
+    nf-core-html: default
 jupyter: python3
 ---
 

@@ -17,13 +17,15 @@ WorkflowSpatialtranscriptomics.initialise(params, log)
 
 // Check input path parameters to see if they exist
 log.info """\
-         Project directory:  ${projectDir}
-         """
-         .stripIndent()
+    Project directory:  ${projectDir}
+    """
+    .stripIndent()
 
-def checkPathParamList = [ params.input,
-                           params.spaceranger_reference,
-                           params.spaceranger_probeset ]
+def checkPathParamList = [
+    params.input,
+    params.spaceranger_reference,
+    params.spaceranger_probeset
+]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -173,6 +175,13 @@ workflow.onComplete {
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+    }
+}
+
+workflow.onError {
+    if (workflow.errorReport.contains("Process requirement exceeds available memory")) {
+        println("🛑 Default resources exceed availability 🛑 ")
+        println("💡 See here on how to configure pipeline: https://nf-co.re/docs/usage/configuration#tuning-workflow-resources 💡")
     }
 }
 

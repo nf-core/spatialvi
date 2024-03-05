@@ -2,7 +2,7 @@
 title: "nf-core/spatialtranscriptomics"
 subtitle: "Pre-processing and quality controls"
 format:
-  nf-core-html: default
+    nf-core-html: default
 jupyter: python3
 ---
 
@@ -104,7 +104,7 @@ st_adata.var['mt'] = st_adata.var_names.str.startswith('MT-')
 st_adata.var['ribo'] = st_adata.var_names.str.contains(("^RP[LS]"))
 st_adata.var['hb'] = st_adata.var_names.str.contains(("^HB[AB]"))
 sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt", "ribo", "hb"],
-                           inplace=True, log1p=False)
+    inplace=True, log1p=False)
 
 # Save a copy of data as a restore-point if filtering results in 0 spots left
 st_adata_before_filtering = st_adata.copy()
@@ -119,9 +119,9 @@ mitochondrial, ribosomal and haemoglobin genes:
 ```{python}
 #| layout-nrow: 2
 sc.pl.violin(st_adata, ['n_genes_by_counts', 'total_counts'],
-             multi_panel=True, jitter=0.4, rotation= 45)
+    multi_panel=True, jitter=0.4, rotation= 45)
 sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
-             multi_panel=True, jitter=0.4, rotation= 45)
+    multi_panel=True, jitter=0.4, rotation= 45)
 ```
 
 ## Spatial distributions
@@ -275,9 +275,9 @@ The final results of all the filtering is as follows:
 ```{python}
 #| layout-nrow: 2
 sc.pl.violin(st_adata, ['n_genes_by_counts', 'total_counts'],
-             multi_panel=True, jitter=0.4, rotation= 45)
+    multi_panel=True, jitter=0.4, rotation= 45)
 sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
-             multi_panel=True, jitter=0.4, rotation= 45)
+    multi_panel=True, jitter=0.4, rotation= 45)
 ```
 
 ```{python}
