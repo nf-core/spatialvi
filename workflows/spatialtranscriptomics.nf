@@ -37,6 +37,7 @@ workflow SPATIALTRANSCRIPTOMICS {
     INPUT_CHECK (
         samplesheet
     )
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // MODULE: FastQC

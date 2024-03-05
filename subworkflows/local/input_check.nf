@@ -11,6 +11,9 @@ workflow INPUT_CHECK {
     samplesheet // file: samplesheet read in from --input
 
     main:
+
+    ch_versions = Channel.empty()
+
     ch_st = Channel.fromPath(samplesheet)
         .splitCsv ( header: true, sep: ',')
         .branch   {
@@ -30,6 +33,7 @@ workflow INPUT_CHECK {
 
     // Extract tarballed inputs
     UNTAR_SPACERANGER_INPUT ( ch_spaceranger.tar )
+    ch_versions = ch_versions.mix(UNTAR_SPACERANGER_INPUT.out.versions)
 
     // Combine extracted and directory inputs into one channel
     ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
@@ -51,6 +55,7 @@ workflow INPUT_CHECK {
 
     // Extract tarballed inputs
     UNTAR_DOWNSTREAM_INPUT ( ch_downstream.tar )
+    ch_versions = ch_versions.mix(UNTAR_DOWNSTREAM_INPUT.out.versions)
 
     // Combine extracted and directory inputs into one channel
     ch_downstream_combined = UNTAR_DOWNSTREAM_INPUT.out.untar
@@ -61,8 +66,9 @@ workflow INPUT_CHECK {
     ch_downstream_input = ch_downstream_combined.map { create_channel_downstream(it) }
 
     emit:
-    ch_spaceranger_input                      // channel: [ val(meta), [ st data ] ]
-    ch_downstream_input                       // channel: [ val(meta), [ st data ] ]
+    ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
+    ch_downstream_input    // channel: [ val(meta), [ st data ] ]
+    versions = ch_versions // channel: [ versions.yml ]
 }
 
 // Function to get list of [ meta, [ spaceranger_dir ]]
