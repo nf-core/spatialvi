@@ -24,7 +24,7 @@ process ST_SVG {
     tuple val(meta), path(st_sdata)
 
     output:
-    tuple val(meta), path("*.csv")             , emit: degs
+    tuple val(meta), path("*.csv")            , emit: degs
     tuple val(meta), path("st_adata_svg.h5ad"), emit: st_adata_svg
     tuple val(meta), path("st_sdata_svg.zarr"), emit: st_sdata_svg
     tuple val(meta), path("st_svg.html")      , emit: html

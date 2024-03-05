@@ -3,8 +3,8 @@
 //
 
 include { ST_QUALITY_CONTROLS } from '../../modules/local/st_quality_controls'
-include { ST_SVG              } from '../../modules/local/st_svg'
 include { ST_CLUSTERING       } from '../../modules/local/st_clustering'
+include { ST_SVG              } from '../../modules/local/st_svg'
 
 workflow ST_DOWNSTREAM {
 
