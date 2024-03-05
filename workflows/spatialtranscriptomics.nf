@@ -149,7 +149,8 @@ workflow ST {
     ch_multiqc_files = ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml').mix(
         ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'),
         CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect(),
-        FASTQC.out.zip.collect{ meta, qcfile -> qcfile }
+        FASTQC.out.zip.collect{ meta, qcfile -> qcfile },
+        SPACERANGER.out.sr_dir.collect{ meta, sr_dir -> sr_dir },
     )
 
     MULTIQC (
