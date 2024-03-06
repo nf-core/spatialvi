@@ -62,6 +62,7 @@ workflow SPATIALTRANSCRIPTOMICS {
         INPUT_CHECK.out.ch_spaceranger_input
     )
     ch_versions = ch_versions.mix(SPACERANGER.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{it[1]})
     ch_downstream_input = INPUT_CHECK.out.ch_downstream_input.concat(SPACERANGER.out.sr_dir).map{
         meta, outs -> [meta, outs.findAll{ it -> DOWNSTREAM_REQUIRED_SPACERANGER_FILES.contains(it.name) }]
     }
