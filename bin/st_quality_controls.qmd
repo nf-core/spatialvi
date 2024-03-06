@@ -7,12 +7,13 @@ jupyter: python3
 ---
 
 # Introduction
+
 <!-- TODO: Add SpatialData in intro -->
 Spatial Transcriptomics data analysis involves several steps, including quality
 controls (QC) and pre-processing, to ensure the reliability of downstream
-analyses. This is an essential step in spatial transcriptomics to
-identify and filter out spots and genes that may introduce noise and/or bias
-into the analysis.
+analyses. This is an essential step in spatial transcriptomics to identify and
+filter out spots and genes that may introduce noise and/or bias into the
+analysis.
 
 This report outlines the QC and pre-processing steps for Visium Spatial
 Transcriptomics data using the [AnnData format](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html)
@@ -32,17 +33,20 @@ min_spots = 1  # Min spots per gene
 mito_threshold = 20  # Mitochondrial content threshold (%)
 ribo_threshold = 0  # Ribosomal content threshold (%)
 hb_threshold = 100  # content threshold (%)
-output_sdata = "st_sdata_filtered.zarr"  # Name of the input anndata file
+artifact_dir = "artifacts"
+output_sdata = "st_sdata_filtered.zarr"  # Name of the output zarr file
+output_adata_filtered = "st_adata_filtered.h5ad"  # Name of the output anndata file
 ```
 
 ```{python}
-import spatialdata
-import scanpy as sc
-import scipy
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import scanpy as sc
+import scipy
 import seaborn as sns
+import spatialdata
 from anndata import AnnData
 from IPython.display import display, Markdown
 from textwrap import dedent
@@ -75,7 +79,7 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 ```{python}
 # Read the data
 
-st_sdata = spatialdata.read_zarr("./" + input_sdata, ["images", "table", "shapes"])
+st_sdata = spatialdata.read_zarr(input_sdata, ["images", "table", "shapes"])
 
 st_adata = to_legacy_anndata(st_sdata)
 
@@ -283,8 +287,5 @@ sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 ```{python}
 del st_sdata.table
 st_sdata.table = st_adata
-st_sdata.write("./" + output_sdata)
+st_sdata.write(os.path.join(artifact_dir, output_sdata))
 ```
-
-
-

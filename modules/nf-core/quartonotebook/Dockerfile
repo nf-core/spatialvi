@@ -2,7 +2,7 @@
 # First stage: Quarto installation
 #
 FROM ubuntu:20.04 as quarto
-ARG QUARTO_VERSION=1.4.549
+ARG QUARTO_VERSION=1.3.433
 ARG TARGETARCH
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -31,11 +31,8 @@ RUN mamba env update --name base --file environment.yml \
     && find /opt/conda -follow -type f -name '*.pyc' -delete \
     && find /opt/conda -follow -type f -name '*.js.map' -delete
 
-# Set environment variable for leidenalg-related ARM64 issue
-ENV LD_PRELOAD=/opt/conda/lib/libgomp.so.1
-
 CMD /bin/bash
 
 LABEL \
-    authors = "Erik Fasterius, Christophe Avenel" \
-    description = "Dockerfile for nf-core/spatialtranscriptomics report modules"
+    authors = "Erik Fasterius" \
+    description = "Dockerfile for the quartonotebook nf-core module"
