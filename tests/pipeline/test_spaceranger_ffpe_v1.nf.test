@@ -24,6 +24,7 @@ nextflow_pipeline {
 
                 // Data
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/st_sdata_processed.zarr").exists() },
 
                 // Reports
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_quality_controls.html").text.contains("final results of all the filtering") },

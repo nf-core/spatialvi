@@ -20,6 +20,7 @@ nextflow_pipeline {
 
                 // Data
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_sdata_processed.zarr").exists() },
 
                 // Reports
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
