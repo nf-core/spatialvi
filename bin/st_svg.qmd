@@ -9,12 +9,12 @@ jupyter: python3
 ```{python}
 #| tags: [parameters]
 #| echo: false
-input_sdata = "st_sdata_processed.zarr" # Input: SpatialData file
+input_sdata = "st_sdata_processed.zarr"  # Input: SpatialData file
+n_top_spatial_degs = 14  # Number of SVG to plot in report
+artifact_dir = "artifacts"  # Output directory
 output_adata_svg = "st_adata_svg.h5ad"  # Output: AnnData file
 output_sdata = "st_sdata_svg.zarr"  # Output: SpatialData file
-output_svg = "st_svg.csv" # Output: spatially variable genes
-n_top_spatial_degs = 14 # Parameter: number of SVG to plot in report
-artifact_dir = "artifacts"
+output_svg = "st_svg.csv"  # Output: spatially variable genes
 ```
 
 ```{python}

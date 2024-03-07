@@ -11,13 +11,12 @@ jupyter: python3
 ```{python}
 #| tags: [parameters]
 #| echo: false
-
-input_sdata = "st_sdata_filtered.zarr"  # Name of the input anndata file
+input_sdata = "st_sdata_filtered.zarr"  # Input: SpatialData file
 cluster_resolution = 1  # Resolution for Leiden clustering
 n_hvgs = 2000  # Number of HVGs to use for analyses
-artifact_dir = "artifacts"
-output_adata_processed = "st_adata_processed.h5ad"  # Name of the output anndata file
-output_sdata = "st_sdata_processed.zarr"  # Name of the input anndata file
+artifact_dir = "artifacts" # Output directory
+output_sdata = "st_sdata_processed.zarr"  # Output: SpatialData file
+output_adata_processed = "st_adata_processed.h5ad"  # Output: AnnData file
 ```
 
 The data has already been filtered in the _quality controls_ reports and is
@@ -39,9 +38,10 @@ from IPython.display import display, Markdown
 ```
 
 ```{python}
-# Make sure we can use scanpy plots with the AnnData object exported from sdata.table
-# This code is taken from the early version of https://github.com/scverse/spatialdata-io/pull/102/
-# Once the PR will be merged in spatialdata-io, we should use spatialdata_io.to_legacy_anndata(sdata).
+# Make sure we can use scanpy plots with the AnnData object exported from
+# `sdata.table`. This code is taken from the early version of https://github.com/scverse/spatialdata-io/pull/102/
+# Once that PR is merged into spatialdata-io, we should instead use
+# `spatialdata_io.to_legacy_anndata(sdata)`.
 def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
     adata = sdata.table
     for dataset_id in adata.uns["spatial"]:

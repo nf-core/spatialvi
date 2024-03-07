@@ -26,7 +26,7 @@ analysis tools and facilitates seamless integration into existing workflows.
 ```{python}
 #| tags: [parameters]
 #| echo: false
-input_sdata = "st_sdata_raw.zarr"  # Name of the input anndata file
+input_sdata = "st_sdata_raw.zarr"  # Input: SpatialData file
 min_counts = 500  # Min counts per spot
 min_genes = 250  # Min genes per spot
 min_spots = 1  # Min spots per gene
@@ -34,8 +34,8 @@ mito_threshold = 20  # Mitochondrial content threshold (%)
 ribo_threshold = 0  # Ribosomal content threshold (%)
 hb_threshold = 100  # content threshold (%)
 artifact_dir = "artifacts"
-output_sdata = "st_sdata_filtered.zarr"  # Name of the output zarr file
-output_adata_filtered = "st_adata_filtered.h5ad"  # Name of the output anndata file
+output_sdata = "st_sdata_filtered.zarr"  # Output: SpatialData file
+output_adata_filtered = "st_adata_filtered.h5ad"  # Output: AnnData file
 ```
 
 ```{python}
@@ -78,9 +78,7 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 
 ```{python}
 # Read the data
-
 st_sdata = spatialdata.read_zarr(input_sdata, ["images", "table", "shapes"])
-
 st_adata = to_legacy_anndata(st_sdata)
 
 # Convert X matrix from csr to csc dense matrix for output compatibility:
