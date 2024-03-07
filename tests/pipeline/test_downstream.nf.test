@@ -1,4 +1,4 @@
-nextflow_pipeline {
+extflow_pipeline {
     name "Test downstream workflow (excl. Space Ranger)"
     script "main.nf"
     tag "pipeline"
@@ -31,10 +31,11 @@ nextflow_pipeline {
                 // Reports
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_svg.html").text.contains("plot the top spatially variable genes") },
+                { assert
+                file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_svg.html").text.contains("Spatial transcriptomics data can give insight") },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_svg.html").text.contains("plot the top spatially variable genes") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_svg.html").text.contains("Spatial transcriptomics data can give insight") },
 
                 // DEGs
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_svg.csv").exists() },

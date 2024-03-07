@@ -28,7 +28,7 @@ nextflow_pipeline {
                 // Reports
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_svg.html").text.contains("plot the top spatially variable genes") },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/st_svg.html").text.contains("Spatial transcriptomics data can give insight") },
 
                 // DEGs
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/degs/st_svg.csv").exists() },
