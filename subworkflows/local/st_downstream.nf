@@ -79,8 +79,10 @@ workflow ST_DOWNSTREAM {
         .map { tuple(it[0], svg_file) }
     svg_params = [
         input_sdata: "st_sdata_processed.zarr",
-        n_top_spatial_degs: params.st_n_top_spatial_degs,
-        output_svg: "st_svg.csv"
+        output_adata_svg: "st_adata_svg.h5ad",
+        output_sdata: "st_sdata_svg.zarr",
+        output_svg: "st_svg.csv",
+        n_top_spatial_degs: params.st_n_top_spatial_degs
     ]
     ST_SVG (
         ch_svg_notebook,

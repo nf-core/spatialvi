@@ -9,18 +9,20 @@ jupyter: python3
 ```{python}
 #| tags: [parameters]
 #| echo: false
-input_sdata = "st_sdata.zarr"
-output_adata_svg = "st_adata_svg.h5ad"  # Name of the output anndata file
-output_sdata = "st_sdata_svg.zarr"  # Name of the input anndata file
-output_spatial_degs = "st_svg.csv"
-n_top_spatial_degs = 14
+input_sdata = "st_sdata_processed.zarr" # Input: SpatialData file
+output_adata_svg = "st_adata_svg.h5ad"  # Output: AnnData file
+output_sdata = "st_sdata_svg.zarr"  # Output: SpatialData file
+output_svg = "st_svg.csv" # Output: spatially variable genes
+n_top_spatial_degs = 14 # Parameter: number of SVG to plot in report
+artifact_dir = "artifacts"
 ```
 
 ```{python}
-import scanpy as sc
-import pandas as pd
-import squidpy as sq
 import numpy as np
+import os
+import pandas as pd
+import scanpy as sc
+import squidpy as sq
 import spatialdata
 from anndata import AnnData
 from matplotlib import pyplot as plt
@@ -131,5 +133,5 @@ st_sdata.write("./" + output_sdata)
 ```
 
 ```{python}
-st_adata.uns["moranI"].to_csv(output_spatial_degs)
+st_adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_svg))
 ```
