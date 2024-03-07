@@ -59,7 +59,8 @@ workflow ST_DOWNSTREAM {
         input_sdata_filtered: "st_adata_filtered.zarr",
         cluster_resolution: params.st_cluster_resolution,
         n_hvgs: params.st_cluster_n_hvgs,
-        output_sdata_processed: "st_sdata_processed.zarr"
+        output_adata_processed: "st_adata_processed.h5ad",
+        output_sdata: "st_sdata_processed.zarr"
     ]
     ST_CLUSTERING (
         ch_clustering_notebook,

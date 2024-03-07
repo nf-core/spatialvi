@@ -173,8 +173,8 @@ sc.pl.spatial(st_adata, img_key="hires", color="clusters", size=1.25)
 
 ```{python}
 #| echo: false
-st_adata.write(os.path.join(artifact_dir, output_adata_processed))
 del st_sdata.table
 st_sdata.table = st_adata
+st_adata.write(os.path.join(artifact_dir, output_adata_processed))
 st_sdata.write(os.path.join(artifact_dir, output_sdata))
 ```
