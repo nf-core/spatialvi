@@ -4,13 +4,13 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { ST_READ_DATA           } from '../modules/local/st_read_data'
+include { READ_DATA              } from '../modules/local/read_data'
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { INPUT_CHECK            } from '../subworkflows/local/input_check'
 include { SPACERANGER            } from '../subworkflows/local/spaceranger'
-include { ST_DOWNSTREAM          } from '../subworkflows/local/st_downstream'
+include { DOWNSTREAM             } from '../subworkflows/local/downstream'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spatialtranscriptomics_pipeline'
@@ -70,18 +70,18 @@ workflow SPATIALTRANSCRIPTOMICS {
     //
     // MODULE: Read ST data and save as `anndata`
     //
-    ST_READ_DATA (
+    READ_DATA (
         ch_downstream_input
     )
-    ch_versions = ch_versions.mix(ST_READ_DATA.out.versions)
+    ch_versions = ch_versions.mix(READ_DATA.out.versions)
 
     //
     // SUBWORKFLOW: Downstream analyses of ST data
     //
-    ST_DOWNSTREAM (
-        ST_READ_DATA.out.st_sdata_raw
+    DOWNSTREAM (
+        READ_DATA.out.sdata_raw
     )
-    ch_versions = ch_versions.mix(ST_DOWNSTREAM.out.versions)
+    ch_versions = ch_versions.mix(DOWNSTREAM.out.versions)
 
     //
     // Collate and save software versions

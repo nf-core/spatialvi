@@ -12,8 +12,8 @@ nextflow_pipeline {
                 spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/homo_sapiens_chr22_reference.tar.gz"
 
                 // Parameters
-                st_qc_min_counts = 5
-                st_qc_min_genes = 3
+                qc_min_counts = 5
+                qc_min_genes = 3
                 outdir = "$outputDir"
             }
         }
@@ -26,22 +26,22 @@ nextflow_pipeline {
                 { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("nf_core_pipeline_software_mqc_versions.yml") },
 
                 // Data
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_processed.h5ad").exists() },
-                { assert path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_sdata_processed.zarr").exists() },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/st_adata_processed.h5ad").exists() },
-                { assert path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/st_sdata_processed.zarr").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/adata_processed.h5ad").exists() },
+                { assert path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/sdata_processed.zarr").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/adata_processed.h5ad").exists() },
+                { assert path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/sdata_processed.zarr").exists() },
 
                 // Reports
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/st_spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/quality_controls.html").text.contains("final results of all the filtering") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/clustering.html").text.contains("spatial distribution of clusters") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/quality_controls.html").text.contains("final results of all the filtering") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/clustering.html").text.contains("spatial distribution of clusters") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
 
                 // DEGs
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_spatially_variable_genes.csv").exists() },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/degs/st_spatially_variable_genes.csv").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/spatially_variable_genes.csv").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/degs/spatially_variable_genes.csv").exists() },
 
                 // MultiQC
                 { assert file("$outputDir/multiqc/multiqc_report.html").exists() }

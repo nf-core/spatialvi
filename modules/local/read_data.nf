@@ -1,7 +1,7 @@
 //
 // Read ST 10x visium and SC 10x data with Scanpy and save to `anndata` file
 //
-process ST_READ_DATA {
+process READ_DATA {
 
     tag "${meta.id}"
     label 'process_low'
@@ -13,7 +13,7 @@ process ST_READ_DATA {
     tuple val (meta), path("${meta.id}/*")
 
     output:
-    tuple val(meta), path("st_sdata_raw.zarr"), emit: st_sdata_raw
+    tuple val(meta), path("sdata_raw.zarr"), emit: sdata_raw
     path("versions.yml")                      , emit: versions
 
     when:
@@ -34,9 +34,9 @@ process ST_READ_DATA {
     export XDG_DATA_HOME="./.xdg_data_home"
 
     # Execute read data script
-    read_st_data.py \\
+    read_data.py \\
         --SRCountDir "${meta.id}" \\
-        --output_sdata st_sdata_raw.zarr
+        --output_sdata sdata_raw.zarr
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -2,6 +2,7 @@
 
 # Load packages
 import argparse
+
 import spatialdata_io
 
 if __name__ == "__main__":
@@ -28,9 +29,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Read Visium data
-    st_spatialdata = spatialdata_io.visium(
+    spatialdata = spatialdata_io.visium(
         args.SRCountDir, counts_file="raw_feature_bc_matrix.h5", dataset_id="visium"
     )
 
     # Write raw spatialdata to file
-    st_spatialdata.write(args.output_sdata, overwrite=True)
+    spatialdata.write(args.output_sdata, overwrite=True)

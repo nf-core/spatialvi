@@ -9,12 +9,12 @@ jupyter: python3
 ```{python}
 #| tags: [parameters]
 #| echo: false
-input_sdata = "st_sdata_processed.zarr"  # Input: SpatialData file
+input_sdata = "sdata_processed.zarr"  # Input: SpatialData file
 n_top_spatial_degs = 14  # Number of spatially variable genes to plot
 artifact_dir = "artifacts"  # Output directory
-output_csv = "st_spatially_variable_genes.csv"  # Output: gene list
-output_adata = "st_adata_spatially_variable_genes.h5ad"  # Output: AnnData file
-output_sdata = "st_sdata.zarr"  # Output: SpatialData file
+output_csv = "spatially_variable_genes.csv"  # Output: gene list
+output_adata = "adata_spatially_variable_genes.h5ad"  # Output: AnnData file
+output_sdata = "sdata.zarr"  # Output: SpatialData file
 ```
 
 ```{python}
@@ -53,14 +53,14 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 
 ```{python}
 # Read data
-st_sdata = spatialdata.read_zarr("./" + input_sdata, ["images", "table", "shapes"])
+sdata = spatialdata.read_zarr("./" + input_sdata, ["images", "table", "shapes"])
 
-st_adata = to_legacy_anndata(st_sdata)
+adata = to_legacy_anndata(sdata)
 print("Content of the AnnData object:")
-print(st_adata)
+print(adata)
 
 # Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
-st_adata.uns['log1p']['base'] = None
+adata.uns['log1p']['base'] = None
 
 # Suppress scanpy-specific warnings
 sc.settings.verbosity = 0
@@ -74,8 +74,8 @@ visualize the top DEGs in a heatmap:
 
 ```{python}
 #| warning: false
-sc.tl.rank_genes_groups(st_adata, 'clusters', method='t-test')
-sc.pl.rank_genes_groups_heatmap(st_adata, n_genes=5, groupby="clusters")
+sc.tl.rank_genes_groups(adata, 'clusters', method='t-test')
+sc.pl.rank_genes_groups_heatmap(adata, n_genes=5, groupby="clusters")
 ```
 
 A different but similar visualization of the DEGs is the dot plot, where we can
@@ -83,7 +83,7 @@ also include the gene names:
 
 ```{python}
 #| warning: false
-sc.pl.rank_genes_groups_dotplot(st_adata, n_genes=5, groupby="clusters")
+sc.pl.rank_genes_groups_dotplot(adata, n_genes=5, groupby="clusters")
 ```
 
 ::: {.callout-note}
@@ -98,16 +98,16 @@ We can perform a neighborhood enrichment analysis to find out which
 genes are enriched in the neighborhood of each cluster:
 
 ```{python}
-sq.gr.spatial_neighbors(st_adata, coord_type="generic")
-sq.gr.nhood_enrichment(st_adata, cluster_key="clusters")
-sq.pl.nhood_enrichment(st_adata, cluster_key="clusters", method="ward", vmin=-100, vmax=100)
+sq.gr.spatial_neighbors(adata, coord_type="generic")
+sq.gr.nhood_enrichment(adata, cluster_key="clusters")
+sq.pl.nhood_enrichment(adata, cluster_key="clusters", method="ward", vmin=-100, vmax=100)
 ```
 
 We visualize the interaction matrix between the different clusters:
 
 ```{python}
-sq.gr.interaction_matrix(st_adata, cluster_key="clusters")
-sq.pl.interaction_matrix(st_adata, cluster_key="clusters", method="ward", vmax=20000)
+sq.gr.interaction_matrix(adata, cluster_key="clusters")
+sq.pl.interaction_matrix(adata, cluster_key="clusters", method="ward", vmax=20000)
 ```
 
 # Spatially variable genes with spatial autocorrelation statistics
@@ -117,21 +117,21 @@ different areas in a tissue, allowing identification of spatial gene expression
 patterns. Here we use [Moran's I](https://en.wikipedia.org/wiki/Moran%27s_I) autocorrelation score to identify such patterns.
 
 ```{python}
-st_adata.var_names_make_unique()
-sq.gr.spatial_autocorr(st_adata, mode="moran")
-st_adata.uns["moranI"].head(n_top_spatial_degs)
+adata.var_names_make_unique()
+sq.gr.spatial_autocorr(adata, mode="moran")
+adata.uns["moranI"].head(n_top_spatial_degs)
 #[TODO] add gearyC as optional mode
 ```
 
 
 ```{python}
 #| echo: false
-st_adata.write(output_adata)
-del st_sdata.table
-st_sdata.table = st_adata
-st_sdata.write("./" + output_sdata)
+adata.write(output_adata)
+del sdata.table
+sdata.table = adata
+sdata.write("./" + output_sdata)
 ```
 
 ```{python}
-st_adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_csv))
+adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_csv))
 ```

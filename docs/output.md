@@ -53,7 +53,7 @@ information about these files at the [10X website](https://support.10xgenomics.c
 <summary>Output files</summary>
 
 - `<SAMPLE>/data/`
-  - `st_adata_processed.h5ad`: Filtered, normalised and clustered adata.
+  - `adata_processed.h5ad`: Filtered, normalised and clustered adata.
 
 </details>
 
@@ -71,7 +71,7 @@ the data in an interactive way.
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `st_quality_controls.html`: HTML report.
+  - `quality_controls.html`: HTML report.
 
 </details>
 
@@ -85,7 +85,7 @@ well as presence in tissue; you can find more details in the report itself.
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `st_clustering.html`: HTML report.
+  - `clustering.html`: HTML report.
 
 </details>
 
@@ -99,9 +99,9 @@ option; you can find more details in the report itself.
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `st_spatially_variable_genes.html`: HTML report.
+  - `spatially_variable_genes.html`: HTML report.
 - `<SAMPLE>/degs/`
-  - `st_spatially_variable_genes.csv`: List of spatially variable genes.
+  - `spatially_variable_genes.csv`: List of spatially variable genes.
 
 </details>
 

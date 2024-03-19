@@ -26,7 +26,7 @@ analysis tools and facilitates seamless integration into existing workflows.
 ```{python}
 #| tags: [parameters]
 #| echo: false
-input_sdata = "st_sdata_raw.zarr"  # Input: SpatialData file
+input_sdata = "sdata_raw.zarr"  # Input: SpatialData file
 min_counts = 500  # Min counts per spot
 min_genes = 250  # Min genes per spot
 min_spots = 1  # Min spots per gene
@@ -34,8 +34,8 @@ mito_threshold = 20  # Mitochondrial content threshold (%)
 ribo_threshold = 0  # Ribosomal content threshold (%)
 hb_threshold = 100  # content threshold (%)
 artifact_dir = "artifacts"
-output_adata = "st_adata_filtered.h5ad"  # Output: AnnData file
-output_sdata = "st_sdata_filtered.zarr"  # Output: SpatialData file
+output_adata = "adata_filtered.h5ad"  # Output: AnnData file
+output_sdata = "sdata_filtered.zarr"  # Output: SpatialData file
 ```
 
 ```{python}
@@ -78,18 +78,18 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 
 ```{python}
 # Read the data
-st_sdata = spatialdata.read_zarr(input_sdata, ["images", "table", "shapes"])
-st_adata = to_legacy_anndata(st_sdata)
+sdata = spatialdata.read_zarr(input_sdata, ["images", "table", "shapes"])
+adata = to_legacy_anndata(sdata)
 
 # Convert X matrix from csr to csc dense matrix for output compatibility:
-st_adata.X = scipy.sparse.csc_matrix(st_adata.X)
+adata.X = scipy.sparse.csc_matrix(adata.X)
 
 # Store the raw data so that it can be used for analyses from scratch if desired
-st_adata.layers['raw'] = st_adata.X.copy()
+adata.layers['raw'] = adata.X.copy()
 
 # Print the anndata object for inspection
 print("Content of the AnnData object:")
-print(st_adata)
+print(adata)
 ```
 
 # Quality controls
@@ -102,14 +102,14 @@ percentage of counts from mitochondrial, ribosomal and haemoglobin genes
 
 ```{python}
 # Calculate mitochondrial, ribosomal and haemoglobin percentages
-st_adata.var['mt'] = st_adata.var_names.str.startswith('MT-')
-st_adata.var['ribo'] = st_adata.var_names.str.contains(("^RP[LS]"))
-st_adata.var['hb'] = st_adata.var_names.str.contains(("^HB[AB]"))
-sc.pp.calculate_qc_metrics(st_adata, qc_vars=["mt", "ribo", "hb"],
+adata.var['mt'] = adata.var_names.str.startswith('MT-')
+adata.var['ribo'] = adata.var_names.str.contains(("^RP[LS]"))
+adata.var['hb'] = adata.var_names.str.contains(("^HB[AB]"))
+sc.pp.calculate_qc_metrics(adata, qc_vars=["mt", "ribo", "hb"],
     inplace=True, log1p=False)
 
 # Save a copy of data as a restore-point if filtering results in 0 spots left
-st_adata_before_filtering = st_adata.copy()
+adata_before_filtering = adata.copy()
 ```
 
 ## Violin plots
@@ -120,9 +120,9 @@ mitochondrial, ribosomal and haemoglobin genes:
 
 ```{python}
 #| layout-nrow: 2
-sc.pl.violin(st_adata, ['n_genes_by_counts', 'total_counts'],
+sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts'],
     multi_panel=True, jitter=0.4, rotation= 45)
-sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
+sc.pl.violin(adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
     multi_panel=True, jitter=0.4, rotation= 45)
 ```
 
@@ -133,8 +133,8 @@ spatial patterns may be discerned:
 
 ```{python}
 #| layout-nrow: 2
-sc.pl.spatial(st_adata, color = ["total_counts", "n_genes_by_counts"], size=1.25)
-sc.pl.spatial(st_adata, color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts_hb"], size=1.25)
+sc.pl.spatial(adata, color = ["total_counts", "n_genes_by_counts"], size=1.25)
+sc.pl.spatial(adata, color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts_hb"], size=1.25)
 ```
 
 ## Scatter plots
@@ -145,8 +145,8 @@ counts versus the number of genes:
 
 ```{python}
 #| layout-ncol: 2
-sc.pl.scatter(st_adata, x='pct_counts_ribo', y='pct_counts_mt')
-sc.pl.scatter(st_adata, x='total_counts', y='n_genes_by_counts')
+sc.pl.scatter(adata, x='pct_counts_ribo', y='pct_counts_mt')
+sc.pl.scatter(adata, x='total_counts', y='n_genes_by_counts')
 ```
 
 ## Top expressed genes
@@ -155,7 +155,7 @@ It can also be informative to see which genes are the most expressed in the
 dataset; the following figure shows the top 20 most expressed genes.
 
 ```{python}
-sc.pl.highest_expr_genes(st_adata, n_top=20)
+sc.pl.highest_expr_genes(adata, n_top=20)
 ```
 
 # Filtering
@@ -167,16 +167,16 @@ are uninformative and are thus removed.
 
 ```{python}
 # Create a string observation "obs/in_tissue_str" with "In tissue" and "Outside tissue":
-st_adata.obs["in_tissue_str"] = ["In tissue" if x == 1 else "Outside tissue" for x in st_adata.obs["in_tissue"]]
+adata.obs["in_tissue_str"] = ["In tissue" if x == 1 else "Outside tissue" for x in adata.obs["in_tissue"]]
 
 # Plot spots inside tissue
-sc.pl.spatial(st_adata, color=["in_tissue_str"], title="Spots in tissue", size=1.25)
-del st_adata.obs["in_tissue_str"]
+sc.pl.spatial(adata, color=["in_tissue_str"], title="Spots in tissue", size=1.25)
+del adata.obs["in_tissue_str"]
 
 # Remove spots outside tissue and print results
-n_spots = st_adata.shape[0]
-st_adata = st_adata[st_adata.obs["in_tissue"] == 1]
-n_spots_in_tissue = st_adata.shape[0]
+n_spots = adata.shape[0]
+adata = adata[adata.obs["in_tissue"] == 1]
+n_spots_in_tissue = adata.shape[0]
 Markdown(f"""A total of `{n_spots_in_tissue}` spots are situated inside the
 tissue, out of `{n_spots}` spots in total.""")
 ```
@@ -190,18 +190,18 @@ your knowledge of the specific tissue at hand.
 ```{python}
 #| warning: false
 # Filter spots based on counts
-n_spots = st_adata.shape[0]
-n_genes = st_adata.shape[1]
-sc.pp.filter_cells(st_adata, min_counts=min_counts)
-n_spots_filtered_min_counts = st_adata.shape[0]
+n_spots = adata.shape[0]
+n_genes = adata.shape[1]
+sc.pp.filter_cells(adata, min_counts=min_counts)
+n_spots_filtered_min_counts = adata.shape[0]
 
 # Filter spots based on genes
-sc.pp.filter_cells(st_adata, min_genes=min_genes)
-n_spots_filtered_min_genes = st_adata.shape[0]
+sc.pp.filter_cells(adata, min_genes=min_genes)
+n_spots_filtered_min_genes = adata.shape[0]
 
 # Filter genes based on spots
-sc.pp.filter_genes(st_adata, min_cells=min_spots)
-n_genes_filtered_min_spots = st_adata.shape[1]
+sc.pp.filter_genes(adata, min_cells=min_spots)
+n_genes_filtered_min_spots = adata.shape[1]
 
 # Print results
 Markdown(f"""
@@ -220,16 +220,16 @@ ribosomal nor haemoglobin content is filtered by default.
 
 ```{python}
 # Filter spots
-st_adata = st_adata[st_adata.obs["pct_counts_mt"] <= mito_threshold]
-n_spots_filtered_mito = st_adata.shape[0]
-st_adata = st_adata[st_adata.obs["pct_counts_ribo"] >= ribo_threshold]
-n_spots_filtered_ribo = st_adata.shape[0]
-st_adata = st_adata[st_adata.obs["pct_counts_hb"] <= hb_threshold]
-n_spots_filtered_hb = st_adata.shape[0]
+adata = adata[adata.obs["pct_counts_mt"] <= mito_threshold]
+n_spots_filtered_mito = adata.shape[0]
+adata = adata[adata.obs["pct_counts_ribo"] >= ribo_threshold]
+n_spots_filtered_ribo = adata.shape[0]
+adata = adata[adata.obs["pct_counts_hb"] <= hb_threshold]
+n_spots_filtered_hb = adata.shape[0]
 
 # Print results
 Markdown(f"""
-- Removed `{st_adata.shape[0] - n_spots_filtered_mito}` spots with more than `{mito_threshold}%` mitochondrial content.
+- Removed `{adata.shape[0] - n_spots_filtered_mito}` spots with more than `{mito_threshold}%` mitochondrial content.
 - Removed `{n_spots_filtered_mito - n_spots_filtered_ribo}` spots with less than `{ribo_threshold}%` ribosomal content.
 - Removed `{n_spots_filtered_ribo - n_spots_filtered_hb}` spots with more than `{hb_threshold}%` haemoglobin content.
 """)
@@ -238,8 +238,8 @@ Markdown(f"""
 ```{python}
 #| echo: false
 # Restore non-filtered data if filtering results in 0 spots left
-if (st_adata.shape[0] == 0 or st_adata.shape[1] == 0):
-    st_adata = st_adata_before_filtering
+if (adata.shape[0] == 0 or adata.shape[1] == 0):
+    adata = adata_before_filtering
     display(
         Markdown(dedent(
             """
@@ -269,21 +269,21 @@ if (st_adata.shape[0] == 0 or st_adata.shape[1] == 0):
 Markdown(f"""
 The final results of all the filtering is as follows:
 
-- A total of `{st_adata.shape[0]}` spots out of `{n_spots}` remain after filtering.
-- A total of `{st_adata.shape[1]}` genes out of `{n_genes}` remain after filtering.
+- A total of `{adata.shape[0]}` spots out of `{n_spots}` remain after filtering.
+- A total of `{adata.shape[1]}` genes out of `{n_genes}` remain after filtering.
 """)
 ```
 
 ```{python}
 #| layout-nrow: 2
-sc.pl.violin(st_adata, ['n_genes_by_counts', 'total_counts'],
+sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts'],
     multi_panel=True, jitter=0.4, rotation= 45)
-sc.pl.violin(st_adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
+sc.pl.violin(adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
     multi_panel=True, jitter=0.4, rotation= 45)
 ```
 
 ```{python}
-del st_sdata.table
-st_sdata.table = st_adata
-st_sdata.write(os.path.join(artifact_dir, output_sdata))
+del sdata.table
+sdata.table = adata
+sdata.write(os.path.join(artifact_dir, output_sdata))
 ```
