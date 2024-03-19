@@ -10,11 +10,11 @@ jupyter: python3
 #| tags: [parameters]
 #| echo: false
 input_sdata = "st_sdata_processed.zarr"  # Input: SpatialData file
-n_top_spatial_degs = 14  # Number of SVG to plot in report
+n_top_spatial_degs = 14  # Number of spatially variable genes to plot
 artifact_dir = "artifacts"  # Output directory
-output_adata_svg = "st_adata_svg.h5ad"  # Output: AnnData file
-output_sdata = "st_sdata_svg.zarr"  # Output: SpatialData file
-output_svg = "st_svg.csv"  # Output: spatially variable genes
+output_csv = "st_spatially_variable_genes.csv"  # Output: gene list
+output_adata = "st_adata_spatially_variable_genes.h5ad"  # Output: AnnData file
+output_sdata = "st_sdata.zarr"  # Output: SpatialData file
 ```
 
 ```{python}
@@ -126,12 +126,12 @@ st_adata.uns["moranI"].head(n_top_spatial_degs)
 
 ```{python}
 #| echo: false
-st_adata.write(output_adata_svg)
+st_adata.write(output_adata)
 del st_sdata.table
 st_sdata.table = st_adata
 st_sdata.write("./" + output_sdata)
 ```
 
 ```{python}
-st_adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_svg))
+st_adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_csv))
 ```

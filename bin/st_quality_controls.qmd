@@ -34,8 +34,8 @@ mito_threshold = 20  # Mitochondrial content threshold (%)
 ribo_threshold = 0  # Ribosomal content threshold (%)
 hb_threshold = 100  # content threshold (%)
 artifact_dir = "artifacts"
+output_adata = "st_adata_filtered.h5ad"  # Output: AnnData file
 output_sdata = "st_sdata_filtered.zarr"  # Output: SpatialData file
-output_adata_filtered = "st_adata_filtered.h5ad"  # Output: AnnData file
 ```
 
 ```{python}

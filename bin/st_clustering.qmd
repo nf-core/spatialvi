@@ -15,8 +15,8 @@ input_sdata = "st_sdata_filtered.zarr"  # Input: SpatialData file
 cluster_resolution = 1  # Resolution for Leiden clustering
 n_hvgs = 2000  # Number of HVGs to use for analyses
 artifact_dir = "artifacts" # Output directory
+output_adata = "st_adata_processed.h5ad"  # Output: AnnData file
 output_sdata = "st_sdata_processed.zarr"  # Output: SpatialData file
-output_adata_processed = "st_adata_processed.h5ad"  # Output: AnnData file
 ```
 
 The data has already been filtered in the _quality controls_ reports and is
@@ -62,8 +62,7 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 ```
 
 ```{python}
-st_sdata = spatialdata.read_zarr("./" + input_sdata, ["images", "table", "shapes"])
-
+st_sdata = spatialdata.read_zarr(input_sdata, ["images", "table", "shapes"])
 st_adata = to_legacy_anndata(st_sdata)
 
 print("Content of the AnnData object:")
@@ -175,6 +174,6 @@ sc.pl.spatial(st_adata, img_key="hires", color="clusters", size=1.25)
 #| echo: false
 del st_sdata.table
 st_sdata.table = st_adata
-st_adata.write(os.path.join(artifact_dir, output_adata_processed))
+st_adata.write(os.path.join(artifact_dir, output_adata))
 st_sdata.write(os.path.join(artifact_dir, output_sdata))
 ```

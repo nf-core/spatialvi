@@ -99,9 +99,9 @@ option; you can find more details in the report itself.
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `st_svg.html`: HTML report.
+  - `st_spatially_variable_genes.html`: HTML report.
 - `<SAMPLE>/degs/`
-  - `st_svg.csv`: List of spatially variable genes.
+  - `st_spatially_variable_genes.csv`: List of spatially variable genes.
 
 </details>
 
