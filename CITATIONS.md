@@ -32,11 +32,15 @@
 
 - [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger)
 
-  > 10x Genomics Space Ranger 2.1.0
+  > 10x Genomics Space Ranger 2.1.0 [Online]
 
-- [SpatialDE](https://github.com/Teichlab/SpatialDE)
+- [SpatialData](https://www.biorxiv.org/content/10.1101/2023.05.05.539647v1)
 
-  > Svensson V, Teichmann S, Stegle O. SpatialDE: identification of spatially variable genes. Nat Methods 15, 343–346 (2018). doi: https://doi.org/10.1038/nmeth.4636
+  > Marconato L, Palla G, Yamauchi K, Virshup I, Heidari E, Treis T, Toth M, Shrestha R, Vöhringer H, Huber W, Gerstung M, Moore J, Theis F, Stegle O. SpatialData: an open and universal data framework for spatial omics. bioRxiv 2023.05.05.539647; doi: https://doi.org/10.1101/2023.05.05.539647
+
+- [Squipy](https://www.nature.com/articles/s41592-021-01358-2)
+
+  > Palla G, Spitzer H, Klein M et al. Squidpy: a scalable framework for spatial omics analysis. Nat Methods 19, 171–178 (2022). doi: https://doi.org/10.1038/s41592-021-01358-2
 
 ## Software packaging/containerisation tools
 
