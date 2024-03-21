@@ -55,7 +55,8 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Location of Space Ranger probeset file.",
-                    "fa_icon": "fas fa-file-csv"
+                    "fa_icon": "fas fa-file-csv",
+                    "exists": true
                 },
                 "spaceranger_reference": {
                     "type": "string",
@@ -63,7 +64,8 @@
                     "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
                     "help_text": "Please see the [10x website](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest) to download either of the supported human or mouse references. If not specified the GRCh38 human reference is automatically downladed and used.",
                     "fa_icon": "fas fa-folder-open",
-                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz"
+                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz",
+                    "exists": true
                 }
             }
         },
