@@ -59,7 +59,7 @@
                 },
                 "spaceranger_reference": {
                     "type": "string",
-                    "format": "file-path",
+                    "format": "path",
                     "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
                     "help_text": "Please see the [10x website](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest) to download either of the supported human or mouse references. If not specified the GRCh38 human reference is automatically downladed and used.",
                     "fa_icon": "fas fa-folder-open",
