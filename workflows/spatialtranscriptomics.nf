@@ -68,7 +68,7 @@ workflow SPATIALTRANSCRIPTOMICS {
     }
 
     //
-    // MODULE: Read ST data and save as `anndata`
+    // MODULE: Read ST data and save as `SpatialData`
     //
     READ_DATA (
         ch_downstream_input

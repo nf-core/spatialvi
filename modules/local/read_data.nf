@@ -1,11 +1,12 @@
 //
-// Read ST 10x visium and SC 10x data with Scanpy and save to `anndata` file
+// Read ST 10x visium and SC 10x data with spatialdata_io and save to `SpatialData` file
 //
 process READ_DATA {
 
     tag "${meta.id}"
     label 'process_low'
 
+    // TODO fix conda environment to include spatialdata_io instead of scanpy
     conda "conda-forge::scanpy=1.7.2 conda-forge::matplotlib=3.6.3 conda-forge::pandas=1.5.3"
     container "docker.io/erikfas/spatialtranscriptomics"
 

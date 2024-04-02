@@ -20,7 +20,7 @@ output_sdata = "sdata_processed.zarr"  # Output: SpatialData file
 ```
 
 The data has already been filtered in the _quality controls_ reports and is
-saved in the AnnData format:
+saved in the SpatialData format:
 
 ```{python}
 #| warning: false
@@ -65,7 +65,7 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 sdata = spatialdata.read_zarr(input_sdata, ["images", "table", "shapes"])
 adata = to_legacy_anndata(sdata)
 
-print("Content of the AnnData object:")
+print("Content of the SpatialData table object:")
 print(adata)
 ```
 
