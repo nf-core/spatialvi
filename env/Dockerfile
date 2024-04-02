@@ -2,7 +2,7 @@
 # First stage: Quarto installation
 #
 FROM ubuntu:20.04 as quarto
-ARG QUARTO_VERSION=1.4.549
+ARG QUARTO_VERSION=1.3.450
 ARG TARGETARCH
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
