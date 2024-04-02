@@ -69,7 +69,7 @@ sc.settings.verbosity = 0
 # Differential gene expression
 
 Before we look for spatially variable genes we first find differentially
-expressed genes across the different clusters found in the data. We can
+expressed genes (DEG) across the different clusters found in the data. We can
 visualize the top DEGs in a heatmap:
 
 ```{python}
@@ -98,6 +98,7 @@ We can perform a neighborhood enrichment analysis to find out which
 genes are enriched in the neighborhood of each cluster:
 
 ```{python}
+#| warning: false
 sq.gr.spatial_neighbors(adata, coord_type="generic")
 sq.gr.nhood_enrichment(adata, cluster_key="clusters")
 sq.pl.nhood_enrichment(adata, cluster_key="clusters", method="ward", vmin=-100, vmax=100)
@@ -106,8 +107,9 @@ sq.pl.nhood_enrichment(adata, cluster_key="clusters", method="ward", vmin=-100, 
 We visualize the interaction matrix between the different clusters:
 
 ```{python}
+#| warning: false
 sq.gr.interaction_matrix(adata, cluster_key="clusters")
-sq.pl.interaction_matrix(adata, cluster_key="clusters", method="ward", vmax=20000)
+sq.pl.interaction_matrix(adata, cluster_key="clusters", method="ward")
 ```
 
 # Spatially variable genes with spatial autocorrelation statistics
@@ -123,15 +125,17 @@ adata.uns["moranI"].head(n_top_spatial_degs)
 #[TODO] add gearyC as optional mode
 ```
 
+```{python}
+#| echo: false
+# Save the spatially variable genes to a CSV file:
+adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_csv))
+```
 
 ```{python}
 #| echo: false
+#| info: false
 adata.write(output_adata)
 del sdata.table
 sdata.table = adata
 sdata.write("./" + output_sdata)
-```
-
-```{python}
-adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_csv))
 ```
