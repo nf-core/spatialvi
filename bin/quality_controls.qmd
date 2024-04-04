@@ -8,7 +8,6 @@ jupyter: python3
 
 # Introduction
 
-<!-- TODO: Add SpatialData in intro -->
 Spatial Transcriptomics data analysis involves several steps, including quality
 controls (QC) and pre-processing, to ensure the reliability of downstream
 analyses. This is an essential step in spatial transcriptomics to identify and
