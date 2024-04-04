@@ -1,12 +1,12 @@
 {
     "nf_core_pipeline_software_mqc_versions.yml": {
         "content": [
-            "{CLUSTERING={quarto=1.3.450, papermill=null}, FASTQC={fastqc=0.12.1}, QUALITY_CONTROLS={quarto=1.3.450, papermill=null}, READ_DATA={scanpy=1.9.8}, SPACERANGER_COUNT={spaceranger=2.1.0}, SPACERANGER_UNTAR_REFERENCE={untar=1.3}, SPATIALLY_VARIABLE_GENES={quarto=1.3.450, papermill=null}, UNTAR_SPACERANGER_INPUT={untar=1.3}, Workflow={nf-core/spatialtranscriptomics=v1.0dev}}"
+            "{CLUSTERING={quarto=1.3.450, papermill=null}, FASTQC={fastqc=0.12.1}, QUALITY_CONTROLS={quarto=1.3.450, papermill=null}, READ_DATA={scanpy=1.9.8}, SPACERANGER_COUNT={spaceranger=3.0.0}, SPACERANGER_UNTAR_REFERENCE={untar=1.3}, SPATIALLY_VARIABLE_GENES={quarto=1.3.450, papermill=null}, UNTAR_SPACERANGER_INPUT={untar=1.3}, Workflow={nf-core/spatialtranscriptomics=v1.0dev}}"
         ],
         "meta": {
             "nf-test": "0.8.4",
-            "nextflow": "23.10.1"
+            "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-19T18:45:01.126974"
+        "timestamp": "2024-04-04T10:42:54.76102"
     }
 }
