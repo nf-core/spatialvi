@@ -15,7 +15,7 @@ process READ_DATA {
 
     output:
     tuple val(meta), path("sdata_raw.zarr"), emit: sdata_raw
-    path("versions.yml")                      , emit: versions
+    path("versions.yml")                   , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
