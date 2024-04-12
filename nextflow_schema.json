@@ -146,7 +146,7 @@
                     "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
                     "fa_icon": "fas fa-circle-nodes"
                 },
-                "n_top_spatial_degs": {
+                "n_top_svgs": {
                     "type": "integer",
                     "default": 14,
                     "description": "The number of top spatial differentially expressed genes to plot.",

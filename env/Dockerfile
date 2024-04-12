@@ -21,6 +21,10 @@ RUN mkdir -p /opt/quarto \
 FROM condaforge/mambaforge:23.11.0-0
 COPY --from=quarto /opt/quarto /opt/quarto
 ENV PATH="${PATH}:/opt/quarto/bin"
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        pkg-config \
+    && apt-get clean
 
 # Install packages using Mamba; also remove static libraries, python bytecode
 # files and javascript source maps that are not required for execution

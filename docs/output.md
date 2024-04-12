@@ -53,17 +53,28 @@ information about these files at the [10X website](https://support.10xgenomics.c
 <summary>Output files</summary>
 
 - `<SAMPLE>/data/`
-  - `adata_processed.h5ad`: Filtered, normalised and clustered adata.
+  - `sdata_processed.zarr`: Processed data in SpatialData format.
+  - `adata_processed.h5ad`: Processed data in AnnData format.
+  - `spatially_variable_genes.csv`: List of spatially variable genes.
 
 </details>
 
-Data in `.h5ad` format as processed by the pipeline, which can be used for
-further downstream analyses if desired; unprocessed data is also present in this
-file. It can also be used by the [TissUUmaps](https://tissuumaps.github.io/)
+Data in `.zarr` and `.h5ad` formats as processed by the pipeline, which can be
+used for further downstream analyses if desired; unprocessed data is also
+present in these files. It can also be used by the [TissUUmaps](https://tissuumaps.github.io/)
 browser-based tool for visualisation and exploration, allowing you to delve into
-the data in an interactive way.
+the data in an interactive way. The list of spatially variable genes are added
+as a convenience if you want to explore them in _e.g._ Excel.
 
 ## Reports
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `<SAMPLE>/reports/`
+  - `_extensions/`: Quarto nf-core extension, common to all reports.
+
+</details>
 
 ### Quality controls and filtering
 
@@ -71,7 +82,9 @@ the data in an interactive way.
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `quality_controls.html`: HTML report.
+  - `quality_controls.html`: Rendered HTML report.
+  - `quality_controls.yml`: YAML file containing parameters used in the report.
+  - `quality_controls.qmd`: Quarto document used for rendering the report.
 
 </details>
 
@@ -85,7 +98,9 @@ well as presence in tissue; you can find more details in the report itself.
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `clustering.html`: HTML report.
+  - `clustering.html`: Rendered HTML report.
+  - `clustering.yml`: YAML file containing parameters used in the report.
+  - `clustering.qmd`: Quarto document used for rendering the report.
 
 </details>
 
@@ -93,15 +108,15 @@ Report containing analyses related to normalisation, dimensionality reduction,
 clustering and spatial visualisation. Leiden clustering is currently the only
 option; you can find more details in the report itself.
 
-### Differential expression
+### Spatially variable genes
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `<SAMPLE>/reports/`
-  - `spatially_variable_genes.html`: HTML report.
-- `<SAMPLE>/degs/`
-  - `spatially_variable_genes.csv`: List of spatially variable genes.
+  - `spatially_variable_genes.html`: Rendered HTML report.
+  - `spatially_variable_genes.yml`: YAML file containing parameters used in the report.
+  - `spatially_variable_genes.qmd`: Quarto document used for rendering the report.
 
 </details>
 

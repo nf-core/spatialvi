@@ -10,7 +10,7 @@ jupyter: python3
 #| tags: [parameters]
 #| echo: false
 input_sdata = "sdata_processed.zarr"  # Input: SpatialData file
-n_top_spatial_degs = 14  # Number of spatially variable genes to plot
+n_top_svgs = 14  # Number of spatially variable genes to plot
 artifact_dir = "artifacts"  # Output directory
 output_csv = "spatially_variable_genes.csv"  # Output: gene list
 output_adata = "adata_spatially_variable_genes.h5ad"  # Output: AnnData file
@@ -118,7 +118,7 @@ patterns. Here we use [Moran's I](https://en.wikipedia.org/wiki/Moran%27s_I) aut
 ```{python}
 adata.var_names_make_unique()
 sq.gr.spatial_autocorr(adata, mode="moran")
-adata.uns["moranI"].head(n_top_spatial_degs)
+adata.uns["moranI"].head(n_top_svgs)
 #[TODO] add gearyC as optional mode
 ```
 

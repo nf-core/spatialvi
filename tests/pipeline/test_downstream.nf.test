@@ -39,9 +39,9 @@ nextflow_pipeline {
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/clustering.html").text.contains("spatial distribution of clusters") },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
 
-                // DEGs
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/spatially_variable_genes.csv").exists() },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/degs/spatially_variable_genes.csv").exists() },
+                // Spatially variable genes
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/spatially_variable_genes.csv").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/spatially_variable_genes.csv").exists() },
 
                 // MultiQC
                 { assert file("$outputDir/multiqc/multiqc_report.html").exists() }
