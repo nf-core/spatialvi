@@ -41,7 +41,7 @@ process READ_DATA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)")
+        spatialdata_io: \$(python -c "import spatialdata_io; print(spatialdata_io.__version__)")
     END_VERSIONS
     """
 }
