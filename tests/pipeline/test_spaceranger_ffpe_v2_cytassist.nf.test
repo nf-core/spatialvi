@@ -16,18 +16,19 @@ nextflow_pipeline {
 
                 // Workflow
                 { assert workflow.success },
-                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("nf_core_pipeline_software_mqc_versions.yml") },
 
                 // Data
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/st_adata_processed.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/adata_processed.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/sdata_processed.zarr").exists() },
 
                 // Reports
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_quality_controls.html").text.contains("final results of all the filtering") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/st_spatial_de.html").text.contains("plot the top spatially variable genes") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/quality_controls.html").text.contains("final results of all the filtering") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/clustering.html").text.contains("spatial distribution of clusters") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
 
-                // DEGs
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/degs/st_spatial_de.csv").exists() },
+                // Spatially variable genes
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/spatially_variable_genes.csv").exists() },
 
                 // Space Ranger
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/web_summary.html").exists() },

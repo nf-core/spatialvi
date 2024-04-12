@@ -11,11 +11,15 @@ contributes:
       highlight-style: nf-core.theme
       smooth-scroll: true
       theme: [default, nf-core.scss]
-      toc-location: left
       toc: true
+      toc-image: nf-core-spatialtranscriptomics_logo_light.png
+      toc-location: left
+      template-partials:
+        - toc.html
     revealjs:
       code-line-numbers: false
       embed-resources: true
+      logo: nf-core-spatialtranscriptomics_logo_light.png
       slide-level: 2
       slide-number: false
       theme: [default, nf-core.scss]
