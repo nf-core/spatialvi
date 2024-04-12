@@ -6,8 +6,6 @@ process READ_DATA {
     tag "${meta.id}"
     label 'process_low'
 
-    // TODO fix conda environment to include spatialdata_io instead of scanpy
-    conda "conda-forge::scanpy=1.7.2 conda-forge::matplotlib=3.6.3 conda-forge::pandas=1.5.3"
     container "docker.io/erikfas/spatialtranscriptomics"
 
     input:
@@ -21,6 +19,9 @@ process READ_DATA {
     task.ext.when == null || task.ext.when
 
     script:
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        exit 1, "The READ_DATA module does not support Conda/Mamba, please use Docker / Singularity / Podman instead."
+    }
     """
     # Fix required directory structure
     mkdir "${meta.id}/spatial"
