@@ -58,9 +58,6 @@ adata = to_legacy_anndata(sdata)
 print("Content of the AnnData object:")
 print(adata)
 
-# Fix for scanpy issue https://github.com/scverse/scanpy/issues/2181
-adata.uns['log1p']['base'] = None
-
 # Suppress scanpy-specific warnings
 sc.settings.verbosity = 0
 ```
