@@ -24,7 +24,6 @@ if __name__ == "__main__":
         default=None,
         help="Output spatialdata zarr path.",
     )
-    # TODO Add argument with meta.id for dataset_id
 
     args = parser.parse_args()
 
