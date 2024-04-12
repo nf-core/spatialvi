@@ -3,8 +3,6 @@ title: "nf-core/spatialtranscriptomics"
 subtitle: "Dimensionality reduction and clustering"
 format:
     nf-core-html: default
-execute:
-    keep-ipynb: true
 jupyter: python3
 ---
 

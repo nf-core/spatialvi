@@ -1,6 +1,8 @@
 ---
 title: "nf-core/spatialtranscriptomics"
 subtitle: "Pre-processing and quality controls"
+format:
+    nf-core-html: default
 jupyter: python3
 ---
 
