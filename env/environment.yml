@@ -1,0 +1,19 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - jupyter=1.0.0
+  - leidenalg=0.9.1
+  - papermill=2.3.4
+  - pip=23.0.1
+  - gcc=13.2.0
+  - libgdal=3.8.3
+  - gxx=13.2.0
+  - imagecodecs=2024.1.1
+  - pip:
+      - scanpy==1.10.0
+      - squidpy==1.4.1
+      - spatialdata==0.1.2
+      - spatialdata-io==0.1.2
+      - spatialdata-plot==0.2.1

@@ -8,7 +8,7 @@ include { SPACERANGER_COUNT                    } from '../../modules/nf-core/spa
 workflow SPACERANGER {
 
     take:
-    ch_st_data // channel: [ val(meta), [ raw st data ] ]
+    ch_data // channel: [ val(meta), [ raw st data ] ]
 
     main:
 
@@ -44,7 +44,7 @@ workflow SPACERANGER {
     // Run Space Ranger count
     //
     SPACERANGER_COUNT (
-        ch_st_data,
+        ch_data,
         ch_reference,
         ch_probeset
     )
