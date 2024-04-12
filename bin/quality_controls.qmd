@@ -78,8 +78,8 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 
 ```{python}
 # Read the data
-adata = to_legacy_anndata(sdata)
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
+adata = to_legacy_anndata(sdata)
 
 # Convert X matrix from CSR to CSC dense matrix for output compatibility
 adata.X = scipy.sparse.csc_matrix(adata.X)
