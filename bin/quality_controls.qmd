@@ -20,7 +20,7 @@ and the [`scanpy` Python package](https://scanpy.readthedocs.io/en/stable/).
 The AnnData format is utilized to organize and store the Spatial Transcriptomics
 data. It includes information about counts, features, observations, and
 additional metadata. The AnnData format ensures compatibility with various
-analysis tools and facilitates seamless integration into existing workflows. 
+analysis tools and facilitates seamless integration into existing workflows.
 The AnnData object is saved in the `Tables` element of a zarr [SpatialData object](https://spatialdata.scverse.org/en/latest/design_doc.html#table-table-of-annotations-for-regions).
 
 ```{python}
