@@ -31,8 +31,8 @@ nextflow_pipeline {
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/clustering.html").text.contains("spatial distribution of clusters") },
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
 
-                // DEGs
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/degs/spatially_variable_genes.csv").exists() },
+                // Spatially variable genes
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/spatially_variable_genes.csv").exists() },
 
                 // Space Ranger
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/web_summary.html").exists() },
