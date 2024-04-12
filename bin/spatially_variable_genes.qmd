@@ -53,6 +53,7 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 
 ```{python}
 # Read data
+sdata = spatialdata.read_zarr("./" + input_sdata, ["images", "tables", "shapes"])
 
 adata = to_legacy_anndata(sdata)
 print("Content of the AnnData object:")
