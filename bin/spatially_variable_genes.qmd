@@ -29,11 +29,11 @@ from matplotlib import pyplot as plt
 ```
 
 ```{python}
-# Make sure we can use scanpy plots with the AnnData object exported from sdata.table
+# Make sure we can use scanpy plots with the AnnData object exported from sdata.tables
 # This code is taken from the early version of https://github.com/scverse/spatialdata-io/pull/102/
 # Once the PR will be merged in spatialdata-io, we should use spatialdata_io.to_legacy_anndata(sdata).
 def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
-    adata = sdata.table
+    adata = sdata.tables["table"]
     for dataset_id in adata.uns["spatial"]:
         adata.uns["spatial"][dataset_id]["images"] = {
             "hires": np.array(sdata.images[f"{dataset_id}_hires_image"]).transpose([1, 2, 0]),
@@ -53,7 +53,6 @@ def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
 
 ```{python}
 # Read data
-sdata = spatialdata.read_zarr("./" + input_sdata, ["images", "table", "shapes"])
 
 adata = to_legacy_anndata(sdata)
 print("Content of the AnnData object:")
@@ -135,7 +134,7 @@ adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_csv))
 #| echo: false
 #| info: false
 adata.write(output_adata)
-del sdata.table
-sdata.table = adata
+del sdata.tables["table"]
+sdata.tables["table"] = adata
 sdata.write("./" + output_sdata)
 ```
