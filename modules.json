@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/spatialtranscriptomics",
-    "homePage": "https://github.com/nf-core/spatialtranscriptomics",
+    "name": "nf-core/spatialvi",
+    "homePage": "https://github.com/nf-core/spatialvi",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/spatialtranscriptomics/master/nextflow_schema.json",
-    "title": "nf-core/spatialtranscriptomics pipeline parameters",
-    "description": "Spatial Transcriptomics",
+    "$id": "https://raw.githubusercontent.com/nf-core/spatialvi/master/nextflow_schema.json",
+    "title": "nf-core/spatialvi pipeline parameters",
+    "description": "10X Visium Spatial Transcriptomics",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -20,7 +20,7 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline, use this parameter to specify its location. It has to be a comma-separated file with 2 or 5 columns, plus a header row. See [usage docs](https://nf-co.re/spatialtranscriptomics/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline, use this parameter to specify its location. It has to be a comma-separated file with 2 or 5 columns, plus a header row. See [usage docs](https://nf-co.re/spatialvi/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -158,7 +158,7 @@
                 "n_top_svgs": {
                     "type": "integer",
                     "default": 14,
-                    "description": "The number of top spatial differentially expressed genes to plot.",
+                    "description": "The number of top spatially variable genes to plot.",
                     "fa_icon": "fas fa-hashtag"
                 }
             }

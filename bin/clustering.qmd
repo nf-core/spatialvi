@@ -1,5 +1,5 @@
 ---
-title: "nf-core/spatialtranscriptomics"
+title: "nf-core/spatialvi"
 subtitle: "Dimensionality reduction and clustering"
 format:
     nf-core-html: default

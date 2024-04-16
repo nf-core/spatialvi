@@ -6,7 +6,7 @@ process READ_DATA {
     tag "${meta.id}"
     label 'process_low'
 
-    container "docker.io/erikfas/spatialtranscriptomics"
+    container "docker.io/erikfas/spatialvi"
 
     input:
     tuple val (meta), path("${meta.id}/*")
