@@ -10,6 +10,7 @@ jupyter: python3
 #| tags: [parameters]
 #| echo: false
 input_sdata = "sdata_processed.zarr"  # Input: SpatialData file
+svg_autocorr_method = "moran"  # Parameter: SVG autocorrelation method
 n_top_svgs = 14  # Number of spatially variable genes to plot
 artifact_dir = "artifacts"  # Output directory
 output_csv = "spatially_variable_genes.csv"  # Output: gene list
@@ -117,15 +118,18 @@ patterns. Here we use [Moran's I](https://en.wikipedia.org/wiki/Moran%27s_I) aut
 
 ```{python}
 adata.var_names_make_unique()
-sq.gr.spatial_autocorr(adata, mode="moran")
-adata.uns["moranI"].head(n_top_svgs)
-#[TODO] add gearyC as optional mode
+sq.gr.spatial_autocorr(adata, mode=svg_autocorr_method)
+if svg_autocorr_method == "moran":
+    svg_autocorr_method_string = "moranI"
+else:
+    svg_autocorr_method_string = "gearyC"
+adata.uns[svg_autocorr_method_string].head(n_top_svgs)
 ```
 
 ```{python}
 #| echo: false
 # Save the spatially variable genes to a CSV file:
-adata.uns["moranI"].to_csv(os.path.join(artifact_dir, output_csv))
+adata.uns[svg_autocorr_method_string].to_csv(os.path.join(artifact_dir, output_csv))
 ```
 
 ```{python}

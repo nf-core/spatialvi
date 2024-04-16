@@ -82,6 +82,7 @@ workflow DOWNSTREAM {
         .map { tuple(it[0], spatially_variable_genes_notebook) }
     spatially_variable_genes_params = [
         input_sdata: "sdata_processed.zarr",
+        svg_autocorr_method: params.svg_autocorr_method,
         n_top_svgs: params.n_top_svgs,
         artifact_dir: "artifacts",
         output_csv: "spatially_variable_genes.csv",
