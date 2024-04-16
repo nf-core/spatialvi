@@ -148,6 +148,13 @@
                     "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
                     "fa_icon": "fas fa-circle-nodes"
                 },
+                "svg_autocorr_method": {
+                    "type": "string",
+                    "default": "moran",
+                    "description": "The method to use for spatially variable gene autocorrelation.",
+                    "enum": ["moran", "geary"],
+                    "fa_icon": "fas fa-circle-nodes"
+                },
                 "n_top_svgs": {
                     "type": "integer",
                     "default": 14,
