@@ -48,6 +48,10 @@ real-world datasets, and permits the persistent storage of results to benchmark
 between pipeline releases and other analysis sources. The results obtained from
 the full-sized test can be viewed on the [nf-core website](https://nf-co.re/spatialvi/results).
 
+<p align="center">
+    <img title="Spatialvi Workflow" src="docs/images/spatialvi_subway.png" width=60%>
+</p>
+
 ## Usage
 
 > [!NOTE]
