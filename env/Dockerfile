@@ -42,4 +42,4 @@ CMD /bin/bash
 
 LABEL \
     authors = "Erik Fasterius, Christophe Avenel" \
-    description = "Dockerfile for nf-core/spatialtranscriptomics report modules"
+    description = "Dockerfile for nf-core/spatialvi report modules"

@@ -1,11 +1,11 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/spatialtranscriptomics
+    nf-core/spatialvi
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/spatialtranscriptomics
-    Website: https://nf-co.re/spatialtranscriptomics
-    Slack  : https://nfcore.slack.com/channels/spatialtranscriptomics
+    Github : https://github.com/nf-core/spatialvi
+    Website: https://nf-co.re/spatialvi
+    Slack  : https://nfcore.slack.com/channels/spatialvi
 ----------------------------------------------------------------------------------------
 */
 
@@ -17,9 +17,9 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SPATIALTRANSCRIPTOMICS  } from './workflows/spatialtranscriptomics'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_spatialtranscriptomics_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spatialtranscriptomics_pipeline'
+include { SPATIALVI               } from './workflows/spatialvi'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_spatialvi_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spatialvi_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,7 +30,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spat
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_SPATIALTRANSCRIPTOMICS {
+workflow NFCORE_SPATIALVI {
 
     take:
     samplesheet // file: samplesheet read in from --input
@@ -40,12 +40,12 @@ workflow NFCORE_SPATIALTRANSCRIPTOMICS {
     //
     // WORKFLOW: Run pipeline
     //
-    SPATIALTRANSCRIPTOMICS (
+    SPATIALVI (
         samplesheet
     )
 
     emit:
-    multiqc_report = SPATIALTRANSCRIPTOMICS.out.multiqc_report // channel: /path/to/multiqc_report.html
+    multiqc_report = SPATIALVI.out.multiqc_report // channel: /path/to/multiqc_report.html
 
 }
 /*
@@ -74,7 +74,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_SPATIALTRANSCRIPTOMICS (
+    NFCORE_SPATIALVI (
         params.input
     )
 
@@ -88,7 +88,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_SPATIALTRANSCRIPTOMICS.out.multiqc_report
+        NFCORE_SPATIALVI.out.multiqc_report
     )
 }
 

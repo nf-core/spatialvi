@@ -6,9 +6,9 @@ nextflow_pipeline {
     test("Space Ranger FFPE v1 Standard") {
         when {
             params {
-                input  = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-ovarian-cancer-1-standard_v1_ffpe/samplesheet_spaceranger.csv'
-                spaceranger_probeset = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-ovarian-cancer-1-standard_v1_ffpe/Visium_Human_Transcriptome_Probe_Set_v1.0_GRCh38-2020-A.csv'
-                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/homo_sapiens_chr22_reference.tar.gz"
+                input  = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-ovarian-cancer-1-standard_v1_ffpe/samplesheet_spaceranger.csv'
+                spaceranger_probeset = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-ovarian-cancer-1-standard_v1_ffpe/Visium_Human_Transcriptome_Probe_Set_v1.0_GRCh38-2020-A.csv'
+                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/homo_sapiens_chr22_reference.tar.gz"
                 qc_min_counts = 5
                 qc_min_genes = 3
                 outdir = "$outputDir"

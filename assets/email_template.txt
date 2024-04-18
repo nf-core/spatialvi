@@ -4,15 +4,15 @@
   |\\ | |__  __ /  ` /  \\ |__) |__         }  {
   | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                         `._,._,'
-  nf-core/spatialtranscriptomics ${version}
+  nf-core/spatialvi ${version}
 ----------------------------------------------------
 Run Name: $runName
 
 <% if (success){
-    out << "## nf-core/spatialtranscriptomics execution completed successfully! ##"
+    out << "## nf-core/spatialvi execution completed successfully! ##"
 } else {
     out << """####################################################
-## nf-core/spatialtranscriptomics execution completed unsuccessfully! ##
+## nf-core/spatialvi execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -35,5 +35,5 @@ Pipeline Configuration:
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
 --
-nf-core/spatialtranscriptomics
-https://github.com/nf-core/spatialtranscriptomics
+nf-core/spatialvi
+https://github.com/nf-core/spatialvi

@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the nf-core/spatialtranscriptomics pipeline
+// Subworkflow with functionality specific to the nf-core/spatialvi pipeline
 //
 
 /*

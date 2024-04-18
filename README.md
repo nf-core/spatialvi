@@ -1,25 +1,25 @@
 <h1>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-spatialtranscriptomics_logo_dark.png">
-    <img alt="nf-core/spatialtranscriptomics" src="docs/images/nf-core-spatialtranscriptomics_logo_light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-spatialvi_logo_dark.png">
+    <img alt="nf-core/spatialvi" src="docs/images/nf-core-spatialvi_logo_light.png">
   </picture>
 </h1>
 
-[![GitHub Actions CI Status](https://github.com/nf-core/spatialtranscriptomics/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/spatialtranscriptomics/actions/workflows/ci.yml)
-[![GitHub Actions Linting Status](https://github.com/nf-core/spatialtranscriptomics/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/spatialtranscriptomics/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/spatialtranscriptomics/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![GitHub Actions CI Status](https://github.com/nf-core/spatialvi/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/spatialvi/actions/workflows/ci.yml)
+[![GitHub Actions Linting Status](https://github.com/nf-core/spatialvi/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/spatialvi/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/spatialvi/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
-[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/spatialtranscriptomics)
+[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/spatialvi)
 
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23spatialtranscriptomics-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/spatialtranscriptomics)[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)[![Follow on Mastodon](https://img.shields.io/badge/mastodon-nf__core-6364ff?labelColor=FFFFFF&logo=mastodon)](https://mstdn.science/@nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
+[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23spatialvi-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/spatialvi)[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)[![Follow on Mastodon](https://img.shields.io/badge/mastodon-nf__core-6364ff?labelColor=FFFFFF&logo=mastodon)](https://mstdn.science/@nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
 ## Introduction
 
-**nf-core/spatialtranscriptomics** is a bioinformatics analysis pipeline for
+**nf-core/spatialvi** is a bioinformatics analysis pipeline for
 Spatial Transcriptomics. It can process and analyse 10X spatial data either
 directly from raw data by running [Space Ranger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger)
 or data already processed by Space Ranger. The pipeline currently consists of the
@@ -46,7 +46,11 @@ full-sized dataset on the AWS cloud infrastructure. This ensures that the
 pipeline runs on AWS, has sensible resource allocation defaults set to run on
 real-world datasets, and permits the persistent storage of results to benchmark
 between pipeline releases and other analysis sources. The results obtained from
-the full-sized test can be viewed on the [nf-core website](https://nf-co.re/spatialtranscriptomics/results).
+the full-sized test can be viewed on the [nf-core website](https://nf-co.re/spatialvi/results).
+
+<p align="center">
+    <img title="Spatialvi Workflow" src="docs/images/spatialvi_subway.png" width=60%>
+</p>
 
 ## Usage
 
@@ -56,7 +60,7 @@ the full-sized test can be viewed on the [nf-core website](https://nf-co.re/spat
 You can run the pipeline using:
 
 ```bash
-nextflow run nf-core/spatialtranscriptomics \
+nextflow run nf-core/spatialvi \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
    --outdir <OUTDIR>
@@ -65,18 +69,18 @@ nextflow run nf-core/spatialtranscriptomics \
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/spatialtranscriptomics/usage) and the [parameter documentation](https://nf-co.re/spatialtranscriptomics/parameters).
+For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/spatialvi/usage) and the [parameter documentation](https://nf-co.re/spatialvi/parameters).
 
 ## Pipeline output
 
-To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/spatialtranscriptomics/results) tab on the nf-core website pipeline page.
+To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/spatialvi/results) tab on the nf-core website pipeline page.
 For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/spatialtranscriptomics/output).
+[output documentation](https://nf-co.re/spatialvi/output).
 
 ## Credits
 
-nf-core/spatialtranscriptomics was originally developed by the Jackson
-Laboratory<sup>1</sup>, up to the [0.1.0](https://github.com/nf-core/spatialtranscriptomics/releases/tag/0.1.0)
+nf-core/spatialvi was originally developed by the Jackson
+Laboratory<sup>1</sup>, up to the [0.1.0](https://github.com/nf-core/spatialvi/releases/tag/0.1.0)
 tag. It was further developed in a collaboration between the [National
 Bioinformatics Infrastructure Sweden](https://nbis.se/) and [National Genomics
 Infrastructure](https://ngisweden.scilifelab.se/) within [SciLifeLab](https://scilifelab.se/);
@@ -96,12 +100,12 @@ Chuang and Dr. Anuj Srivastava._
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on the [Slack `#spatialtranscriptomics` channel](https://nfcore.slack.com/channels/spatialtranscriptomics) (you can join with [this invite](https://nf-co.re/join/slack)).
+For further information or help, don't hesitate to get in touch on the [Slack `#spatialvi` channel](https://nfcore.slack.com/channels/spatialvi) (you can join with [this invite](https://nf-co.re/join/slack)).
 
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use nf-core/spatialtranscriptomics for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use nf-core/spatialvi for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

@@ -1,5 +1,5 @@
 ---
-title: "nf-core/spatialtranscriptomics"
+title: "nf-core/spatialvi"
 subtitle: "Neighborhood enrichment analysis and Spatially variable genes"
 format:
     nf-core-html: default

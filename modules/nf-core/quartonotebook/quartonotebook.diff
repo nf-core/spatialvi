@@ -10,7 +10,7 @@ Changes in module 'nf-core/quartonotebook'
 -    // itself, Papermill and whatever language you are running your analyses on;
 -    // you can see an example in this module's Dockerfile.
 -    container "docker.io/erikfas/quartonotebook"
-+    container "docker.io/erikfas/spatialtranscriptomics"
++    container "docker.io/erikfas/spatialvi"
  
      input:
      tuple val(meta), path(notebook)

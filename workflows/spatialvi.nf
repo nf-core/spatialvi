@@ -13,7 +13,7 @@ include { SPACERANGER            } from '../subworkflows/local/spaceranger'
 include { DOWNSTREAM             } from '../subworkflows/local/downstream'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spatialtranscriptomics_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spatialvi_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +21,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spat
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow SPATIALTRANSCRIPTOMICS {
+workflow SPATIALVI {
 
     take:
     samplesheet // file: samplesheet read in from --input

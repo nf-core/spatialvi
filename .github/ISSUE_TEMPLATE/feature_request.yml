@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an idea for the nf-core/spatialtranscriptomics pipeline
+description: Suggest an idea for the nf-core/spatialvi pipeline
 labels: enhancement
 body:
   - type: textarea

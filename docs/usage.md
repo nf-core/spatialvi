@@ -1,6 +1,6 @@
-# nf-core/spatialtranscriptomics: Usage
+# nf-core/spatialvi: Usage
 
-## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/spatialtranscriptomics/usage](https://nf-co.re/spatialtranscriptomics/usage)
+## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/spatialvi/usage](https://nf-co.re/spatialvi/usage)
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
@@ -114,9 +114,9 @@ gene expression matrices as well as spatial information.
 ## Space Ranger
 
 The pipeline exposes several of Space Ranger's parameters when executing with
-raw spatial data. Space Ranger requires a lot of memory
-(64 GB) and several threads (8) to be able to run. You can find the Space Ranger
-documentation at the [10X website](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger).
+raw spatial data. Space Ranger requires a lot of memory (64 GB) and several
+threads (8) to be able to run. You can find the Space Ranger documentation at
+the [10X website](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger).
 
 You are only able to run Space Ranger on the [officially supported organisms](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest):
 human and mouse. If you have already downloaded a reference you may supply the
@@ -136,7 +136,7 @@ The typical command for running the pipeline is as follows:
 
 ```bash
 nextflow run \
-    nf-core/spatialtranscriptomics \
+    nf-core/spatialvi \
     --input <SAMPLESHEET> \
     --outdir <OUTDIR> \
     -profile docker
@@ -164,7 +164,7 @@ Do not use `-c <file>` to specify parameters as this will result in errors. Cust
 The above pipeline run specified with a params file in yaml format:
 
 ```bash
-nextflow run nf-core/spatialtranscriptomics -profile docker -params-file params.yaml
+nextflow run nf-core/spatialvi -profile docker -params-file params.yaml
 ```
 
 with `params.yaml` containing:
@@ -182,14 +182,14 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
-nextflow pull nf-core/spatialtranscriptomics
+nextflow pull nf-core/spatialvi
 ```
 
 ### Reproducibility
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/spatialtranscriptomics releases page](https://github.com/nf-core/spatialtranscriptomics/releases) and find the latest pipeline version - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [nf-core/spatialvi releases page](https://github.com/nf-core/spatialvi/releases) and find the latest pipeline version - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
