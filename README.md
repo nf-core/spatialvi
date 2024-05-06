@@ -19,11 +19,11 @@
 
 ## Introduction
 
-**nf-core/spatialvi** is a bioinformatics analysis pipeline for
-Spatial Transcriptomics. It can process and analyse 10X spatial data either
-directly from raw data by running [Space Ranger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger)
-or data already processed by Space Ranger. The pipeline currently consists of the
-following steps:
+**nf-core/spatialvi** is a bioinformatics analysis pipeline for Visium spatial
+transcriptomics data from 10x Genomics. It can process and analyse spatial data
+either directly from raw data by running [Space Ranger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger)
+or data already processed by Space Ranger. The pipeline currently consists of
+the following steps:
 
 0. Raw data processing with Space Ranger (optional)
 1. Quality controls and filtering
