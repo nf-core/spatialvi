@@ -25,6 +25,10 @@ either directly from raw data by running [Space Ranger](https://support.10xgenom
 or data already processed by Space Ranger. The pipeline currently consists of
 the following steps:
 
+<p align="center">
+    <img title="Spatialvi Workflow" src="docs/images/spatialvi_subway.png" width=60%>
+</p>
+
 0. Raw data processing with Space Ranger (optional)
 1. Quality controls and filtering
 2. Normalisation
@@ -47,10 +51,6 @@ pipeline runs on AWS, has sensible resource allocation defaults set to run on
 real-world datasets, and permits the persistent storage of results to benchmark
 between pipeline releases and other analysis sources. The results obtained from
 the full-sized test can be viewed on the [nf-core website](https://nf-co.re/spatialvi/results).
-
-<p align="center">
-    <img title="Spatialvi Workflow" src="docs/images/spatialvi_subway.png" width=60%>
-</p>
 
 ## Usage
 
