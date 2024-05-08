@@ -17,7 +17,7 @@
                         "size": "Large",
                         "weight": "Bolder",
                         "color": "<% if (success) { %>Good<% } else { %>Attention<%} %>",
-                        "text": "nf-core/spatialtranscriptomics v${version} - ${runName}",
+                        "text": "nf-core/spatialvi v${version} - ${runName}",
                         "wrap": true
                     },
                     {
