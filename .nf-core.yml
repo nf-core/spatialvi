@@ -1,2 +1,11 @@
 repository_type: pipeline
 nf_core_version: "2.14.1"
+lint:
+  actions_ci: False
+  files_exist:
+    - conf/igenomes.config
+  files_unchanged:
+    - .gitattributes
+    - assets/nf-core-spatialvi_logo_light.png
+    - docs/images/nf-core-spatialvi_logo_light.png
+    - docs/images/nf-core-spatialvi_logo_dark.png

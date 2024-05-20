@@ -1,0 +1,177 @@
+---
+title: "nf-core/spatialvi"
+subtitle: "Dimensionality reduction and clustering"
+format:
+    nf-core-html: default
+jupyter: python3
+---
+
+```{python}
+#| tags: [parameters]
+#| echo: false
+input_sdata = "sdata_filtered.zarr"  # Input: SpatialData file
+cluster_resolution = 1  # Resolution for Leiden clustering
+n_hvgs = 2000  # Number of HVGs to use for analyses
+artifact_dir = "artifacts" # Output directory
+output_adata = "adata_processed.h5ad"  # Output: AnnData file
+output_sdata = "sdata_processed.zarr"  # Output: SpatialData file
+```
+
+The data has already been filtered in the _quality controls_ reports and is
+saved in the SpatialData format:
+
+```{python}
+#| warning: false
+import spatialdata
+import os
+import scanpy as sc
+import numpy as np
+import pandas as pd
+from anndata import AnnData
+from umap import UMAP
+from matplotlib import pyplot as plt
+import seaborn as sns
+import leidenalg
+from IPython.display import display, Markdown
+```
+
+```{python}
+# Make sure we can use scanpy plots with the AnnData object exported from
+# `sdata.tables`. This code is taken from the early version of https://github.com/scverse/spatialdata-io/pull/102/
+# Once that PR is merged into spatialdata-io, we should instead use
+# `spatialdata_io.to_legacy_anndata(sdata)`.
+def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
+    adata = sdata.tables["table"]
+    for dataset_id in adata.uns["spatial"]:
+        adata.uns["spatial"][dataset_id]["images"] = {
+            "hires": np.array(sdata.images[f"{dataset_id}_hires_image"]).transpose([1, 2, 0]),
+            "lowres": np.array(sdata.images[f"{dataset_id}_lowres_image"]).transpose([1, 2, 0]),
+        }
+        adata.uns["spatial"][dataset_id]["scalefactors"] = {
+            "tissue_hires_scalef": spatialdata.transformations.get_transformation(
+                sdata.shapes[dataset_id], to_coordinate_system="downscaled_hires"
+            ).scale[0],
+            "tissue_lowres_scalef": spatialdata.transformations.get_transformation(
+                sdata.shapes[dataset_id], to_coordinate_system="downscaled_lowres"
+            ).scale[0],
+            "spot_diameter_fullres": sdata.shapes[dataset_id]["radius"][0] * 2,
+        }
+    return adata
+```
+
+```{python}
+sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
+adata = to_legacy_anndata(sdata)
+
+print("Content of the SpatialData table object:")
+print(adata)
+```
+
+# Normalization
+
+Before we can continue working on the data it needs to be normalized. We here
+use the built-in `normalize_total` method from [Scanpy](https://scanpy.readthedocs.io/en/stable/)
+followed by a log-transformation.
+
+```{python}
+sc.pp.normalize_total(adata, inplace=True)
+sc.pp.log1p(adata)
+```
+
+# Feature selection
+
+Not all features (genes, in this case) are informative, and selecting for a
+subset of the total features is commonly done prior to clustering. By selecting
+the most variable genes in a dataset we can capture those most important in
+regards to yielding a good separation of clusters.
+
+```{python}
+# layout-nrow: 1
+# Find top HVGs and print results
+sc.pp.highly_variable_genes(adata, flavor="seurat", n_top_genes=n_hvgs)
+var_genes_all = adata.var.highly_variable
+print("Extracted highly variable genes: %d"%sum(var_genes_all))
+
+# Plot the HVGs
+plt.rcParams["figure.figsize"] = (4.5, 4.5)
+sc.pl.highly_variable_genes(adata)
+```
+
+# Clustering
+
+To uncover the underlying structure of the transcriptional landscape, we perform
+manifold embedding and clustering based on transcriptional similarity. Principal
+Component Analysis (PCA) is applied to reduce dimensionality, and UMAP (Uniform
+Manifold Approximation and Projection) is used for visualization. The Leiden
+algorithm is employed for clustering with a given resolution.
+
+```{python}
+sc.pp.pca(adata)
+sc.pp.neighbors(adata)
+sc.tl.umap(adata)
+sc.tl.leiden(adata, key_added="clusters", resolution=cluster_resolution)
+Markdown(f"Resolution for Leiden clustering: `{cluster_resolution}`")
+```
+
+## All clusters
+
+We then generate UMAP plots to visualize the distribution of clusters:
+
+```{python}
+#| warning: false
+plt.rcParams["figure.figsize"] = (7, 7)
+sc.pl.umap(adata, color="clusters")
+```
+
+## Counts and genes
+
+We can also visualise the total counts and the genes with at least 1 count in
+the UMAP:
+
+```{python}
+# Make plots of UMAP of ST spots clusters
+plt.rcParams["figure.figsize"] = (3.5, 3.5)
+sc.pl.umap(adata, color=["total_counts", "n_genes_by_counts"])
+```
+
+## Individual clusters
+
+An additional visualisation is to show where the various spots are in each
+individual cluster while ignoring all other cluster:
+
+```{python}
+sc.tl.embedding_density(adata, basis="umap", groupby="clusters")
+sc.pl.embedding_density(adata, groupby="clusters", ncols=2)
+```
+
+# Spatial visualisation
+
+Next, we examine how total counts and the number of detected genes behave in
+spatial coordinates by overlaying the spots on the tissue image itself.
+
+```{python}
+#| layout-nrow: 2
+plt.rcParams["figure.figsize"] = (8, 8)
+sc.pl.spatial(adata, img_key="hires", color="total_counts", size=1.25)
+sc.pl.spatial(adata, img_key="hires", color="n_genes_by_counts", size=1.25)
+```
+
+To gain insights into tissue organization and potential inter-cellular
+communication, we visualize the spatial distribution of clusters on the image.
+Spots belonging to the same cluster in gene expression space often co-occur in
+spatial dimensions, providing valuable information about the spatial
+organization of cells.
+
+```{python}
+# TODO: Can the colour bar on this figure be fit to the figure?
+plt.rcParams["figure.figsize"] = (7, 7)
+sc.pl.spatial(adata, img_key="hires", color="clusters", size=1.25)
+```
+
+```{python}
+#| echo: false
+del sdata.tables["table"]
+sdata.tables["table"] = adata
+adata.write(os.path.join(artifact_dir, output_adata))
+sdata.write(os.path.join(artifact_dir, output_sdata))
+```

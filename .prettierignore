@@ -10,3 +10,6 @@ testing/
 testing*
 *.pyc
 bin/
+test-datasets/
+.nf-test/
+*.scss

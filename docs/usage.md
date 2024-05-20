@@ -4,60 +4,142 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Introduction
-
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
-
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you
+would like to analyse before running the pipeline. It has to be a comma-separated file as described
+in the examples below and depends on the input data type. Use this parameter to specify its location.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
+There are two types of samplesheets that the pipeline can handle: those
+specifying _raw data_ (to be analysed by Space Ranger) and _processed data_
+(_i.e._ already analysed by Space Ranger). The workflow will automatically
+detect the samplesheet type and run the appropriate analysis steps. The two
+types of samplesheet are described in the following sections.
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+### Raw spatial data
 
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+This section describes samplesheets for processing _raw spatial data_ yet to be analysed with Space Ranger.
+
+Here is an example of a typical samplesheet for analysing FFPE or fresh frozen (FF) data with bright field microscopy
+imagery:
+
+```no-highlight
+sample,fastq_dir,image,slide,area
+SAMPLE_1,fastqs_1/,hires_1.png,V11J26,B1
+SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1
 ```
 
-### Full samplesheet
+You may also supply a compressed tarball containing the FASTQ files in lieu of a
+directory path:
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+```no-highlight
+sample,fastq_dir,image,slide,area
+SAMPLE_1,fastqs_1.tar.gz,hires_1.png,V11J26,B1
+SAMPLE_2,fastqs_2.tar.gz,hires_2.png,V11J26,B1
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+For Cytassist samples, the `image` column gets replaced with the `cytaimage` column:
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+```no-highlight
+sample,fastq_dir,cytaimage,slide,area
+SAMPLE_1,fastqs_1/,cytassist_1.tif,V11J26,B1
+SAMPLE_2,fastqs_2/,cytassist_2.tif,V11J26,B1
+```
+
+Depending on the experimental setup, (additional) colour composite fluorescence images or dark background
+fluorescence images can be supplied using the `colorizedimage` or `darkimage` columns, respectively.
+
+Please refer to the following table for an overview of all supported columns:
+
+| Column             | Description                                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `sample`           | Unique sample identifier. MUST match the prefix of the fastq files                                                    |
+| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar.gz` file instead of a directory.            |
+| `image`            | Brightfield microscopy image                                                                                          |
+| `cytaimage`        | Brightfield tissue image captured with Cytassist device                                                               |
+| `colorizedimage`   | A colour composite of one or more fluorescence image channels saved as a single-page, single-file colour TIFF or JPEG |
+| `darkimage`        | Dark background fluorescence microscopy image                                                                         |
+| `slide`            | The Visium slide ID used for the sequencing.                                                                          |
+| `area`             | Which slide area contains the tissue sample.                                                                          |
+| `manual_alignment` | Path to the manual alignment file (optional)                                                                          |
+| `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. (optional)                                    |
+
+> [!NOTE]
+>
+> - You need to specify _at least one_ of `image`, `cytaimage`, `darkimage`,
+>   `colorizedimage`. Most commonly, you'll specify `image` for bright field
+>   microscopy data, or `cytaimage` for tissue scans generated with the 10x
+>   Cyatassist device. Please refer to the [Space Ranger documentation](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger),
+>   how multiple image types can be combined.
+> - The `manual_alignment` column is only required for samples for which a
+>   manual alignment file is needed and can be ignored if you're using automatic
+>   alignment.
+
+If you are unsure, please see the Visium documentation for details regarding the
+different variants of [FASTQ directory structures](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/fastq-input)
+and [slide parameters](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/slide-info)
+appropriate for your samples.
+
+### Processed data
+
+If your data has already been processed by Space Ranger and you are only
+interested in running downstream steps, the samplesheet looks as follows:
+
+```no-highlight
+sample,spaceranger_dir
+SAMPLE_1,results/SAMPLE_1/outs
+SAMPLE_2,results/SAMPLE_2/outs
+```
+
+You may alternatively supply a compressed tarball containing the Space Ranger output:
+
+```no-highlight
+sample,spaceranger_dir
+SAMPLE_1,outs.tar.gz
+SAMPLE_2,outs.tar.gz
+```
+
+| Column            | Description                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| `sample`          | Unique sample identifier.                                                                 |
+| `spaceranger_dir` | Output directory generated by spaceranger. May be a `.tar.gz` file instead of a directory |
+
+The Space Ranger output directory is typically called `outs` and contains both
+gene expression matrices as well as spatial information.
+
+## Space Ranger
+
+The pipeline exposes several of Space Ranger's parameters when executing with
+raw spatial data. Space Ranger requires a lot of memory (64 GB) and several
+threads (8) to be able to run. You can find the Space Ranger documentation at
+the [10X website](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger).
+
+You are only able to run Space Ranger on the [officially supported organisms](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest):
+human and mouse. If you have already downloaded a reference you may supply the
+path to its directory (or another link from the 10X website above) using the
+`--spaceranger_reference` parameter, otherwise the pipeline will download the
+default human reference for you automatically.
+
+> [!NOTE]
+> For FFPE and Cytassist experiments, you need to manually supply the
+> appropriate probeset using the `--spaceranger_probeset` parameter Please refer
+> to the [Space Ranger Downloads page](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest)
+> to obtain the correct probeset.
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/spatialvi --input ./samplesheet.csv --outdir ./results --genome GRCh37 -profile docker
+nextflow run \
+    nf-core/spatialvi \
+    --input <SAMPLESHEET> \
+    --outdir <OUTDIR> \
+    -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -88,9 +170,8 @@ nextflow run nf-core/spatialvi -profile docker -params-file params.yaml
 with `params.yaml` containing:
 
 ```yaml
-input: './samplesheet.csv'
-outdir: './results/'
-genome: 'GRCh37'
+input: '<SAMPLESHEET>'
+outdir: '<OUTDIR>'
 <...>
 ```
 
@@ -110,9 +191,9 @@ It is a good idea to specify a pipeline version when running the pipeline on you
 
 First, go to the [nf-core/spatialvi releases page](https://github.com/nf-core/spatialvi/releases) and find the latest pipeline version - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
-This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
+This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
-To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
+To further assist in reproducibility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
 
 :::tip
 If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
@@ -130,16 +211,19 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
-:::info
-We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
-:::
+> [!INFO]
+> We highly recommend the use of Docker or Singularity containers for full
+> pipeline reproducibility, however when this is not possible, Conda is
+> partially supported. Please note that Conda is not at all supported for Space
+> Ranger processing, and only supported on non-ARM64 architectures for analyses
+> downstream of Space Ranger.
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 
 Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
 They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
-If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended, since it can lead to different results on different machines dependent on the computer enviroment.
+If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended, since it can lead to different results on different machines dependent on the computer environment.
 
 - `test`
   - A profile with a complete configuration for automated testing

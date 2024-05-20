@@ -1,0 +1,51 @@
+nextflow_pipeline {
+    name "Test full workflow (incl. Space Ranger v1)"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Space Ranger FFPE v1 Standard") {
+        when {
+            params {
+                input  = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-ovarian-cancer-1-standard_v1_ffpe/samplesheet_spaceranger.csv'
+                spaceranger_probeset = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-ovarian-cancer-1-standard_v1_ffpe/Visium_Human_Transcriptome_Probe_Set_v1.0_GRCh38-2020-A.csv'
+                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/homo_sapiens_chr22_reference.tar.gz"
+                qc_min_counts = 5
+                qc_min_genes = 3
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+
+                // Workflow
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("nf_core_pipeline_software_mqc_versions.yml") },
+
+                // Data
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/adata_processed.h5ad").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/sdata_processed.zarr").exists() },
+
+                // Reports
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/quality_controls.html").text.contains("final results of all the filtering") },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/clustering.html").text.contains("spatial distribution of clusters") },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
+
+                // Spatially variable genes
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/spatially_variable_genes.csv").exists() },
+
+                // Space Ranger
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/web_summary.html").exists() },
+                { assert snapshot(
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/filtered_feature_bc_matrix.h5"),
+                )},
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/raw_feature_bc_matrix.h5").exists() },
+                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/spatial/tissue_positions.csv").exists() },
+
+                // MultiQC
+                { assert file("$outputDir/multiqc/multiqc_report.html").text.contains("Visium_FFPE_Human_Ovarian_Cancer")}
+            )
+        }
+    }
+}

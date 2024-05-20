@@ -1,0 +1,47 @@
+nextflow_pipeline {
+    name "Test full workflow (incl. Space Ranger v2)"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Space Ranger FFPE v2 CytAssist") {
+        when {
+            params {
+                // This is the default `test` profile; params are not necessary
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+
+                // Workflow
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("nf_core_pipeline_software_mqc_versions.yml") },
+
+                // Data
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/adata_processed.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/sdata_processed.zarr").exists() },
+
+                // Reports
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/quality_controls.html").text.contains("final results of all the filtering") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/clustering.html").text.contains("spatial distribution of clusters") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
+
+                // Spatially variable genes
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/spatially_variable_genes.csv").exists() },
+
+                // Space Ranger
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/web_summary.html").exists() },
+                { assert snapshot(
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/filtered_feature_bc_matrix.h5"),
+                )},
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/raw_feature_bc_matrix.h5").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/spatial/tissue_positions.csv").exists() },
+
+                // MultiQC
+                { assert file("$outputDir/multiqc/multiqc_report.html").text.contains("CytAssist_11mm_FFPE_Human_Glioblastoma_2_4")}
+            )
+        }
+    }
+}

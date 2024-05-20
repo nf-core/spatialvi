@@ -17,22 +17,9 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SPATIALVI  } from './workflows/spatialvi'
+include { SPATIALVI               } from './workflows/spatialvi'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_spatialvi_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spatialvi_pipeline'
-
-include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_spatialvi_pipeline'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +33,7 @@ params.fasta = getGenomeAttribute('fasta')
 workflow NFCORE_SPATIALVI {
 
     take:
-    samplesheet // channel: samplesheet read in from --input
+    samplesheet // file: samplesheet read in from --input
 
     main:
 
@@ -88,7 +75,7 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     NFCORE_SPATIALVI (
-        PIPELINE_INITIALISATION.out.samplesheet
+        params.input
     )
 
     //

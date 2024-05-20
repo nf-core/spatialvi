@@ -20,7 +20,7 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/spatialvi/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline, use this parameter to specify its location. It has to be a comma-separated file with 2 or 5 columns, plus a header row. See [usage docs](https://nf-co.re/spatialvi/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -43,37 +43,127 @@
                 }
             }
         },
-        "reference_genome_options": {
-            "title": "Reference genome options",
+
+        "spaceranger_options": {
+            "title": "Space Ranger options",
             "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
+            "fa_icon": "fas fa-rocket",
+            "description": "Options related to Space Ranger execution and raw spatial data processing",
             "properties": {
-                "genome": {
-                    "type": "string",
-                    "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
-                },
-                "fasta": {
+                "spaceranger_probeset": {
                     "type": "string",
                     "format": "file-path",
-                    "exists": true,
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Location of Space Ranger probeset file.",
+                    "fa_icon": "fas fa-file-csv",
+                    "exists": true
                 },
-                "igenomes_ignore": {
-                    "type": "boolean",
-                    "description": "Do not load the iGenomes reference config.",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                "spaceranger_reference": {
+                    "type": "string",
+                    "format": "path",
+                    "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
+                    "help_text": "Please see the [10x website](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest) to download either of the supported human or mouse references. If not specified the GRCh38 human reference is automatically downladed and used.",
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz",
+                    "exists": true
                 }
             }
         },
+
+        "optional_outputs": {
+            "title": "Optional outputs",
+            "type": "object",
+            "fa_icon": "fas fa-floppy-disk",
+            "description": "Additional intermediate output files that can be optionally saved.",
+            "properties": {
+                "spaceranger_save_reference": {
+                    "type": "boolean",
+                    "description": "Save the extracted tar archive of the Space Ranger reference.",
+                    "help_text": "By default, extracted versions of archived Space Ranger reference data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-floppy-disk"
+                },
+                "save_untar_output": {
+                    "type": "boolean",
+                    "description": "Save extracted tar archives of input data.",
+                    "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-floppy-disk"
+                }
+            }
+        },
+
+        "analysis_options": {
+            "title": "Analysis options",
+            "type": "object",
+            "fa_icon": "fas fa-magnifying-glass-chart",
+            "description": "Options related to the downstream analyses performed by the pipeline.",
+            "properties": {
+                "qc_min_counts": {
+                    "type": "integer",
+                    "default": 500,
+                    "description": "The minimum number of UMIs needed in a spot for that spot to pass the filtering.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "qc_min_genes": {
+                    "type": "integer",
+                    "default": 250,
+                    "description": "The minimum number of expressed genes in a spot needed for that spot to pass the filtering.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "qc_min_spots": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "The minimum number of spots in which a gene is expressed for that gene to pass the filtering.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "qc_mito_threshold": {
+                    "type": "number",
+                    "default": 20,
+                    "description": "The maximum proportion of mitochondrial content that a spot is allowed to have to pass the filtering.",
+                    "help_text": "If you do not wish to filter based on mitochondrial content, set this parameter to `100`.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "qc_ribo_threshold": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "The minimum proportion of ribosomal content that a spot is needs to have to pass the filtering (no filtering is done by default).",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "qc_hb_threshold": {
+                    "type": "number",
+                    "default": 100,
+                    "description": "The maximum proportion of haemoglobin content that a spot is allowed to have to pass the filtering (no filtering is done by default).",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "cluster_n_hvgs": {
+                    "type": "integer",
+                    "default": 2000,
+                    "description": "The number of top highly variable genes to use for the analyses.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "cluster_resolution": {
+                    "type": "number",
+                    "default": 1,
+                    "description": "The resolution for the clustering of the spots.",
+                    "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
+                    "fa_icon": "fas fa-circle-nodes"
+                },
+                "svg_autocorr_method": {
+                    "type": "string",
+                    "default": "moran",
+                    "description": "The method to use for spatially variable gene autocorrelation.",
+                    "enum": ["moran", "geary"],
+                    "fa_icon": "fas fa-circle-nodes"
+                },
+                "n_top_svgs": {
+                    "type": "integer",
+                    "default": 14,
+                    "description": "The number of top spatially variable genes to plot.",
+                    "fa_icon": "fas fa-hashtag"
+                }
+            }
+        },
+
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -122,6 +212,7 @@
                 }
             }
         },
+
         "max_job_request_options": {
             "title": "Max job request options",
             "type": "object",
@@ -132,7 +223,7 @@
                 "max_cpus": {
                     "type": "integer",
                     "description": "Maximum number of CPUs that can be requested for any single job.",
-                    "default": 16,
+                    "default": 64,
                     "fa_icon": "fas fa-microchip",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
@@ -157,6 +248,7 @@
                 }
             }
         },
+
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -281,7 +373,13 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/definitions/spaceranger_options"
+        },
+        {
+            "$ref": "#/definitions/optional_outputs"
+        },
+        {
+            "$ref": "#/definitions/analysis_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"

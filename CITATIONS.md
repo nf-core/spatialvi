@@ -10,6 +10,10 @@
 
 ## Pipeline tools
 
+- [AnnData](https://github.com/scverse/anndata)
+
+  > Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: https://doi.org/10.1101/2021.12.16.473007
+
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
   > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
@@ -17,6 +21,26 @@
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
   > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
+
+- [Quarto](https://quarto.org/)
+
+  > Allaire J, Teague C, Scheidegger C, Xie Y, Dervieux C. Quarto (2022). doi: 10.5281/zenodo.5960048
+
+- [Scanpy](https://github.com/theislab/scanpy)
+
+  > Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol 19, 15 (2018). doi: https://doi.org/10.1186/s13059-017-1382-0
+
+- [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger)
+
+  > 10x Genomics Space Ranger 2.1.0 [Online]
+
+- [SpatialData](https://www.biorxiv.org/content/10.1101/2023.05.05.539647v1)
+
+  > Marconato L, Palla G, Yamauchi K, Virshup I, Heidari E, Treis T, Toth M, Shrestha R, Vöhringer H, Huber W, Gerstung M, Moore J, Theis F, Stegle O. SpatialData: an open and universal data framework for spatial omics. bioRxiv 2023.05.05.539647; doi: https://doi.org/10.1101/2023.05.05.539647
+
+- [Squipy](https://www.nature.com/articles/s41592-021-01358-2)
+
+  > Palla G, Spitzer H, Klein M et al. Squidpy: a scalable framework for spatial omics analysis. Nat Methods 19, 171–178 (2022). doi: https://doi.org/10.1038/s41592-021-01358-2
 
 ## Software packaging/containerisation tools
 
