@@ -37,7 +37,8 @@ jobs:
 
   test:
     name: Run pipeline with test data
-    needs: define_nxf_versions
+    # Only run on push if this is the nf-core dev branch (merged PRs)
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/spatialvi') }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -49,11 +50,11 @@ jobs:
           - tests/pipeline/test_downstream.nf.test
     steps:
       - name: Check out pipeline code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
 
       # Install Nextflow
       - name: Install Nextflow
-        uses: nf-core/setup-nextflow@v1
+        uses: nf-core/setup-nextflow@v2
         with:
           version: "${{ matrix.NXF_VER }}"
 
