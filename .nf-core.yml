@@ -6,6 +6,6 @@ lint:
     - conf/igenomes.config
   files_unchanged:
     - .gitattributes
-    - assets/nf-core-spatialtranscriptomics_logo_light.png
-    - docs/images/nf-core-spatialtranscriptomics_logo_light.png
-    - docs/images/nf-core-spatialtranscriptomics_logo_dark.png
+    - assets/nf-core-spatialvi_logo_light.png
+    - docs/images/nf-core-spatialvi_logo_light.png
+    - docs/images/nf-core-spatialvi_logo_dark.png
