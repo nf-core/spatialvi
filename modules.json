@@ -7,28 +7,28 @@
                 "nf-core": {
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "285a50500f9e02578d90b3ce6382ea3c30216acd",
+                        "git_sha": "46eca555142d6e597729fcb682adcc791796f514",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "b7ebe95761cd389603f9cc0e0dc384c0f663815a",
+                        "git_sha": "b80f5fd12ff7c43938f424dd76392a2704fa2396",
                         "installed_by": ["modules"]
                     },
                     "quartonotebook": {
                         "branch": "master",
-                        "git_sha": "93b7e1bf63944488fe77ad490a9de62a73959bed",
+                        "git_sha": "04e1b2340f6cf9cd7b9b06fb7d86da4531714519",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/quartonotebook/quartonotebook.diff"
                     },
                     "spaceranger/count": {
                         "branch": "master",
-                        "git_sha": "2f0ef0cd414ea43e33625023c72b6af936dce63d",
+                        "git_sha": "238b3efbbd113529d19ec866eba545911bc27682",
                         "installed_by": ["modules"]
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "git_sha": "4e5f4687318f24ba944a13609d3ea6ebd890737d",
                         "installed_by": ["modules"]
                     }
                 }
