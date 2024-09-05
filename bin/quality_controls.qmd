@@ -1,6 +1,5 @@
 ---
-title: "nf-core/spatialvi"
-subtitle: "Pre-processing and quality controls"
+title: "Pre-processing and quality controls"
 format:
     nf-core-html: default
 jupyter: python3
