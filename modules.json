@@ -7,7 +7,7 @@
                 "nf-core": {
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "46eca555142d6e597729fcb682adcc791796f514",
+                        "git_sha": "b49b8992e5271ce427f3a7cdb29628fc58400eb5",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
@@ -37,7 +37,7 @@
                 "nf-core": {
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "git_sha": "d20fb2a9cc3e2835e9d067d1046a63252eb17352",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
