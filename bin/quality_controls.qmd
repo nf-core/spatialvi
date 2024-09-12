@@ -177,6 +177,7 @@ del adata.obs["in_tissue_str"]
 n_spots = adata.shape[0]
 adata = adata[adata.obs["in_tissue"] == 1]
 n_spots_in_tissue = adata.shape[0]
+n_spots_outside_tissue = n_spots - n_spots_in_tissue
 Markdown(f"""A total of `{n_spots_in_tissue}` spots are situated inside the
 tissue, out of `{n_spots}` spots in total.""")
 ```
@@ -266,6 +267,8 @@ if (adata.shape[0] == 0 or adata.shape[1] == 0):
 
 ```{python}
 # Print filtering results
+spots_filtered = n_spots - adata.shape[0]
+genes_filtered = n_genes - adata.shape[1]
 Markdown(f"""
 The final results of all the filtering is as follows:
 
@@ -286,4 +289,26 @@ sc.pl.violin(adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 del sdata.tables["table"]
 sdata.tables["table"] = adata
 sdata.write(os.path.join(artifact_dir, output_sdata))
+```
+
+```{python}
+#| echo: false
+# Write QC metrics to file for MultiQC aggregation
+mqc_dict = {
+    'sample': [meta['id']],
+    'total_spots': [n_spots],
+    'total_genes': [n_genes],
+    'spots_filtered_outside_tissue': [n_spots_outside_tissue],
+    'spots_filtered_total_counts': [n_spots_filtered_min_counts],
+    'spots_filtered_genes_expressed': [n_spots_filtered_min_genes],
+    'spots_filtered_mito_content': [n_spots_filtered_mito],
+    'spots_filtered_ribo_content': [n_spots_filtered_ribo],
+    'spots_filtered_hb_content': [n_spots_filtered_hb],
+    'genes_filtered_expressed_in_spots': [n_genes_filtered_min_spots],
+    'total_spots_filtered': [spots_filtered],
+    'total_genes_filtered': [genes_filtered]
+}
+mqc_data = pd.DataFrame(mqc_dict)
+mqc_name = 'artifacts/mqc_quality_controls_' + meta['id'] + '.csv'
+mqc_data.to_csv(mqc_name, index=False)
 ```

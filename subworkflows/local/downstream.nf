@@ -49,6 +49,14 @@ workflow DOWNSTREAM {
         extensions
     )
     ch_versions = ch_versions.mix(QUALITY_CONTROLS.out.versions)
+    ch_qc = QUALITY_CONTROLS.out.artifacts
+        | map { meta, artifacts -> [meta, artifacts[0], meta, artifacts[1]] }
+        | flatten
+        | collate ( 2 )
+        | branch {
+            sdata: it[1].name.endsWith('.zarr')
+            mqc: it[1].name.endsWith('.csv')
+        }
 
     //
     // Normalisation, dimensionality reduction and clustering
@@ -99,7 +107,8 @@ workflow DOWNSTREAM {
 
     emit:
     qc_html           = QUALITY_CONTROLS.out.html                // channel: [ meta, html ]
-    qc_sdata          = QUALITY_CONTROLS.out.artifacts           // channel: [ meta, h5ad ]
+    qc_sdata          = ch_qc.sdata                              // channel: [ meta, zarr ]
+    qc_mqc            = ch_qc.mqc                                // channel: [ meta, csv ]
     qc_nb             = QUALITY_CONTROLS.out.notebook            // channel: [ meta, qmd ]
     qc_params         = QUALITY_CONTROLS.out.params_yaml         // channel: [ meta, yml ]
 

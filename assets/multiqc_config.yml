@@ -5,11 +5,24 @@ report_comment: >
 report_section_order:
   "nf-core-spatialvi-methods-description":
     order: -1000
-  software_versions:
+  "custom_data":
     order: -1001
-  "nf-core-spatialvi-summary":
+  software_versions:
     order: -1002
+  "nf-core-spatialvi-summary":
+    order: -1003
 
 export_plots: true
 
 disable_version_detection: true
+
+custom_data:
+  quality_controls:
+    file_format: "csv"
+    section_name: "Quality controls"
+    description: "Quality control metrics from the report analyses"
+    plot_type: "table"
+
+sp:
+  quality_controls:
+    fn: "mqc_*.csv"
