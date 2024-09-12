@@ -18,10 +18,10 @@ disable_version_detection: true
 
 custom_data:
   quality_controls:
-    file_format: "csv"
-    section_name: "Quality controls"
-    description: "Quality control metrics from the report analyses"
-    plot_type: "table"
+    file_format: csv
+    section_name: Quality controls
+    description: Quality control metrics from the report analyses.
+    plot_type: table
 
 sp:
   quality_controls:
