@@ -19,6 +19,8 @@ RUN mkdir -p /opt/quarto \
 # Second stage: Conda environment
 #
 FROM condaforge/mambaforge:23.11.0-0
+LABEL org.opencontainers.image.authors="Erik Fasterius, Christophe Avenel"
+LABEL org.opencontainers.image.description="Docker image for downstream analyses of the nf-core/spatialvi pipeline."
 COPY --from=quarto /opt/quarto /opt/quarto
 ENV PATH="${PATH}:/opt/quarto/bin"
 RUN apt-get update \
@@ -39,7 +41,3 @@ RUN mamba env update --name base --file environment.yml \
 ENV LD_PRELOAD=/opt/conda/lib/libgomp.so.1
 
 CMD /bin/bash
-
-LABEL \
-    authors = "Erik Fasterius, Christophe Avenel" \
-    description = "Dockerfile for nf-core/spatialvi report modules"
