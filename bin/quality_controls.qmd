@@ -173,11 +173,13 @@ sc.pl.spatial(adata, color=["in_tissue_str"], title="Spots in tissue", size=1.25
 del adata.obs["in_tissue_str"]
 
 # Remove spots outside tissue and print results
-n_spots = adata.shape[0]
+n_total_spots = adata.shape[0]
 adata = adata[adata.obs["in_tissue"] == 1]
 n_spots_in_tissue = adata.shape[0]
-Markdown(f"""A total of `{n_spots_in_tissue}` spots are situated inside the
-tissue, out of `{n_spots}` spots in total.""")
+n_spots_outside_tissue = n_total_spots - n_spots_in_tissue
+Markdown(f"""
+- Removed `{n_spots_outside_tissue}` spots outside the tissue.
+""")
 ```
 
 ## Counts, genes and spots
@@ -189,24 +191,28 @@ your knowledge of the specific tissue at hand.
 ```{python}
 #| warning: false
 # Filter spots based on counts
-n_spots = adata.shape[0]
-n_genes = adata.shape[1]
+n_current_spots = adata.shape[0]
 sc.pp.filter_cells(adata, min_counts=min_counts)
-n_spots_filtered_min_counts = adata.shape[0]
+n_spots_filtered_min_counts = n_current_spots - adata.shape[0]
 
 # Filter spots based on genes
+n_current_spots = adata.shape[0]
 sc.pp.filter_cells(adata, min_genes=min_genes)
-n_spots_filtered_min_genes = adata.shape[0]
+n_spots_filtered_min_genes = n_current_spots - adata.shape[0]
 
 # Filter genes based on spots
+n_total_genes = adata.shape[1]
 sc.pp.filter_genes(adata, min_cells=min_spots)
-n_genes_filtered_min_spots = adata.shape[1]
+n_genes_filtered_min_spots = n_total_genes - adata.shape[1]
 
 # Print results
 Markdown(f"""
-- Removed `{n_spots - n_spots_filtered_min_counts}` spots with less than `{min_counts}` total counts.
-- Removed `{n_spots_filtered_min_counts - n_spots_filtered_min_genes}` spots with less than `{min_genes}` genes expressed.
-- Removed `{n_genes - n_genes_filtered_min_spots}` genes expressed in less than `{min_spots}` spots.
+- Removed `{n_spots_filtered_min_counts}` spots with less than `{min_counts}`
+total counts.
+- Removed `{n_spots_filtered_min_genes}` spots with less than `{min_genes}`
+genes expressed.
+- Removed `{n_genes_filtered_min_spots}` genes expressed in less than
+`{min_spots}` spots.
 """)
 ```
 
@@ -219,18 +225,21 @@ ribosomal nor haemoglobin content is filtered by default.
 
 ```{python}
 # Filter spots
+n_current_spots = adata.shape[0]
 adata = adata[adata.obs["pct_counts_mt"] <= mito_threshold]
-n_spots_filtered_mito = adata.shape[0]
+n_spots_filtered_mito = n_current_spots - adata.shape[0]
+n_current_spots = adata.shape[0]
 adata = adata[adata.obs["pct_counts_ribo"] >= ribo_threshold]
-n_spots_filtered_ribo = adata.shape[0]
+n_spots_filtered_ribo = n_current_spots - adata.shape[0]
+n_current_spots = adata.shape[0]
 adata = adata[adata.obs["pct_counts_hb"] <= hb_threshold]
-n_spots_filtered_hb = adata.shape[0]
+n_spots_filtered_hb = n_current_spots - adata.shape[0]
 
 # Print results
 Markdown(f"""
-- Removed `{adata.shape[0] - n_spots_filtered_mito}` spots with more than `{mito_threshold}%` mitochondrial content.
-- Removed `{n_spots_filtered_mito - n_spots_filtered_ribo}` spots with less than `{ribo_threshold}%` ribosomal content.
-- Removed `{n_spots_filtered_ribo - n_spots_filtered_hb}` spots with more than `{hb_threshold}%` haemoglobin content.
+- Removed `{n_spots_filtered_mito}` spots with more than `{mito_threshold}%` mitochondrial content.
+- Removed `{n_spots_filtered_ribo}` spots with less than `{ribo_threshold}%` ribosomal content.
+- Removed `{n_spots_filtered_hb}` spots with more than `{hb_threshold}%` haemoglobin content.
 """)
 ```
 
@@ -265,11 +274,15 @@ if (adata.shape[0] == 0 or adata.shape[1] == 0):
 
 ```{python}
 # Print filtering results
+n_remaining_spots = adata.shape[0]
+n_remaining_genes = adata.shape[1]
+n_spots_filtered = n_total_spots - n_remaining_spots
+n_genes_filtered = n_total_genes - n_remaining_genes
 Markdown(f"""
 The final results of all the filtering is as follows:
 
-- A total of `{adata.shape[0]}` spots out of `{n_spots}` remain after filtering.
-- A total of `{adata.shape[1]}` genes out of `{n_genes}` remain after filtering.
+- A total of `{n_remaining_spots}` spots out of `{n_total_spots}` remain after filtering.
+- A total of `{n_remaining_genes}` genes out of `{n_total_genes}` remain after filtering.
 """)
 ```
 
@@ -285,4 +298,27 @@ sc.pl.violin(adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 del sdata.tables["table"]
 sdata.tables["table"] = adata
 sdata.write(os.path.join(artifact_dir, output_sdata))
+```
+
+```{python}
+#| echo: false
+# Write QC metrics to file for MultiQC aggregation
+mqc_dict = {
+    'sample': [meta['id']],
+    'total_spots': [n_total_spots],
+    'spots_filtered': [n_spots_filtered],
+    'spots_remaining': [n_remaining_spots],
+    'spots_filtered_outside_tissue': [n_spots_outside_tissue],
+    'spots_filtered_total_counts': [n_spots_filtered_min_counts],
+    'spots_filtered_genes_expressed': [n_spots_filtered_min_genes],
+    'spots_filtered_mito_content': [n_spots_filtered_mito],
+    'spots_filtered_ribo_content': [n_spots_filtered_ribo],
+    'spots_filtered_hb_content': [n_spots_filtered_hb],
+    'total_genes': [n_total_genes],
+    'genes_filtered': [n_genes_filtered],
+    'genes_remaining': [n_remaining_genes]
+}
+mqc_data = pd.DataFrame(mqc_dict)
+mqc_name = 'artifacts/mqc_quality_controls_' + meta['id'] + '.csv'
+mqc_data.to_csv(mqc_name, index=False)
 ```

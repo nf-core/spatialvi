@@ -18,6 +18,7 @@ compatible with further downstream analyses and/or exploration in _e.g._
 
 ### `Added`
 
+- Add quality control metrics as custom MultiQC content [[#88](https://github.com/nf-core/spatialvi/pull/88)]
 - Add MultiQC support for Space Ranger outputs [[#70](https://github.com/nf-core/spatialvi/pull/70)]
 - Use the QUARTONOTEBOOK nf-core module instead of local Quarto-based modules [[#68](https://github.com/nf-core/spatialvi/pull/68)]
 - Add support for SpatialData [[$67](https://github.com/nf-core/spatialvi/pull/67)]
