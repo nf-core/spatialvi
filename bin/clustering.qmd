@@ -26,6 +26,7 @@ import os
 import scanpy as sc
 import numpy as np
 import pandas as pd
+from spatialdata_io.experimental import to_legacy_anndata
 from anndata import AnnData
 from umap import UMAP
 from matplotlib import pyplot as plt
@@ -35,32 +36,8 @@ from IPython.display import display, Markdown
 ```
 
 ```{python}
-# Make sure we can use scanpy plots with the AnnData object exported from
-# `sdata.tables`. This code is taken from the early version of https://github.com/scverse/spatialdata-io/pull/102/
-# Once that PR is merged into spatialdata-io, we should instead use
-# `spatialdata_io.to_legacy_anndata(sdata)`.
-def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
-    adata = sdata.tables["table"]
-    for dataset_id in adata.uns["spatial"]:
-        adata.uns["spatial"][dataset_id]["images"] = {
-            "hires": np.array(sdata.images[f"{dataset_id}_hires_image"]).transpose([1, 2, 0]),
-            "lowres": np.array(sdata.images[f"{dataset_id}_lowres_image"]).transpose([1, 2, 0]),
-        }
-        adata.uns["spatial"][dataset_id]["scalefactors"] = {
-            "tissue_hires_scalef": spatialdata.transformations.get_transformation(
-                sdata.shapes[dataset_id], to_coordinate_system="downscaled_hires"
-            ).scale[0],
-            "tissue_lowres_scalef": spatialdata.transformations.get_transformation(
-                sdata.shapes[dataset_id], to_coordinate_system="downscaled_lowres"
-            ).scale[0],
-            "spot_diameter_fullres": sdata.shapes[dataset_id]["radius"][0] * 2,
-        }
-    return adata
-```
-
-```{python}
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
-adata = to_legacy_anndata(sdata)
+adata = to_legacy_anndata(sdata, coordinate_system="downscaled_hires", table_name="table", include_images=True)
 
 print("Content of the SpatialData table object:")
 print(adata)
@@ -151,8 +128,8 @@ spatial coordinates by overlaying the spots on the tissue image itself.
 ```{python}
 #| layout-nrow: 2
 plt.rcParams["figure.figsize"] = (8, 8)
-sc.pl.spatial(adata, img_key="hires", color="total_counts", size=1.25)
-sc.pl.spatial(adata, img_key="hires", color="n_genes_by_counts", size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color="total_counts", size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color="n_genes_by_counts", size=1.25)
 ```
 
 To gain insights into tissue organization and potential inter-cellular
@@ -164,7 +141,7 @@ organization of cells.
 ```{python}
 # TODO: Can the colour bar on this figure be fit to the figure?
 plt.rcParams["figure.figsize"] = (7, 7)
-sc.pl.spatial(adata, img_key="hires", color="clusters", size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color="clusters", size=1.25)
 ```
 
 ```{python}

@@ -11,9 +11,11 @@ dependencies:
   - libgdal=3.8.3
   - gxx=13.2.0
   - imagecodecs=2024.1.1
-  - pip:
-      - scanpy==1.10.0
-      - squidpy==1.4.1
-      - spatialdata==0.1.2
-      - spatialdata-io==0.1.2
-      - spatialdata-plot==0.2.1
+  - scipy=1.12.0
+  - harmonypy=0.0.10
+  - scanorama=1.7.4
+  - spatialdata=0.2.3
+  - spatialdata-io=0.1.5
+  - spatialdata-plot=0.2.6
+  - scanpy=1.10.3
+  - squidpy==1.5.0
