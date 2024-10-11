@@ -9,7 +9,7 @@ include { QUARTONOTEBOOK as CLUSTERING               } from '../../modules/nf-co
 workflow DOWNSTREAM {
 
     take:
-    sdata_raw
+    sdata_raw // Channel: [ meta, zarr ]
 
     main:
 

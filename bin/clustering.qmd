@@ -1,6 +1,5 @@
 ---
-title: "nf-core/spatialvi"
-subtitle: "Dimensionality reduction and clustering"
+title: "Dimensionality reduction and clustering"
 format:
     nf-core-html: default
 jupyter: python3
