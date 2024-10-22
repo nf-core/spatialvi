@@ -12,24 +12,24 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "19ca321db5d8bd48923262c2eca6422359633491",
+                        "git_sha": "cf17ca47590cc578dfb47db1c2a44ef86f89976d",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/multiqc/multiqc.diff"
                     },
                     "quartonotebook": {
                         "branch": "master",
-                        "git_sha": "04e1b2340f6cf9cd7b9b06fb7d86da4531714519",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/quartonotebook/quartonotebook.diff"
                     },
                     "spaceranger/count": {
                         "branch": "master",
-                        "git_sha": "238b3efbbd113529d19ec866eba545911bc27682",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"]
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "4e5f4687318f24ba944a13609d3ea6ebd890737d",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"]
                     }
                 }
