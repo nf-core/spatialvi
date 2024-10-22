@@ -6,9 +6,4 @@ results/
 testing/
 testing*
 *.pyc
-log
-reports
-.nf-test/
-nf-test
-.nf-test*
-test-datasets
+null/
