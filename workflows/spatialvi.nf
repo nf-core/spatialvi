@@ -11,6 +11,7 @@ include { INPUT_CHECK            } from '../subworkflows/local/input_check'
 include { SPACERANGER            } from '../subworkflows/local/spaceranger'
 include { DOWNSTREAM             } from '../subworkflows/local/downstream'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spatialvi_pipeline'
 
@@ -23,16 +24,18 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spat
 workflow SPATIALVI {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
+    samplesheet // file: samplesheet read in from --input
+
     main:
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+
     //
     // SUBWORKFLOW: Read and validate samplesheet
     //
     INPUT_CHECK (
-        ch_samplesheet
+        samplesheet
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
