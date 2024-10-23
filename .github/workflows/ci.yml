@@ -76,7 +76,7 @@ jobs:
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
 
       - name: Run nf-test
-        run: nf-test test --verbose --profile "{{ matrix.profile }}" --tap=test.tap ${{ matrix.nf_test_files }}
+        run: nf-test test --verbose --profile "${{ matrix.profile }}" --tap=test.tap ${{ matrix.nf_test_files }}
 
       - name: Output log on failure
         if: failure()
