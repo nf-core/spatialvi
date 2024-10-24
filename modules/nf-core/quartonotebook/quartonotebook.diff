@@ -1,4 +1,9 @@
 Changes in module 'nf-core/quartonotebook'
+'modules/nf-core/quartonotebook/parametrize.nf' is unchanged
+'modules/nf-core/quartonotebook/environment.yml' is unchanged
+'modules/nf-core/quartonotebook/Dockerfile' is unchanged
+'modules/nf-core/quartonotebook/meta.yml' is unchanged
+Changes in 'quartonotebook/main.nf':
 --- modules/nf-core/quartonotebook/main.nf
 +++ modules/nf-core/quartonotebook/main.nf
 @@ -4,11 +4,7 @@
@@ -15,4 +20,9 @@ Changes in module 'nf-core/quartonotebook'
      input:
      tuple val(meta), path(notebook)
 
+'modules/nf-core/quartonotebook/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/quartonotebook/tests/no-parametrization.config' is unchanged
+'modules/nf-core/quartonotebook/tests/tags.yml' is unchanged
+'modules/nf-core/quartonotebook/tests/main.nf.test' is unchanged
+'modules/nf-core/quartonotebook/tests/with-parametrization.config' is unchanged
 ************************************************************

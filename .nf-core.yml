@@ -1,11 +1,27 @@
-repository_type: pipeline
-nf_core_version: "2.14.1"
+bump_version: null
 lint:
-  actions_ci: False
+  actions_ci: false
   files_exist:
     - conf/igenomes.config
   files_unchanged:
     - .gitattributes
+    - .gitignore
     - assets/nf-core-spatialvi_logo_light.png
     - docs/images/nf-core-spatialvi_logo_light.png
     - docs/images/nf-core-spatialvi_logo_dark.png
+nf_core_version: 3.0.2
+org_path: null
+repository_type: pipeline
+template:
+  author: Erik Fasterius, Christophe Avenel, Sergii Domanskyi, Jeffrey Chuang, Anuj
+    Srivastava
+  description: 10X Visium Spatial Transcriptomics
+  force: false
+  is_nfcore: true
+  name: spatialvi
+  org: nf-core
+  outdir: .
+  skip_features:
+    - igenomes
+  version: 1.0dev
+update: null
