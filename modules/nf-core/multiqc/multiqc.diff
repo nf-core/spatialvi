@@ -1,18 +1,21 @@
 Changes in module 'nf-core/multiqc'
+'modules/nf-core/multiqc/environment.yml' is unchanged
+'modules/nf-core/multiqc/meta.yml' is unchanged
+Changes in 'multiqc/main.nf':
 --- modules/nf-core/multiqc/main.nf
 +++ modules/nf-core/multiqc/main.nf
-@@ -1,10 +1,10 @@
- process MULTIQC {
--    label 'process_single'
-+    label 'process_medium'
- 
+@@ -4,7 +4,7 @@
      conda "${moduleDir}/environment.yml"
      container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-         'https://depot.galaxyproject.org/singularity/multiqc:1.24.1--pyhdfd78af_0' :
--        'biocontainers/multiqc:1.24.1--pyhdfd78af_0' }"
+         'https://depot.galaxyproject.org/singularity/multiqc:1.25.1--pyhdfd78af_0' :
+-        'biocontainers/multiqc:1.25.1--pyhdfd78af_0' }"
 +        'docker.io/multiqc/multiqc:v1.24.1' }"
  
      input:
      path  multiqc_files, stageAs: "?/*"
 
+'modules/nf-core/multiqc/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/multiqc/tests/tags.yml' is unchanged
+'modules/nf-core/multiqc/tests/nextflow.config' is unchanged
+'modules/nf-core/multiqc/tests/main.nf.test' is unchanged
 ************************************************************
