@@ -280,6 +280,9 @@ sc.pl.violin(adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 ```{python}
 del sdata.tables["table"]
 sdata.tables["table"] = adata
+# Filtering spatialdata elements based on the anndata elements:
+matched_element, _ = spatialdata.match_element_to_table(sdata, sample_id, "table")
+sdata[sample_id] = matched_element[sample_id]
 sdata.write(os.path.join(artifact_dir, output_sdata))
 ```
 
