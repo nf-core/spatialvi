@@ -54,6 +54,11 @@ plt.rcParams["figure.figsize"] = (6, 6)
 ```
 
 ```{python}
+# Keep only alphanumeric characters, underscores, and hyphens in the sample ID
+sample_id = "".join(
+    filter(lambda x: x.isalnum() or x in ["_", "-"], meta["id"])
+)
+
 # Read the data
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
 adata = to_legacy_anndata(sdata, coordinate_system="downscaled_hires", table_name="table", include_images=True)
@@ -110,8 +115,8 @@ spatial patterns may be discerned:
 
 ```{python}
 #| layout-nrow: 2
-sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color = ["total_counts", "n_genes_by_counts"], size=1.25)
-sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts_hb"], size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id=f"{sample_id}_hires_image", color = ["total_counts", "n_genes_by_counts"], size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id=f"{sample_id}_hires_image", color = ["pct_counts_mt", "pct_counts_ribo", "pct_counts_hb"], size=1.25)
 ```
 
 ## Scatter plots
@@ -147,7 +152,7 @@ are uninformative and are thus removed.
 adata.obs["in_tissue_str"] = ["In tissue" if x == 1 else "Outside tissue" for x in adata.obs["in_tissue"]]
 
 # Plot spots inside tissue
-sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color=["in_tissue_str"], title="Spots in tissue", size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id=f"{sample_id}_hires_image", color=["in_tissue_str"], title="Spots in tissue", size=1.25)
 del adata.obs["in_tissue_str"]
 
 # Remove spots outside tissue and print results

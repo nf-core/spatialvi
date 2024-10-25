@@ -36,6 +36,11 @@ from IPython.display import display, Markdown
 ```
 
 ```{python}
+# Keep only alphanumeric characters, underscores, and hyphens in the sample ID
+sample_id = "".join(
+    filter(lambda x: x.isalnum() or x in ["_", "-"], meta["id"])
+)
+
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
 adata = to_legacy_anndata(sdata, coordinate_system="downscaled_hires", table_name="table", include_images=True)
 
@@ -128,8 +133,8 @@ spatial coordinates by overlaying the spots on the tissue image itself.
 ```{python}
 #| layout-nrow: 2
 plt.rcParams["figure.figsize"] = (8, 8)
-sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color="total_counts", size=1.25)
-sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color="n_genes_by_counts", size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id=f"{sample_id}_hires_image", color="total_counts", size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id=f"{sample_id}_hires_image", color="n_genes_by_counts", size=1.25)
 ```
 
 To gain insights into tissue organization and potential inter-cellular
@@ -141,7 +146,7 @@ organization of cells.
 ```{python}
 # TODO: Can the colour bar on this figure be fit to the figure?
 plt.rcParams["figure.figsize"] = (7, 7)
-sc.pl.spatial(adata, img_key="hires", library_id="visium_hires_image", color="clusters", size=1.25)
+sc.pl.spatial(adata, img_key="hires", library_id=f"{sample_id}_hires_image", color="clusters", size=1.25)
 ```
 
 ```{python}
