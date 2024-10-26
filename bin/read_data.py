@@ -41,7 +41,9 @@ if __name__ == "__main__":
 
     # Read Visium data
     spatialdata = spatialdata_io.visium(
-        args.SRCountDir, counts_file="raw_feature_bc_matrix.h5", dataset_id=args.sampleID
+        args.SRCountDir,
+        counts_file="raw_feature_bc_matrix.h5",
+        dataset_id=args.sampleID,
     )
 
     # Write raw spatialdata to file
