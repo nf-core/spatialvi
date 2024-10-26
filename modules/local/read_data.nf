@@ -38,6 +38,7 @@ process READ_DATA {
     # Execute read data script
     read_data.py \\
         --SRCountDir "${meta.id}" \\
+        --sampleID "${meta.id}" \\
         --output_sdata sdata_raw.zarr
 
     cat <<-END_VERSIONS > versions.yml

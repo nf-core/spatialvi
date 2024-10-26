@@ -24,12 +24,26 @@ if __name__ == "__main__":
         default=None,
         help="Output spatialdata zarr path.",
     )
+    parser.add_argument(
+        "--sampleID",
+        metavar="sampleID",
+        type=str,
+        default=None,
+        help="Sample ID.",
+    )
 
     args = parser.parse_args()
 
+    # Keep only alphanumeric characters, underscores, and hyphens in the sample ID
+    args.sampleID = "".join(
+        filter(lambda x: x.isalnum() or x in ["_", "-"], args.sampleID)
+    )
+
     # Read Visium data
     spatialdata = spatialdata_io.visium(
-        args.SRCountDir, counts_file="raw_feature_bc_matrix.h5", dataset_id="visium"
+        args.SRCountDir,
+        counts_file="raw_feature_bc_matrix.h5",
+        dataset_id=args.sampleID,
     )
 
     # Write raw spatialdata to file

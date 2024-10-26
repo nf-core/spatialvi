@@ -24,38 +24,16 @@ import pandas as pd
 import scanpy as sc
 import squidpy as sq
 import spatialdata
+from spatialdata_io.experimental import to_legacy_anndata
 from anndata import AnnData
 from matplotlib import pyplot as plt
 ```
 
 ```{python}
-# Make sure we can use scanpy plots with the AnnData object exported from sdata.tables
-# This code is taken from the early version of https://github.com/scverse/spatialdata-io/pull/102/
-# Once the PR will be merged in spatialdata-io, we should use spatialdata_io.to_legacy_anndata(sdata).
-def to_legacy_anndata(sdata: spatialdata.SpatialData) -> AnnData:
-    adata = sdata.tables["table"]
-    for dataset_id in adata.uns["spatial"]:
-        adata.uns["spatial"][dataset_id]["images"] = {
-            "hires": np.array(sdata.images[f"{dataset_id}_hires_image"]).transpose([1, 2, 0]),
-            "lowres": np.array(sdata.images[f"{dataset_id}_lowres_image"]).transpose([1, 2, 0]),
-        }
-        adata.uns["spatial"][dataset_id]["scalefactors"] = {
-            "tissue_hires_scalef": spatialdata.transformations.get_transformation(
-                sdata.shapes[dataset_id], to_coordinate_system="downscaled_hires"
-            ).scale[0],
-            "tissue_lowres_scalef": spatialdata.transformations.get_transformation(
-                sdata.shapes[dataset_id], to_coordinate_system="downscaled_lowres"
-            ).scale[0],
-            "spot_diameter_fullres": sdata.shapes[dataset_id]["radius"][0] * 2,
-        }
-    return adata
-```
-
-```{python}
 # Read data
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
+adata = to_legacy_anndata(sdata, coordinate_system="downscaled_hires", table_name="table", include_images=True)
 
-adata = to_legacy_anndata(sdata)
 print("Content of the AnnData object:")
 print(adata)
 
