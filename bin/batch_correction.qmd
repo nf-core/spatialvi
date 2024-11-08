@@ -1,0 +1,108 @@
+Below is the Python code converted into a Quarto notebook with the same style and structure as the reference.
+
+```markdown
+---
+title: "Data Pre-processing and Integration with Quality Controls"
+format:
+    nf-core-html: default
+jupyter: python3
+---
+
+# Introduction
+
+This report describes the integration and quality control processes for spatial data analysis using `scanpy`, `scanorama`, and `spatialdata`. After loading multiple datasets, we examine various covariates and perform data normalization and batch correction. Each dataset is first independently quality controlled before merging them into a single integrated dataset for downstream analysis.
+
+```{python}
+# Import necessary packages
+import scanpy as sc
+import anndata as an
+import matplotlib.pyplot as plt
+import seaborn as sns
+import scanorama
+import spatialdata
+import os
+import glob
+import scipy.sparse as sp
+```
+
+```{python}
+# Parameter cell
+#| tags: [parameters]
+#| echo: false
+input_sdata_list = []  # Input: SpatialData files
+input_id_list = []     # Input: ID list for each SpatialData file
+n_hvgs = 2000          # Number of HVGs to use for analyses
+```
+
+```{python}
+# Setup and parameter configurations
+sc.set_figure_params(facecolor="white", figsize=(8, 8))
+sc.settings.verbosity = 3
+```
+
+# Load and Inspect Data
+
+The data files are loaded from the file list.
+```{python}
+# Load all zarr SpatialData files
+data = []
+for file_path, file_id in zip(file_list, input_id_list):
+    data[file_id] = spatialdata.read_zarr(file_path)
+```
+
+# Highly Variable Genes Selection
+
+Next, we select highly variable genes for each dataset. This step is essential to retain biologically meaningful genes and reduce noise.
+
+```{python}
+for name, sdata in data.items():
+    adata = sdata.tables["table"]
+    sc.pp.highly_variable_genes(adata, flavor="seurat", n_top_genes=n_hvgs, inplace=True)
+```
+
+# Data Integration
+
+To prepare for batch correction, we first convert the data matrices to a sparse format, making them compatible with downstream processing in `scanorama`.
+
+```{python}
+for name, sdata in data.items():
+    sdata.tables["table"].X = sp.csr_matrix(sdata.tables["table"].X)
+    sdata.tables["table"].var_names_make_unique()
+    sdata.tables["table"].obs["library_id"] = name
+```
+
+# Batch Correction
+
+Using `scanorama`, we perform batch correction to minimize differences between datasets.
+
+```{python}
+# List of AnnData tables from each dataset
+adatas = [sdata.tables["table"] for sdata in data.values()]
+# Perform batch correction
+adatas_corrected = scanorama.correct_scanpy(adatas, return_dimred=True)
+```
+
+# Data Concatenation
+
+After correction, we concatenate the datasets into a single `AnnData` object for integrated analysis.
+
+```{python}
+adata_integrated = sc.concat(
+    adatas_corrected,
+    label="library_id",
+    uns_merge="unique",
+    keys=data.keys(),
+    index_unique="-"
+)
+adata_integrated
+```
+
+# Dimensionality Reduction
+
+Finally, we perform dimensionality reduction to visualize the data.
+
+```{python}
+sc.pp.neighbors(adata_integrated)
+sc.tl.umap(adata_integrated)
+sc.pl.umap(adata_integrated, color=["library_id"], palette=sc.pl.palettes.default_20)
+```
