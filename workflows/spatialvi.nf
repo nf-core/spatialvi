@@ -10,6 +10,7 @@ include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { INPUT_CHECK            } from '../subworkflows/local/input_check'
 include { SPACERANGER            } from '../subworkflows/local/spaceranger'
 include { DOWNSTREAM             } from '../subworkflows/local/downstream'
+include { AGGREGATION            } from '../subworkflows/local/aggregation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -82,6 +83,14 @@ workflow SPATIALVI {
         READ_DATA.out.sdata_raw
     )
     ch_versions = ch_versions.mix(DOWNSTREAM.out.versions)
+
+    //
+    // SUBWORKFLOW: Sample aggregation (optional)
+    //
+    AGGREGATION (
+        DOWNSTREAM.out.svg_sdata
+    )
+    ch_versions = ch_versions.mix(AGGREGATION.out.versions)
 
     //
     // Collate and save software versions
