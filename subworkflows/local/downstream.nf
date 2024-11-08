@@ -109,6 +109,12 @@ workflow DOWNSTREAM {
         extensions
     )
     ch_versions = ch_versions.mix(SPATIALLY_VARIABLE_GENES.out.versions)
+    ch_svg_artifacts = SPATIALLY_VARIABLE_GENES.out.artifacts
+        | transpose ( )
+        | branch {
+            csv: it[1].name.endsWith('.csv')
+            sdata: it[1].name.endsWith('.zarr')
+        }
 
     emit:
     qc_html           = ch_qc_html  // channel: [ meta, html ]
@@ -123,7 +129,8 @@ workflow DOWNSTREAM {
     clustering_params = CLUSTERING.out.params_yaml               // channel: [ meta, yml ]
 
     svg_html          = SPATIALLY_VARIABLE_GENES.out.html        // channel: [ meta, html ]
-    svg_csv           = SPATIALLY_VARIABLE_GENES.out.artifacts   // channel: [ meta, csv ]
+    svg_csv           = ch_svg_artifacts.csv                     // channel: [ meta, csv ]
+    svg_sdata         = ch_svg_artifacts.sdata                   // channel: [ meta, zarr ]
     svg_nb            = SPATIALLY_VARIABLE_GENES.out.notebook    // channel: [ meta, qmd ]
     svg_params        = SPATIALLY_VARIABLE_GENES.out.params_yaml // channel: [ meta, yml ]
 

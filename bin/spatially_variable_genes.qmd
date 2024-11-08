@@ -115,5 +115,5 @@ adata.uns[svg_autocorr_method_string].to_csv(os.path.join(artifact_dir, output_c
 adata.write(output_adata)
 del sdata.tables["table"]
 sdata.tables["table"] = adata
-sdata.write("./" + output_sdata)
+sdata.write(os.path.join(artifact_dir, output_sdata))
 ```
