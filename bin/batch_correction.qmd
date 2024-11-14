@@ -1,6 +1,3 @@
-Below is the Python code converted into a Quarto notebook with the same style and structure as the reference.
-
-```markdown
 ---
 title: "Data Pre-processing and Integration with Quality Controls"
 format:
@@ -10,7 +7,11 @@ jupyter: python3
 
 # Introduction
 
-This report describes the integration and quality control processes for spatial data analysis using `scanpy`, `scanorama`, and `spatialdata`. After loading multiple datasets, we examine various covariates and perform data normalization and batch correction. Each dataset is first independently quality controlled before merging them into a single integrated dataset for downstream analysis.
+This report describes the integration and quality control processes for spatial
+data analysis using `scanpy`, `scanorama`, and `spatialdata`. After loading
+multiple datasets, we examine various covariates and perform data normalization
+and batch correction. Each dataset is first independently quality controlled
+before merging them into a single integrated dataset for downstream analysis.
 
 ```{python}
 # Import necessary packages
