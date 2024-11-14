@@ -164,6 +164,20 @@
             }
         },
 
+        "aggregation_options": {
+            "title": "Data aggregation options",
+            "type": "object",
+            "fa_icon": "fas fa-rocket",
+            "description": "Options related to aggregation of final data objects",
+            "properties": {
+                "merge_sdata": {
+                    "type": "boolean",
+                    "description": "Merge per-sample SpatialData objects into one",
+                    "fa_icon": "fas fa-arrows-to-dot"
+                }
+            }
+        },
+
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -316,6 +330,9 @@
         },
         {
             "$ref": "#/$defs/analysis_options"
+        },
+        {
+            "$ref": "#/$defs/aggregation_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

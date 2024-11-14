@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 
-# Load packages
-import spatialdata
 import argparse
+import spatialdata
 
 if __name__ == "__main__":
-    # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Merge SpatialData objects")
     parser.add_argument("files", nargs="+", help="List of SpatialData files to merge")
     parser.add_argument("output", help="Output file name")
     args = parser.parse_args()
 
-    # Read all zarr SpatialData files/folders
+    # Read all zarr SpatialData directories
     sdatas = []
     for file in args.files:
         sdata = spatialdata.read_zarr(file)
