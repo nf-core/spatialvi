@@ -10,8 +10,8 @@ process MERGE_SDATA {
     path(sdata, stageAs: "?/*")
 
     output:
-    path("aggregated-sdata.zarr"), emit: sdata
-    path("versions.yml")         , emit: versions
+    path("merged_sdata.zarr"), emit: sdata
+    path("versions.yml")     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,7 +28,7 @@ process MERGE_SDATA {
     # Execute script
     merge_sdata.py \\
         ${sdata} \\
-        aggregated-sdata.zarr
+        merged_sdata.zarr
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

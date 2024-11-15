@@ -172,8 +172,19 @@
             "properties": {
                 "merge_sdata": {
                     "type": "boolean",
-                    "description": "Merge per-sample SpatialData objects into one",
+                    "description": "Merge per-sample SpatialData objects into one.",
                     "fa_icon": "fas fa-arrows-to-dot"
+                },
+                "integrate_sdata": {
+                    "type": "boolean",
+                    "description": "Integrate per-sample SpatialData objects into one and output a integration report.",
+                    "fa_icon": "fas fa-arrows-to-dot"
+                },
+                "integration_n_hvgs": {
+                    "type": "integer",
+                    "default": 2000,
+                    "description": "Number of highly variable genes to use for integration of samples.",
+                    "fa_icon": "fas fa-hashtag"
                 }
             }
         },

@@ -30,10 +30,10 @@ import scipy.sparse as sp
 # Parameter cell
 #| tags: [parameters]
 #| echo: false
-input_sdata = "concateneted_sdata.zarr"  # Input: SpatialData file
+input_sdata = "merged_sdata.zarr"  # Input: SpatialData file
 output_sdata = "integrated_sdata.zarr"  # Output: Integrated SpatialData file
 output_adata = "integrated_adata.h5ad"  # Output: Integrated AnnData file
-n_hvgs = 2000  # Number of HVGs to use for analyses
+n_hvgs = 2000  # Parameter: Number of HVGs to use for analyses
 ```
 
 ```{python}
