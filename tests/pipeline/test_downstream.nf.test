@@ -14,6 +14,7 @@ nextflow_pipeline {
                 // Parameters
                 qc_min_counts = 5
                 qc_min_genes = 3
+                integrate_sdata = true
                 outdir = "$outputDir"
             }
         }
@@ -42,6 +43,13 @@ nextflow_pipeline {
                 // Spatially variable genes
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/spatially_variable_genes.csv").exists() },
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/spatially_variable_genes.csv").exists() },
+
+                // Aggregation
+                { assert path("$outputDir/aggregation/data/merged_sdata.zarr").exists() },
+                { assert path("$outputDir/aggregation/data/integrated_sdata.zarr").exists() },
+                { assert path("$outputDir/aggregation/data/integrated_adata.h5ad").exists() },
+                { assert file("$outputDir/aggregation/reports/integration.html").text.contains("we save the integrated data to a") },
+                { assert file("$outputDir/aggregation/reports/integration.html").text.contains("we save the integrated data to a") },
 
                 // MultiQC
                 { assert file("$outputDir/multiqc/multiqc_report.html").exists() }
