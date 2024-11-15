@@ -30,9 +30,10 @@ import scipy.sparse as sp
 # Parameter cell
 #| tags: [parameters]
 #| echo: false
-input_sdata_list = []  # Input: SpatialData files
-input_id_list = []     # Input: ID list for each SpatialData file
-n_hvgs = 2000          # Number of HVGs to use for analyses
+input_sdata = "concateneted_sdata.zarr"  # Input: SpatialData file
+output_sdata = "integrated_sdata.zarr"  # Output: Integrated SpatialData file
+output_adata = "integrated_adata.h5ad"  # Output: Integrated AnnData file
+n_hvgs = 2000  # Number of HVGs to use for analyses
 ```
 
 ```{python}
@@ -46,9 +47,7 @@ sc.settings.verbosity = 3
 The data files are loaded from the file list.
 ```{python}
 # Load all zarr SpatialData files
-data = []
-for file_path, file_id in zip(file_list, input_id_list):
-    data[file_id] = spatialdata.read_zarr(file_path)
+sdata = spatialdata.read_zarr(input_sdata)
 ```
 
 # Highly Variable Genes Selection
@@ -56,8 +55,7 @@ for file_path, file_id in zip(file_list, input_id_list):
 Next, we select highly variable genes for each dataset. This step is essential to retain biologically meaningful genes and reduce noise.
 
 ```{python}
-for name, sdata in data.items():
-    adata = sdata.tables["table"]
+for table_name, adata in sdata.tables.items():
     sc.pp.highly_variable_genes(adata, flavor="seurat", n_top_genes=n_hvgs, inplace=True)
 ```
 
@@ -66,10 +64,10 @@ for name, sdata in data.items():
 To prepare for batch correction, we first convert the data matrices to a sparse format, making them compatible with downstream processing in `scanorama`.
 
 ```{python}
-for name, sdata in data.items():
-    sdata.tables["table"].X = sp.csr_matrix(sdata.tables["table"].X)
-    sdata.tables["table"].var_names_make_unique()
-    sdata.tables["table"].obs["library_id"] = name
+for name, adata in sdata.tables.items():
+    adata.X = sp.csr_matrix(adata.X)
+    adata.var_names_make_unique()
+    adata.obs["library_id"] = name
 ```
 
 # Batch Correction
@@ -78,7 +76,7 @@ Using `scanorama`, we perform batch correction to minimize differences between d
 
 ```{python}
 # List of AnnData tables from each dataset
-adatas = [sdata.tables["table"] for sdata in data.values()]
+adatas = list(sdata.tables.values())
 # Perform batch correction
 adatas_corrected = scanorama.correct_scanpy(adatas, return_dimred=True)
 ```
@@ -92,7 +90,7 @@ adata_integrated = sc.concat(
     adatas_corrected,
     label="library_id",
     uns_merge="unique",
-    keys=data.keys(),
+    keys=sdata.tables.keys(),
     index_unique="-"
 )
 adata_integrated
@@ -101,9 +99,30 @@ adata_integrated
 # Dimensionality Reduction
 
 Finally, we perform dimensionality reduction to visualize the data.
+We compare the UMAP plots before and after batch correction.
 
 ```{python}
-sc.pp.neighbors(adata_integrated)
+sc.pp.neighbors(adata_integrated, use_rep="X_scanorama")
 sc.tl.umap(adata_integrated)
 sc.pl.umap(adata_integrated, color=["library_id"], palette=sc.pl.palettes.default_20)
+```
+
+```{python}
+sc.pp.neighbors(adata_integrated, use_rep="X_scanorama")
+sc.tl.umap(adata_integrated)
+sc.pl.umap(adata_integrated, color=["library_id"], palette=sc.pl.palettes.default_20)
+```
+
+# Save Integrated Data
+
+Finally, we save the integrated data to a `zarr` file for downstream analysis.
+
+```{python}
+# We push back the integrated data to the SpatialData object
+for i, table_name in enumerate(sdata.tables.keys()):
+    sdata.tables[table_name].obsm["X_scanorama"] = adatas_corrected[i].obsm["X_scanorama"]
+
+# Save the integrated data
+sdata.write(output_sdata)
+adata_integrated.write(output_adata)
 ```
