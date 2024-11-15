@@ -31,9 +31,10 @@ import scipy.sparse as sp
 #| tags: [parameters]
 #| echo: false
 input_sdata = "merged_sdata.zarr"  # Input: SpatialData file
+n_hvgs = 2000  # Parameter: Number of HVGs to use for analyses
+artifact_dir = "artifacts" # Parameter: artifact directory
 output_sdata = "integrated_sdata.zarr"  # Output: Integrated SpatialData file
 output_adata = "integrated_adata.h5ad"  # Output: Integrated AnnData file
-n_hvgs = 2000  # Parameter: Number of HVGs to use for analyses
 ```
 
 ```{python}
@@ -123,6 +124,6 @@ for i, table_name in enumerate(sdata.tables.keys()):
     sdata.tables[table_name].obsm["X_scanorama"] = adatas_corrected[i].obsm["X_scanorama"]
 
 # Save the integrated data
-sdata.write(output_sdata)
-adata_integrated.write(output_adata)
+sdata.write(os.path.join(artifact_dir, output_sdata))
+adata_integrated.write(os.path.join(artifact_dir, output_adata))
 ```
