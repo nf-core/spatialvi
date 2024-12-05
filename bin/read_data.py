@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # Remove sampleID metadata from table:
     if args.sampleID in spatialdata.tables['table'].uns.keys():
         del spatialdata.tables['table'].uns[args.sampleID]
-    
+
     # Rename table into sample id
     spatialdata.tables[f'{args.sampleID}_table'] = spatialdata.tables['table']
     del spatialdata.tables['table']

@@ -40,9 +40,9 @@ sample_id = "".join(
 # Read data
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
 adata = to_legacy_anndata(
-    sdata, 
-    coordinate_system="downscaled_hires", 
-    table_name=f"{sample_id}_table", 
+    sdata,
+    coordinate_system="downscaled_hires",
+    table_name=f"{sample_id}_table",
     include_images=True
 )
 

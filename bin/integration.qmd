@@ -112,10 +112,10 @@ sc.tl.umap(adata_integrated)
 
 # Plot UMAP before integration
 sc.pl.umap(
-    adata_integrated, 
-    color=["library_id"], 
-    palette=sc.pl.palettes.default_20, 
-    ax=axes[0], 
+    adata_integrated,
+    color=["library_id"],
+    palette=sc.pl.palettes.default_20,
+    ax=axes[0],
     show=False
 )
 axes[0].set_title("Before integration")
@@ -126,10 +126,10 @@ sc.tl.umap(adata_integrated)
 
 # Plot UMAP after integration
 sc.pl.umap(
-    adata_integrated, 
-    color=["library_id"], 
-    palette=sc.pl.palettes.default_20, 
-    ax=axes[1], 
+    adata_integrated,
+    color=["library_id"],
+    palette=sc.pl.palettes.default_20,
+    ax=axes[1],
     show=False
 )
 axes[1].set_title("After integration")
