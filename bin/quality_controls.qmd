@@ -61,7 +61,12 @@ sample_id = "".join(
 
 # Read the data
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
-adata = to_legacy_anndata(sdata, coordinate_system="downscaled_hires", table_name="table", include_images=True)
+adata = to_legacy_anndata(
+    sdata, 
+    coordinate_system="downscaled_hires", 
+    table_name=f"{sample_id}_table", 
+    include_images=True
+)
 
 # Convert X matrix from CSR to CSC dense matrix for output compatibility
 adata.X = scipy.sparse.csc_matrix(adata.X)
@@ -278,10 +283,10 @@ sc.pl.violin(adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 ```
 
 ```{python}
-del sdata.tables["table"]
-sdata.tables["table"] = adata
+del sdata.tables[f"{sample_id}_table"]
+sdata.tables[f"{sample_id}_table"] = adata
 # Filtering spatialdata elements based on the anndata elements:
-matched_element, _ = spatialdata.match_element_to_table(sdata, sample_id, "table")
+matched_element, _ = spatialdata.match_element_to_table(sdata, sample_id, f"{sample_id}_table")
 sdata[sample_id] = matched_element[sample_id]
 sdata.write(os.path.join(artifact_dir, output_sdata))
 ```

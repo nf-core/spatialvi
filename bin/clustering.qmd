@@ -42,7 +42,12 @@ sample_id = "".join(
 )
 
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
-adata = to_legacy_anndata(sdata, coordinate_system="downscaled_hires", table_name="table", include_images=True)
+adata = to_legacy_anndata(
+    sdata, 
+    coordinate_system="downscaled_hires", 
+    table_name=f"{sample_id}_table", 
+    include_images=True
+)
 
 print("Content of the SpatialData table object:")
 print(adata)
@@ -151,8 +156,8 @@ sc.pl.spatial(adata, img_key="hires", library_id=f"{sample_id}_hires_image", col
 
 ```{python}
 #| echo: false
-del sdata.tables["table"]
-sdata.tables["table"] = adata
+del sdata.tables[f"{sample_id}_table"]
+sdata.tables[f"{sample_id}_table"] = adata
 adata.write(os.path.join(artifact_dir, output_adata))
 sdata.write(os.path.join(artifact_dir, output_sdata))
 ```

@@ -30,9 +30,21 @@ from matplotlib import pyplot as plt
 ```
 
 ```{python}
+# Keep only alphanumeric characters, underscores, and hyphens in the sample ID
+sample_id = "".join(
+    filter(lambda x: x.isalnum() or x in ["_", "-"], meta["id"])
+)
+```
+
+```{python}
 # Read data
 sdata = spatialdata.read_zarr(input_sdata, ["images", "tables", "shapes"])
-adata = to_legacy_anndata(sdata, coordinate_system="downscaled_hires", table_name="table", include_images=True)
+adata = to_legacy_anndata(
+    sdata, 
+    coordinate_system="downscaled_hires", 
+    table_name=f"{sample_id}_table", 
+    include_images=True
+)
 
 print("Content of the AnnData object:")
 print(adata)
@@ -113,7 +125,7 @@ adata.uns[svg_autocorr_method_string].to_csv(os.path.join(artifact_dir, output_c
 #| echo: false
 #| info: false
 adata.write(output_adata)
-del sdata.tables["table"]
-sdata.tables["table"] = adata
+del sdata.tables[f"{sample_id}_table"]
+sdata.tables[f"{sample_id}_table"] = adata
 sdata.write(os.path.join(artifact_dir, output_sdata))
 ```
