@@ -103,15 +103,40 @@ Finally, we perform dimensionality reduction to visualize the data.
 We compare the UMAP plots before and after batch correction.
 
 ```{python}
-sc.pp.neighbors(adata_integrated, use_rep="X_scanorama")
-sc.tl.umap(adata_integrated)
-sc.pl.umap(adata_integrated, color=["library_id"], palette=sc.pl.palettes.default_20)
-```
+# Create a figure with two subplots
+fig, axes = plt.subplots(1, 2, figsize=(12, 6))
 
-```{python}
+# Compute neighbors and UMAP before integration
+sc.pp.neighbors(adata_integrated)
+sc.tl.umap(adata_integrated)
+
+# Plot UMAP before integration
+sc.pl.umap(
+    adata_integrated, 
+    color=["library_id"], 
+    palette=sc.pl.palettes.default_20, 
+    ax=axes[0], 
+    show=False
+)
+axes[0].set_title("Before integration")
+
+# Compute neighbors and UMAP after integration
 sc.pp.neighbors(adata_integrated, use_rep="X_scanorama")
 sc.tl.umap(adata_integrated)
-sc.pl.umap(adata_integrated, color=["library_id"], palette=sc.pl.palettes.default_20)
+
+# Plot UMAP after integration
+sc.pl.umap(
+    adata_integrated, 
+    color=["library_id"], 
+    palette=sc.pl.palettes.default_20, 
+    ax=axes[1], 
+    show=False
+)
+axes[1].set_title("After integration")
+
+# Adjust layout and display the figure
+plt.tight_layout()
+plt.show()
 ```
 
 # Save Integrated Data
