@@ -1,5 +1,6 @@
 //
 // Read ST 10x visium and SC 10x data with spatialdata_io and save to `SpatialData` file
+// TODO: Add Visium HD support
 //
 process READ_DATA {
 

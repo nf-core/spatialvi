@@ -31,6 +31,13 @@ if __name__ == "__main__":
         default=None,
         help="Sample ID.",
     )
+    parser.add_argument(
+        "--visium_hd",
+        metavar="visium_hd",
+        type=bool,
+        default=False,
+        help="Visium HD data.",
+    )
 
     args = parser.parse_args()
 
@@ -40,16 +47,22 @@ if __name__ == "__main__":
     )
 
     # Read Visium data
-    spatialdata = spatialdata_io.visium(
-        args.SRCountDir,
-        counts_file="raw_feature_bc_matrix.h5",
-        dataset_id=args.sampleID,
-    )
+    if args.visium_hd:
+        spatialdata = spatialdata_io.visium_hd(
+            args.SRCountDir,
+            dataset_id=args.sampleID,
+        )
+    else:
+        spatialdata = spatialdata_io.visium(
+            args.SRCountDir,
+            counts_file="raw_feature_bc_matrix.h5",
+            dataset_id=args.sampleID,
+        )
 
     # Remove sampleID metadata from table:
     if args.sampleID in spatialdata.tables['table'].uns.keys():
         del spatialdata.tables['table'].uns[args.sampleID]
-
+    
     # Rename table into sample id
     spatialdata.tables[f'{args.sampleID}_table'] = spatialdata.tables['table']
     del spatialdata.tables['table']
