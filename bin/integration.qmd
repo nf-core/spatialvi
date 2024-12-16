@@ -207,19 +207,40 @@ axes = axes.flatten()
 for i, (table_name, adata) in enumerate(sdata.tables.items()):
     sample_name = table_name.replace("_table", "")
     sc.pl.spatial(
-        adata,
+        adata_integrated[adata_integrated.obs["library_id"] == table_name],
         img_key="hires",
         library_id=f"{sample_name}_hires_image",
         color="clusters",
         size=1.25,
         ax=axes[i],
         show=False,
+        legend_loc=None,  # Disable the individual legend
     )
     axes[i].set_title(f"Sample: {sample_name}")
 
 # Hide any remaining axes
 for j in range(i + 1, len(axes)):
     axes[j].axis("off")
+    
+# Add a shared legend at the bottom
+# Extract unique categories and colors from "library_id"
+library_ids = adata_integrated.obs["clusters"].cat.categories
+colors = sc.pl.palettes.godsnot_102[:len(library_ids)]
+
+# Create custom legend elements
+legend_elements = [
+    plt.Line2D([0], [0], marker="o", color=color, linestyle="", markersize=8, label=lib_id)
+    for lib_id, color in zip(library_ids, colors)
+]
+
+# Add the legend to the figure
+fig.legend(
+    handles=legend_elements,
+    loc="lower center",
+    ncol=len(library_ids) // 3,  # Adjust columns based on the number of categories
+    bbox_to_anchor=(0.5, -0.15),  # Position the legend outside the plot
+    frameon=False,
+)
 
 # Adjust layout and display the figure
 plt.tight_layout()
