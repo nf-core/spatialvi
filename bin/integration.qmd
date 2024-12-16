@@ -221,7 +221,7 @@ for i, (table_name, adata) in enumerate(sdata.tables.items()):
 # Hide any remaining axes
 for j in range(i + 1, len(axes)):
     axes[j].axis("off")
-    
+
 # Add a shared legend at the bottom
 # Extract unique categories and colors from "library_id"
 library_ids = adata_integrated.obs["clusters"].cat.categories
