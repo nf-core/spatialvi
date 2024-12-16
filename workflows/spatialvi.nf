@@ -87,10 +87,12 @@ workflow SPATIALVI {
     //
     // SUBWORKFLOW: Sample aggregation (optional)
     //
-    AGGREGATION (
-        DOWNSTREAM.out.svg_sdata
-    )
-    ch_versions = ch_versions.mix(AGGREGATION.out.versions)
+    if (params.merge_sdata || params.integrate_sdata) {
+        AGGREGATION (
+            DOWNSTREAM.out.svg_sdata
+        )
+        ch_versions = ch_versions.mix(AGGREGATION.out.versions)
+    }
 
     //
     // Collate and save software versions

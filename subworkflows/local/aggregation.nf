@@ -45,6 +45,7 @@ workflow AGGREGATION {
     if (params.integrate_sdata) {
         integration_params = [
             input_sdata: "merged_sdata.zarr",
+            cluster_resolution: params.integration_cluster_resolution,
             n_hvgs: params.integration_n_hvgs,
             artifact_dir: "artifacts",
             output_adata: "integrated_adata.h5ad",

@@ -180,6 +180,13 @@
                     "description": "Integrate per-sample SpatialData objects into one and output a integration report.",
                     "fa_icon": "fas fa-arrows-to-dot"
                 },
+                "integration_cluster_resolution": {
+                    "type": "number",
+                    "default": 1,
+                    "description": "The resolution for the clustering of the spots after integration of samples.",
+                    "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
+                    "fa_icon": "fas fa-circle-nodes"
+                },
                 "integration_n_hvgs": {
                     "type": "integer",
                     "default": 2000,
