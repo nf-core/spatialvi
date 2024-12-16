@@ -10,6 +10,7 @@ include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { INPUT_CHECK            } from '../subworkflows/local/input_check'
 include { SPACERANGER            } from '../subworkflows/local/spaceranger'
 include { DOWNSTREAM             } from '../subworkflows/local/downstream'
+include { AGGREGATION            } from '../subworkflows/local/aggregation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -84,6 +85,16 @@ workflow SPATIALVI {
     ch_versions = ch_versions.mix(DOWNSTREAM.out.versions)
 
     //
+    // SUBWORKFLOW: Sample aggregation (optional)
+    //
+    if (params.merge_sdata || params.integrate_sdata) {
+        AGGREGATION (
+            DOWNSTREAM.out.svg_sdata
+        )
+        ch_versions = ch_versions.mix(AGGREGATION.out.versions)
+    }
+
+    //
     // Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
@@ -93,7 +104,6 @@ workflow SPATIALVI {
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
-
 
     //
     // MODULE: MultiQC
@@ -140,7 +150,8 @@ workflow SPATIALVI {
         []
     )
 
-    emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    emit:
+    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
 }

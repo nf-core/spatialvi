@@ -164,6 +164,38 @@
             }
         },
 
+        "aggregation_options": {
+            "title": "Data aggregation options",
+            "type": "object",
+            "fa_icon": "fas fa-rocket",
+            "description": "Options related to aggregation of final data objects",
+            "properties": {
+                "merge_sdata": {
+                    "type": "boolean",
+                    "description": "Merge per-sample SpatialData objects into one.",
+                    "fa_icon": "fas fa-arrows-to-dot"
+                },
+                "integrate_sdata": {
+                    "type": "boolean",
+                    "description": "Integrate per-sample SpatialData objects into one and output a integration report.",
+                    "fa_icon": "fas fa-arrows-to-dot"
+                },
+                "integration_cluster_resolution": {
+                    "type": "number",
+                    "default": 1,
+                    "description": "The resolution for the clustering of the spots after integration of samples.",
+                    "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
+                    "fa_icon": "fas fa-circle-nodes"
+                },
+                "integration_n_hvgs": {
+                    "type": "integer",
+                    "default": 2000,
+                    "description": "Number of highly variable genes to use for integration of samples.",
+                    "fa_icon": "fas fa-hashtag"
+                }
+            }
+        },
+
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -316,6 +348,9 @@
         },
         {
             "$ref": "#/$defs/analysis_options"
+        },
+        {
+            "$ref": "#/$defs/aggregation_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"
