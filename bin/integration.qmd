@@ -1,5 +1,5 @@
 ---
-title: "Data Pre-processing and Integration with Quality Controls"
+title: "Data integration and batch correction"
 format:
     nf-core-html: default
 jupyter: python3
@@ -17,6 +17,7 @@ before merging them into a single integrated dataset for downstream analysis.
 # Import necessary packages
 import scanpy as sc
 import anndata as an
+import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scanorama
@@ -24,6 +25,7 @@ import spatialdata
 import os
 import glob
 import scipy.sparse as sp
+from matplotlib.legend import Legend
 ```
 
 ```{python}
@@ -31,6 +33,7 @@ import scipy.sparse as sp
 #| tags: [parameters]
 #| echo: false
 input_sdata = "merged_sdata.zarr"  # Input: SpatialData file
+cluster_resolution = 1  # Resolution for Leiden clustering
 n_hvgs = 2000  # Parameter: Number of HVGs to use for analyses
 artifact_dir = "artifacts" # Parameter: artifact directory
 output_sdata = "integrated_sdata.zarr"  # Output: Integrated SpatialData file
@@ -99,24 +102,25 @@ adata_integrated
 
 # Dimensionality Reduction
 
-Finally, we perform dimensionality reduction to visualize the data.
+We perform dimensionality reduction to visualize the data.
 We compare the UMAP plots before and after batch correction.
 
 ```{python}
 # Create a figure with two subplots
-fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-
+fig, axes = plt.subplots(1, 2, figsize=(12, 6), sharex=True, sharey=True)
+adata_integrated_copy = adata_integrated.copy()
 # Compute neighbors and UMAP before integration
-sc.pp.neighbors(adata_integrated)
-sc.tl.umap(adata_integrated)
+sc.pp.neighbors(adata_integrated_copy)
+sc.tl.umap(adata_integrated_copy)
 
 # Plot UMAP before integration
 sc.pl.umap(
-    adata_integrated,
+    adata_integrated_copy,
     color=["library_id"],
     palette=sc.pl.palettes.default_20,
     ax=axes[0],
-    show=False
+    show=False,
+    legend_loc=None,  # Disable the individual legend
 )
 axes[0].set_title("Before integration")
 
@@ -130,9 +134,92 @@ sc.pl.umap(
     color=["library_id"],
     palette=sc.pl.palettes.default_20,
     ax=axes[1],
-    show=False
+    show=False,
+    legend_loc=None,  # Disable the individual legend
 )
 axes[1].set_title("After integration")
+
+# Add a shared legend at the bottom
+# Extract unique categories and colors from "library_id"
+library_ids = adata_integrated.obs["library_id"].cat.categories
+colors = sc.pl.palettes.default_20[:len(library_ids)]
+
+# Create custom legend elements
+legend_elements = [
+    plt.Line2D([0], [0], marker="o", color=color, linestyle="", markersize=8, label=lib_id)
+    for lib_id, color in zip(library_ids, colors)
+]
+
+# Add the legend to the figure
+fig.legend(
+    handles=legend_elements,
+    loc="lower center",
+    ncol=len(library_ids) // 2,  # Adjust columns based on the number of categories
+    bbox_to_anchor=(0.5, -0.05),  # Position the legend outside the plot
+    frameon=False,
+)
+
+# Adjust layout and display the figure
+plt.tight_layout(rect=[0, 0.1, 1, 1])  # Leave space for the legend
+plt.show()
+```
+
+# Clustering
+
+We perform clustering on the integrated dataset. Principal
+Component Analysis (PCA) is applied to reduce dimensionality. The Leiden
+algorithm is employed for clustering with a given resolution.
+
+```{python}
+sc.pp.pca(adata_integrated)
+sc.pp.neighbors(adata_integrated)
+sc.tl.leiden(adata_integrated, key_added="clusters", resolution=cluster_resolution)
+```
+
+We compare the clusters of the integrated samples before and after batch correction.
+
+```{python}
+# Plot UMAP after integration
+sc.pl.umap(
+    adata_integrated,
+    color=["clusters"],
+    palette=sc.pl.palettes.godsnot_102
+)
+```
+
+# Spatial Visualization
+
+Finally, we visualize the spatial distribution of clusters on the tissue image of all samples.
+
+```{python}
+# We have N samples, we will create a 2xN/2 grid of plots
+n_samples = len(sdata.tables)
+n_cols = math.ceil(n_samples / 2)
+n_rows = 2
+
+# Create a figure with subplots
+fig, axes = plt.subplots(n_rows, n_cols, figsize=(4 * n_cols, 4 * n_rows))
+
+# Flatten the axes for easier indexing
+axes = axes.flatten()
+
+# Plot spatial distribution of clusters for each sample
+for i, (table_name, adata) in enumerate(sdata.tables.items()):
+    sample_name = table_name.replace("_table", "")
+    sc.pl.spatial(
+        adata,
+        img_key="hires",
+        library_id=f"{sample_name}_hires_image",
+        color="clusters",
+        size=1.25,
+        ax=axes[i],
+        show=False,
+    )
+    axes[i].set_title(f"Sample: {sample_name}")
+
+# Hide any remaining axes
+for j in range(i + 1, len(axes)):
+    axes[j].axis("off")
 
 # Adjust layout and display the figure
 plt.tight_layout()
