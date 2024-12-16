@@ -255,6 +255,8 @@ Finally, we save the integrated data to a `zarr` file for downstream analysis.
 # We push back the integrated data to the SpatialData object
 for i, table_name in enumerate(sdata.tables.keys()):
     sdata.tables[table_name].obsm["X_scanorama"] = adatas_corrected[i].obsm["X_scanorama"]
+    sdata.tables[table_name].obsm["X_umap"] = adatas_corrected[i].obsm["X_umap"]
+    sdata.tables[table_name].obs["clusters"] = adatas_corrected[i].obs["clusters"]
 
 # Save the integrated data
 sdata.write(os.path.join(artifact_dir, output_sdata))
