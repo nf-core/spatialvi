@@ -63,7 +63,7 @@ workflow INPUT_CHECK {
         .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
 
     // Create final meta map and check input file existance
-    ch_downstream_input = ch_downstream_combined.map { create_channel_downstream(it) }
+    ch_downstream_input = ch_downstream_combined.map { create_channel_downstream_tar(it) }
 
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
@@ -78,26 +78,6 @@ def create_channel_downstream_tar(LinkedHashMap meta) {
     return [meta, spaceranger_dir]
 }
 
-
-// Function to get list of [ meta, [ raw_feature_bc_matrix, tissue_positions,
-//                                   scalefactors, hires_image, lowres_image ]]
-def create_channel_downstream(LinkedHashMap meta) {
-    meta["id"] = meta.remove("sample")
-    spaceranger_dir = file("${meta.remove('spaceranger_dir')}/**")
-    DOWNSTREAM_REQUIRED_SPACERANGER_FILES = [
-        "raw_feature_bc_matrix.h5",
-        "tissue_positions.csv",
-        "scalefactors_json.json",
-        "tissue_hires_image.png",
-        "tissue_lowres_image.png"
-    ]
-    for (f in DOWNSTREAM_REQUIRED_SPACERANGER_FILES) {
-        if(!spaceranger_dir*.name.contains(f)) {
-            error "The specified spaceranger output directory doesn't contain the required file `${f}` for sample `${meta.id}`"
-        }
-    }
-    return [meta, spaceranger_dir]
-}
 
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(LinkedHashMap meta) {
