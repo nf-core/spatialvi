@@ -10,6 +10,7 @@ testing/
 testing*
 *.pyc
 bin/
+ro-crate-metadata.json
 test-datasets/
 .nf-test/
 *.scss
