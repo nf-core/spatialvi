@@ -10,7 +10,7 @@ process SPACERANGER_COUNT {
     path(probeset)
 
     output:
-    tuple val(meta), path("outs/**"), emit: outs
+    tuple val(meta), path("outs"), emit: outs
     path "versions.yml", emit: versions
 
     when:

@@ -113,7 +113,19 @@ Changes in 'spaceranger/count/meta.yml':
    - outs:
        - meta:
 
-'modules/nf-core/spaceranger/count/main.nf' is unchanged
+Changes in 'spaceranger/count/main.nf':
+--- modules/nf-core/spaceranger/count/main.nf
++++ modules/nf-core/spaceranger/count/main.nf
+@@ -10,7 +10,7 @@
+     path(probeset)
+ 
+     output:
+-    tuple val(meta), path("outs/**"), emit: outs
++    tuple val(meta), path("outs"), emit: outs
+     path "versions.yml", emit: versions
+ 
+     when:
+
 'modules/nf-core/spaceranger/count/tests/main.nf.test' is unchanged
 'modules/nf-core/spaceranger/count/tests/main.nf.test.snap' is unchanged
 Changes in 'spaceranger/count/tests/nextflow.config':
