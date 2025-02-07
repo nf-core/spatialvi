@@ -24,10 +24,15 @@ process READ_DATA {
         exit 1, "The READ_DATA module does not support Conda/Mamba, please use Docker / Singularity / Podman instead."
     }
 
-    // Prepare the --visium_hd flag conditionally
-    def visiumHdFlag = params.visium_hd ? "--visium_hd" : ""
-
     """
+    # Fix required directory structure
+    
+    # Prepare the --visium_hd flag conditionally
+    visiumHdFlag=""
+    if [ -d "${meta.id}/binned_outputs" ]; then
+        visiumHdFlag="--visium_hd"
+    fi
+
     # Set environment variables
     export XDG_CACHE_HOME="./.xdg_cache_home"
     export XDG_DATA_HOME="./.xdg_data_home"
@@ -37,7 +42,8 @@ process READ_DATA {
         --SRCountDir "${meta.id}" \\
         --sampleID "${meta.id}" \\
         --output_sdata sdata_raw.zarr \\
-        ${visiumHdFlag}
+        \$visiumHdFlag \\
+        --bin_size 8
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
