@@ -288,7 +288,7 @@ sc.pl.violin(adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 del sdata.tables[f"{sample_id}_table"]
 sdata.tables[f"{sample_id}_table"] = adata
 # Filtering spatialdata elements based on the anndata elements:
-region, _, instance_key  = get_table_keys(sdata["Visium_HD_Human_Lung_Cancer_HD_Only_D_table"])
+region, _, instance_key  = get_table_keys(sdata[f"{sample_id}_table"])
 # If region is a list, take the first element
 if isinstance(region, list):
     region = region[0]
