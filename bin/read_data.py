@@ -38,6 +38,13 @@ if __name__ == "__main__":
         action='store_true',
         help="Visium HD data.",
     )
+    parser.add_argument(
+        "--bin_size",
+        metavar="bin_size",
+        type=int,
+        default=16,
+        help="Bin size in micrometers.",
+    )
 
     args = parser.parse_args()
 
@@ -53,13 +60,12 @@ if __name__ == "__main__":
             os.path.join(args.SRCountDir, "feature_slice.h5"),
             os.path.join(args.SRCountDir, f"{args.sampleID}_feature_slice.h5")
         )
-        bin_size=8
         spatialdata = spatialdata_io.visium_hd(
             args.SRCountDir,
-            bin_size=[bin_size],
+            bin_size=[args.bin_size],
             dataset_id=args.sampleID,
         )
-        table_name = f'square_{bin_size:03d}um'
+        table_name = f'square_{args.bin_size:03d}um'
     else:
         spatialdata = spatialdata_io.visium(
             args.SRCountDir,
