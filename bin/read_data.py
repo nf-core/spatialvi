@@ -82,5 +82,8 @@ if __name__ == "__main__":
     spatialdata.tables[f'{args.sampleID}_table'] = spatialdata.tables[table_name]
     del spatialdata.tables[table_name]
 
+    # Rename var_names to unique:
+    spatialdata.tables[f'{args.sampleID}_table'].var_names_make_unique()
+
     # Write raw spatialdata to file
     spatialdata.write(args.output_sdata, overwrite=True)
