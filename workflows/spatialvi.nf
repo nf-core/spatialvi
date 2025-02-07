@@ -57,7 +57,7 @@ workflow SPATIALVI {
     )
     ch_versions = ch_versions.mix(SPACERANGER.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{it[1]})
-    
+
     // concatenate INPUT_CHECK.out.ch_downstream_input with SPACERANGER.out.sr_dir:
     ch_downstream_input = INPUT_CHECK.out.ch_downstream_input
         .mix(SPACERANGER.out.sr_dir)

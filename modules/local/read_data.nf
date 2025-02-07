@@ -26,7 +26,7 @@ process READ_DATA {
 
     """
     # Fix required directory structure
-    
+
     # Prepare the --visium_hd flag conditionally
     visiumHdFlag=""
     if [ -d "${meta.id}/binned_outputs" ]; then
