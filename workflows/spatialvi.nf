@@ -52,21 +52,15 @@ workflow SPATIALVI {
     //
     // SUBWORKFLOW: Space Ranger raw data processing
     //
-    DOWNSTREAM_REQUIRED_SPACERANGER_FILES = [
-        "raw_feature_bc_matrix.h5",
-        "tissue_positions.csv",
-        "scalefactors_json.json",
-        "tissue_hires_image.png",
-        "tissue_lowres_image.png"
-    ]
     SPACERANGER (
         INPUT_CHECK.out.ch_spaceranger_input
     )
     ch_versions = ch_versions.mix(SPACERANGER.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{it[1]})
-    ch_downstream_input = INPUT_CHECK.out.ch_downstream_input.concat(SPACERANGER.out.sr_dir).map{
-        meta, outs -> [meta, outs]
-    }
+    
+    // concatenate INPUT_CHECK.out.ch_downstream_input with SPACERANGER.out.sr_dir:
+    ch_downstream_input = INPUT_CHECK.out.ch_downstream_input
+        .mix(SPACERANGER.out.sr_dir)
 
     //
     // MODULE: Read ST data and save as `SpatialData`
@@ -100,7 +94,7 @@ workflow SPATIALVI {
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name: 'nf_core_'  +  'spatialvi_software_'  + 'mqc_'  + 'versions.yml',
+            name: 'nf_core_'  +  'spatialvi_software_' +  'mqc_'  +  'versions.yml',
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
