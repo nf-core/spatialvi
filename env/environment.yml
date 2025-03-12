@@ -1,3 +1,5 @@
+# This environment file is used to build the Docker image from the Dockerfile in
+# the same directory.
 channels:
   - conda-forge
   - bioconda

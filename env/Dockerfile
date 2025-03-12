@@ -1,3 +1,11 @@
+# This Dockerfile is used to build the docker.io/erikfas/spatialvi Docker image,
+# which is used in the READ_DATA, MERGE_SDATA and QUARTONOTEBOOK modules; it
+# additionally uses the environment.yml file present in the same directory. This
+# Docker image will either be move to the nf-core Quay.io repo or replaced with
+# a Seqera Container (if possible, which it was not when this Dockerfile was
+# created) once the environment has become more stable (many changes are
+# currently underway).
+
 #
 # First stage: Quarto installation
 #
