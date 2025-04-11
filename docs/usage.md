@@ -78,6 +78,11 @@ Please refer to the following table for an overview of all supported columns:
 > - The `manual_alignment` column is only required for samples for which a
 >   manual alignment file is needed and can be ignored if you're using automatic
 >   alignment.
+> - If the slide layout is unknown, you can specify _e.g._ `visium-1` in the
+>   `slide` column and keep the `area` column empty, and the pipeline will
+>   automatically specify `--unknown-slide` as appropriate - please refer to the
+>   [Space Ranger slide documentation](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/slide-info)
+>   for more information.
 
 If you are unsure, please see the Visium documentation for details regarding the
 different variants of [FASTQ directory structures](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/using/fastq-input)
