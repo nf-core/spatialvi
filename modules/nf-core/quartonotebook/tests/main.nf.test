@@ -29,7 +29,12 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.artifacts,
+                    process.out.params_yaml
+                ).match() },
+                { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
             )
         }
 
@@ -59,9 +64,9 @@ nextflow_process {
                 { assert snapshot(
                     process.out.versions,
                     process.out.artifacts,
-                    process.out.params_yaml,
+                    process.out.params_yaml
                 ).match() },
-                { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello world') } }
+                { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
             )
         }
 
@@ -88,7 +93,12 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.artifacts,
+                    process.out.params_yaml
+                ).match() },
+                { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
             )
         }
 
@@ -118,9 +128,9 @@ nextflow_process {
                 { assert snapshot(
                     process.out.versions,
                     process.out.artifacts,
-                    process.out.params_yaml,
+                    process.out.params_yaml
                 ).match() },
-                { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello world') } }
+                { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
             )
         }
 
@@ -147,7 +157,12 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.artifacts,
+                    process.out.params_yaml
+                ).match() },
+                { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
             )
         }
 
@@ -174,7 +189,12 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.artifacts,
+                    process.out.params_yaml
+                ).match() },
+                { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World') } },
             )
         }
 
