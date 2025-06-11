@@ -2,8 +2,8 @@
 // Check input samplesheet and get read channels
 //
 
-include { UNTAR as UNTAR_SPACERANGER_INPUT } from "../../modules/nf-core/untar"
-include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../modules/nf-core/untar"
+include { UNTAR as UNTAR_SPACERANGER_INPUT } from "../../../modules/nf-core/untar"
+include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../../modules/nf-core/untar"
 
 workflow INPUT_CHECK {
 
