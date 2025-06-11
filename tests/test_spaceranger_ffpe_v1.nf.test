@@ -1,16 +1,14 @@
 nextflow_pipeline {
+
     name "Test full workflow (incl. Space Ranger v1)"
-    script "main.nf"
+    script "../main.nf"
     tag "pipeline"
+    profile "test_spaceranger_v1"
 
     test("Space Ranger FFPE v1 Standard") {
+
         when {
             params {
-                input  = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-ovarian-cancer-1-standard_v1_ffpe/samplesheet_spaceranger.csv'
-                spaceranger_probeset = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-ovarian-cancer-1-standard_v1_ffpe/Visium_Human_Transcriptome_Probe_Set_v1.0_GRCh38-2020-A.csv'
-                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/homo_sapiens_chr22_reference.tar.gz"
-                qc_min_counts = 5
-                qc_min_genes = 3
                 outdir = "$outputDir"
             }
         }
@@ -20,7 +18,7 @@ nextflow_pipeline {
 
                 // Workflow
                 { assert workflow.success },
-                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("nf_core_spatialvi_software_mqc_versions.yml") },
+                { assert snapshot(removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml")).match() },
 
                 // Data
                 { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/adata_processed.h5ad").exists() },

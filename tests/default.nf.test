@@ -1,10 +1,11 @@
 nextflow_pipeline {
 
-    name "Test pipeline"
+    name "Test full workflow (incl. Space Ranger v2)"
     script "../main.nf"
     tag "pipeline"
+    profile "test"
 
-    test("-profile test") {
+    test("Space Ranger FFPE v2 CytAssist") {
 
         when {
             params {
@@ -13,22 +14,35 @@ nextflow_pipeline {
         }
 
         then {
-            // stable_name: All files + folders in ${params.outdir}/ with a stable name
-            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
-            // stable_path: All files in ${params.outdir}/ with stable content
-            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assertAll(
-                { assert workflow.success},
+
+                // Workflow
+                { assert workflow.success },
+                { assert snapshot(removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml")).match() },
+
+                // Data
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/adata_processed.h5ad").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/sdata_processed.zarr").exists() },
+
+                // Reports
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/quality_controls.html").text.contains("final results of all the filtering") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/clustering.html").text.contains("spatial distribution of clusters") },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
+
+                // Spatially variable genes
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/spatially_variable_genes.csv").exists() },
+
+                // Space Ranger
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/web_summary.html").exists() },
                 { assert snapshot(
-                    // Number of successful tasks
-                    workflow.trace.succeeded().size(),
-                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
-                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"),
-                    // All stable path name, with a relative path
-                    stable_name,
-                    // All files with stable contents
-                    stable_path
-                ).match() }
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/filtered_feature_bc_matrix.h5"),
+                )},
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/raw_feature_bc_matrix.h5").exists() },
+                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/spaceranger/outs/spatial/tissue_positions.csv").exists() },
+
+                // MultiQC
+                { assert file("$outputDir/multiqc/multiqc_report.html").text.contains("CytAssist_11mm_FFPE_Human_Glioblastoma_2_4")}
             )
         }
     }
