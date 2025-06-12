@@ -2,9 +2,9 @@
 // Subworkflow for downstream analyses of ST data
 //
 
-include { QUARTONOTEBOOK as QUALITY_CONTROLS         } from '../../modules/nf-core/quartonotebook/main'
-include { QUARTONOTEBOOK as SPATIALLY_VARIABLE_GENES } from '../../modules/nf-core/quartonotebook/main'
-include { QUARTONOTEBOOK as CLUSTERING               } from '../../modules/nf-core/quartonotebook/main'
+include { QUARTONOTEBOOK as QUALITY_CONTROLS         } from '../../../modules/nf-core/quartonotebook/main'
+include { QUARTONOTEBOOK as SPATIALLY_VARIABLE_GENES } from '../../../modules/nf-core/quartonotebook/main'
+include { QUARTONOTEBOOK as CLUSTERING               } from '../../../modules/nf-core/quartonotebook/main'
 
 workflow DOWNSTREAM {
 

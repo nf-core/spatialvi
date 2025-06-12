@@ -1,12 +1,14 @@
 nextflow_pipeline {
+
     name "Test full workflow (incl. Space Ranger v2)"
-    script "main.nf"
+    script "../main.nf"
     tag "pipeline"
+    profile "test"
 
     test("Space Ranger FFPE v2 CytAssist") {
+
         when {
             params {
-                // This is the default `test` profile; params are not necessary
                 outdir = "$outputDir"
             }
         }
@@ -16,7 +18,7 @@ nextflow_pipeline {
 
                 // Workflow
                 { assert workflow.success },
-                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("nf_core_spatialvi_software_mqc_versions.yml") },
+                { assert snapshot(removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml")).match() },
 
                 // Data
                 { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/adata_processed.h5ad").exists() },
