@@ -21,7 +21,7 @@ workflow AGGREGATION {
     // Get sdata files only
     ch_sdata_files = ch_sdata
         | map {
-            meta, zarr ->
+            _meta, zarr ->
             return [zarr]
         }
 
@@ -60,7 +60,7 @@ workflow AGGREGATION {
         ch_versions = ch_versions.mix(INTEGRATE_SDATA.out.versions)
         ch_integration_artifacts = INTEGRATE_SDATA.out.artifacts
             | map {
-                meta, artifacts ->
+                _meta, artifacts ->
                 return [artifacts]
             }
             | flatten()

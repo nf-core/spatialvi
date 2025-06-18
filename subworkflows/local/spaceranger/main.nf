@@ -24,7 +24,7 @@ workflow SPACERANGER {
             [id: "reference"],
             ref_file
         ])
-        ch_reference = SPACERANGER_UNTAR_REFERENCE.out.untar.map({meta, ref -> ref})
+        ch_reference = SPACERANGER_UNTAR_REFERENCE.out.untar.map({_meta, ref -> ref})
         ch_versions = ch_versions.mix(SPACERANGER_UNTAR_REFERENCE.out.versions)
     } else {
         ch_reference = file ( params.spaceranger_reference, type: "dir", checkIfExists: true )
