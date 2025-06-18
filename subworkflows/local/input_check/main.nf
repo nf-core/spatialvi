@@ -16,7 +16,7 @@ workflow INPUT_CHECK {
 
     ch_st = Channel.fromPath(samplesheet)
         .splitCsv ( header: true, sep: ',')
-        .branch   {
+        .branch   { it ->
             spaceranger: !it.containsKey("spaceranger_dir")
             downstream: it.containsKey("spaceranger_dir")
         }
@@ -26,7 +26,7 @@ workflow INPUT_CHECK {
     // Split channel into tarballed and directory inputs
     ch_spaceranger = ch_st.spaceranger
         .map { it -> [it, it.fastq_dir]}
-        .branch {
+        .branch { it ->
             tar: it[1].contains(".tar.gz")
             dir: !it[1].contains(".tar.gz")
         }
@@ -41,14 +41,14 @@ workflow INPUT_CHECK {
         .map { meta, dir -> meta + [fastq_dir: dir] }
 
     // Create final meta map and check input existance
-    ch_spaceranger_input = ch_spaceranger_combined.map { create_channel_spaceranger(it) }
+    ch_spaceranger_input = ch_spaceranger_combined.map { it -> create_channel_spaceranger(it) }
 
     // Downstream analysis: ----------------------------------------------------
 
     // Split channel into tarballed and directory inputs
     ch_downstream = ch_st.downstream
-        .map    { create_channel_downstream_tar(it) }
-        .branch {
+        .map    { it -> create_channel_downstream_tar(it) }
+        .branch { it ->
             tar: it[1].contains(".tar.gz")
             dir: !it[1].contains(".tar.gz")
         }
@@ -63,7 +63,7 @@ workflow INPUT_CHECK {
         .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
 
     // Create final meta map and check input file existance
-    ch_downstream_input = ch_downstream_combined.map { create_channel_downstream(it) }
+    ch_downstream_input = ch_downstream_combined.map { it -> create_channel_downstream(it) }
 
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]

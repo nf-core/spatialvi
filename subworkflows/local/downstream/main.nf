@@ -29,7 +29,7 @@ workflow DOWNSTREAM {
     ch_quality_controls_input_data = sdata_raw
         .map { it -> it[1] }
     ch_quality_controls_notebook = sdata_raw
-        .map { tuple(it[0], quality_controls_notebook) }
+        .map { it -> tuple(it[0], quality_controls_notebook) }
     quality_controls_params = [
         input_sdata: "sdata_raw.zarr",
         min_counts: params.qc_min_counts,
@@ -53,7 +53,7 @@ workflow DOWNSTREAM {
         | map { meta, artifacts -> [meta, artifacts[0], meta, artifacts[1]] }
         | flatten
         | collate ( 2 )
-        | branch {
+        | branch { it ->
             sdata: it[1].name.endsWith('.zarr')
             mqc: it[1].name.endsWith('.csv')
         }
@@ -69,7 +69,7 @@ workflow DOWNSTREAM {
     ch_clustering_input_data = QUALITY_CONTROLS.out.artifacts
         .map { it -> it[1] }
     ch_clustering_notebook = QUALITY_CONTROLS.out.artifacts
-        .map { tuple(it[0], clustering_notebook) }
+        .map { it -> tuple(it[0], clustering_notebook) }
     clustering_params = [
         input_sdata: "sdata_filtered.zarr",
         cluster_resolution: params.cluster_resolution,
@@ -96,7 +96,7 @@ workflow DOWNSTREAM {
     ch_spatially_variable_genes_input_data = CLUSTERING.out.artifacts
         .map { it -> it[1] }
     ch_spatially_variable_genes_notebook = CLUSTERING.out.artifacts
-        .map { tuple(it[0], spatially_variable_genes_notebook) }
+        .map { it -> tuple(it[0], spatially_variable_genes_notebook) }
     spatially_variable_genes_params = [
         input_sdata: "sdata_processed.zarr",
         svg_autocorr_method: params.svg_autocorr_method,
@@ -118,7 +118,7 @@ workflow DOWNSTREAM {
     ch_svg_params = SPATIALLY_VARIABLE_GENES.out.params_yaml
     ch_svg_artifacts = SPATIALLY_VARIABLE_GENES.out.artifacts
         | transpose ( )
-        | branch {
+        | branch { it ->
             csv: it[1].name.endsWith('.csv')
             sdata: it[1].name.endsWith('.zarr')
         }

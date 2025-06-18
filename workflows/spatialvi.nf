@@ -47,7 +47,7 @@ workflow SPATIALVI {
         INPUT_CHECK.out.ch_spaceranger_input.map{ it -> [it[0] /* meta */, it[1] /* reads */]}
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ it -> it[1] })
 
     //
     // SUBWORKFLOW: Space Ranger raw data processing
@@ -63,7 +63,7 @@ workflow SPATIALVI {
         INPUT_CHECK.out.ch_spaceranger_input
     )
     ch_versions = ch_versions.mix(SPACERANGER.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{ it -> it[1] })
     ch_downstream_input = INPUT_CHECK.out.ch_downstream_input.concat(SPACERANGER.out.sr_dir).map{
         meta, outs -> [meta, outs.findAll{ it -> DOWNSTREAM_REQUIRED_SPACERANGER_FILES.contains(it.name) }]
     }
@@ -129,7 +129,7 @@ workflow SPATIALVI {
         methodsDescriptionText(ch_multiqc_custom_methods_description))
 
     ch_multiqc_files = ch_multiqc_files.mix(
-        DOWNSTREAM.out.qc_mqc.map{it[1]}.collect()
+        DOWNSTREAM.out.qc_mqc.map{ it -> it[1] }.collect()
     )
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))

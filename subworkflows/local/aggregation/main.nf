@@ -64,7 +64,7 @@ workflow AGGREGATION {
                 return [artifacts]
             }
             | flatten()
-            | branch {
+            | branch { it ->
                 adata: it[1].name.endsWith('.h5ad')
                 sdata: it[1].name.endsWith('.zarr')
             }
