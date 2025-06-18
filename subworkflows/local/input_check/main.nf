@@ -72,19 +72,19 @@ workflow INPUT_CHECK {
 }
 
 // Function to get list of [ meta, [ spaceranger_dir ]]
-def create_channel_downstream_tar(LinkedHashMap meta) {
+def create_channel_downstream_tar(meta) {
     meta['id'] = meta.remove('sample')
-    spaceranger_dir = meta.remove('spaceranger_dir')
+    def spaceranger_dir = meta.remove('spaceranger_dir')
     return [meta, spaceranger_dir]
 }
 
 
 // Function to get list of [ meta, [ raw_feature_bc_matrix, tissue_positions,
 //                                   scalefactors, hires_image, lowres_image ]]
-def create_channel_downstream(LinkedHashMap meta) {
+def create_channel_downstream(meta) {
     meta["id"] = meta.remove("sample")
-    spaceranger_dir = file("${meta.remove('spaceranger_dir')}/**")
-    DOWNSTREAM_REQUIRED_SPACERANGER_FILES = [
+    def spaceranger_dir = file("${meta.remove('spaceranger_dir')}/**")
+    def DOWNSTREAM_REQUIRED_SPACERANGER_FILES = [
         "raw_feature_bc_matrix.h5",
         "tissue_positions.csv",
         "scalefactors_json.json",
@@ -100,32 +100,32 @@ def create_channel_downstream(LinkedHashMap meta) {
 }
 
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
-def create_channel_spaceranger(LinkedHashMap meta) {
+def create_channel_spaceranger(meta) {
     meta["id"] = meta.remove("sample")
-    slide = meta.remove("slide")
-    area = meta.remove("area")
+    def slide = meta.remove("slide")
+    def area = meta.remove("area")
 
     // Convert a path in `meta` to a file object and return it. If `key` is not contained in `meta`
     // return an empty list which is recognized as 'no file' by nextflow.
     def get_file_from_meta = {key ->
-        v = meta.remove(key);
+        def v = meta.remove(key);
         return v ? file(v) : []
     }
 
-    fastq_dir = meta.remove("fastq_dir")
-    fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
-    manual_alignment = get_file_from_meta("manual_alignment")
-    slidefile = get_file_from_meta("slidefile")
-    image = get_file_from_meta("image")
-    cytaimage = get_file_from_meta("cytaimage")
-    colorizedimage = get_file_from_meta("colorizedimage")
-    darkimage = get_file_from_meta("darkimage")
+    def fastq_dir = meta.remove("fastq_dir")
+    def fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
+    def manual_alignment = get_file_from_meta("manual_alignment")
+    def slidefile = get_file_from_meta("slidefile")
+    def image = get_file_from_meta("image")
+    def cytaimage = get_file_from_meta("cytaimage")
+    def colorizedimage = get_file_from_meta("colorizedimage")
+    def darkimage = get_file_from_meta("darkimage")
 
     if(!fastq_files.size()) {
         error "No `fastq_dir` specified or no samples found in folder."
     }
 
-    check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]
+    def check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]
     for(k in check_optional_files) {
         if(this.binding[k] && !this.binding[k].exists()) {
             error "File for `${k}` is specified, but does not exist: ${this.binding[k]}."
