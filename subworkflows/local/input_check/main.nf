@@ -91,7 +91,7 @@ def create_channel_downstream(meta) {
         "tissue_hires_image.png",
         "tissue_lowres_image.png"
     ]
-    for (f in DOWNSTREAM_REQUIRED_SPACERANGER_FILES) {
+    DOWNSTREAM_REQUIRED_SPACERANGER_FILES.each { f ->
         if(!spaceranger_dir*.name.contains(f)) {
             error "The specified spaceranger output directory doesn't contain the required file `${f}` for sample `${meta.id}`"
         }
@@ -126,7 +126,7 @@ def create_channel_spaceranger(meta) {
     }
 
     def check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]
-    for(k in check_optional_files) {
+    check_optional_files.each { k ->
         if(this.binding[k] && !this.binding[k].exists()) {
             error "File for `${k}` is specified, but does not exist: ${this.binding[k]}."
         }
