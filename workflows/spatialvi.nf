@@ -25,7 +25,27 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spat
 workflow SPATIALVI {
 
     take:
-    samplesheet // file: samplesheet read in from --input
+    samplesheet                    // file   : /path/to/samplesheet
+    spaceranger_reference          // dir    : /path/to/reference
+    spaceranger_probeset           // file   : /path/to/csv
+    qc_min_counts                  // integer: Minimum UMIs per spot
+    qc_min_genes                   // integer: Minimum genes per spot
+    qc_min_spots                   // integer: Minimum spots per gene
+    qc_mito_threshold              // float  : Maximum mito. content per spot
+    qc_ribo_threshold              // float  : Minimum ribo. content per spot
+    qc_hb_threshold                // float  : Maximum haem. content per spot
+    cluster_n_hvgs                 // integer: Number of HVGs to use
+    cluster_resolution             // float  : Spot clustering resolution
+    svg_autocorr_method            // string : Autocorrelation method
+    n_top_svgs                     // integer: Number of variable genes to plot
+    merge_sdata                    // boolean: Whether to merge sdata or not
+    integrate_sdata                // boolean: Whether to integrate sdata or not
+    integration_cluster_resolution // float  : Integration cluster resolution
+    integration_n_hvgs             // integer: Number of HVGs to integrate with
+    multiqc_config                 // file   : /path/to/multiqc/config
+    multiqc_logo                   // file   : /path/to/multiqc/logo
+    multiqc_methods_description    // file   : /path/to/multiqc/description
+    outdir                         // dir    : /path/to/output/directory
 
     main:
 
@@ -60,7 +80,9 @@ workflow SPATIALVI {
         "tissue_lowres_image.png"
     ]
     SPACERANGER (
-        INPUT_CHECK.out.ch_spaceranger_input
+        INPUT_CHECK.out.ch_spaceranger_input,
+        spaceranger_reference,
+        spaceranger_probeset,
     )
     ch_versions = ch_versions.mix(SPACERANGER.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{ it -> it[1] })
@@ -80,16 +102,30 @@ workflow SPATIALVI {
     // SUBWORKFLOW: Downstream analyses of ST data
     //
     DOWNSTREAM (
-        READ_DATA.out.sdata_raw
+        READ_DATA.out.sdata_raw,
+        qc_min_counts,
+        qc_min_genes,
+        qc_min_spots,
+        qc_mito_threshold,
+        qc_ribo_threshold,
+        qc_hb_threshold,
+        cluster_n_hvgs,
+        cluster_resolution,
+        svg_autocorr_method,
+        n_top_svgs,
     )
     ch_versions = ch_versions.mix(DOWNSTREAM.out.versions)
 
     //
     // SUBWORKFLOW: Sample aggregation (optional)
     //
-    if (params.merge_sdata || params.integrate_sdata) {
+    if (merge_sdata || integrate_sdata) {
         AGGREGATION (
-            DOWNSTREAM.out.svg_sdata
+            DOWNSTREAM.out.svg_sdata,
+            merge_sdata,
+            integrate_sdata,
+            integration_cluster_resolution,
+            integration_n_hvgs,
         )
         ch_versions = ch_versions.mix(AGGREGATION.out.versions)
     }
@@ -99,7 +135,7 @@ workflow SPATIALVI {
     //
     softwareVersionsToYAML(ch_versions)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
+            storeDir: "${outdir}/pipeline_info",
             name: 'nf_core_'  +  'spatialvi_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
@@ -110,11 +146,11 @@ workflow SPATIALVI {
     //
     ch_multiqc_config        = Channel.fromPath(
         "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    ch_multiqc_custom_config = params.multiqc_config ?
-        Channel.fromPath(params.multiqc_config, checkIfExists: true) :
+    ch_multiqc_custom_config = multiqc_config ?
+        Channel.fromPath(multiqc_config, checkIfExists: true) :
         Channel.empty()
-    ch_multiqc_logo          = params.multiqc_logo ?
-        Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
+    ch_multiqc_logo          = multiqc_logo ?
+        Channel.fromPath(multiqc_logo, checkIfExists: true) :
         Channel.empty()
 
     summary_params      = paramsSummaryMap(
@@ -122,8 +158,8 @@ workflow SPATIALVI {
     ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
-        file(params.multiqc_methods_description, checkIfExists: true) :
+    ch_multiqc_custom_methods_description = multiqc_methods_description ?
+        file(multiqc_methods_description, checkIfExists: true) :
         file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
     ch_methods_description                = Channel.value(
         methodsDescriptionText(ch_multiqc_custom_methods_description))

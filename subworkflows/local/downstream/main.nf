@@ -9,7 +9,17 @@ include { QUARTONOTEBOOK as CLUSTERING               } from '../../../modules/nf
 workflow DOWNSTREAM {
 
     take:
-    sdata_raw // Channel: [ meta, zarr ]
+    sdata_raw           // channel: [ meta, zarr ]
+    qc_min_counts       // integer: Minimum UMIs per spot
+    qc_min_genes        // integer: Minimum genes per spot
+    qc_min_spots        // integer: Minimum spots per gene
+    qc_mito_threshold   // float  : Maximum mitochondrial content per spot
+    qc_ribo_threshold   // float  : Minimum ribosomal content per spot
+    qc_hb_threshold     // float  : Maximum haemoglobin content per spot
+    cluster_n_hvgs      // integer: Number of highly variable genes to use
+    cluster_resolution  // float  : Spot clustering resolution
+    svg_autocorr_method // string : Spatial variable gene autocorrelation method
+    n_top_svgs          // integer: Number of top variable genes to plot
 
     main:
 
@@ -32,12 +42,12 @@ workflow DOWNSTREAM {
         .map { it -> tuple(it[0], quality_controls_notebook) }
     quality_controls_params = [
         input_sdata: "sdata_raw.zarr",
-        min_counts: params.qc_min_counts,
-        min_genes: params.qc_min_genes,
-        min_spots: params.qc_min_spots,
-        mito_threshold: params.qc_mito_threshold,
-        ribo_threshold: params.qc_ribo_threshold,
-        hb_threshold: params.qc_hb_threshold,
+        min_counts: qc_min_counts,
+        min_genes: qc_min_genes,
+        min_spots: qc_min_spots,
+        mito_threshold: qc_mito_threshold,
+        ribo_threshold: qc_ribo_threshold,
+        hb_threshold: qc_hb_threshold,
         artifact_dir: "artifacts",
         output_adata: "adata_filtered.h5ad",
         output_sdata: "sdata_filtered.zarr",
@@ -72,8 +82,8 @@ workflow DOWNSTREAM {
         .map { it -> tuple(it[0], clustering_notebook) }
     clustering_params = [
         input_sdata: "sdata_filtered.zarr",
-        cluster_resolution: params.cluster_resolution,
-        n_hvgs: params.cluster_n_hvgs,
+        n_hvgs: cluster_n_hvgs,
+        cluster_resolution: cluster_resolution,
         artifact_dir: "artifacts",
         output_adata: "adata_processed.h5ad",
         output_sdata: "sdata_processed.zarr",
@@ -99,8 +109,8 @@ workflow DOWNSTREAM {
         .map { it -> tuple(it[0], spatially_variable_genes_notebook) }
     spatially_variable_genes_params = [
         input_sdata: "sdata_processed.zarr",
-        svg_autocorr_method: params.svg_autocorr_method,
-        n_top_svgs: params.n_top_svgs,
+        svg_autocorr_method: svg_autocorr_method,
+        n_top_svgs: n_top_svgs,
         artifact_dir: "artifacts",
         output_csv: "spatially_variable_genes.csv",
         output_adata: "adata_spatially_variable_genes.h5ad",
