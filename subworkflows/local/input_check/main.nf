@@ -104,16 +104,16 @@ def create_channel_spaceranger(meta) {
     meta["id"] = meta.remove("sample")
     def slide = meta.remove("slide")
     def area = meta.remove("area")
-
-    // Convert a path in `meta` to a file object and return it. If `key` is not contained in `meta`
-    // return an empty list which is recognized as 'no file' by nextflow.
-    def get_file_from_meta = {key ->
-        def v = meta.remove(key);
-        return v ? file(v) : []
-    }
-
     def fastq_dir = meta.remove("fastq_dir")
     def fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
+
+    // Convert a path in `meta` to a file object and return it. If key `k` is
+    // not contained in `meta` return an empty list which is recognized as 'no
+    // file' by Nextflow.
+    def get_file_from_meta = { k ->
+        def v = meta.remove(k)
+        return v ? file(v) : []
+    }
     def manual_alignment = get_file_from_meta("manual_alignment")
     def slidefile = get_file_from_meta("slidefile")
     def image = get_file_from_meta("image")
@@ -125,12 +125,22 @@ def create_channel_spaceranger(meta) {
         error "No `fastq_dir` specified or no samples found in folder."
     }
 
-    def check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]
-    check_optional_files.each { k ->
-        if(this.binding[k] && !this.binding[k].exists()) {
-            error "File for `${k}` is specified, but does not exist: ${this.binding[k]}."
+    // Check for existance of optional files
+    def optional_files = [
+        'manual_alignment': manual_alignment,
+        'slidefile': slidefile,
+        'image': image,
+        'cytaimage': cytaimage,
+        'colorizedimage': colorizedimage,
+        'darkimage': darkimage
+    ]
+    optional_files.each { k, f ->
+        if(f && !f.exists()) {
+            error "File for `${k}` is specified, but does not exist: ${f}."
         }
     }
+
+    // Check that at least one type of image is specified
     if(!(image || cytaimage || colorizedimage || darkimage)) {
         error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
     }
