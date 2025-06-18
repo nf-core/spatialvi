@@ -130,7 +130,7 @@ workflow DOWNSTREAM {
     qc_nb             = ch_qc_nb               // channel: [ meta, qmd ]
     qc_params         = ch_qc_yml              // channel: [ meta, yml ]
 
-    clustering_html   = ch_clustering_html     // channel: [ html ]
+    clustering_html   = ch_clustering_html     // channel: [ meta, html ]
     clustering_sdata  = ch_clustering_sdata    // channel: [ meta, zarr]
     clustering_nb     = ch_clustering_nb       // channel: [ meta, qmd ]
     clustering_params = ch_clustering_params   // channel: [ meta, yml ]

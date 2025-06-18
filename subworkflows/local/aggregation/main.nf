@@ -73,10 +73,10 @@ workflow AGGREGATION {
     }
 
     emit:
-    merged_sdata     = ch_merged_sdata     // channel: [ aggregated-sdata.zarr ]
+    merged_sdata     = ch_merged_sdata     // channel: [ zarr ]
 
-    integrated_adata = ch_integrated_adata // channel: [ integrated_adata.h5ad ]
-    integrated_sdata = ch_integrated_sdata // channel: [ integrated_sdata.zarr ]
+    integrated_adata = ch_integrated_adata // channel: [ h5ad ]
+    integrated_sdata = ch_integrated_sdata // channel: [ zarr ]
 
     versions         = ch_versions         // channel: [ versions.yml ]
 
