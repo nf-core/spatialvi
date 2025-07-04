@@ -41,6 +41,7 @@ jobs:
         nf_test_files:
           - tests/pipeline/test_spaceranger_ffpe_v1.nf.test
           - tests/pipeline/test_spaceranger_ffpe_v2_cytassist.nf.test
+          - tests/pipeline/test_spaceranger_ffpe_hd.nf.test
           - tests/pipeline/test_downstream.nf.test
         isMaster:
           - ${{ github.base_ref == 'master' }}
