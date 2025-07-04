@@ -2,8 +2,8 @@
 // Raw data processing with Space Ranger
 //
 
-include { UNTAR as SPACERANGER_UNTAR_REFERENCE } from "../../modules/nf-core/untar"
-include { SPACERANGER_COUNT                    } from '../../modules/nf-core/spaceranger/count'
+include { UNTAR as SPACERANGER_UNTAR_REFERENCE } from "../../../modules/nf-core/untar"
+include { SPACERANGER_COUNT                    } from '../../../modules/nf-core/spaceranger/count'
 
 workflow SPACERANGER {
 

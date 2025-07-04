@@ -1,15 +1,15 @@
 lint:
-  actions_ci: false
   files_exist:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
   files_unchanged:
     - .gitattributes
     - .gitignore
+    - .github/PULL_REQUEST_TEMPLATE.md
     - assets/nf-core-spatialvi_logo_light.png
     - docs/images/nf-core-spatialvi_logo_light.png
     - docs/images/nf-core-spatialvi_logo_dark.png
-nf_core_version: 3.1.1
+nf_core_version: 3.3.1
 repository_type: pipeline
 template:
   author: Erik Fasterius, Christophe Avenel, Sergii Domanskyi, Jeffrey Chuang, Anuj

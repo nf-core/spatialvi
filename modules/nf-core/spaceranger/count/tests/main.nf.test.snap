@@ -21,6 +21,9 @@
                 }
             },
             [
+                "versions.yml:md5,4abe169f33d7f99d5d9876b189060aae"
+            ],
+            [
                 "clusters.csv:md5,221a4554e62ea94b0df8dbf637d2c13c",
                 "clusters.csv:md5,53ee76645943b5562392aac51d2d9f3f",
                 "clusters.csv:md5,b791359469683ad19cdb8d1af3de5705",
@@ -48,10 +51,10 @@
                 "variance.csv:md5,4159711ab5d64e97737fad9d75d945b3",
                 "projection.csv:md5,ce729f7e237df4570ac3e4a79251df24",
                 "projection.csv:md5,fa7bdefa8424b233fe6461129ab76d57",
-                "filtered_feature_bc_matrix.h5:md5,f625d7e2c063c8c079ccc35a853b356d",
+                "filtered_feature_bc_matrix.h5:md5,704256e5150522d9cf2e75e7e47221b6",
                 "metrics_summary.csv:md5,5ece84f5f8e08839749b1c8f2bff6701",
                 "probe_set.csv:md5,5bfb8f12319be1b2b6c14142537c3804",
-                "raw_feature_bc_matrix.h5:md5,90575715eb252f0b652c9d36a1f5628e",
+                "raw_feature_bc_matrix.h5:md5,ac24486662643ea68562c1a51cbbb2bd",
                 "raw_probe_bc_matrix.h5:md5,8ab08437814506f98e3f10107cfc38ac",
                 "aligned_fiducials.jpg:md5,51dcc3a32d3d5ca4704f664c8ede81ef",
                 "cytassist_image.tiff:md5,0fb04a55e5658f4d158d986a334b034d",

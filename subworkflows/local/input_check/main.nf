@@ -2,8 +2,8 @@
 // Check input samplesheet and get read channels
 //
 
-include { UNTAR as UNTAR_SPACERANGER_INPUT } from "../../modules/nf-core/untar"
-include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../modules/nf-core/untar"
+include { UNTAR as UNTAR_SPACERANGER_INPUT } from "../../../modules/nf-core/untar"
+include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../../modules/nf-core/untar"
 
 workflow INPUT_CHECK {
 
@@ -82,6 +82,8 @@ def create_channel_downstream_tar(LinkedHashMap meta) {
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(LinkedHashMap meta) {
     meta["id"] = meta.remove("sample")
+    slide = meta.remove("slide")
+    area = meta.remove("area")
 
     // Convert a path in `meta` to a file object and return it. If `key` is not contained in `meta`
     // return an empty list which is recognized as 'no file' by nextflow.
@@ -113,6 +115,5 @@ def create_channel_spaceranger(LinkedHashMap meta) {
         error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
     }
 
-    return [meta, fastq_files, image, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
+    return [meta, fastq_files, image, slide, area, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
 }
-

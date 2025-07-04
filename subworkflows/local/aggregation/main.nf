@@ -2,8 +2,8 @@
 // Subworkflow for aggregation of sample data
 //
 
-include { MERGE_SDATA                       } from '../../modules/local/merge_sdata'
-include { QUARTONOTEBOOK as INTEGRATE_SDATA } from '../../modules/nf-core/quartonotebook/main'
+include { MERGE_SDATA                       } from "../../../modules/local/merge_sdata"
+include { QUARTONOTEBOOK as INTEGRATE_SDATA } from "../../../modules/nf-core/quartonotebook/main"
 
 workflow AGGREGATION {
 
