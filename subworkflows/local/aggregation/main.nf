@@ -8,7 +8,11 @@ include { QUARTONOTEBOOK as INTEGRATE_SDATA } from "../../../modules/nf-core/qua
 workflow AGGREGATION {
 
     take:
-    ch_sdata // Channel: [ meta, zarr ]
+    ch_sdata                       // channel: [ meta, zarr ]
+    merge_sdata                    // boolean: Whether to merge sdata or not
+    integrate_sdata                // boolean: Whether to integrate sdata or not
+    integration_cluster_resolution // float  : Integration cluster resolution
+    integration_n_hvgs             // integer: Number of HVGs to use for integration
 
     main:
 
@@ -21,7 +25,7 @@ workflow AGGREGATION {
     // Get sdata files only
     ch_sdata_files = ch_sdata
         | map {
-            meta, zarr ->
+            _meta, zarr ->
             return [zarr]
         }
 
@@ -29,7 +33,7 @@ workflow AGGREGATION {
     // MODULE: Merge per-sample SpatialData objects into one
     //
     ch_merged_sdata = Channel.empty()
-    if (params.merge_sdata || params.integrate_sdata) {
+    if (merge_sdata || integrate_sdata) {
         MERGE_SDATA (
             ch_sdata_files.collect()
         )
@@ -42,11 +46,11 @@ workflow AGGREGATION {
     //
     ch_integrated_sdata = Channel.empty()
     ch_integrated_adata = Channel.empty()
-    if (params.integrate_sdata) {
+    if (integrate_sdata) {
         integration_params = [
             input_sdata: "merged_sdata.zarr",
-            cluster_resolution: params.integration_cluster_resolution,
-            n_hvgs: params.integration_n_hvgs,
+            cluster_resolution: integration_cluster_resolution,
+            n_hvgs: integration_n_hvgs,
             artifact_dir: "artifacts",
             output_adata: "integrated_adata.h5ad",
             output_sdata: "integrated_sdata.zarr"
@@ -60,11 +64,11 @@ workflow AGGREGATION {
         ch_versions = ch_versions.mix(INTEGRATE_SDATA.out.versions)
         ch_integration_artifacts = INTEGRATE_SDATA.out.artifacts
             | map {
-                meta, artifacts ->
+                _meta, artifacts ->
                 return [artifacts]
             }
             | flatten()
-            | branch {
+            | branch { it ->
                 adata: it[1].name.endsWith('.h5ad')
                 sdata: it[1].name.endsWith('.zarr')
             }
@@ -73,10 +77,10 @@ workflow AGGREGATION {
     }
 
     emit:
-    merged_sdata     = ch_merged_sdata     // channel: [ aggregated-sdata.zarr ]
+    merged_sdata     = ch_merged_sdata     // channel: [ zarr ]
 
-    integrated_adata = ch_integrated_adata // channel: [ integrated_adata.h5ad ]
-    integrated_sdata = ch_integrated_sdata // channel: [ integrated_sdata.zarr ]
+    integrated_adata = ch_integrated_adata // channel: [ h5ad ]
+    integrated_sdata = ch_integrated_sdata // channel: [ zarr ]
 
     versions         = ch_versions         // channel: [ versions.yml ]
 
