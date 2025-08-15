@@ -6,9 +6,9 @@ nextflow_pipeline {
     test("Space Ranger FFPE HD") {
         when {
             params {
-                input  = 'https://raw.githubusercontent.com/cavenel/test-datasets/spatialvi/testdata/human-lung-cancer-post-xenium_hd_ffpe/samplesheet_spaceranger_hd.csv'
-                spaceranger_probeset = "https://raw.githubusercontent.com/cavenel/test-datasets/spatialvi/testdata/human-lung-cancer-post-xenium_hd_ffpe/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_probe_set.csv"
-                spaceranger_reference = "https://raw.githubusercontent.com/cavenel/test-datasets/refs/heads/spatialvi/testdata/GRCh38.tar.gz"
+                input  = 'https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-lung-cancer-post-xenium_hd_ffpe/samplesheet_spaceranger_hd.csv'
+                spaceranger_probeset = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-lung-cancer-post-xenium_hd_ffpe/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_probe_set.csv"
+                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/spatialvi/testdata/GRCh38.tar.gz"
                 qc_min_counts = 5
                 qc_min_genes = 3
                 outdir = "$outputDir"
