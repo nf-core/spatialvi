@@ -16,7 +16,7 @@ workflow INPUT_CHECK {
 
     ch_st = Channel.fromPath(samplesheet)
         .splitCsv ( header: true, sep: ',')
-        .branch   {
+        .branch   { it ->
             spaceranger: !it.containsKey("spaceranger_dir")
             downstream: it.containsKey("spaceranger_dir")
         }
@@ -26,7 +26,7 @@ workflow INPUT_CHECK {
     // Split channel into tarballed and directory inputs
     ch_spaceranger = ch_st.spaceranger
         .map { it -> [it, it.fastq_dir]}
-        .branch {
+        .branch { it ->
             tar: it[1].contains(".tar.gz")
             dir: !it[1].contains(".tar.gz")
         }
@@ -41,14 +41,14 @@ workflow INPUT_CHECK {
         .map { meta, dir -> meta + [fastq_dir: dir] }
 
     // Create final meta map and check input existance
-    ch_spaceranger_input = ch_spaceranger_combined.map { create_channel_spaceranger(it) }
+    ch_spaceranger_input = ch_spaceranger_combined.map { it -> create_channel_spaceranger(it) }
 
     // Downstream analysis: ----------------------------------------------------
 
     // Split channel into tarballed and directory inputs
     ch_downstream = ch_st.downstream
-        .map    { create_channel_downstream_tar(it) }
-        .branch {
+        .map    { it -> create_channel_downstream_tar(it) }
+        .branch { it ->
             tar: it[1].contains(".tar.gz")
             dir: !it[1].contains(".tar.gz")
         }
@@ -63,7 +63,7 @@ workflow INPUT_CHECK {
         .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
 
     // Create final meta map and check input file existance
-    ch_downstream_input = ch_downstream_combined.map { create_channel_downstream_tar(it) }
+    ch_downstream_input = ch_downstream_combined.map { it -> create_channel_downstream(it) }
 
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
@@ -72,45 +72,54 @@ workflow INPUT_CHECK {
 }
 
 // Function to get list of [ meta, [ spaceranger_dir ]]
-def create_channel_downstream_tar(LinkedHashMap meta) {
+def create_channel_downstream_tar(meta) {
     meta['id'] = meta.remove('sample')
-    spaceranger_dir = meta.remove('spaceranger_dir')
+    def spaceranger_dir = meta.remove('spaceranger_dir')
     return [meta, spaceranger_dir]
 }
 
-
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
-def create_channel_spaceranger(LinkedHashMap meta) {
+def create_channel_spaceranger(meta) {
     meta["id"] = meta.remove("sample")
-    slide = meta.remove("slide")
-    area = meta.remove("area")
+    def slide = meta.remove("slide")
+    def area = meta.remove("area")
+    def fastq_dir = meta.remove("fastq_dir")
+    def fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
 
-    // Convert a path in `meta` to a file object and return it. If `key` is not contained in `meta`
-    // return an empty list which is recognized as 'no file' by nextflow.
-    def get_file_from_meta = {key ->
-        v = meta.remove(key);
+    // Convert a path in `meta` to a file object and return it. If key `k` is
+    // not contained in `meta` return an empty list which is recognized as 'no
+    // file' by Nextflow.
+    def get_file_from_meta = { k ->
+        def v = meta.remove(k)
         return v ? file(v) : []
     }
-
-    fastq_dir = meta.remove("fastq_dir")
-    fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
-    manual_alignment = get_file_from_meta("manual_alignment")
-    slidefile = get_file_from_meta("slidefile")
-    image = get_file_from_meta("image")
-    cytaimage = get_file_from_meta("cytaimage")
-    colorizedimage = get_file_from_meta("colorizedimage")
-    darkimage = get_file_from_meta("darkimage")
+    def manual_alignment = get_file_from_meta("manual_alignment")
+    def slidefile = get_file_from_meta("slidefile")
+    def image = get_file_from_meta("image")
+    def cytaimage = get_file_from_meta("cytaimage")
+    def colorizedimage = get_file_from_meta("colorizedimage")
+    def darkimage = get_file_from_meta("darkimage")
 
     if(!fastq_files.size()) {
         error "No `fastq_dir` specified or no samples found in folder."
     }
 
-    check_optional_files = ["manual_alignment", "slidefile", "image", "cytaimage", "colorizedimage", "darkimage"]
-    for(k in check_optional_files) {
-        if(this.binding[k] && !this.binding[k].exists()) {
-            error "File for `${k}` is specified, but does not exist: ${this.binding[k]}."
+    // Check for existance of optional files
+    def optional_files = [
+        'manual_alignment': manual_alignment,
+        'slidefile': slidefile,
+        'image': image,
+        'cytaimage': cytaimage,
+        'colorizedimage': colorizedimage,
+        'darkimage': darkimage
+    ]
+    optional_files.each { k, f ->
+        if(f && !f.exists()) {
+            error "File for `${k}` is specified, but does not exist: ${f}."
         }
     }
+
+    // Check that at least one type of image is specified
     if(!(image || cytaimage || colorizedimage || darkimage)) {
         error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
     }

@@ -8,7 +8,9 @@ include { SPACERANGER_COUNT                    } from '../../../modules/nf-core/
 workflow SPACERANGER {
 
     take:
-    ch_data // channel: [ val(meta), [ raw st data ] ]
+    ch_data               // channel  : [ val(meta), [ raw st data ] ]
+    spaceranger_reference // directory: /path/to/reference
+    spaceranger_probeset  // file     : /path/to/csv
 
     main:
 
@@ -18,24 +20,24 @@ workflow SPACERANGER {
     // Reference files
     //
     ch_reference = Channel.empty()
-    if (params.spaceranger_reference ==~ /.*\.tar\.gz$/) {
-        ref_file = file(params.spaceranger_reference)
+    if (spaceranger_reference ==~ /.*\.tar\.gz$/) {
+        ref_file = file(spaceranger_reference)
         SPACERANGER_UNTAR_REFERENCE ([
             [id: "reference"],
             ref_file
         ])
-        ch_reference = SPACERANGER_UNTAR_REFERENCE.out.untar.map({meta, ref -> ref})
+        ch_reference = SPACERANGER_UNTAR_REFERENCE.out.untar.map({_meta, ref -> ref})
         ch_versions = ch_versions.mix(SPACERANGER_UNTAR_REFERENCE.out.versions)
     } else {
-        ch_reference = file ( params.spaceranger_reference, type: "dir", checkIfExists: true )
+        ch_reference = file ( spaceranger_reference, type: "dir", checkIfExists: true )
     }
 
     //
     // Optional: probe set
     //
     ch_probeset = Channel.empty()
-    if (params.spaceranger_probeset) {
-        ch_probeset = file ( params.spaceranger_probeset, checkIfExists: true )
+    if (spaceranger_probeset) {
+        ch_probeset = file ( spaceranger_probeset, checkIfExists: true )
     } else {
         ch_probeset = []
     }
@@ -51,6 +53,6 @@ workflow SPACERANGER {
     ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
     emit:
-    sr_dir   = SPACERANGER_COUNT.out.outs
-    versions = ch_versions                  // channel: [ versions.yml ]
+    sr_dir   = SPACERANGER_COUNT.out.outs // channel: [ meta, dir ]
+    versions = ch_versions                // channel: [ versions.yml ]
 }

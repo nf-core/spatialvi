@@ -18,6 +18,7 @@ compatible with further downstream analyses and/or exploration in _e.g._
 
 ### `Added`
 
+- Follow the new Nextflow strict syntax for local (sub-) workflows [[#115](https://github.com/nf-core/spatialvi/pull/115)]
 - Add ability to use unknown slides for Space Ranger-based analyses [[#99](https://github.com/nf-core/spatialvi/issues/99) and [#109](https://github.com/nf-core/spatialvi/pull/109)]
 - Add subworkflow for merging per-sample SpatialData into one [[#96](https://github.com/nf-core/spatialvi/pull/96)]
 - Add quality control metrics as custom MultiQC content [[#88](https://github.com/nf-core/spatialvi/pull/88)]
