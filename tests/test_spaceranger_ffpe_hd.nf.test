@@ -8,7 +8,7 @@ nextflow_pipeline {
             params {
                 input  = 'https://raw.githubusercontent.com/cavenel/test-datasets/spatialvi/testdata/human-lung-cancer-post-xenium_hd_ffpe/samplesheet_spaceranger_hd.csv'
                 spaceranger_probeset = "https://raw.githubusercontent.com/cavenel/test-datasets/spatialvi/testdata/human-lung-cancer-post-xenium_hd_ffpe/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_probe_set.csv"
-                spaceranger_reference = "https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/homo_sapiens_chr22_reference.tar.gz"
+                spaceranger_reference = "https://raw.githubusercontent.com/cavenel/test-datasets/refs/heads/spatialvi/testdata/GRCh38.tar.gz"
                 qc_min_counts = 5
                 qc_min_genes = 3
                 outdir = "$outputDir"
@@ -20,7 +20,7 @@ nextflow_pipeline {
 
                 // Workflow
                 { assert workflow.success },
-                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("nf_core_spatialvi_software_mqc_versions.yml") },
+                { assert snapshot(removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml")).match() },
 
                 // Data
                 { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/data/adata_processed.h5ad").exists() },
@@ -37,11 +37,11 @@ nextflow_pipeline {
                 // Space Ranger
                 { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/web_summary.html").exists() },
                 { assert snapshot(
-                    path("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/raw_feature_bc_matrix.h5"),
-                    path("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/filtered_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/binned_outputs/square_002um/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/binned_outputs/square_002um/filtered_feature_bc_matrix.h5"),
                 )},
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/raw_feature_bc_matrix.h5").exists() },
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/spatial/tissue_positions.csv").exists() },
+                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/binned_outputs/square_002um/raw_feature_bc_matrix.h5").exists() },
+                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/binned_outputs/square_002um/spatial/tissue_positions.parquet").exists() },
 
                 // MultiQC
                 { assert file("$outputDir/multiqc/multiqc_report.html").text.contains("Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2")}
