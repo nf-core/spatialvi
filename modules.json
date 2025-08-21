@@ -7,29 +7,28 @@
                 "nf-core": {
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "b1966f36ec9de31927b2603d8f499960b2a4c294",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "e594e9dfaffa7572afc11bafc634984fd4cbd87b",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/multiqc/multiqc.diff"
+                        "git_sha": "a4488d3d09244f29fb4606ba4eef85d59dcc6ad8",
+                        "installed_by": ["modules"]
                     },
                     "quartonotebook": {
                         "branch": "master",
-                        "git_sha": "ee7b6a0d976c1735e6544283b8fd0a68660acbb9",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "spaceranger/count": {
                         "branch": "master",
-                        "git_sha": "12a91a498b01203a7648f456c85eea01ca46d3e4",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/spaceranger/count/spaceranger-count.diff"
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     }
                 }
