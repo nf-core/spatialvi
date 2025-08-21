@@ -78,9 +78,7 @@ workflow SPATIALVI {
         spaceranger_probeset,
     )
     ch_versions = ch_versions.mix(SPACERANGER.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{it -> it[1]})
-
-    // concatenate INPUT_CHECK.out.ch_downstream_input with SPACERANGER.out.sr_dir:
+    ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{ it -> it[1] })
     ch_downstream_input = INPUT_CHECK.out.ch_downstream_input
         .mix(SPACERANGER.out.sr_dir)
 
@@ -130,7 +128,7 @@ workflow SPATIALVI {
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
-            name: 'nf_core_'  +  'spatialvi_software_' +  'mqc_'  +  'versions.yml',
+            name: 'nf_core_' + 'spatialvi_software_' + 'mqc_' + 'versions.yml',
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
