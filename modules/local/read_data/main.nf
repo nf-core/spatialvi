@@ -26,10 +26,12 @@ process READ_DATA {
     """
     # Fix required directory structure
 
-    # Prepare the --visium_hd flag conditionally
+    # Prepare the --visium_hd flag and bin_size conditionally
     visiumHdFlag=""
+    binSizeFlag=""
     if [ -d "${meta.id}/binned_outputs" ]; then
         visiumHdFlag="--visium_hd"
+        binSizeFlag="--bin_size ${params.hd_bin_size ?: 8}"
     fi
 
     # Set environment variables
@@ -42,7 +44,7 @@ process READ_DATA {
         --sampleID "${meta.id}" \\
         --output_sdata sdata_raw.zarr \\
         \$visiumHdFlag \\
-        --bin_size 8
+        \$binSizeFlag
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

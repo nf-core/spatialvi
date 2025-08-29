@@ -98,6 +98,13 @@
             "fa_icon": "fas fa-magnifying-glass-chart",
             "description": "Options related to the downstream analyses performed by the pipeline.",
             "properties": {
+                "hd_bin_size": {
+                    "type": "integer",
+                    "description": "Bin size for Visium HD data. Only used for Visium HD. Allowed values: 2, 8, 16.",
+                    "enum": [2, 8, 16],
+                    "default": 8,
+                    "fa_icon": "fas fa-expand"
+                },
                 "qc_min_counts": {
                     "type": "integer",
                     "default": 500,

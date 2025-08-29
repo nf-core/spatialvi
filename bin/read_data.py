@@ -42,7 +42,7 @@ if __name__ == "__main__":
         "--bin_size",
         metavar="bin_size",
         type=int,
-        default=16,
+        default=8,
         help="Bin size in micrometers.",
     )
 

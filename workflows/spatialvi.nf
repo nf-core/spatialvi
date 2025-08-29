@@ -28,6 +28,7 @@ workflow SPATIALVI {
     samplesheet                    // file   : /path/to/samplesheet
     spaceranger_reference          // dir    : /path/to/reference
     spaceranger_probeset           // file   : /path/to/csv
+    hd_bin_size                    // integer: Bin size for Visium HD
     qc_min_counts                  // integer: Minimum UMIs per spot
     qc_min_genes                   // integer: Minimum genes per spot
     qc_min_spots                   // integer: Minimum spots per gene
@@ -85,6 +86,9 @@ workflow SPATIALVI {
     //
     // MODULE: Read ST data and save as `SpatialData`
     //
+    if( ![2,8,16].contains(hd_bin_size) ) {
+        println "WARNING: hd_bin_size (${hd_bin_size}) is not one of the allowed values (2, 8, 16). Defaulting to 8."
+    }
     READ_DATA (
         ch_downstream_input
     )
