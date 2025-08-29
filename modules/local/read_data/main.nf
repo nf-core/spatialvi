@@ -9,7 +9,8 @@ process READ_DATA {
     container "docker.io/erikfas/spatialvi"
 
     input:
-    tuple val (meta), path("${meta.id}")
+    tuple val(meta), path("${meta.id}")
+    val(hd_bin_size)
 
     output:
     tuple val(meta), path("sdata_raw.zarr"), emit: sdata_raw
@@ -31,7 +32,7 @@ process READ_DATA {
     binSizeFlag=""
     if [ -d "${meta.id}/binned_outputs" ]; then
         visiumHdFlag="--visium_hd"
-        binSizeFlag="--bin_size ${params.hd_bin_size ?: 8}"
+        binSizeFlag="--bin_size ${hd_bin_size}"
     fi
 
     # Set environment variables

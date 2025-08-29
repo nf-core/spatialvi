@@ -87,7 +87,8 @@ workflow SPATIALVI {
     // MODULE: Read ST data and save as `SpatialData`
     //
     READ_DATA (
-        ch_downstream_input
+        ch_downstream_input,
+        hd_bin_size
     )
     ch_versions = ch_versions.mix(READ_DATA.out.versions)
 
