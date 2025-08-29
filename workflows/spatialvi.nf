@@ -86,9 +86,6 @@ workflow SPATIALVI {
     //
     // MODULE: Read ST data and save as `SpatialData`
     //
-    if( ![2,8,16].contains(hd_bin_size) ) {
-        println "WARNING: hd_bin_size (${hd_bin_size}) is not one of the allowed values (2, 8, 16). Defaulting to 8."
-    }
     READ_DATA (
         ch_downstream_input
     )
