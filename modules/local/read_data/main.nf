@@ -1,5 +1,5 @@
 //
-// Read ST 10x visium and SC 10x data with spatialdata_io and save to `SpatialData` file
+// Read ST 10x Visium data with spatialdata_io and save to `SpatialData` file
 //
 process READ_DATA {
 
