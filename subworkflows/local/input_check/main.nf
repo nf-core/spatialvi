@@ -8,7 +8,8 @@ include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../../modules/nf-core/unta
 workflow INPUT_CHECK {
 
     take:
-    samplesheet // file: samplesheet read in from --input
+    samplesheet // file:    samplesheet read in from --input
+    hd_bin_size // integer: Bin size for Visium HD
 
     main:
 
@@ -100,7 +101,6 @@ def check_downstream_dir(input) {
         "spatial/tissue_lowres_image.png",
         "spatial/tissue_positions.parquet"
     ]
-    def hd_bin_size = params.hd_bin_size ?: 8
     def hd_dir = file("${spaceranger_dir}/binned_outputs/square_${String.format('%03d', hd_bin_size)}um")
     def hd_files_present = hd_required_files.every { f -> file("${hd_dir}/${f}").exists() }
 

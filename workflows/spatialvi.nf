@@ -57,7 +57,8 @@ workflow SPATIALVI {
     // SUBWORKFLOW: Read and validate samplesheet
     //
     INPUT_CHECK (
-        samplesheet
+        samplesheet,
+        hd_bin_size
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
