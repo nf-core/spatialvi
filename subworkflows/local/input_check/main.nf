@@ -64,7 +64,7 @@ workflow INPUT_CHECK {
 
     // Create final meta map and check input file existence
     ch_downstream_input = ch_downstream_combined.map { it -> check_downstream_dir(it) }
-    
+
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
     ch_downstream_input    // channel: [ val(meta), [ st data ] ]
