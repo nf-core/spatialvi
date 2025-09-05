@@ -64,7 +64,7 @@ workflow INPUT_CHECK {
         .map { meta, dir -> [meta, dir] }
 
     // Create final meta map and check input file existence
-    ch_downstream_input = ch_downstream_combined.map { it -> check_downstream_dir(it) }
+    ch_downstream_input = ch_downstream_combined.map { it -> check_downstream_dir(it, hd_bin_size) }
 
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
@@ -79,7 +79,7 @@ def create_channel_downstream(meta) {
 }
 
 // Function: validate that required files exist in the dir
-def check_downstream_dir(input) {
+def check_downstream_dir(input, hd_bin_size) {
     def (meta, spaceranger_dir) = input
 
     // Non-HD SpaceRanger output required files
