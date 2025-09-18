@@ -8,7 +8,8 @@ include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../../modules/nf-core/unta
 workflow INPUT_CHECK {
 
     take:
-    samplesheet // file: samplesheet read in from --input
+    samplesheet // file:    samplesheet read in from --input
+    hd_bin_size // integer: Bin size for Visium HD
 
     main:
 
@@ -47,7 +48,7 @@ workflow INPUT_CHECK {
 
     // Split channel into tarballed and directory inputs
     ch_downstream = ch_st.downstream
-        .map    { it -> create_channel_downstream_tar(it) }
+        .map    { it -> create_channel_downstream(it) }
         .branch { it ->
             tar: it[1].contains(".tar.gz")
             dir: !it[1].contains(".tar.gz")
@@ -60,42 +61,53 @@ workflow INPUT_CHECK {
     // Combine extracted and directory inputs into one channel
     ch_downstream_combined = UNTAR_DOWNSTREAM_INPUT.out.untar
         .mix ( ch_downstream.dir )
-        .map { meta, dir -> [sample: meta.id, spaceranger_dir: dir] }
+        .map { meta, dir -> [meta, dir] }
 
-    // Create final meta map and check input file existance
-    ch_downstream_input = ch_downstream_combined.map { it -> create_channel_downstream(it) }
+    // Create final meta map and check input file existence
+    ch_downstream_input = ch_downstream_combined.map { it -> check_downstream_dir(it, hd_bin_size) }
 
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
     ch_downstream_input    // channel: [ val(meta), [ st data ] ]
     versions = ch_versions // channel: [ versions.yml ]
 }
-
-// Function to get list of [ meta, [ spaceranger_dir ]]
-def create_channel_downstream_tar(meta) {
+// Function: normalize meta only (no filesystem checks)
+def create_channel_downstream(meta) {
     meta['id'] = meta.remove('sample')
     def spaceranger_dir = meta.remove('spaceranger_dir')
     return [meta, spaceranger_dir]
 }
 
+// Function: validate that required files exist in the dir
+def check_downstream_dir(input, hd_bin_size) {
+    def (meta, spaceranger_dir) = input
 
-// Function to get list of [ meta, [ raw_feature_bc_matrix, tissue_positions,
-//                                   scalefactors, hires_image, lowres_image ]]
-def create_channel_downstream(meta) {
-    meta["id"] = meta.remove("sample")
-    def spaceranger_dir = file("${meta.remove('spaceranger_dir')}/**")
-    def DOWNSTREAM_REQUIRED_SPACERANGER_FILES = [
+    // Non-HD SpaceRanger output required files
+    def classic_required_files = [
         "raw_feature_bc_matrix.h5",
         "tissue_positions.csv",
         "scalefactors_json.json",
         "tissue_hires_image.png",
         "tissue_lowres_image.png"
     ]
-    DOWNSTREAM_REQUIRED_SPACERANGER_FILES.each { f ->
-        if(!spaceranger_dir*.name.contains(f)) {
-            error "The specified spaceranger output directory doesn't contain the required file `${f}` for sample `${meta.id}`"
-        }
+    def dir_file_objs = file("${spaceranger_dir}/**")
+    def classic_files_present = classic_required_files.every { f -> dir_file_objs*.name.contains(f) }
+
+    // Visium HD binned output required files (for specified bin size)
+    def hd_required_files = [
+        "raw_feature_bc_matrix.h5",
+        "spatial/scalefactors_json.json",
+        "spatial/tissue_hires_image.png",
+        "spatial/tissue_lowres_image.png",
+        "spatial/tissue_positions.parquet"
+    ]
+    def hd_dir = file("${spaceranger_dir}/binned_outputs/square_${String.format('%03d', hd_bin_size)}um")
+    def hd_files_present = hd_required_files.every { f -> file("${hd_dir}/${f}").exists() }
+
+    if (!(classic_files_present || hd_files_present)) {
+        error "The specified spaceranger output directory for sample '${meta.id}' does not contain all required files for either classic Visium: ${classic_required_files.join(', ')} or Visium HD bin size ${hd_bin_size}: ${hd_required_files.join(', ')}."
     }
+
     return [meta, spaceranger_dir]
 }
 

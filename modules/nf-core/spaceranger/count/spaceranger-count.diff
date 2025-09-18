@@ -12,7 +12,31 @@ Changes in 'spaceranger/count/main.nf':
      container "nf-core/spaceranger:3.1.3"
  
 
-'modules/nf-core/spaceranger/count/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/spaceranger/count/tests/nextflow.config' is unchanged
+Changes in 'spaceranger/count/main.nf':
+--- modules/nf-core/spaceranger/count/main.nf
++++ modules/nf-core/spaceranger/count/main.nf
+@@ -10,7 +10,7 @@
+     path(probeset)
+ 
+     output:
+-    tuple val(meta), path("outs/**"), emit: outs
++    tuple val(meta), path("outs"), emit: outs
+     path "versions.yml", emit: versions
+ 
+     when:
+
 'modules/nf-core/spaceranger/count/tests/main.nf.test' is unchanged
+'modules/nf-core/spaceranger/count/tests/main.nf.test.snap' is unchanged
+Changes in 'spaceranger/count/tests/nextflow.config':
+--- modules/nf-core/spaceranger/count/tests/nextflow.config
++++ modules/nf-core/spaceranger/count/tests/nextflow.config
+@@ -1,5 +1,5 @@
+ process {
+     withName: SPACERANGER_COUNT {
+-        ext.args = '--create-bam false'
++        ext.args = '--create-bam="false"'
+     }
+ }
+
+'modules/nf-core/spaceranger/count/tests/tags.yml' is unchanged
 ************************************************************

@@ -1,5 +1,5 @@
 //
-// Read ST 10x visium and SC 10x data with spatialdata_io and save to `SpatialData` file
+// Read ST 10x Visium data with spatialdata_io and save to `SpatialData` file
 //
 process READ_DATA {
 
@@ -9,7 +9,8 @@ process READ_DATA {
     container "docker.io/erikfas/spatialvi"
 
     input:
-    tuple val (meta), path("${meta.id}/*")
+    tuple val(meta), path("${meta.id}")
+    val(hd_bin_size)
 
     output:
     tuple val(meta), path("sdata_raw.zarr"), emit: sdata_raw
@@ -22,14 +23,17 @@ process READ_DATA {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "The READ_DATA module does not support Conda/Mamba, please use Docker / Singularity / Podman instead."
     }
+
     """
     # Fix required directory structure
-    mkdir "${meta.id}/spatial"
-    mv  "${meta.id}/scalefactors_json.json" \\
-        "${meta.id}/tissue_hires_image.png" \\
-        "${meta.id}/tissue_lowres_image.png" \\
-        "${meta.id}/tissue_positions.csv" \\
-        "${meta.id}/spatial/"
+
+    # Prepare the --visium_hd flag and bin_size conditionally
+    visiumHdFlag=""
+    binSizeFlag=""
+    if [ -d "${meta.id}/binned_outputs" ]; then
+        visiumHdFlag="--visium_hd"
+        binSizeFlag="--bin_size ${hd_bin_size}"
+    fi
 
     # Set environment variables
     export XDG_CACHE_HOME="./.xdg_cache_home"
@@ -39,7 +43,9 @@ process READ_DATA {
     read_data.py \\
         --SRCountDir "${meta.id}" \\
         --sampleID "${meta.id}" \\
-        --output_sdata sdata_raw.zarr
+        --output_sdata sdata_raw.zarr \\
+        \$visiumHdFlag \\
+        \$binSizeFlag
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -129,6 +129,10 @@ path to its directory (or another link from the 10X website above) using the
 `--spaceranger_reference` parameter, otherwise the pipeline will download the
 default human reference for you automatically.
 
+The pipeline can process Visium v1, Visium v2 and Visium HD data. For Visium HD data, you need to
+specify the `--hd_bin_size` parameter (otherwise the pipeline will use a default bin size of 8 microns
+for downstream analysis).
+
 > [!NOTE]
 > For FFPE and Cytassist experiments, you need to manually supply the
 > appropriate probeset using the `--spaceranger_probeset` parameter Please refer

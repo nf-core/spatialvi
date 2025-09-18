@@ -19,6 +19,6 @@ dependencies:
       - scanpy==1.10.0
       - squidpy==1.4.1
       - scipy==1.12.0
-      - spatialdata-io==0.1.5
-      - spatialdata-plot==0.2.6
-      - spatialdata==0.2.3
+      - spatialdata-io==0.1.6
+      - spatialdata-plot==0.2.8
+      - spatialdata==0.2.6

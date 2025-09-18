@@ -47,6 +47,7 @@ import scipy
 import seaborn as sns
 import spatialdata
 from spatialdata_io.experimental import to_legacy_anndata
+from spatialdata.models import get_table_keys
 from anndata import AnnData
 from IPython.display import display, Markdown
 from textwrap import dedent
@@ -97,6 +98,7 @@ sc.pp.calculate_qc_metrics(adata, qc_vars=["mt", "ribo", "hb"],
 
 # Save a copy of data as a restore-point if filtering results in 0 spots left
 adata_before_filtering = adata.copy()
+adata.var_names_make_unique()
 ```
 
 ## Violin plots
@@ -286,8 +288,13 @@ sc.pl.violin(adata, ['pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'],
 del sdata.tables[f"{sample_id}_table"]
 sdata.tables[f"{sample_id}_table"] = adata
 # Filtering spatialdata elements based on the anndata elements:
-matched_element, _ = spatialdata.match_element_to_table(sdata, sample_id, f"{sample_id}_table")
-sdata[sample_id] = matched_element[sample_id]
+region, _, instance_key  = get_table_keys(sdata[f"{sample_id}_table"])
+# If region is a list, take the first element
+if isinstance(region, list):
+    region = region[0]
+matched_element, _ = spatialdata.match_element_to_table(sdata, region, f"{sample_id}_table")
+sdata[region] = matched_element[region]
+
 sdata.write(os.path.join(artifact_dir, output_sdata))
 ```
 
