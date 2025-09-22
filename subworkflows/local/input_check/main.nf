@@ -40,7 +40,7 @@ workflow INPUT_CHECK {
     ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
         .mix ( ch_spaceranger.dir.map { meta, dir -> [meta, file(dir)] } )
     // Create final meta map and check input existance
-    ch_spaceranger_input = ch_spaceranger_combined.view().map { meta, dir -> create_channel_spaceranger(meta, dir) }
+    ch_spaceranger_input = ch_spaceranger_combined.map { meta, dir -> create_channel_spaceranger(meta, dir) }
 
     // Downstream analysis: ----------------------------------------------------
 
