@@ -112,7 +112,6 @@ def check_downstream_dir(input, hd_bin_size) {
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(meta, fastq_dir) {
     meta["id"] = meta.remove("sample")
-    println "meta: ${meta}"
     def slide = meta.remove("slide")
     def area = meta.remove("area")
     def fastq_files = fastq_dir.listFiles().findAll { file ->
