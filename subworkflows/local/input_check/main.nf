@@ -42,7 +42,7 @@ workflow INPUT_CHECK {
         .map { meta, dir -> meta + [fastq_dir: dir] }
 
     // Create final meta map and check input existance
-    ch_spaceranger_input = ch_spaceranger_combined.map { it -> create_channel_spaceranger(it) }
+    ch_spaceranger_input = ch_spaceranger_combined.view().map { it -> create_channel_spaceranger(it) }
 
     // Downstream analysis: ----------------------------------------------------
 
@@ -114,6 +114,7 @@ def check_downstream_dir(input, hd_bin_size) {
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(meta) {
     meta["id"] = meta.remove("sample")
+    println "meta: ${meta}"
     def slide = meta.remove("slide")
     def area = meta.remove("area")
     def fastq_dir = meta.remove("fastq_dir")
