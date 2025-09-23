@@ -28,8 +28,8 @@ workflow INPUT_CHECK {
     ch_spaceranger = ch_st.spaceranger
         .map { it -> [it, it.fastq_dir]}
         .branch { it ->
-            tar: it[1].contains(".tar.gz")
-            dir: !it[1].contains(".tar.gz")
+            tar: it[1].contains(".tar.gz") || it[1].contains(".tar")
+            dir: !(it[1].contains(".tar.gz") || it[1].contains(".tar"))
         }
 
     // Extract tarballed inputs
@@ -48,8 +48,8 @@ workflow INPUT_CHECK {
     ch_downstream = ch_st.downstream
         .map    { it -> create_channel_downstream(it) }
         .branch { it ->
-            tar: it[1].contains(".tar.gz")
-            dir: !it[1].contains(".tar.gz")
+            tar: it[1].contains(".tar.gz") || it[1].contains(".tar")
+            dir: !(it[1].contains(".tar.gz") || it[1].contains(".tar"))
         }
 
     // Extract tarballed inputs

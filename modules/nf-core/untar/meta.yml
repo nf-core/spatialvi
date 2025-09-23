@@ -7,7 +7,7 @@ keywords:
 tools:
   - untar:
       description: |
-        Extract tar.gz files.
+        Extract tar and tar.gz files.
       documentation: https://www.gnu.org/software/tar/manual/
       licence: ["GPL-3.0-or-later"]
       identifier: ""
@@ -20,7 +20,7 @@ input:
     - archive:
         type: file
         description: File to be untar
-        pattern: "*.{tar}.{gz}"
+        pattern: "*.{tar,tar.gz}"
         ontologies:
           - edam: http://edamontology.org/format_3981 # TAR format
           - edam: http://edamontology.org/format_3989 # GZIP format

@@ -33,13 +33,13 @@ SAMPLE_1,fastqs_1/,hires_1.png,V11J26,B1
 SAMPLE_2,fastqs_2/,hires_2.png,V11J26,B1
 ```
 
-You may also supply a compressed tarball containing the FASTQ files in lieu of a
+You may also supply a tarball (compressed or uncompressed) containing the FASTQ files in lieu of a
 directory path:
 
 ```no-highlight
 sample,fastq_dir,image,slide,area
 SAMPLE_1,fastqs_1.tar.gz,hires_1.png,V11J26,B1
-SAMPLE_2,fastqs_2.tar.gz,hires_2.png,V11J26,B1
+SAMPLE_2,fastqs_2.tar,hires_2.png,V11J26,B1
 ```
 
 For Cytassist samples, the `image` column gets replaced with the `cytaimage` column:
@@ -58,7 +58,7 @@ Please refer to the following table for an overview of all supported columns:
 | Column             | Description                                                                                                           |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------- |
 | `sample`           | Unique sample identifier. MUST match the prefix of the fastq files                                                    |
-| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar.gz` file instead of a directory.            |
+| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar` or `.tar.gz` file instead of a directory. |
 | `image`            | Brightfield microscopy image                                                                                          |
 | `cytaimage`        | Brightfield tissue image captured with Cytassist device                                                               |
 | `colorizedimage`   | A colour composite of one or more fluorescence image channels saved as a single-page, single-file colour TIFF or JPEG |
