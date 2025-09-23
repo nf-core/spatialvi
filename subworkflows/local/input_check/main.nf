@@ -38,11 +38,9 @@ workflow INPUT_CHECK {
 
     // Combine extracted and directory inputs into one channel
     ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
-        .mix ( ch_spaceranger.dir )
-        .map { meta, dir -> meta + [fastq_dir: dir] }
-
+        .mix ( ch_spaceranger.dir.map { meta, dir -> [meta, file(dir)] } )
     // Create final meta map and check input existance
-    ch_spaceranger_input = ch_spaceranger_combined.map { it -> create_channel_spaceranger(it) }
+    ch_spaceranger_input = ch_spaceranger_combined.map { meta, dir -> create_channel_spaceranger(meta, dir) }
 
     // Downstream analysis: ----------------------------------------------------
 
@@ -112,12 +110,13 @@ def check_downstream_dir(input, hd_bin_size) {
 }
 
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
-def create_channel_spaceranger(meta) {
+def create_channel_spaceranger(meta, fastq_dir) {
     meta["id"] = meta.remove("sample")
     def slide = meta.remove("slide")
     def area = meta.remove("area")
-    def fastq_dir = meta.remove("fastq_dir")
-    def fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
+    def fastq_files = fastq_dir.listFiles().findAll { file ->
+        file.name.startsWith(meta['id']) && file.name.endsWith('.fastq.gz')
+    }
 
     // Convert a path in `meta` to a file object and return it. If key `k` is
     // not contained in `meta` return an empty list which is recognized as 'no
