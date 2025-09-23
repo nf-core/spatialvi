@@ -115,7 +115,7 @@ def create_channel_spaceranger(meta, fastq_dir) {
     def slide = meta.remove("slide")
     def area = meta.remove("area")
     def fastq_files = fastq_dir.listFiles().findAll { file ->
-        file.name.startsWith(meta['id']) && file.name.endsWith('.fastq.gz')
+        file.name.endsWith('.fastq.gz')
     }
 
     // Convert a path in `meta` to a file object and return it. If key `k` is
