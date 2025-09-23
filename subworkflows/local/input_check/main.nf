@@ -48,8 +48,8 @@ workflow INPUT_CHECK {
     ch_downstream = ch_st.downstream
         .map    { it -> create_channel_downstream(it) }
         .branch { it ->
-            tar: it[1].contains(".tar.gz") || it[1].contains(".tar")
-            dir: !(it[1].contains(".tar.gz") || it[1].contains(".tar"))
+            tar: it[1] ==~ /.*\.tar(\.gz)?$/
+            dir: true
         }
 
     // Extract tarballed inputs
