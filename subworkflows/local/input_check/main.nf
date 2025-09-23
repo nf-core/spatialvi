@@ -28,8 +28,8 @@ workflow INPUT_CHECK {
     ch_spaceranger = ch_st.spaceranger
         .map { it -> [it, it.fastq_dir]}
         .branch { it ->
-            tar: it[1].contains(".tar.gz") || it[1].contains(".tar")
-            dir: !(it[1].contains(".tar.gz") || it[1].contains(".tar"))
+            tar: it[1] ==~ /.*\.tar(\.gz)?$/
+            dir: true
         }
 
     // Extract tarballed inputs
