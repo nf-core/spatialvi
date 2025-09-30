@@ -58,7 +58,7 @@ Please refer to the following table for an overview of all supported columns:
 | Column             | Description                                                                                                           |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------- |
 | `sample`           | Unique sample identifier. MUST match the prefix of the fastq files                                                    |
-| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar` or `.tar.gz` file instead of a directory. |
+| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar` or `.tar.gz` file instead of a directory.  |
 | `image`            | Brightfield microscopy image                                                                                          |
 | `cytaimage`        | Brightfield tissue image captured with Cytassist device                                                               |
 | `colorizedimage`   | A colour composite of one or more fluorescence image channels saved as a single-page, single-file colour TIFF or JPEG |
