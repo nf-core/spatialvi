@@ -28,8 +28,8 @@ workflow INPUT_CHECK {
     ch_spaceranger = ch_st.spaceranger
         .map { it -> [it, it.fastq_dir]}
         .branch { it ->
-            tar: it[1].contains(".tar.gz")
-            dir: !it[1].contains(".tar.gz")
+            tar: it[1] ==~ /.*\.tar(\.gz)?$/
+            dir: true
         }
 
     // Extract tarballed inputs
@@ -48,8 +48,8 @@ workflow INPUT_CHECK {
     ch_downstream = ch_st.downstream
         .map    { it -> create_channel_downstream(it) }
         .branch { it ->
-            tar: it[1].contains(".tar.gz")
-            dir: !it[1].contains(".tar.gz")
+            tar: it[1] ==~ /.*\.tar(\.gz)?$/
+            dir: true
         }
 
     // Extract tarballed inputs
@@ -71,8 +71,8 @@ workflow INPUT_CHECK {
 }
 // Function: normalize meta only (no filesystem checks)
 def create_channel_downstream(meta) {
-    meta['id'] = meta.remove('sample')
-    def spaceranger_dir = meta.remove('spaceranger_dir')
+    meta['id'] = meta.get('sample')
+    def spaceranger_dir = meta.get('spaceranger_dir')
     return [meta, spaceranger_dir]
 }
 
@@ -111,18 +111,18 @@ def check_downstream_dir(input, hd_bin_size) {
 
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(meta, fastq_dir) {
-    meta["id"] = meta.remove("sample")
-    def slide = meta.remove("slide")
-    def area = meta.remove("area")
+    meta["id"] = meta.get("sample")
+    def slide = meta.get("slide")
+    def area = meta.get("area")
     def fastq_files = fastq_dir.listFiles().findAll { file ->
-        file.name.startsWith(meta['id']) && file.name.endsWith('.fastq.gz')
+        file.name.endsWith('.fastq.gz')
     }
 
     // Convert a path in `meta` to a file object and return it. If key `k` is
     // not contained in `meta` return an empty list which is recognized as 'no
     // file' by Nextflow.
     def get_file_from_meta = { k ->
-        def v = meta.remove(k)
+        def v = meta.get(k)
         return v ? file(v) : []
     }
     def manual_alignment = get_file_from_meta("manual_alignment")
