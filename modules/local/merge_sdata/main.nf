@@ -4,7 +4,7 @@
 process MERGE_SDATA {
 
     label 'process_low'
-    container "docker.io/erikfas/spatialvi"
+    container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
     path(sdata, stageAs: "?/*")
