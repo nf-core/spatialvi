@@ -28,7 +28,7 @@ or data already processed by Space Ranger. The pipeline currently consists of
 the following steps:
 
 <p align="center">
-    <img title="Spatialvi Workflow" src="docs/images/spatialvi_subway.png" width=60%>
+    <img title="Spatialvi Workflow" src="docs/images/spatialvi_subway.png" width=100%>
 </p>
 
 0. Raw data processing with Space Ranger (optional)
