@@ -114,6 +114,13 @@ def create_channel_spaceranger(meta, fastq_dir) {
     meta["id"] = meta.get("sample")
     def slide = meta.get("slide")
     def area = meta.get("area")
+
+    // Resolve symlinks for local filesystem paths only
+    def scheme = fastq_dir.toUri().getScheme()
+    if (scheme == null || scheme == 'file') {
+        fastq_dir = fastq_dir.toRealPath() // resolve symlink (if applicable)
+    }
+
     def fastq_files = fastq_dir.listFiles().findAll { file ->
         file.name.endsWith('.fastq.gz')
     }
