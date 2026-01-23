@@ -23,7 +23,7 @@ workflow DOWNSTREAM {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // Quarto reports and extension files
@@ -31,7 +31,7 @@ workflow DOWNSTREAM {
     quality_controls_notebook = file("${projectDir}/bin/quality_controls.qmd", checkIfExists: true)
     clustering_notebook = file("${projectDir}/bin/clustering.qmd", checkIfExists: true)
     spatially_variable_genes_notebook = file("${projectDir}/bin/spatially_variable_genes.qmd", checkIfExists: true)
-    extensions = Channel.fromPath("${projectDir}/assets/_extensions").collect()
+    extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
 
     //
     // Quality controls and filtering

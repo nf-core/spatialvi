@@ -68,13 +68,16 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    path(process.out.versions.get(0)).yaml,
+                    process.out.versions,
                     process.out.outs.get(0).get(1).findAll { file(it).name !in [
                         'web_summary.html',
                         'scalefactors_json.json',
                         'barcodes.tsv.gz',
                         'features.tsv.gz',
-                        'matrix.mtx.gz'
+                        'matrix.mtx.gz',
+                        'components.csv',
+                        'projection.csv',
+                        'variance.csv'
                         ]}
                     ).match()
                 },
@@ -204,7 +207,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    path(process.out.versions.get(0)).yaml,
+                    process.out.versions,
                     process.out.outs.get(0).get(1).findAll { file(it).name !in [
                         'web_summary.html',
                         'scalefactors_json.json',
