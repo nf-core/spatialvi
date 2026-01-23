@@ -68,7 +68,6 @@ workflow SPATIALVI {
     FASTQC(
         INPUT_CHECK.out.ch_spaceranger_input.map{ it -> [it[0] /* meta */, it[1] /* reads */]}
     )
-    ch_versions = ch_versions.mix(FASTQC.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ it -> it[1] })
 
     //
