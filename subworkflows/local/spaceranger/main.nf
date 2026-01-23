@@ -14,12 +14,12 @@ workflow SPACERANGER {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // Reference files
     //
-    ch_reference = Channel.empty()
+    ch_reference = channel.empty()
     if (spaceranger_reference ==~ /.*\.tar\.gz$/) {
         ref_file = file(spaceranger_reference)
         SPACERANGER_UNTAR_REFERENCE ([
@@ -35,7 +35,7 @@ workflow SPACERANGER {
     //
     // Optional: probe set
     //
-    ch_probeset = Channel.empty()
+    ch_probeset = channel.empty()
     if (spaceranger_probeset) {
         ch_probeset = file ( spaceranger_probeset, checkIfExists: true )
     } else {

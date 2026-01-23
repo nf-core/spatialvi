@@ -13,9 +13,9 @@ workflow INPUT_CHECK {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
-    ch_st = Channel.fromPath(samplesheet)
+    ch_st = channel.fromPath(samplesheet)
         .splitCsv ( header: true, sep: ',')
         .branch   { it ->
             spaceranger: !it.containsKey("spaceranger_dir")
