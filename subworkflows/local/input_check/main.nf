@@ -69,6 +69,7 @@ workflow INPUT_CHECK {
     ch_downstream_input    // channel: [ val(meta), [ st data ] ]
     versions = ch_versions // channel: [ versions.yml ]
 }
+
 // Function: normalize meta only (no filesystem checks)
 def create_channel_downstream(meta) {
     meta['id'] = meta.get('sample')
@@ -109,6 +110,14 @@ def check_downstream_dir(input, hd_bin_size) {
     return [meta, spaceranger_dir]
 }
 
+// Function to convert a path in `meta` to a file object and return it. If key
+// `k` is not contained in `meta` return an empty list which is recognized as
+// 'no file' by Nextflow.
+def get_file_from_meta(meta, k) {
+    def v = meta.get(k)
+    return v ? file(v) : []
+}
+
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(meta, fastq_dir) {
     meta["id"] = meta.get("sample")
@@ -125,19 +134,12 @@ def create_channel_spaceranger(meta, fastq_dir) {
         file.name.endsWith('.fastq.gz')
     }
 
-    // Convert a path in `meta` to a file object and return it. If key `k` is
-    // not contained in `meta` return an empty list which is recognized as 'no
-    // file' by Nextflow.
-    def get_file_from_meta = { k ->
-        def v = meta.get(k)
-        return v ? file(v) : []
-    }
-    def manual_alignment = get_file_from_meta("manual_alignment")
-    def slidefile = get_file_from_meta("slidefile")
-    def image = get_file_from_meta("image")
-    def cytaimage = get_file_from_meta("cytaimage")
-    def colorizedimage = get_file_from_meta("colorizedimage")
-    def darkimage = get_file_from_meta("darkimage")
+    def manual_alignment = get_file_from_meta(meta, "manual_alignment")
+    def slidefile = get_file_from_meta(meta, "slidefile")
+    def image = get_file_from_meta(meta, "image")
+    def cytaimage = get_file_from_meta(meta, "cytaimage")
+    def colorizedimage = get_file_from_meta(meta, "colorizedimage")
+    def darkimage = get_file_from_meta(meta, "darkimage")
 
     if(!fastq_files.size()) {
         error "No `fastq_dir` specified or no samples found in folder."
