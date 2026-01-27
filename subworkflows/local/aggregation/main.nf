@@ -61,7 +61,6 @@ workflow AGGREGATION {
             ch_merged_sdata,
             extensions
         )
-        ch_versions = ch_versions.mix(INTEGRATE_SDATA.out.versions)
         ch_integration_artifacts = INTEGRATE_SDATA.out.artifacts
             .map {
                 _meta, artifacts ->

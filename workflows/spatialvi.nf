@@ -108,7 +108,6 @@ workflow SPATIALVI {
         svg_autocorr_method,
         n_top_svgs,
     )
-    ch_versions = ch_versions.mix(DOWNSTREAM.out.versions)
 
     //
     // SUBWORKFLOW: Sample aggregation (optional)
