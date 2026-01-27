@@ -16,8 +16,6 @@ workflow AGGREGATION {
 
     main:
 
-    ch_versions = channel.empty()
-
     // Quarto report and extensions files
     integration_notebook = file("${projectDir}/bin/integration.qmd", checkIfExists: true)
     extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
@@ -37,7 +35,6 @@ workflow AGGREGATION {
         MERGE_SDATA (
             ch_sdata_files.collect()
         )
-        ch_versions = ch_versions.mix(MERGE_SDATA.out.versions)
         ch_merged_sdata = MERGE_SDATA.out.sdata
     }
 
@@ -80,7 +77,5 @@ workflow AGGREGATION {
 
     integrated_adata = ch_integrated_adata // channel: [ h5ad ]
     integrated_sdata = ch_integrated_sdata // channel: [ zarr ]
-
-    versions         = ch_versions         // channel: [ versions.yml ]
 
 }

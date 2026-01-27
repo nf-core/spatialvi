@@ -119,7 +119,6 @@ workflow SPATIALVI {
             integration_cluster_resolution,
             integration_n_hvgs,
         )
-        ch_versions = ch_versions.mix(AGGREGATION.out.versions)
     }
 
     //

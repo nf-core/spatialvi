@@ -11,7 +11,7 @@ process MERGE_SDATA {
 
     output:
     path("merged_sdata.zarr"), emit: sdata
-    path("versions.yml")     , emit: versions
+    tuple val("${task.process}"), val('merge_sdata'), eval('python -c "import spatialdata_io; print(spatialdata_io.__version__)"'), emit: versions_merge_sdata, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,10 +29,5 @@ process MERGE_SDATA {
     merge_sdata.py \\
         ${sdata} \\
         merged_sdata.zarr
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        spatialdata_io: \$(python -c "import spatialdata_io; print(spatialdata_io.__version__)")
-    END_VERSIONS
     """
 }
