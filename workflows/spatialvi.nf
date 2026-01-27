@@ -90,7 +90,6 @@ workflow SPATIALVI {
         ch_downstream_input,
         hd_bin_size
     )
-    ch_versions = ch_versions.mix(READ_DATA.out.versions)
 
     //
     // SUBWORKFLOW: Downstream analyses of ST data
