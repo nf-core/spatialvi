@@ -24,7 +24,7 @@ workflow AGGREGATION {
 
     // Get sdata files only
     ch_sdata_files = ch_sdata
-        | map {
+        .map {
             _meta, zarr ->
             return [zarr]
         }
@@ -63,12 +63,12 @@ workflow AGGREGATION {
         )
         ch_versions = ch_versions.mix(INTEGRATE_SDATA.out.versions)
         ch_integration_artifacts = INTEGRATE_SDATA.out.artifacts
-            | map {
+            .map {
                 _meta, artifacts ->
                 return [artifacts]
             }
-            | flatten()
-            | branch { it ->
+            .flatten ( )
+            .branch { it ->
                 adata: it[1].name.endsWith('.h5ad')
                 sdata: it[1].name.endsWith('.zarr')
             }

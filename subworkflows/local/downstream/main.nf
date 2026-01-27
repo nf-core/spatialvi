@@ -60,10 +60,10 @@ workflow DOWNSTREAM {
     )
     ch_versions = ch_versions.mix(QUALITY_CONTROLS.out.versions)
     ch_qc = QUALITY_CONTROLS.out.artifacts
-        | map { meta, artifacts -> [meta, artifacts[0], meta, artifacts[1]] }
-        | flatten
-        | collate ( 2 )
-        | branch { it ->
+        .map { meta, artifacts -> [meta, artifacts[0], meta, artifacts[1]] }
+        .flatten ( )
+        .collate ( 2 )
+        .branch { it ->
             sdata: it[1].name.endsWith('.zarr')
             mqc: it[1].name.endsWith('.csv')
         }
@@ -127,8 +127,8 @@ workflow DOWNSTREAM {
     ch_svg_nb     = SPATIALLY_VARIABLE_GENES.out.notebook
     ch_svg_params = SPATIALLY_VARIABLE_GENES.out.params_yaml
     ch_svg_artifacts = SPATIALLY_VARIABLE_GENES.out.artifacts
-        | transpose ( )
-        | branch { it ->
+        .transpose ( )
+        .branch { it ->
             csv: it[1].name.endsWith('.csv')
             sdata: it[1].name.endsWith('.zarr')
         }
