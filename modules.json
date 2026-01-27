@@ -22,7 +22,7 @@
                     },
                     "spaceranger/count": {
                         "branch": "master",
-                        "git_sha": "a92090d1b76196f9fb7e65770743410d293c1255",
+                        "git_sha": "53b1c6b7edd9ff603c9f89cf352181655e48e6cc",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/spaceranger/count/spaceranger-count.diff"
                     },
