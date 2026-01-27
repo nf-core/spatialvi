@@ -16,11 +16,11 @@ workflow AGGREGATION {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     // Quarto report and extensions files
     integration_notebook = file("${projectDir}/bin/integration.qmd", checkIfExists: true)
-    extensions = Channel.fromPath("${projectDir}/assets/_extensions").collect()
+    extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
 
     // Get sdata files only
     ch_sdata_files = ch_sdata
@@ -32,7 +32,7 @@ workflow AGGREGATION {
     //
     // MODULE: Merge per-sample SpatialData objects into one
     //
-    ch_merged_sdata = Channel.empty()
+    ch_merged_sdata = channel.empty()
     if (merge_sdata || integrate_sdata) {
         MERGE_SDATA (
             ch_sdata_files.collect()
@@ -44,8 +44,8 @@ workflow AGGREGATION {
     //
     // MODULE: Aggregate and integrate per-sample SpatialData
     //
-    ch_integrated_sdata = Channel.empty()
-    ch_integrated_adata = Channel.empty()
+    ch_integrated_sdata = channel.empty()
+    ch_integrated_adata = channel.empty()
     if (integrate_sdata) {
         integration_params = [
             input_sdata: "merged_sdata.zarr",

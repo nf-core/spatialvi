@@ -127,7 +127,7 @@ workflow SPATIALVI {
     //
     // Collate and save software versions
     //
-    def topic_versions = Channel.topic("versions")
+    def topic_versions = channel.topic("versions")
         .distinct()
         .branch { entry ->
             versions_file: entry instanceof Path
@@ -159,11 +159,11 @@ workflow SPATIALVI {
     ch_multiqc_config        = channel.fromPath(
         "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
     ch_multiqc_custom_config = multiqc_config ?
-        Channel.fromPath(multiqc_config, checkIfExists: true) :
-        Channel.empty()
+        channel.fromPath(multiqc_config, checkIfExists: true) :
+        channel.empty()
     ch_multiqc_logo          = multiqc_logo ?
-        Channel.fromPath(multiqc_logo, checkIfExists: true) :
-        Channel.empty()
+        channel.fromPath(multiqc_logo, checkIfExists: true) :
+        channel.empty()
 
     summary_params      = paramsSummaryMap(
         workflow, parameters_schema: "nextflow_schema.json")
