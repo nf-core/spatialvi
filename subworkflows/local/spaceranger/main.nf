@@ -50,7 +50,6 @@ workflow SPACERANGER {
         ch_reference,
         ch_probeset
     )
-    ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
     emit:
     sr_dir   = SPACERANGER_COUNT.out.outs // channel: [ meta, dir ]
