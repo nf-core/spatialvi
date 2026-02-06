@@ -13,8 +13,6 @@ workflow INPUT_CHECK {
 
     main:
 
-    ch_versions = channel.empty()
-
     ch_st = channel.fromPath(samplesheet)
         .splitCsv ( header: true, sep: ',')
         .branch   { it ->
@@ -34,7 +32,6 @@ workflow INPUT_CHECK {
 
     // Extract tarballed inputs
     UNTAR_SPACERANGER_INPUT ( ch_spaceranger.tar )
-    ch_versions = ch_versions.mix(UNTAR_SPACERANGER_INPUT.out.versions)
 
     // Combine extracted and directory inputs into one channel
     ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
@@ -54,7 +51,6 @@ workflow INPUT_CHECK {
 
     // Extract tarballed inputs
     UNTAR_DOWNSTREAM_INPUT ( ch_downstream.tar )
-    ch_versions = ch_versions.mix(UNTAR_DOWNSTREAM_INPUT.out.versions)
 
     // Combine extracted and directory inputs into one channel
     ch_downstream_combined = UNTAR_DOWNSTREAM_INPUT.out.untar
@@ -67,7 +63,6 @@ workflow INPUT_CHECK {
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
     ch_downstream_input    // channel: [ val(meta), [ st data ] ]
-    versions = ch_versions // channel: [ versions.yml ]
 }
 
 // Function: normalize meta only (no filesystem checks)

@@ -60,7 +60,6 @@ workflow SPATIALVI {
         samplesheet,
         hd_bin_size
     )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // MODULE: FastQC
@@ -78,7 +77,6 @@ workflow SPATIALVI {
         spaceranger_reference,
         spaceranger_probeset,
     )
-    ch_versions = ch_versions.mix(SPACERANGER.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{ it -> it[1] })
     ch_downstream_input = INPUT_CHECK.out.ch_downstream_input
         .mix(SPACERANGER.out.sr_dir)
