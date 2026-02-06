@@ -50,7 +50,6 @@ workflow SPATIALVI {
 
     main:
 
-    ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
 
     //
@@ -139,7 +138,7 @@ workflow SPATIALVI {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    softwareVersionsToYAML(topic_versions.versions_file)
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
@@ -195,7 +194,6 @@ workflow SPATIALVI {
 
     emit:
     multiqc_report = MULTIQC.out.report.toList() // channel: [ multiqc_report.html ]
-    versions       = ch_versions                 // channel: [ versions.yml ]
 
 }
 

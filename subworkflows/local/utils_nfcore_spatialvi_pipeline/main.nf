@@ -37,8 +37,6 @@ workflow PIPELINE_INITIALISATION {
 
     main:
 
-    ch_versions = channel.empty()
-
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
     //
@@ -90,8 +88,6 @@ workflow PIPELINE_INITIALISATION {
         nextflow_cli_args
     )
 
-    emit:
-    versions    = ch_versions
 }
 
 /*
