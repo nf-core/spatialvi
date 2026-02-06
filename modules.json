@@ -12,7 +12,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "80cba9452fb1e9bb79884976fa1ca0e671949aa2",
+                        "git_sha": "575e1a4b51a9bad7a8cd1316a88fb85684ef7c7b",
                         "installed_by": ["modules"]
                     },
                     "quartonotebook": {
