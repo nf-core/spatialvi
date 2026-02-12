@@ -14,8 +14,6 @@ workflow SPACERANGER {
 
     main:
 
-    ch_versions = channel.empty()
-
     //
     // Reference files
     //
@@ -27,7 +25,6 @@ workflow SPACERANGER {
             ref_file
         ])
         ch_reference = SPACERANGER_UNTAR_REFERENCE.out.untar.map({_meta, ref -> ref})
-        ch_versions = ch_versions.mix(SPACERANGER_UNTAR_REFERENCE.out.versions)
     } else {
         ch_reference = file ( spaceranger_reference, type: "dir", checkIfExists: true )
     }
@@ -50,9 +47,7 @@ workflow SPACERANGER {
         ch_reference,
         ch_probeset
     )
-    ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
     emit:
-    sr_dir   = SPACERANGER_COUNT.out.outs // channel: [ meta, dir ]
-    versions = ch_versions                // channel: [ versions.yml ]
+    sr_dir = SPACERANGER_COUNT.out.outs // channel: [ meta, dir ]
 }

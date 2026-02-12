@@ -14,7 +14,7 @@ process READ_DATA {
 
     output:
     tuple val(meta), path("sdata_raw.zarr"), emit: sdata_raw
-    path("versions.yml")                   , emit: versions
+    tuple val("${task.process}"), val('read_data'), eval('python -c "import spatialdata_io; print(spatialdata_io.__version__)"'), emit: versions_read_data, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -46,10 +46,5 @@ process READ_DATA {
         --output_sdata sdata_raw.zarr \\
         \$visiumHdFlag \\
         \$binSizeFlag
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        spatialdata_io: \$(python -c "import spatialdata_io; print(spatialdata_io.__version__)")
-    END_VERSIONS
     """
 }

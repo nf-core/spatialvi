@@ -3,28 +3,28 @@
         "content": [
             {
                 "CLUSTERING": {
-                    "quarto": "1.8.25",
-                    "papermill": "2.6.0"
+                    "papermill": "2.6.0",
+                    "quarto": "1.8.25"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
                 "QUALITY_CONTROLS": {
-                    "quarto": "1.8.25",
-                    "papermill": "2.6.0"
+                    "papermill": "2.6.0",
+                    "quarto": "1.8.25"
                 },
                 "READ_DATA": {
-                    "spatialdata_io": "0.2.0"
+                    "read_data": "0.2.0"
                 },
                 "SPACERANGER_COUNT": {
-                    "spaceranger": "3.0.0"
+                    "spaceranger": "4.0.1"
                 },
                 "SPACERANGER_UNTAR_REFERENCE": {
                     "untar": 1.34
                 },
                 "SPATIALLY_VARIABLE_GENES": {
-                    "quarto": "1.8.25",
-                    "papermill": "2.6.0"
+                    "papermill": "2.6.0",
+                    "quarto": "1.8.25"
                 },
                 "UNTAR_SPACERANGER_INPUT": {
                     "untar": 1.34
@@ -36,8 +36,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "25.10.0"
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-10-31T13:46:35.270851656"
+        "timestamp": "2026-02-06T14:23:35.652398627"
     }
 }

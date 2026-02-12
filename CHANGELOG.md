@@ -18,6 +18,7 @@ compatible with further downstream analyses and/or exploration in _e.g._
 
 ### `Added`
 
+- Use topic channels for software versions [[#133](https://github.com/nf-core/spatialvi/pull/133)]
 - Make the main spatial Docker image work with Seqera Containers [[#127](https://github.com/nf-core/spatialvi/pull/127)]
 - Fix 'dir' handling for cloud file systems [[#122](https://github.com/nf-core/spatialvi/pull/122)]
 - Follow the new Nextflow strict syntax for local (sub-) workflows [[#115](https://github.com/nf-core/spatialvi/pull/115)]

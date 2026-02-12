@@ -23,8 +23,6 @@ workflow DOWNSTREAM {
 
     main:
 
-    ch_versions = channel.empty()
-
     //
     // Quarto reports and extension files
     //
@@ -58,12 +56,11 @@ workflow DOWNSTREAM {
         ch_quality_controls_input_data,
         extensions
     )
-    ch_versions = ch_versions.mix(QUALITY_CONTROLS.out.versions)
     ch_qc = QUALITY_CONTROLS.out.artifacts
-        | map { meta, artifacts -> [meta, artifacts[0], meta, artifacts[1]] }
-        | flatten
-        | collate ( 2 )
-        | branch { it ->
+        .map { meta, artifacts -> [meta, artifacts[0], meta, artifacts[1]] }
+        .flatten ( )
+        .collate ( 2 )
+        .branch { it ->
             sdata: it[1].name.endsWith('.zarr')
             mqc: it[1].name.endsWith('.csv')
         }
@@ -94,7 +91,6 @@ workflow DOWNSTREAM {
         ch_clustering_input_data,
         extensions
     )
-    ch_versions = ch_versions.mix(CLUSTERING.out.versions)
     ch_clustering_html   = CLUSTERING.out.html
     ch_clustering_sdata  = CLUSTERING.out.artifacts
     ch_clustering_nb     = CLUSTERING.out.notebook
@@ -122,13 +118,12 @@ workflow DOWNSTREAM {
         ch_spatially_variable_genes_input_data,
         extensions
     )
-    ch_versions = ch_versions.mix(SPATIALLY_VARIABLE_GENES.out.versions)
     ch_svg_html   = SPATIALLY_VARIABLE_GENES.out.html
     ch_svg_nb     = SPATIALLY_VARIABLE_GENES.out.notebook
     ch_svg_params = SPATIALLY_VARIABLE_GENES.out.params_yaml
     ch_svg_artifacts = SPATIALLY_VARIABLE_GENES.out.artifacts
-        | transpose ( )
-        | branch { it ->
+        .transpose ( )
+        .branch { it ->
             csv: it[1].name.endsWith('.csv')
             sdata: it[1].name.endsWith('.zarr')
         }
@@ -150,6 +145,4 @@ workflow DOWNSTREAM {
     svg_sdata         = ch_svg_artifacts.sdata // channel: [ meta, zarr ]
     svg_nb            = ch_svg_nb              // channel: [ meta, qmd ]
     svg_params        = ch_svg_params          // channel: [ meta, yml ]
-
-    versions          = ch_versions            // channel: [ versions.yml ]
 }

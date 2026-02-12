@@ -50,7 +50,6 @@ workflow SPATIALVI {
 
     main:
 
-    ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
 
     //
@@ -60,7 +59,6 @@ workflow SPATIALVI {
         samplesheet,
         hd_bin_size
     )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // MODULE: FastQC
@@ -68,7 +66,6 @@ workflow SPATIALVI {
     FASTQC(
         INPUT_CHECK.out.ch_spaceranger_input.map{ it -> [it[0] /* meta */, it[1] /* reads */]}
     )
-    ch_versions = ch_versions.mix(FASTQC.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ it -> it[1] })
 
     //
@@ -79,7 +76,6 @@ workflow SPATIALVI {
         spaceranger_reference,
         spaceranger_probeset,
     )
-    ch_versions = ch_versions.mix(SPACERANGER.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{ it -> it[1] })
     ch_downstream_input = INPUT_CHECK.out.ch_downstream_input
         .mix(SPACERANGER.out.sr_dir)
@@ -91,7 +87,6 @@ workflow SPATIALVI {
         ch_downstream_input,
         hd_bin_size
     )
-    ch_versions = ch_versions.mix(READ_DATA.out.versions)
 
     //
     // SUBWORKFLOW: Downstream analyses of ST data
@@ -109,7 +104,6 @@ workflow SPATIALVI {
         svg_autocorr_method,
         n_top_svgs,
     )
-    ch_versions = ch_versions.mix(DOWNSTREAM.out.versions)
 
     //
     // SUBWORKFLOW: Sample aggregation (optional)
@@ -122,7 +116,6 @@ workflow SPATIALVI {
             integration_cluster_resolution,
             integration_n_hvgs,
         )
-        ch_versions = ch_versions.mix(AGGREGATION.out.versions)
     }
 
     //
@@ -145,7 +138,7 @@ workflow SPATIALVI {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    softwareVersionsToYAML(topic_versions.versions_file)
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
@@ -201,7 +194,6 @@ workflow SPATIALVI {
 
     emit:
     multiqc_report = MULTIQC.out.report.toList() // channel: [ multiqc_report.html ]
-    versions       = ch_versions                 // channel: [ versions.yml ]
 
 }
 
