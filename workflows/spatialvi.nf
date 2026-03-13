@@ -114,7 +114,8 @@ workflow SPATIALVI {
     //
     // SUBWORKFLOW: Sample aggregation (optional)
     //
-    if (merge_sdata || integrate_sdata) {
+    // TODO: add back integration
+    /*if (merge_sdata || integrate_sdata) {
         AGGREGATION (
             DOWNSTREAM.out.sdata_svg,
             merge_sdata,
@@ -122,7 +123,7 @@ workflow SPATIALVI {
             integration_cluster_resolution,
             integration_n_hvgs
         )
-    }
+    }*/
 
     //
     // Collate and save software versions
@@ -205,8 +206,6 @@ workflow SPATIALVI {
     emit:
     // Final SpatialData outputs
     sdata_raw       = SDATA_READ_VISIUM.out.sdata      // channel: [ meta, zarr ]
-    sdata_qc        = DOWNSTREAM.out.sdata_qc          // channel: [ meta, zarr ]
-    sdata_clustered = DOWNSTREAM.out.sdata_clustered   // channel: [ meta, zarr ]
     sdata_svg       = DOWNSTREAM.out.sdata_svg         // channel: [ meta, zarr ]
 
     // Reports TODO
