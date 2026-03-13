@@ -2,14 +2,31 @@
 // Subworkflow for downstream analyses of ST data
 //
 
-include { QUARTONOTEBOOK as QUALITY_CONTROLS         } from '../../../modules/nf-core/quartonotebook/main'
-include { QUARTONOTEBOOK as SPATIALLY_VARIABLE_GENES } from '../../../modules/nf-core/quartonotebook/main'
-include { QUARTONOTEBOOK as CLUSTERING               } from '../../../modules/nf-core/quartonotebook/main'
+include { SDATA_TO_LEGACY_ANNDATA                        } from '../../../modules/local/sdata/to_legacy_anndata/main'
+include { SCANPY_CALCULATE_QC_METRICS                    } from '../../../modules/local/scanpy/calculate_qc_metrics/main'
+include { SCANPY_FILTER                                  } from '../../../modules/local/scanpy/filter/main'
+include { SCANPY_NORMALIZE_TOTAL                         } from '../../../modules/local/scanpy/normalize_total/main'
+include { SCANPY_LOG1P                                   } from '../../../modules/local/scanpy/log1p/main'
+include { SCANPY_HIGHLY_VARIABLE_GENES                   } from '../../../modules/local/scanpy/highly_variable_genes/main'
+include { SCANPY_PCA                                     } from '../../../modules/local/scanpy/pca/main'
+include { SCANPY_NEIGHBORS                               } from '../../../modules/local/scanpy/neighbors/main'
+include { SCANPY_UMAP                                    } from '../../../modules/local/scanpy/umap/main'
+include { SCANPY_LEIDEN                                  } from '../../../modules/local/scanpy/leiden/main'
+include { SCANPY_RANK_GENES_GROUPS                       } from '../../../modules/local/scanpy/rank_genes_groups/main'
+include { SQUIDPY_SPATIAL_NEIGHBORS                      } from '../../../modules/local/squidpy/spatial_neighbors/main'
+include { SQUIDPY_NHOOD_ENRICHMENT                       } from '../../../modules/local/squidpy/nhood_enrichment/main'
+include { SQUIDPY_INTERACTION_MATRIX                     } from '../../../modules/local/squidpy/interaction_matrix/main'
+include { SQUIDPY_SPATIAL_AUTOCORR                       } from '../../../modules/local/squidpy/spatial_autocorr/main'
+include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_QC         } from '../../../modules/local/sdata/update_table/main'
+include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_CLUSTERING } from '../../../modules/local/sdata/update_table/main'
+include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_SVG        } from '../../../modules/local/sdata/update_table/main'
+
+include { QUARTONOTEBOOK as REPORT                       } from '../../../modules/nf-core/quartonotebook/main'
 
 workflow DOWNSTREAM {
 
     take:
-    sdata_raw           // channel: [ meta, zarr ]
+    ch_sdata_raw        // channel: [ meta, sdata.zarr ]
     qc_min_counts       // integer: Minimum UMIs per spot
     qc_min_genes        // integer: Minimum genes per spot
     qc_min_spots        // integer: Minimum spots per gene
@@ -18,131 +35,214 @@ workflow DOWNSTREAM {
     qc_hb_threshold     // float  : Maximum haemoglobin content per spot
     cluster_n_hvgs      // integer: Number of highly variable genes to use
     cluster_resolution  // float  : Spot clustering resolution
-    svg_autocorr_method // string : Spatial variable gene autocorrelation method
-    n_top_svgs          // integer: Number of top variable genes to plot
+    svg_autocorr_method // string : Spatial autocorrelation method ('moran' or 'geary')
+    n_top_svgs          // integer: Number of top spatially variable genes to report
 
     main:
 
     //
-    // Quarto reports and extension files
+    // Quarto report template and extensions
     //
-    quality_controls_notebook = file("${projectDir}/bin/quality_controls.qmd", checkIfExists: true)
-    clustering_notebook = file("${projectDir}/bin/clustering.qmd", checkIfExists: true)
-    spatially_variable_genes_notebook = file("${projectDir}/bin/spatially_variable_genes.qmd", checkIfExists: true)
+    report_notebook = file("${projectDir}/bin/report.qmd", checkIfExists: true)
     extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
 
-    //
-    // Quality controls and filtering
-    //
-    ch_quality_controls_input_data = sdata_raw
-        .map { it -> it[1] }
-    ch_quality_controls_notebook = sdata_raw
-        .map { it -> tuple(it[0], quality_controls_notebook) }
-    quality_controls_params = [
-        input_sdata: "sdata_raw.zarr",
-        min_counts: qc_min_counts,
-        min_genes: qc_min_genes,
-        min_spots: qc_min_spots,
-        mito_threshold: qc_mito_threshold,
-        ribo_threshold: qc_ribo_threshold,
-        hb_threshold: qc_hb_threshold,
-        artifact_dir: "artifacts",
-        output_adata: "adata_filtered.h5ad",
-        output_sdata: "sdata_filtered.zarr",
-    ]
-    QUALITY_CONTROLS (
-        ch_quality_controls_notebook,
-        quality_controls_params,
-        ch_quality_controls_input_data,
-        extensions
-    )
-    ch_qc = QUALITY_CONTROLS.out.artifacts
-        .map { meta, artifacts -> [meta, artifacts[0], meta, artifacts[1]] }
-        .flatten ( )
-        .collate ( 2 )
-        .branch { it ->
-            sdata: it[1].name.endsWith('.zarr')
-            mqc: it[1].name.endsWith('.csv')
-        }
-    ch_qc_sdata = ch_qc.sdata
-    ch_qc_mqc   = ch_qc.mqc
-    ch_qc_html  = QUALITY_CONTROLS.out.html
-    ch_qc_nb    = QUALITY_CONTROLS.out.notebook
-    ch_qc_yml   = QUALITY_CONTROLS.out.params_yaml
+    // =========================================================================
+    // DATA LOADING
+    // =========================================================================
 
     //
-    // Normalisation, dimensionality reduction and clustering
+    // Extract legacy AnnData for scanpy processing
     //
-    ch_clustering_input_data = QUALITY_CONTROLS.out.artifacts
-        .map { it -> it[1] }
-    ch_clustering_notebook = QUALITY_CONTROLS.out.artifacts
-        .map { it -> tuple(it[0], clustering_notebook) }
-    clustering_params = [
-        input_sdata: "sdata_filtered.zarr",
-        n_hvgs: cluster_n_hvgs,
-        cluster_resolution: cluster_resolution,
-        artifact_dir: "artifacts",
-        output_adata: "adata_processed.h5ad",
-        output_sdata: "sdata_processed.zarr",
-    ]
-    CLUSTERING (
-        ch_clustering_notebook,
-        clustering_params,
-        ch_clustering_input_data,
-        extensions
-    )
-    ch_clustering_html   = CLUSTERING.out.html
-    ch_clustering_sdata  = CLUSTERING.out.artifacts
-    ch_clustering_nb     = CLUSTERING.out.notebook
-    ch_clustering_params = CLUSTERING.out.params_yaml
+    SDATA_TO_LEGACY_ANNDATA(ch_sdata_raw)
+
+    // =========================================================================
+    // QUALITY CONTROL AND FILTERING
+    // =========================================================================
 
     //
-    // Spatially variable genes
+    // Quality control metrics
     //
-    ch_spatially_variable_genes_input_data = CLUSTERING.out.artifacts
+    SCANPY_CALCULATE_QC_METRICS(SDATA_TO_LEGACY_ANNDATA.out.adata)
+
+    //
+    // Filtering
+    //
+    SCANPY_FILTER(
+        SCANPY_CALCULATE_QC_METRICS.out.adata,
+        qc_min_counts,
+        qc_min_genes,
+        qc_min_spots,
+        qc_mito_threshold,
+        qc_ribo_threshold,
+        qc_hb_threshold
+    )
+
+    //
+    // Update SpatialData with filtered AnnData (checkpoint for QC report)
+    //
+    ch_sdata_for_qc_update = ch_sdata_raw
+        .join(SCANPY_FILTER.out.adata)
+
+    SDATA_UPDATE_TABLE_QC(ch_sdata_for_qc_update)
+
+    ch_qc_sdata = SDATA_UPDATE_TABLE_QC.out.sdata
+
+    // =========================================================================
+    // NORMALIZATION AND FEATURE SELECTION
+    // =========================================================================
+
+    //
+    // Normalization
+    //
+    SCANPY_NORMALIZE_TOTAL(SCANPY_FILTER.out.adata)
+
+    //
+    // Log transformation
+    //
+    SCANPY_LOG1P(SCANPY_NORMALIZE_TOTAL.out.adata)
+
+    //
+    // Highly variable genes
+    //
+    SCANPY_HIGHLY_VARIABLE_GENES(
+        SCANPY_LOG1P.out.adata,
+        cluster_n_hvgs
+    )
+
+    // =========================================================================
+    // DIMENSIONALITY REDUCTION AND CLUSTERING
+    // =========================================================================
+
+    //
+    // PCA
+    //
+    SCANPY_PCA(SCANPY_HIGHLY_VARIABLE_GENES.out.adata)
+
+    //
+    // Neighbors graph (for UMAP and Leiden)
+    //
+    SCANPY_NEIGHBORS(SCANPY_PCA.out.adata)
+
+    //
+    // UMAP
+    //
+    SCANPY_UMAP(SCANPY_NEIGHBORS.out.adata)
+
+    //
+    // Leiden clustering
+    //
+    SCANPY_LEIDEN(
+        SCANPY_UMAP.out.adata,
+        cluster_resolution
+    )
+
+    //
+    // Update SpatialData with clustered AnnData
+    //
+    ch_sdata_for_clustering_update = ch_qc_sdata
+        .join(SCANPY_LEIDEN.out.adata)
+
+    SDATA_UPDATE_TABLE_CLUSTERING(ch_sdata_for_clustering_update)
+
+    ch_clustering_sdata = SDATA_UPDATE_TABLE_CLUSTERING.out.sdata
+
+    // =========================================================================
+    // DIFFERENTIAL EXPRESSION AND SPATIAL ANALYSIS
+    // =========================================================================
+
+    //
+    // Differential expression analysis (rank genes by cluster)
+    //
+    SCANPY_RANK_GENES_GROUPS(SCANPY_LEIDEN.out.adata)
+
+    //
+    // Spatial neighbors (for spatial analyses)
+    //
+    SQUIDPY_SPATIAL_NEIGHBORS(SCANPY_RANK_GENES_GROUPS.out.adata)
+
+    //
+    // Neighborhood enrichment analysis
+    //
+    SQUIDPY_NHOOD_ENRICHMENT(SQUIDPY_SPATIAL_NEIGHBORS.out.adata)
+
+    //
+    // Interaction matrix
+    //
+    SQUIDPY_INTERACTION_MATRIX(SQUIDPY_NHOOD_ENRICHMENT.out.adata)
+
+    //
+    // Spatial autocorrelation (spatially variable genes)
+    //
+    SQUIDPY_SPATIAL_AUTOCORR(
+        SQUIDPY_INTERACTION_MATRIX.out.adata,
+        svg_autocorr_method
+    )
+
+    //
+    // Update SpatialData with SVG results (final checkpoint)
+    //
+    ch_sdata_for_svg_update = ch_clustering_sdata
+        .join(SQUIDPY_SPATIAL_AUTOCORR.out.adata)
+
+    SDATA_UPDATE_TABLE_SVG(ch_sdata_for_svg_update)
+
+    ch_svg_sdata = SDATA_UPDATE_TABLE_SVG.out.sdata
+
+    // =========================================================================
+    // REPORT
+    // =========================================================================
+
+    ch_report_input_data = ch_svg_sdata
         .map { it -> it[1] }
-    ch_spatially_variable_genes_notebook = CLUSTERING.out.artifacts
-        .map { it -> tuple(it[0], spatially_variable_genes_notebook) }
-    spatially_variable_genes_params = [
-        input_sdata: "sdata_processed.zarr",
-        svg_autocorr_method: svg_autocorr_method,
-        n_top_svgs: n_top_svgs,
-        artifact_dir: "artifacts",
-        output_csv: "spatially_variable_genes.csv",
-        output_adata: "adata_spatially_variable_genes.h5ad",
-        output_sdata: "sdata.zarr",
-    ]
-    SPATIALLY_VARIABLE_GENES (
-        ch_spatially_variable_genes_notebook,
-        spatially_variable_genes_params,
-        ch_spatially_variable_genes_input_data,
+    ch_report_input_data.view { "DEBUG ch_report_input_data: $it" }
+    
+    ch_report_notebook = ch_svg_sdata
+        .map { it -> it[0] }
+        .combine(channel.value(report_notebook))
+        .map { meta, notebook -> tuple(meta, notebook) }
+    
+    ch_report_notebook.view { "DEBUG ch_report_notebook: $it" }
+    
+    ch_report_params = ch_svg_sdata
+        .map { meta, sdata -> 
+            [
+                input_sdata  : sdata.name,
+                artifact_dir : "artifacts"
+            ]
+        }
+
+    REPORT(
+        ch_report_notebook,
+        ch_report_params,
+        ch_report_input_data,
         extensions
     )
-    ch_svg_html   = SPATIALLY_VARIABLE_GENES.out.html
-    ch_svg_nb     = SPATIALLY_VARIABLE_GENES.out.notebook
-    ch_svg_params = SPATIALLY_VARIABLE_GENES.out.params_yaml
-    ch_svg_artifacts = SPATIALLY_VARIABLE_GENES.out.artifacts
-        .transpose ( )
-        .branch { it ->
-            csv: it[1].name.endsWith('.csv')
-            sdata: it[1].name.endsWith('.zarr')
-        }
+
+    ch_report_html      = REPORT.out.html
+    ch_report_nb        = REPORT.out.notebook
+    ch_report_yml       = REPORT.out.params_yaml
+    ch_report_artifacts = REPORT.out.artifacts
 
     emit:
-    qc_html           = ch_qc_html             // channel: [ meta, html ]
-    qc_sdata          = ch_qc_sdata            // channel: [ meta, zarr ]
-    qc_mqc            = ch_qc_mqc              // channel: [ meta, csv ]
-    qc_nb             = ch_qc_nb               // channel: [ meta, qmd ]
-    qc_params         = ch_qc_yml              // channel: [ meta, yml ]
+    // SpatialData outputs
+    sdata_qc              = ch_qc_sdata                              // channel: [ meta, zarr ]
+    sdata_clustered       = ch_clustering_sdata                      // channel: [ meta, zarr ]
+    sdata_svg             = ch_svg_sdata                             // channel: [ meta, zarr ]
 
-    clustering_html   = ch_clustering_html     // channel: [ meta, html ]
-    clustering_sdata  = ch_clustering_sdata    // channel: [ meta, zarr]
-    clustering_nb     = ch_clustering_nb       // channel: [ meta, qmd ]
-    clustering_params = ch_clustering_params   // channel: [ meta, yml ]
+    // AnnData outputs (intermediate, useful for debugging)
+    adata_qc              = SCANPY_FILTER.out.adata                  // channel: [ meta, h5ad ]
+    adata_clustered       = SCANPY_LEIDEN.out.adata                  // channel: [ meta, h5ad ]
+    adata_svg             = SQUIDPY_SPATIAL_AUTOCORR.out.adata       // channel: [ meta, h5ad ]
 
-    svg_html          = ch_svg_html            // channel: [ meta, html ]
-    svg_csv           = ch_svg_artifacts.csv   // channel: [ meta, csv ]
-    svg_sdata         = ch_svg_artifacts.sdata // channel: [ meta, zarr ]
-    svg_nb            = ch_svg_nb              // channel: [ meta, qmd ]
-    svg_params        = ch_svg_params          // channel: [ meta, yml ]
+    // Filter statistics (for MultiQC)
+    filter_stats          = SCANPY_FILTER.out.stats                  // channel: [ meta, json ]
+
+    // SVG results
+    svg_csv               = SQUIDPY_SPATIAL_AUTOCORR.out.csv         // channel: [ meta, csv ]
+
+    // Report outputs
+    report_html           = ch_report_html                           // channel: [ meta, html ]
+    report_notebook       = ch_report_nb                             // channel: [ meta, qmd ]
+    report_params_yaml    = ch_report_yml                            // channel: [ meta, yml ]
+    report_artifacts      = ch_report_artifacts                      // channel: [ meta, artifacts ]
 }

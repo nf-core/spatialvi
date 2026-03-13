@@ -1,0 +1,713 @@
+---
+title: "Spatial Transcriptomics Analysis Report"
+subtitle: "nf-core/spatialvi"
+format:
+    nf-core-html: default
+execute:
+    keep-ipynb: true
+jupyter: python3
+---
+
+```{python}
+#| tags: [parameters]
+#| echo: false
+
+# Input parameters (injected by Nextflow)
+input_sdata = "sdata.zarr"
+artifact_dir = "artifacts"
+```
+
+```{python}
+#| echo: false
+#| output: false
+
+import os
+import warnings
+
+# Suppress warnings for cleaner output
+warnings.filterwarnings("ignore")
+
+# Fix numba caching issue in containers
+os.environ['NUMBA_CACHE_DIR'] = '/tmp/numba_cache'
+os.environ['MPLCONFIGDIR'] = '/tmp/matplotlib'
+os.environ['XDG_CACHE_HOME'] = '/tmp/cache'
+
+# Create artifact directory
+os.makedirs(artifact_dir, exist_ok=True)
+
+import numpy as np
+import pandas as pd
+import scanpy as sc
+import squidpy as sq
+import spatialdata
+import matplotlib.pyplot as plt
+from matplotlib import gridspec
+from IPython.display import display, Markdown
+
+# Suppress scanpy verbosity
+sc.settings.verbosity = 0
+
+# Set plotting defaults
+sc.settings.set_figure_params(dpi=100, facecolor='white', frameon=False)
+plt.rcParams['figure.figsize'] = [8, 6]
+```
+
+```{python}
+#| echo: false
+
+# Load SpatialData
+sdata = spatialdata.read_zarr(input_sdata)
+
+# Get the table (assuming single sample, take first table)
+table_names = list(sdata.tables.keys())
+table_name = table_names[0]
+adata = sdata.tables[table_name]
+
+# Extract sample ID from table name
+sample_id = table_name.replace("_table", "")
+
+print(f"Loaded SpatialData from: {input_sdata}")
+print(f"Sample ID: {sample_id}")
+print(f"Table name: {table_name}")
+```
+
+# Sample Overview
+
+```{python}
+#| echo: false
+#| output: asis
+
+# Generate sample overview
+n_spots = adata.n_obs
+n_genes = adata.n_vars
+
+# Check for cluster information
+n_clusters = adata.obs['clusters'].nunique() if 'clusters' in adata.obs else "N/A"
+
+# Check for spatial coordinates
+has_spatial = 'spatial' in adata.obsm
+
+# Get available elements
+n_images = len(sdata.images) if hasattr(sdata, 'images') else 0
+n_shapes = len(sdata.shapes) if hasattr(sdata, 'shapes') else 0
+
+overview_md = f"""
+| Property | Value |
+|----------|-------|
+| **Sample ID** | `{sample_id}` |
+| **Number of spots** | {n_spots:,} |
+| **Number of genes** | {n_genes:,} |
+| **Number of clusters** | {n_clusters} |
+| **Has spatial coordinates** | {has_spatial} |
+| **Number of images** | {n_images} |
+| **Number of shapes** | {n_shapes} |
+"""
+
+print(overview_md)
+```
+
+# Quality Control
+
+## QC Metrics Distribution
+
+The following plots show the distribution of quality control metrics across all spots.
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 4
+
+# Check which QC columns are available
+qc_cols = []
+qc_labels = []
+
+if 'total_counts' in adata.obs:
+    qc_cols.append('total_counts')
+    qc_labels.append('Total Counts')
+if 'n_genes_by_counts' in adata.obs:
+    qc_cols.append('n_genes_by_counts')
+    qc_labels.append('Genes per Spot')
+if 'pct_counts_mt' in adata.obs:
+    qc_cols.append('pct_counts_mt')
+    qc_labels.append('MT %')
+if 'pct_counts_ribo' in adata.obs:
+    qc_cols.append('pct_counts_ribo')
+    qc_labels.append('Ribo %')
+if 'pct_counts_hb' in adata.obs:
+    qc_cols.append('pct_counts_hb')
+    qc_labels.append('Hb %')
+
+if len(qc_cols) > 0:
+    n_plots = min(len(qc_cols), 5)
+    fig, axes = plt.subplots(1, n_plots, figsize=(3*n_plots, 3))
+    if n_plots == 1:
+        axes = [axes]
+    
+    for ax, col, label in zip(axes, qc_cols[:n_plots], qc_labels[:n_plots]):
+        ax.hist(adata.obs[col].values, bins=50, edgecolor='black', alpha=0.7)
+        ax.set_xlabel(label)
+        ax.set_ylabel('Frequency')
+        ax.axvline(adata.obs[col].median(), color='red', linestyle='--', label=f'Median: {adata.obs[col].median():.1f}')
+        ax.legend(fontsize=8)
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(artifact_dir, 'qc_distributions.png'), dpi=150, bbox_inches='tight')
+    plt.show()
+else:
+    print("No QC metrics found in the data.")
+```
+
+## QC Metrics Summary
+
+```{python}
+#| echo: false
+#| output: asis
+
+if len(qc_cols) > 0:
+    qc_summary = adata.obs[qc_cols].describe().T
+    qc_summary.columns = ['Count', 'Mean', 'Std', 'Min', '25%', '50%', '75%', 'Max']
+    
+    print("| Metric | Mean | Median | Min | Max |")
+    print("|--------|------|--------|-----|-----|")
+    for col, label in zip(qc_cols, qc_labels):
+        mean = adata.obs[col].mean()
+        median = adata.obs[col].median()
+        min_val = adata.obs[col].min()
+        max_val = adata.obs[col].max()
+        print(f"| {label} | {mean:.2f} | {median:.2f} | {min_val:.2f} | {max_val:.2f} |")
+```
+
+## Spatial QC Visualization
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 8
+
+if has_spatial and len(qc_cols) >= 2:
+    # Plot spatial distribution of QC metrics
+    n_cols = min(3, len(qc_cols))
+    n_rows = (len(qc_cols) + n_cols - 1) // n_cols
+    
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(4*n_cols, 4*n_rows))
+    axes = np.atleast_2d(axes).flatten()
+    
+    for idx, (col, label) in enumerate(zip(qc_cols, qc_labels)):
+        if idx < len(axes):
+            sc.pl.spatial(
+                adata,
+                color=col,
+                ax=axes[idx],
+                show=False,
+                title=label,
+                frameon=False
+            )
+    
+    # Hide empty axes
+    for idx in range(len(qc_cols), len(axes)):
+        axes[idx].axis('off')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(artifact_dir, 'qc_spatial.png'), dpi=150, bbox_inches='tight')
+    plt.show()
+```
+
+# Gene Expression
+
+## Highly Variable Genes
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 10
+#| fig-height: 5
+
+if 'highly_variable' in adata.var.columns:
+    n_hvg = adata.var['highly_variable'].sum()
+    print(f"Number of highly variable genes: {n_hvg:,}")
+    
+    if 'means' in adata.var.columns and 'dispersions_norm' in adata.var.columns:
+        fig, ax = plt.subplots(figsize=(8, 5))
+        
+        hvg_mask = adata.var['highly_variable']
+        
+        ax.scatter(
+            adata.var.loc[~hvg_mask, 'means'],
+            adata.var.loc[~hvg_mask, 'dispersions_norm'],
+            s=3, alpha=0.3, c='grey', label='Other genes'
+        )
+        ax.scatter(
+            adata.var.loc[hvg_mask, 'means'],
+            adata.var.loc[hvg_mask, 'dispersions_norm'],
+            s=3, alpha=0.5, c='red', label='Highly variable'
+        )
+        
+        ax.set_xlabel('Mean expression')
+        ax.set_ylabel('Normalized dispersion')
+        ax.set_title('Highly Variable Genes')
+        ax.legend()
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(artifact_dir, 'hvg.png'), dpi=150, bbox_inches='tight')
+        plt.show()
+else:
+    print("Highly variable gene information not found.")
+```
+
+# Dimensionality Reduction
+
+## PCA
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 5
+
+if 'X_pca' in adata.obsm:
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # PCA scatter plot colored by clusters if available
+    if 'clusters' in adata.obs:
+        sc.pl.pca(adata, color='clusters', ax=axes[0], show=False, title='PCA (colored by clusters)')
+    else:
+        sc.pl.pca(adata, ax=axes[0], show=False, title='PCA')
+    
+    # Variance explained
+    if 'pca' in adata.uns and 'variance_ratio' in adata.uns['pca']:
+        variance_ratio = adata.uns['pca']['variance_ratio']
+        cumulative_var = np.cumsum(variance_ratio)
+        n_pcs = len(variance_ratio)
+        
+        axes[1].bar(range(1, n_pcs + 1), variance_ratio, alpha=0.7, label='Individual')
+        axes[1].plot(range(1, n_pcs + 1), cumulative_var, 'r-', marker='o', markersize=3, label='Cumulative')
+        axes[1].set_xlabel('Principal Component')
+        axes[1].set_ylabel('Variance Explained')
+        axes[1].set_title('PCA Variance Explained')
+        axes[1].legend()
+        axes[1].set_xlim(0, min(n_pcs + 1, 51))
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(artifact_dir, 'pca.png'), dpi=150, bbox_inches='tight')
+    plt.show()
+    
+    if 'pca' in adata.uns and 'variance_ratio' in adata.uns['pca']:
+        print(f"Variance explained by PC1: {variance_ratio[0]:.2%}")
+        print(f"Variance explained by PC1-10: {cumulative_var[9]:.2%}")
+        if len(cumulative_var) >= 20:
+            print(f"Variance explained by PC1-20: {cumulative_var[19]:.2%}")
+else:
+    print("PCA results not found.")
+```
+
+## UMAP
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 5
+
+if 'X_umap' in adata.obsm:
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # UMAP colored by clusters
+    if 'clusters' in adata.obs:
+        sc.pl.umap(adata, color='clusters', ax=axes[0], show=False, title='UMAP (clusters)')
+    else:
+        sc.pl.umap(adata, ax=axes[0], show=False, title='UMAP')
+    
+    # UMAP colored by total counts
+    if 'total_counts' in adata.obs:
+        sc.pl.umap(adata, color='total_counts', ax=axes[1], show=False, title='UMAP (total counts)')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(artifact_dir, 'umap.png'), dpi=150, bbox_inches='tight')
+    plt.show()
+else:
+    print("UMAP results not found.")
+```
+
+# Clustering
+
+## Cluster Assignments
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 5
+
+if 'clusters' in adata.obs:
+    # Cluster counts
+    cluster_counts = adata.obs['clusters'].value_counts().sort_index()
+    n_clusters = len(cluster_counts)
+    
+    print(f"Number of clusters: {n_clusters}")
+    
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # Bar plot of cluster sizes
+    cluster_counts.plot(kind='bar', ax=axes[0], color='steelblue', edgecolor='black')
+    axes[0].set_xlabel('Cluster')
+    axes[0].set_ylabel('Number of spots')
+    axes[0].set_title('Spots per Cluster')
+    axes[0].tick_params(axis='x', rotation=45)
+    
+    # Pie chart
+    axes[1].pie(cluster_counts.values, labels=cluster_counts.index, autopct='%1.1f%%', startangle=90)
+    axes[1].set_title('Cluster Proportions')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(artifact_dir, 'cluster_sizes.png'), dpi=150, bbox_inches='tight')
+    plt.show()
+```
+
+## Spatial Cluster Distribution
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 8
+
+if 'clusters' in adata.obs and has_spatial:
+    fig, ax = plt.subplots(figsize=(8, 8))
+    sc.pl.spatial(
+        adata,
+        color='clusters',
+        ax=ax,
+        show=False,
+        title='Spatial Cluster Distribution',
+        frameon=False
+    )
+    plt.tight_layout()
+    plt.savefig(os.path.join(artifact_dir, 'clusters_spatial.png'), dpi=150, bbox_inches='tight')
+    plt.show()
+```
+
+## Cluster Statistics
+
+```{python}
+#| echo: false
+#| output: asis
+
+if 'clusters' in adata.obs:
+    print("| Cluster | Spots | Percentage | Mean Counts | Mean Genes |")
+    print("|---------|-------|------------|-------------|------------|")
+    
+    for cluster in sorted(adata.obs['clusters'].unique()):
+        mask = adata.obs['clusters'] == cluster
+        n_spots = mask.sum()
+        pct = n_spots / len(adata) * 100
+        
+        mean_counts = adata.obs.loc[mask, 'total_counts'].mean() if 'total_counts' in adata.obs else 'N/A'
+        mean_genes = adata.obs.loc[mask, 'n_genes_by_counts'].mean() if 'n_genes_by_counts' in adata.obs else 'N/A'
+        
+        if isinstance(mean_counts, float):
+            print(f"| {cluster} | {n_spots:,} | {pct:.1f}% | {mean_counts:.1f} | {mean_genes:.1f} |")
+        else:
+            print(f"| {cluster} | {n_spots:,} | {pct:.1f}% | {mean_counts} | {mean_genes} |")
+```
+
+# Differential Expression
+
+## Top Marker Genes per Cluster
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 14
+#| fig-height: 8
+
+if 'rank_genes_groups' in adata.uns:
+    # Get number of clusters
+    groups = adata.uns['rank_genes_groups']['names'].dtype.names
+    n_groups = len(groups)
+    
+    print(f"Differential expression computed for {n_groups} clusters")
+    
+    # Heatmap of top genes
+    try:
+        sc.pl.rank_genes_groups_heatmap(
+            adata,
+            n_genes=5,
+            groupby='clusters',
+            show=False
+        )
+        plt.savefig(os.path.join(artifact_dir, 'deg_heatmap.png'), dpi=150, bbox_inches='tight')
+        plt.show()
+    except Exception as e:
+        print(f"Could not generate heatmap: {e}")
+```
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 14
+#| fig-height: 6
+
+if 'rank_genes_groups' in adata.uns:
+    # Dot plot of top genes
+    try:
+        sc.pl.rank_genes_groups_dotplot(
+            adata,
+            n_genes=5,
+            groupby='clusters',
+            show=False
+        )
+        plt.savefig(os.path.join(artifact_dir, 'deg_dotplot.png'), dpi=150, bbox_inches='tight')
+        plt.show()
+    except Exception as e:
+        print(f"Could not generate dotplot: {e}")
+```
+
+## Top Genes per Cluster Table
+
+```{python}
+#| echo: false
+#| output: asis
+
+if 'rank_genes_groups' in adata.uns:
+    n_top = 5
+    groups = adata.uns['rank_genes_groups']['names'].dtype.names
+    
+    # Build header
+    header = "| Rank | " + " | ".join([f"Cluster {g}" for g in groups]) + " |"
+    separator = "|------|" + "|".join(["-------" for _ in groups]) + "|"
+    
+    print(header)
+    print(separator)
+    
+    for i in range(n_top):
+        row = f"| {i+1} |"
+        for g in groups:
+            gene = adata.uns['rank_genes_groups']['names'][g][i]
+            row += f" {gene} |"
+        print(row)
+```
+
+# Spatial Analysis
+
+## Neighborhood Enrichment
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 6
+
+nhood_key = 'clusters_nhood_enrichment'
+if nhood_key in adata.uns:
+    try:
+        sq.pl.nhood_enrichment(
+            adata,
+            cluster_key='clusters',
+            method='ward',
+            vmin=-100,
+            vmax=100
+        )
+        plt.savefig(os.path.join(artifact_dir, 'nhood_enrichment.png'), dpi=150, bbox_inches='tight')
+        plt.show()
+        
+        print("Neighborhood enrichment analysis shows which cluster pairs are spatially enriched (positive, red) or depleted (negative, blue) compared to random expectation.")
+    except Exception as e:
+        print(f"Could not generate neighborhood enrichment plot: {e}")
+else:
+    print("Neighborhood enrichment results not found.")
+```
+
+## Cluster Interaction Matrix
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 6
+
+interaction_key = 'clusters_interactions'
+if interaction_key in adata.uns:
+    try:
+        sq.pl.interaction_matrix(
+            adata,
+            cluster_key='clusters',
+            method='ward'
+        )
+        plt.savefig(os.path.join(artifact_dir, 'interaction_matrix.png'), dpi=150, bbox_inches='tight')
+        plt.show()
+        
+        print("The interaction matrix shows the number of edges between each pair of clusters in the spatial neighbor graph.")
+    except Exception as e:
+        print(f"Could not generate interaction matrix plot: {e}")
+else:
+    print("Interaction matrix results not found.")
+```
+
+# Spatially Variable Genes
+
+## Spatial Autocorrelation Results
+
+```{python}
+#| echo: false
+#| warning: false
+
+# Check for spatial autocorrelation results
+svg_key = None
+svg_method = None
+
+if 'moranI' in adata.uns:
+    svg_key = 'moranI'
+    svg_method = "Moran's I"
+elif 'gearyC' in adata.uns:
+    svg_key = 'gearyC'
+    svg_method = "Geary's C"
+
+if svg_key:
+    svg_df = adata.uns[svg_key]
+    n_svg = len(svg_df)
+    print(f"Spatial autocorrelation method: {svg_method}")
+    print(f"Number of genes analyzed: {n_svg:,}")
+    
+    # Save top SVGs to CSV
+    svg_df.head(100).to_csv(os.path.join(artifact_dir, 'top_spatially_variable_genes.csv'))
+```
+
+## Top Spatially Variable Genes
+
+```{python}
+#| echo: false
+#| output: asis
+
+if svg_key:
+    n_display = 20
+    top_svg = svg_df.head(n_display)
+    
+    if svg_method == "Moran's I":
+        print(f"| Rank | Gene | Moran's I | p-value (FDR) |")
+        print("|------|------|-----------|---------------|")
+        for i, (gene, row) in enumerate(top_svg.iterrows()):
+            moran_i = row.get('I', row.get('moranI', 'N/A'))
+            pval = row.get('pval_norm_fdr_bh', row.get('pval_norm', 'N/A'))
+            if isinstance(moran_i, float):
+                print(f"| {i+1} | {gene} | {moran_i:.4f} | {pval:.2e} |")
+            else:
+                print(f"| {i+1} | {gene} | {moran_i} | {pval} |")
+    else:
+        print(f"| Rank | Gene | Geary's C | p-value (FDR) |")
+        print("|------|------|-----------|---------------|")
+        for i, (gene, row) in enumerate(top_svg.iterrows()):
+            geary_c = row.get('C', row.get('gearyC', 'N/A'))
+            pval = row.get('pval_norm_fdr_bh', row.get('pval_norm', 'N/A'))
+            if isinstance(geary_c, float):
+                print(f"| {i+1} | {gene} | {geary_c:.4f} | {pval:.2e} |")
+            else:
+                print(f"| {i+1} | {gene} | {geary_c} | {pval} |")
+```
+
+## Spatial Expression of Top SVGs
+
+```{python}
+#| echo: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 12
+
+if svg_key and has_spatial:
+    top_genes = svg_df.head(9).index.tolist()
+    
+    # Filter to genes that exist in the data
+    top_genes = [g for g in top_genes if g in adata.var_names]
+    
+    if len(top_genes) > 0:
+        n_cols = 3
+        n_rows = (len(top_genes) + n_cols - 1) // n_cols
+        
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(4*n_cols, 4*n_rows))
+        axes = np.atleast_2d(axes).flatten()
+        
+        for idx, gene in enumerate(top_genes):
+            if idx < len(axes):
+                sc.pl.spatial(
+                    adata,
+                    color=gene,
+                    ax=axes[idx],
+                    show=False,
+                    title=gene,
+                    frameon=False
+                )
+        
+        # Hide empty axes
+        for idx in range(len(top_genes), len(axes)):
+            axes[idx].axis('off')
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(artifact_dir, 'top_svg_spatial.png'), dpi=150, bbox_inches='tight')
+        plt.show()
+    else:
+        print("No valid genes found for spatial plotting.")
+```
+
+# Summary
+
+```{python}
+#| echo: false
+#| output: asis
+
+summary_sections = []
+
+# Data overview
+summary_sections.append(f"## Data Overview\n- **Sample**: {sample_id}\n- **Spots**: {n_spots:,}\n- **Genes**: {n_genes:,}")
+
+# QC summary
+if 'total_counts' in adata.obs:
+    median_counts = adata.obs['total_counts'].median()
+    median_genes = adata.obs['n_genes_by_counts'].median() if 'n_genes_by_counts' in adata.obs else 'N/A'
+    summary_sections.append(f"\n## Quality Control\n- **Median counts per spot**: {median_counts:,.0f}\n- **Median genes per spot**: {median_genes:,.0f}")
+
+# Clustering summary
+if 'clusters' in adata.obs:
+    n_clusters = adata.obs['clusters'].nunique()
+    summary_sections.append(f"\n## Clustering\n- **Number of clusters**: {n_clusters}\n- **Algorithm**: Leiden")
+
+# SVG summary
+if svg_key:
+    n_sig = (svg_df['pval_norm_fdr_bh'] < 0.05).sum() if 'pval_norm_fdr_bh' in svg_df.columns else 'N/A'
+    top_gene = svg_df.index[0]
+    summary_sections.append(f"\n## Spatially Variable Genes\n- **Method**: {svg_method}\n- **Significant genes (FDR < 0.05)**: {n_sig}\n- **Top gene**: {top_gene}")
+
+print("\n".join(summary_sections))
+```
+
+# Session Info
+
+```{python}
+#| echo: false
+#| output: asis
+
+import sys
+import importlib.metadata
+
+packages = ['scanpy', 'squidpy', 'spatialdata', 'anndata', 'numpy', 'pandas', 'matplotlib']
+
+print("| Package | Version |")
+print("|---------|---------|")
+print(f"| Python | {sys.version.split()[0]} |")
+
+for pkg in packages:
+    try:
+        version = importlib.metadata.version(pkg)
+        print(f"| {pkg} | {version} |")
+    except:
+        pass
+```
+
+```{python}
+#| echo: false
+
+# Save the final figure paths
+print(f"\nArtifacts saved to: {artifact_dir}/")
+for f in os.listdir(artifact_dir):
+    print(f"  - {f}")
+```

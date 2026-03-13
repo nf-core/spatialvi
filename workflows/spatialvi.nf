@@ -4,7 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { READ_DATA              } from '../modules/local/read_data'
+include { SDATA_READ_VISIUM      } from '../modules/local/sdata/read_visium/main'
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { INPUT_CHECK            } from '../subworkflows/local/input_check'
@@ -77,22 +77,28 @@ workflow SPATIALVI {
         spaceranger_probeset,
     )
     ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{ it -> it[1] })
-    ch_downstream_input = INPUT_CHECK.out.ch_downstream_input
+
+    //
+    // Combine pre-existing spaceranger outputs with newly processed ones
+    //
+    ch_spaceranger_dir = INPUT_CHECK.out.ch_downstream_input
         .mix(SPACERANGER.out.sr_dir)
 
     //
-    // MODULE: Read ST data and save as `SpatialData`
+    // MODULE: Read ST data and save as SpatialData
     //
-    READ_DATA (
-        ch_downstream_input,
+    SDATA_READ_VISIUM (
+        ch_spaceranger_dir,
         hd_bin_size
     )
-
+    
     //
     // SUBWORKFLOW: Downstream analyses of ST data
+    // This includes: QC, filtering, normalization,
+    // dimensionality reduction, clustering, and spatial analysis
     //
     DOWNSTREAM (
-        READ_DATA.out.sdata_raw,
+        SDATA_READ_VISIUM.out.sdata,
         qc_min_counts,
         qc_min_genes,
         qc_min_spots,
@@ -102,7 +108,7 @@ workflow SPATIALVI {
         cluster_n_hvgs,
         cluster_resolution,
         svg_autocorr_method,
-        n_top_svgs,
+        n_top_svgs
     )
 
     //
@@ -110,11 +116,11 @@ workflow SPATIALVI {
     //
     if (merge_sdata || integrate_sdata) {
         AGGREGATION (
-            DOWNSTREAM.out.svg_sdata,
+            DOWNSTREAM.out.sdata_svg,
             merge_sdata,
             integrate_sdata,
             integration_cluster_resolution,
-            integration_n_hvgs,
+            integration_n_hvgs
         )
     }
 
@@ -142,10 +148,11 @@ workflow SPATIALVI {
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
-            name: 'nf_core_' + 'spatialvi_software_' + 'mqc_' + 'versions.yml',
+            name: 'nf_core_spatialvi_software_mqc_versions.yml',
             sort: true,
             newLine: true
-        ).set { ch_collated_versions }
+        )
+        .set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
@@ -162,19 +169,22 @@ workflow SPATIALVI {
     summary_params      = paramsSummaryMap(
         workflow, parameters_schema: "nextflow_schema.json")
     ch_workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
-    ch_multiqc_files = ch_multiqc_files.mix(
+    ch_multiqc_files    = ch_multiqc_files.mix(
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+
     ch_multiqc_custom_methods_description = multiqc_methods_description ?
         file(multiqc_methods_description, checkIfExists: true) :
         file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-    ch_methods_description                = channel.value(
+    ch_methods_description = channel.value(
         methodsDescriptionText(ch_multiqc_custom_methods_description))
 
+    //
+    // Add filter statistics to MultiQC (JSON format needs custom config)
+    //
     ch_multiqc_files = ch_multiqc_files.mix(
-        DOWNSTREAM.out.qc_mqc.map{ it -> it[1] }.collect()
+        DOWNSTREAM.out.filter_stats.map{ meta, json -> json }.collect()
     )
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_methods_description.collectFile(
@@ -193,8 +203,22 @@ workflow SPATIALVI {
     )
 
     emit:
-    multiqc_report = MULTIQC.out.report.toList() // channel: [ multiqc_report.html ]
+    // Final SpatialData outputs
+    sdata_raw       = SDATA_READ_VISIUM.out.sdata      // channel: [ meta, zarr ]
+    sdata_qc        = DOWNSTREAM.out.sdata_qc          // channel: [ meta, zarr ]
+    sdata_clustered = DOWNSTREAM.out.sdata_clustered   // channel: [ meta, zarr ]
+    sdata_svg       = DOWNSTREAM.out.sdata_svg         // channel: [ meta, zarr ]
 
+    // Reports TODO
+    //qc_html         = DOWNSTREAM.out.qc_html           // channel: [ meta, html ]
+    //clustering_html = DOWNSTREAM.out.clustering_html   // channel: [ meta, html ]
+    //svg_html        = DOWNSTREAM.out.svg_html          // channel: [ meta, html ]
+
+    // SVG results
+    svg_csv         = DOWNSTREAM.out.svg_csv           // channel: [ meta, csv ]
+
+    // MultiQC
+    multiqc_report  = MULTIQC.out.report.toList()      // channel: [ multiqc_report.html ]
 }
 
 /*
