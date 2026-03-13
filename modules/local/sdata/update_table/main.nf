@@ -8,7 +8,7 @@ process SDATA_UPDATE_TABLE {
     tuple val(meta), path(sdata), path(adata)
 
     output:
-    tuple val(meta), path("${prefix}.zarr"), emit: sdata
+    tuple val(meta), path("${prefix}_updated.zarr"), emit: sdata
     path "versions.yml"                    , emit: versions
 
     when:
@@ -21,8 +21,8 @@ process SDATA_UPDATE_TABLE {
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir -p ${prefix}.zarr
-    touch ${prefix}.zarr/.zgroup
+    mkdir -p ${prefix}_updated.zarr
+    touch ${prefix}_updated.zarr/.zgroup
     touch versions.yml
     """
 }

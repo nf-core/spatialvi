@@ -77,16 +77,6 @@ workflow DOWNSTREAM {
         qc_hb_threshold
     )
 
-    //
-    // Update SpatialData with filtered AnnData (checkpoint for QC report)
-    //
-    ch_sdata_for_qc_update = ch_sdata_raw
-        .join(SCANPY_FILTER.out.adata)
-
-    SDATA_UPDATE_TABLE_QC(ch_sdata_for_qc_update)
-
-    ch_qc_sdata = SDATA_UPDATE_TABLE_QC.out.sdata
-
     // =========================================================================
     // NORMALIZATION AND FEATURE SELECTION
     // =========================================================================
@@ -136,16 +126,6 @@ workflow DOWNSTREAM {
         cluster_resolution
     )
 
-    //
-    // Update SpatialData with clustered AnnData
-    //
-    ch_sdata_for_clustering_update = ch_qc_sdata
-        .join(SCANPY_LEIDEN.out.adata)
-
-    SDATA_UPDATE_TABLE_CLUSTERING(ch_sdata_for_clustering_update)
-
-    ch_clustering_sdata = SDATA_UPDATE_TABLE_CLUSTERING.out.sdata
-
     // =========================================================================
     // DIFFERENTIAL EXPRESSION AND SPATIAL ANALYSIS
     // =========================================================================
@@ -181,7 +161,7 @@ workflow DOWNSTREAM {
     //
     // Update SpatialData with SVG results (final checkpoint)
     //
-    ch_sdata_for_svg_update = ch_clustering_sdata
+    ch_sdata_for_svg_update = ch_sdata_raw//ch_clustering_sdata
         .join(SQUIDPY_SPATIAL_AUTOCORR.out.adata)
 
     SDATA_UPDATE_TABLE_SVG(ch_sdata_for_svg_update)
@@ -194,15 +174,12 @@ workflow DOWNSTREAM {
 
     ch_report_input_data = ch_svg_sdata
         .map { it -> it[1] }
-    ch_report_input_data.view { "DEBUG ch_report_input_data: $it" }
     
     ch_report_notebook = ch_svg_sdata
         .map { it -> it[0] }
         .combine(channel.value(report_notebook))
         .map { meta, notebook -> tuple(meta, notebook) }
-    
-    ch_report_notebook.view { "DEBUG ch_report_notebook: $it" }
-    
+        
     ch_report_params = ch_svg_sdata
         .map { meta, sdata -> 
             [
@@ -224,9 +201,7 @@ workflow DOWNSTREAM {
     ch_report_artifacts = REPORT.out.artifacts
 
     emit:
-    // SpatialData outputs
-    sdata_qc              = ch_qc_sdata                              // channel: [ meta, zarr ]
-    sdata_clustered       = ch_clustering_sdata                      // channel: [ meta, zarr ]
+    // SpatialData output
     sdata_svg             = ch_svg_sdata                             // channel: [ meta, zarr ]
 
     // AnnData outputs (intermediate, useful for debugging)

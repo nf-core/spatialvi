@@ -27,11 +27,6 @@ import warnings
 # Suppress warnings for cleaner output
 warnings.filterwarnings("ignore")
 
-# Fix numba caching issue in containers
-os.environ['NUMBA_CACHE_DIR'] = '/tmp/numba_cache'
-os.environ['MPLCONFIGDIR'] = '/tmp/matplotlib'
-os.environ['XDG_CACHE_HOME'] = '/tmp/cache'
-
 # Create artifact directory
 os.makedirs(artifact_dir, exist_ok=True)
 
@@ -202,7 +197,8 @@ if has_spatial and len(qc_cols) >= 2:
                 ax=axes[idx],
                 show=False,
                 title=label,
-                frameon=False
+                frameon=False,
+                library_id=f"{sample_id}_hires_image"
             )
     
     # Hide empty axes
@@ -381,7 +377,8 @@ if 'clusters' in adata.obs and has_spatial:
         ax=ax,
         show=False,
         title='Spatial Cluster Distribution',
-        frameon=False
+        frameon=False,
+        library_id=f"{sample_id}_hires_image"
     )
     plt.tight_layout()
     plt.savefig(os.path.join(artifact_dir, 'clusters_spatial.png'), dpi=150, bbox_inches='tight')
@@ -635,7 +632,8 @@ if svg_key and has_spatial:
                     ax=axes[idx],
                     show=False,
                     title=gene,
-                    frameon=False
+                    frameon=False,
+                    library_id=f"{sample_id}_hires_image"
                 )
         
         # Hide empty axes
