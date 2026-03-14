@@ -5,6 +5,7 @@ format:
     nf-core-html:
         echo: false
         warning: false
+lightbox: true
 execute:
     keep-ipynb: true
 jupyter: python3
