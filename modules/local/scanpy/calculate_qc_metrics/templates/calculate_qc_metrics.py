@@ -73,7 +73,7 @@ n_mt = adata.var["mt"].sum()
 n_ribo = adata.var["ribo"].sum()
 n_hb = adata.var["hb"].sum()
 
-print(f"Gene type counts:")
+print("Gene type counts:")
 print(f"  MT genes: {n_mt}")
 print(f"  Ribo genes: {n_ribo}")
 print(f"  Hb genes: {n_hb}")
@@ -110,27 +110,27 @@ def calculate_qc_manually(adata):
     Manually calculate basic QC metrics when scanpy fails.
     """
     print("Calculating QC metrics manually...")
-    
+
     X = adata.X
     if scipy.sparse.issparse(X):
         X_dense = X.toarray()
     else:
         X_dense = np.array(X)
-    
+
     # Basic obs metrics
     adata.obs["total_counts"] = np.array(X.sum(axis=1)).flatten().astype(np.float64)
     adata.obs["n_genes_by_counts"] = np.array((X > 0).sum(axis=1)).flatten().astype(np.int64)
-    
+
     # Basic var metrics
     adata.var["total_counts"] = np.array(X.sum(axis=0)).flatten().astype(np.float64)
     adata.var["n_cells_by_counts"] = np.array((X > 0).sum(axis=0)).flatten().astype(np.int64)
     adata.var["mean_counts"] = np.array(X.mean(axis=0)).flatten().astype(np.float64)
-    
+
     # Calculate percentage for each gene type
     total_counts = adata.obs["total_counts"].values
     # Avoid division by zero
     total_counts_safe = np.where(total_counts == 0, 1, total_counts)
-    
+
     for var_name in ["mt", "ribo", "hb"]:
         if var_name in adata.var.columns:
             var_mask = adata.var[var_name].values
@@ -138,7 +138,7 @@ def calculate_qc_manually(adata):
                 var_counts = np.array(X[:, var_mask].sum(axis=1)).flatten().astype(np.float64)
             else:
                 var_counts = np.zeros(adata.n_obs, dtype=np.float64)
-            
+
             adata.obs[f"total_counts_{var_name}"] = var_counts
             pct = (var_counts / total_counts_safe * 100)
             # Set to 0 where total_counts was 0
@@ -147,7 +147,7 @@ def calculate_qc_manually(adata):
         else:
             adata.obs[f"total_counts_{var_name}"] = 0.0
             adata.obs[f"pct_counts_{var_name}"] = 0.0
-    
+
     print("Manual QC calculation completed.")
 
 
@@ -163,11 +163,11 @@ try:
         log1p=False
     )
     print("Scanpy QC calculation completed successfully.")
-    
+
 except Exception as e:
     print(f"WARNING: Scanpy QC calculation failed: {e}")
     print("Falling back to manual calculation...")
-    
+
     try:
         calculate_qc_manually(adata)
     except Exception as e2:
