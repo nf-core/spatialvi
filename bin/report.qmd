@@ -10,7 +10,7 @@ execute:
 jupyter: python3
 ---
 
-```{python}
+```{python parameters}
 #| tags: [parameters]
 input_sdata = "sdata.zarr"
 artifact_dir = "artifacts"
@@ -46,9 +46,22 @@ sc.settings.set_figure_params(dpi=100, facecolor='white', frameon=False)
 plt.rcParams['figure.figsize'] = [8, 6]
 ```
 
-```{python}
-#| echo: false
+```{python common-functions}
+def create_tabset(content):
+    """
+    Programmatically create tabsets with headers and plots.
 
+    Arguments:
+        content -- a (name, figure) tuple, where `name` is e.g. sample names
+    """
+    for name, fig in content:
+        display(Markdown(f"#### {name}"))
+        display(fig)
+        plt.close()
+        display(Markdown(f" "))
+```
+
+```{python load-data}
 # Load SpatialData
 sdata = spatialdata.read_zarr(input_sdata)
 
@@ -67,9 +80,8 @@ print(f"Table name: {table_name}")
 
 # Sample Overview
 
-```{python}
+```{python overview-table}
 #| output: asis
-
 # Generate sample overview
 n_spots = adata.n_obs
 n_genes = adata.n_vars
@@ -84,7 +96,7 @@ has_spatial = 'spatial' in adata.obsm
 n_images = len(sdata.images) if hasattr(sdata, 'images') else 0
 n_shapes = len(sdata.shapes) if hasattr(sdata, 'shapes') else 0
 
-overview_md = f"""
+print(f"""
 | Property | Value |
 |----------|-------|
 | **Sample ID** | `{sample_id}` |
@@ -94,64 +106,59 @@ overview_md = f"""
 | **Has spatial coordinates** | {has_spatial} |
 | **Number of images** | {n_images} |
 | **Number of shapes** | {n_shapes} |
-"""
-
-print(overview_md)
+""")
 ```
 
 # Quality Control
 
 ## QC Metrics Distribution
 
-The following plots show the distribution of quality control metrics across all spots.
+The following plots show the distribution of quality control metrics across all
+spots.
 
-```{python}
+```{python qc-metrics}
 #| output: false
 # Check which QC columns are available
-qc_cols = []
-qc_labels = []
+qc_metrics_map = [
+    ('total_counts', 'Total Counts'),
+    ('n_genes_by_counts', 'Genes per Spot'),
+    ('pct_counts_mt', 'Mito %'),
+    ('pct_counts_ribo', 'Ribo %'),
+    ('pct_counts_hb', 'Hb %'),
+]
+qc_metrics = [(col, label) for col, label in qc_metrics_map if col in adata.obs]
 
-if 'total_counts' in adata.obs:
-    qc_cols.append('total_counts')
-    qc_labels.append('Total Counts')
-if 'n_genes_by_counts' in adata.obs:
-    qc_cols.append('n_genes_by_counts')
-    qc_labels.append('Genes per Spot')
-if 'pct_counts_mt' in adata.obs:
-    qc_cols.append('pct_counts_mt')
-    qc_labels.append('MT %')
-if 'pct_counts_ribo' in adata.obs:
-    qc_cols.append('pct_counts_ribo')
-    qc_labels.append('Ribo %')
-if 'pct_counts_hb' in adata.obs:
-    qc_cols.append('pct_counts_hb')
-    qc_labels.append('Hb %')
-
-if len(qc_cols) > 0:
-    n_plots = min(len(qc_cols), 5)
-    fig, axes = plt.subplots(1, n_plots, figsize=(3*n_plots, 3))
-    if n_plots == 1:
-        axes = [axes]
-
-    for ax, col, label in zip(axes, qc_cols[:n_plots], qc_labels[:n_plots]):
+# Loop over metrics and store plots in list
+qc_metrics_plots = []
+if len(qc_metrics) > 0:
+    for col, label in qc_metrics:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
         ax.hist(adata.obs[col].values, bins=50, edgecolor='black', alpha=0.7)
         ax.set_xlabel(label)
         ax.set_ylabel('Frequency')
-        ax.axvline(adata.obs[col].median(), color='red', linestyle='--', label=f'Median: {adata.obs[col].median():.1f}')
+        ax.axvline(adata.obs[col].median(), color='red', linestyle='--',
+            label=f'Median: {adata.obs[col].median():.1f}')
         ax.legend(fontsize=8)
-
-    plt.tight_layout()
-    plt.savefig(os.path.join(artifact_dir, 'qc_distributions.png'), dpi=150, bbox_inches='tight')
-    plt.show()
+        plt.savefig(os.path.join(artifact_dir, 'qc_distributions.png'), dpi=150,
+            bbox_inches='tight')
+        qc_metrics_plots.append((label, fig))
 else:
     print("No QC metrics found in the data.")
 ```
+
+::: {.panel-tabset}
+```{python qc-metrics-tabset}
+#| output: asis
+create_tabset(qc_metrics_plots)
+```
+:::
 
 ## QC Metrics Summary
 
 ```{python}
 #| output: asis
-
+qc_cols = [col for col, _ in qc_metrics]
+qc_labels = [label for _, label in qc_metrics]
 if len(qc_cols) > 0:
     qc_summary = adata.obs[qc_cols].describe().T
     qc_summary.columns = ['Count', 'Mean', 'Std', 'Min', '25%', '50%', '75%', 'Max']
