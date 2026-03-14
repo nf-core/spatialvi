@@ -176,7 +176,6 @@ if len(qc_cols) > 0:
 ## Spatial QC Visualization
 
 ```{python}
-#| warning: false
 #| fig-width: 12
 #| fig-height: 8
 
@@ -214,7 +213,6 @@ if has_spatial and len(qc_cols) >= 2:
 ## Highly Variable Genes
 
 ```{python}
-#| warning: false
 #| fig-width: 10
 #| fig-height: 5
 
@@ -255,7 +253,6 @@ else:
 ## PCA
 
 ```{python}
-#| warning: false
 #| fig-width: 12
 #| fig-height: 5
 
@@ -298,7 +295,6 @@ else:
 ## UMAP
 
 ```{python}
-#| warning: false
 #| fig-width: 12
 #| fig-height: 5
 
@@ -327,7 +323,6 @@ else:
 ## Cluster Assignments
 
 ```{python}
-#| warning: false
 #| fig-width: 12
 #| fig-height: 5
 
@@ -359,7 +354,6 @@ if 'clusters' in adata.obs:
 ## Spatial Cluster Distribution
 
 ```{python}
-#| warning: false
 #| fig-width: 8
 #| fig-height: 8
 
@@ -407,7 +401,6 @@ if 'clusters' in adata.obs:
 ## Top Marker Genes per Cluster
 
 ```{python}
-#| warning: false
 #| fig-width: 14
 #| fig-height: 8
 
@@ -433,7 +426,6 @@ if 'rank_genes_groups' in adata.uns:
 ```
 
 ```{python}
-#| warning: false
 #| fig-width: 14
 #| fig-height: 6
 
@@ -481,7 +473,6 @@ if 'rank_genes_groups' in adata.uns:
 ## Neighborhood Enrichment
 
 ```{python}
-#| warning: false
 #| fig-width: 8
 #| fig-height: 6
 
@@ -508,7 +499,6 @@ else:
 ## Cluster Interaction Matrix
 
 ```{python}
-#| warning: false
 #| fig-width: 8
 #| fig-height: 6
 
@@ -535,7 +525,6 @@ else:
 ## Spatial Autocorrelation Results
 
 ```{python}
-#| warning: false
 
 # Check for spatial autocorrelation results
 svg_key = None
@@ -592,7 +581,6 @@ if svg_key:
 ## Spatial Expression of Top SVGs
 
 ```{python}
-#| warning: false
 #| fig-width: 12
 #| fig-height: 12
 
