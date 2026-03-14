@@ -314,45 +314,40 @@ create_tabset(umap_plots)
 
 # Clustering
 
-## Cluster Assignments
+## Cluster assignments
 
 ```{python}
-#| fig-width: 12
-#| fig-height: 5
-
 if 'clusters' in adata.obs:
     # Cluster counts
     cluster_counts = adata.obs['clusters'].value_counts().sort_index()
     n_clusters = len(cluster_counts)
 
-    print(f"Number of clusters: {n_clusters}")
+    display(Markdown(f"Number of clusters: `{n_clusters}`"))
 
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3.5), constrained_layout=True)
 
     # Bar plot of cluster sizes
-    cluster_counts.plot(kind='bar', ax=axes[0], color='steelblue', edgecolor='black')
+    cluster_counts.plot(kind='bar', ax=axes[0], color='steelblue',
+        edgecolor='black')
     axes[0].set_xlabel('Cluster')
     axes[0].set_ylabel('Number of spots')
     axes[0].set_title('Spots per Cluster')
-    axes[0].tick_params(axis='x', rotation=45)
+    axes[0].tick_params(axis='x', rotation=45, labelsize=8)
 
-    # Pie chart
-    axes[1].pie(cluster_counts.values, labels=cluster_counts.index, autopct='%1.1f%%', startangle=90)
+    # Pie chart of cluster proportions
+    axes[1].pie(cluster_counts.values, labels=cluster_counts.index,
+        autopct='%1.1f%%', startangle=90, textprops={'fontsize': 7})
     axes[1].set_title('Cluster Proportions')
 
-    plt.tight_layout()
-    plt.savefig(os.path.join(artifact_dir, 'cluster_sizes.png'), dpi=150, bbox_inches='tight')
+    save_figure(fig, 'cluster_sizes.png')
     plt.show()
 ```
 
 ## Spatial Cluster Distribution
 
-```{python}
-#| fig-width: 8
-#| fig-height: 8
-
+```{python cluster-distribution}
 if 'clusters' in adata.obs and has_spatial:
-    fig, ax = plt.subplots(figsize=(8, 8))
+    fig, ax = plt.subplots(figsize=(8, 8), constrained_layout=True)
     sc.pl.spatial(
         adata,
         color='clusters',
@@ -362,8 +357,7 @@ if 'clusters' in adata.obs and has_spatial:
         frameon=False,
         library_id=f"{sample_id}_hires_image"
     )
-    plt.tight_layout()
-    plt.savefig(os.path.join(artifact_dir, 'clusters_spatial.png'), dpi=150, bbox_inches='tight')
+    save_figure(fig, 'clusters-spatial.png')
     plt.show()
 ```
 
@@ -371,7 +365,6 @@ if 'clusters' in adata.obs and has_spatial:
 
 ```{python}
 #| output: asis
-
 if 'clusters' in adata.obs:
     print("| Cluster | Spots | Percentage | Mean Counts | Mean Genes |")
     print("|---------|-------|------------|-------------|------------|")
