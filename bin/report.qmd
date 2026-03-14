@@ -37,7 +37,7 @@ import squidpy as sq
 import spatialdata
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-from IPython.display import display, Markdown
+from IPython.display import display, Markdown, HTML
 
 # Suppress scanpy verbosity
 sc.settings.verbosity = 0
@@ -387,7 +387,7 @@ if 'clusters' in adata.obs:
 
 ## Top marker genes per cluster
 
-```{python}
+```{python degs-heatmap}
 if 'rank_genes_groups' in adata.uns:
     # Get number of clusters
     groups = adata.uns['rank_genes_groups']['names'].dtype.names
@@ -411,12 +411,8 @@ if 'rank_genes_groups' in adata.uns:
         print(f"Could not generate heatmap: {e}")
 ```
 
-```{python}
-#| fig-width: 14
-#| fig-height: 6
-
+```{python degs-dotplot}
 if 'rank_genes_groups' in adata.uns:
-    # Dot plot of top genes
     try:
         sc.pl.rank_genes_groups_dotplot(
             adata,
@@ -424,7 +420,8 @@ if 'rank_genes_groups' in adata.uns:
             groupby='clusters',
             show=False
         )
-        plt.savefig(os.path.join(artifact_dir, 'deg_dotplot.png'), dpi=150, bbox_inches='tight')
+        fig = plt.gcf()
+        save_figure(fig, 'deg-dotplot.png')
         plt.show()
     except Exception as e:
         print(f"Could not generate dotplot: {e}")
@@ -432,26 +429,26 @@ if 'rank_genes_groups' in adata.uns:
 
 ## Top genes per cluster table
 
-```{python}
-#| output: asis
-
+```{python degs-table}
 if 'rank_genes_groups' in adata.uns:
     n_top = 5
-    groups = adata.uns['rank_genes_groups']['names'].dtype.names
+    clusters = adata.uns['rank_genes_groups']['names'].dtype.names
 
-    # Build header
-    header = "| Rank | " + " | ".join([f"Cluster {g}" for g in groups]) + " |"
-    separator = "|------|" + "|".join(["-------" for _ in groups]) + "|"
+    # Build dictionary of `{cluster: [genes]}`
+    data = {}
+    for cluster in clusters:
+        data[f"Cluster {cluster}"] = [
+            adata.uns['rank_genes_groups']['names'][cluster][i]
+            for i in range(n_top)
+        ]
 
-    print(header)
-    print(separator)
+    # Convert to data frame and print
+    degs_table = pd.DataFrame(data, index=range(1, n_top + 1))
+    degs_table.index.name = "Rank"
+```
 
-    for i in range(n_top):
-        row = f"| {i+1} |"
-        for g in groups:
-            gene = adata.uns['rank_genes_groups']['names'][g][i]
-            row += f" {gene} |"
-        print(row)
+```{python}
+HTML(degs_table.to_html(index=False))
 ```
 
 # Spatial analysis
