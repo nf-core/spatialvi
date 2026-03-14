@@ -175,38 +175,32 @@ if len(qc_cols) > 0:
 
 ## Spatial QC Visualization
 
-```{python}
-#| fig-width: 12
-#| fig-height: 8
-
-if has_spatial and len(qc_cols) >= 2:
-    # Plot spatial distribution of QC metrics
-    n_cols = min(3, len(qc_cols))
-    n_rows = (len(qc_cols) + n_cols - 1) // n_cols
-
-    fig, axes = plt.subplots(n_rows, n_cols, figsize=(4*n_cols, 4*n_rows))
-    axes = np.atleast_2d(axes).flatten()
-
-    for idx, (col, label) in enumerate(zip(qc_cols, qc_labels)):
-        if idx < len(axes):
-            sc.pl.spatial(
-                adata,
-                color=col,
-                ax=axes[idx],
-                show=False,
-                title=label,
-                frameon=False,
-                library_id=f"{sample_id}_hires_image"
-            )
-
-    # Hide empty axes
-    for idx in range(len(qc_cols), len(axes)):
-        axes[idx].axis('off')
-
-    plt.tight_layout()
-    plt.savefig(os.path.join(artifact_dir, 'qc_spatial.png'), dpi=150, bbox_inches='tight')
-    plt.show()
+```{python spatial-qc}
+#| output: false
+if has_spatial:
+    spatial_qc_plots = []
+    for col, label in qc_metrics:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        sc.pl.spatial(
+            adata,
+            color=col,
+            ax=ax,
+            show=False,
+            title=label,
+            frameon=False,
+            library_id=f"{sample_id}_hires_image"
+        )
+        spatial_qc_plots.append((label, fig))
+        plt.savefig(os.path.join(artifact_dir, 'qc_spatial.png'), dpi=150,
+            bbox_inches='tight')
 ```
+
+::: {.panel-tabset}
+```{python spatial-qc-tabset}
+#| output: asis
+create_tabset(spatial_qc_plots)
+```
+:::
 
 # Gene Expression
 
