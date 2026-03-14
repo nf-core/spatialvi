@@ -217,15 +217,12 @@ create_tabset(spatial_qc_plots)
 ## Highly Variable Genes
 
 ```{python}
-#| fig-width: 10
-#| fig-height: 5
-
 if 'highly_variable' in adata.var.columns:
     n_hvg = adata.var['highly_variable'].sum()
-    print(f"Number of highly variable genes: {n_hvg:,}")
+    display(Markdown(f"Number of highly variable genes: `{n_hvg:,}`"))
 
     if 'means' in adata.var.columns and 'dispersions_norm' in adata.var.columns:
-        fig, ax = plt.subplots(figsize=(8, 5))
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
 
         hvg_mask = adata.var['highly_variable']
 
@@ -244,9 +241,7 @@ if 'highly_variable' in adata.var.columns:
         ax.set_ylabel('Normalized dispersion')
         ax.set_title('Highly Variable Genes')
         ax.legend()
-
-        plt.tight_layout()
-        plt.savefig(os.path.join(artifact_dir, 'hvg.png'), dpi=150, bbox_inches='tight')
+        save_figure(fig, 'highly-variable-genes.png')
         plt.show()
 else:
     print("Highly variable gene information not found.")
