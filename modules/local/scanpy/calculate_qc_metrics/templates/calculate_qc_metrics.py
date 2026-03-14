@@ -112,10 +112,6 @@ def calculate_qc_manually(adata):
     print("Calculating QC metrics manually...")
 
     X = adata.X
-    if scipy.sparse.issparse(X):
-        X_dense = X.toarray()
-    else:
-        X_dense = np.array(X)
 
     # Basic obs metrics
     adata.obs["total_counts"] = np.array(X.sum(axis=1)).flatten().astype(np.float64)
