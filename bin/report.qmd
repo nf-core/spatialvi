@@ -132,8 +132,8 @@ spots.
 #| output: false
 # Check which QC columns are available
 qc_metrics_map = [
-    ('total_counts', 'Total Counts'),
-    ('n_genes_by_counts', 'Genes per Spot'),
+    ('total_counts', 'Total counts'),
+    ('n_genes_by_counts', 'Genes per spot'),
     ('pct_counts_mt', 'Mito %'),
     ('pct_counts_ribo', 'Ribo %'),
     ('pct_counts_hb', 'Hb %'),
@@ -292,28 +292,25 @@ else:
 ## UMAP
 
 ```{python}
-#| fig-width: 12
-#| fig-height: 5
-
+#| output: false
 if 'X_umap' in adata.obsm:
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
-
-    # UMAP colored by clusters
-    if 'clusters' in adata.obs:
-        sc.pl.umap(adata, color='clusters', ax=axes[0], show=False, title='UMAP (clusters)')
-    else:
-        sc.pl.umap(adata, ax=axes[0], show=False, title='UMAP')
-
-    # UMAP colored by total counts
-    if 'total_counts' in adata.obs:
-        sc.pl.umap(adata, color='total_counts', ax=axes[1], show=False, title='UMAP (total counts)')
-
-    plt.tight_layout()
-    plt.savefig(os.path.join(artifact_dir, 'umap.png'), dpi=150, bbox_inches='tight')
-    plt.show()
+    umap_plots = []
+    umap_metrics = [('clusters', 'Clusters')] + qc_metrics
+    for col, label in umap_metrics:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        sc.pl.umap(adata, color=col, ax=ax, show=False)
+        umap_plots.append((label, fig))
+        save_figure(fig, f'umap-{col}.png')
 else:
     print("UMAP results not found.")
 ```
+
+::: {.panel-tabset}
+```{python umap-tabset}
+#| output: asis
+create_tabset(umap_plots)
+```
+:::
 
 # Clustering
 
