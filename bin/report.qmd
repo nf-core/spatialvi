@@ -216,7 +216,7 @@ create_tabset(spatial_qc_plots)
 
 ## Highly Variable Genes
 
-```{python}
+```{python hvgs}
 if 'highly_variable' in adata.var.columns:
     n_hvg = adata.var['highly_variable'].sum()
     display(Markdown(f"Number of highly variable genes: `{n_hvg:,}`"))
@@ -251,16 +251,14 @@ else:
 
 ## PCA
 
-```{python}
-#| fig-width: 12
-#| fig-height: 5
-
+```{python pca}
 if 'X_pca' in adata.obsm:
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3.5), constrained_layout=True)
 
-    # PCA scatter plot colored by clusters if available
+    # PCA scatter plot coloured by clusters if available
     if 'clusters' in adata.obs:
-        sc.pl.pca(adata, color='clusters', ax=axes[0], show=False, title='PCA (colored by clusters)')
+        sc.pl.pca(adata, color='clusters', ax=axes[0], show=False,
+            title='PCA (colored by clusters)')
     else:
         sc.pl.pca(adata, ax=axes[0], show=False, title='PCA')
 
@@ -270,23 +268,23 @@ if 'X_pca' in adata.obsm:
         cumulative_var = np.cumsum(variance_ratio)
         n_pcs = len(variance_ratio)
 
-        axes[1].bar(range(1, n_pcs + 1), variance_ratio, alpha=0.7, label='Individual')
-        axes[1].plot(range(1, n_pcs + 1), cumulative_var, 'r-', marker='o', markersize=3, label='Cumulative')
+        axes[1].bar(range(1, n_pcs + 1), variance_ratio, alpha=0.7,
+            label='Individual')
+        axes[1].plot(range(1, n_pcs + 1), cumulative_var, 'r-', marker='o',
+            markersize=3, label='Cumulative')
         axes[1].set_xlabel('Principal Component')
         axes[1].set_ylabel('Variance Explained')
         axes[1].set_title('PCA Variance Explained')
         axes[1].legend()
         axes[1].set_xlim(0, min(n_pcs + 1, 51))
-
-    plt.tight_layout()
-    plt.savefig(os.path.join(artifact_dir, 'pca.png'), dpi=150, bbox_inches='tight')
+    save_figure(fig, 'pca.png')
     plt.show()
 
     if 'pca' in adata.uns and 'variance_ratio' in adata.uns['pca']:
-        print(f"Variance explained by PC1: {variance_ratio[0]:.2%}")
-        print(f"Variance explained by PC1-10: {cumulative_var[9]:.2%}")
+        display(Markdown(f"Variance explained by PC1: `{variance_ratio[0]:.2%}`"))
+        display(Markdown(f"Variance explained by PC1-10: `{cumulative_var[9]:.2%}`"))
         if len(cumulative_var) >= 20:
-            print(f"Variance explained by PC1-20: {cumulative_var[19]:.2%}")
+            display(Markdown(f"Variance explained by PC1-20: `{cumulative_var[19]:.2%}`"))
 else:
     print("PCA results not found.")
 ```
