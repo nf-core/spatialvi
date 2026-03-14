@@ -90,7 +90,7 @@ adata = sdata.tables[table_name]
 sample_id = table_name.replace("_table", "")
 ```
 
-# Sample Overview
+# Sample overview
 
 ```{python overview-table}
 #| output: asis
@@ -121,9 +121,9 @@ print(f"""
 """)
 ```
 
-# Quality Control
+# Quality controls
 
-## QC Metrics Distribution
+## QC metrics distribution
 
 The following plots show the distribution of quality control metrics across all
 spots.
@@ -164,7 +164,7 @@ create_tabset(qc_metrics_plots)
 ```
 :::
 
-## QC Metrics Summary
+## QC metrics summary
 
 ```{python}
 #| output: asis
@@ -184,7 +184,7 @@ if len(qc_cols) > 0:
         print(f"| {label} | {mean:.2f} | {median:.2f} | {min_val:.2f} | {max_val:.2f} |")
 ```
 
-## Spatial QC Visualization
+## Spatial QC visualization
 
 ```{python spatial-qc}
 #| output: false
@@ -212,9 +212,9 @@ create_tabset(spatial_qc_plots)
 ```
 :::
 
-# Gene Expression
+# Gene expression
 
-## Highly Variable Genes
+## Highly variable genes
 
 ```{python hvgs}
 if 'highly_variable' in adata.var.columns:
@@ -247,7 +247,7 @@ else:
     print("Highly variable gene information not found.")
 ```
 
-# Dimensionality Reduction
+# Dimensionality reduction
 
 ## PCA
 
@@ -316,7 +316,7 @@ create_tabset(umap_plots)
 
 ## Cluster assignments
 
-```{python}
+```{python cluster-assignments}
 if 'clusters' in adata.obs:
     # Cluster counts
     cluster_counts = adata.obs['clusters'].value_counts().sort_index()
@@ -343,7 +343,7 @@ if 'clusters' in adata.obs:
     plt.show()
 ```
 
-## Spatial Cluster Distribution
+## Spatial cluster distribution
 
 ```{python cluster-distribution}
 if 'clusters' in adata.obs and has_spatial:
@@ -361,7 +361,7 @@ if 'clusters' in adata.obs and has_spatial:
     plt.show()
 ```
 
-## Cluster Statistics
+## Cluster statistics
 
 ```{python}
 #| output: asis
@@ -383,7 +383,7 @@ if 'clusters' in adata.obs:
             print(f"| {cluster} | {n_spots:,} | {pct:.1f}% | {mean_counts} | {mean_genes} |")
 ```
 
-# Differential Expression
+# Differential expression
 
 ## Top Marker Genes per Cluster
 
@@ -431,7 +431,7 @@ if 'rank_genes_groups' in adata.uns:
         print(f"Could not generate dotplot: {e}")
 ```
 
-## Top Genes per Cluster Table
+## Top genes per cluster table
 
 ```{python}
 #| output: asis
@@ -455,9 +455,9 @@ if 'rank_genes_groups' in adata.uns:
         print(row)
 ```
 
-# Spatial Analysis
+# Spatial analysis
 
-## Neighborhood Enrichment
+## Neighbourhood enrichment
 
 ```{python}
 #| fig-width: 8
@@ -483,7 +483,7 @@ else:
     print("Neighborhood enrichment results not found.")
 ```
 
-## Cluster Interaction Matrix
+## Cluster interaction matrix
 
 ```{python}
 #| fig-width: 8
@@ -507,9 +507,9 @@ else:
     print("Interaction matrix results not found.")
 ```
 
-# Spatially Variable Genes
+# Spatially variable genes
 
-## Spatial Autocorrelation Results
+## Spatial autocorrelation
 
 ```{python}
 
@@ -534,7 +534,7 @@ if svg_key:
     svg_df.head(100).to_csv(os.path.join(artifact_dir, 'top_spatially_variable_genes.csv'))
 ```
 
-## Top Spatially Variable Genes
+## Top spatially variable genes
 
 ```{python}
 #| output: asis
@@ -565,7 +565,7 @@ if svg_key:
                 print(f"| {i+1} | {gene} | {geary_c} | {pval} |")
 ```
 
-## Spatial Expression of Top SVGs
+## Spatial expression of top SVGs
 
 ```{python}
 #| fig-width: 12
@@ -637,7 +637,7 @@ if svg_key:
 print("\n".join(summary_sections))
 ```
 
-# Session Info
+# Session info
 
 ```{python}
 #| output: asis
