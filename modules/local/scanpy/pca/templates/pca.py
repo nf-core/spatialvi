@@ -3,6 +3,10 @@
 Perform Principal Component Analysis (PCA) for dimensionality reduction.
 """
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import platform
 import importlib.metadata
 import yaml

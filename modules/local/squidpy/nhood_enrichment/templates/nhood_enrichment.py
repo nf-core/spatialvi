@@ -3,6 +3,12 @@
 Compute neighborhood enrichment by permutation test.
 """
 
+# Disable OpenMP CPU topology detection and runtime initialisation in child
+# processses for MacOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+os.environ["KMP_INIT_AT_FORK"] = "FALSE"
+
 import platform
 import importlib.metadata
 import yaml

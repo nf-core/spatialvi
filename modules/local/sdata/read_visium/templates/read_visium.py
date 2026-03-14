@@ -3,7 +3,10 @@
 Read Visium or Visium HD data from Space Ranger output into SpatialData format.
 """
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
 import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import sys
 import shutil
 
@@ -35,15 +38,15 @@ print(f"Visium HD: {is_visium_hd}")
 # Read Visium data
 if is_visium_hd:
     print(f"Reading Visium HD data with bin size: {hd_bin_size}")
-    
+
     # Copy feature_slice.h5 file with sample ID prefix (required by spatialdata_io)
     feature_slice_src = os.path.join(spaceranger_dir, "feature_slice.h5")
     feature_slice_dst = os.path.join(spaceranger_dir, f"{sample_id_clean}_feature_slice.h5")
-    
+
     if os.path.exists(feature_slice_src) and not os.path.exists(feature_slice_dst):
         print(f"Copying {feature_slice_src} to {feature_slice_dst}")
         shutil.copyfile(feature_slice_src, feature_slice_dst)
-    
+
     sdata = spatialdata_io.visium_hd(
         spaceranger_dir,
         bin_size=[hd_bin_size],
@@ -59,7 +62,7 @@ else:
     )
     table_name = "table"
 
-print(f"SpatialData object created")
+print("SpatialData object created")
 print(f"Tables: {list(sdata.tables.keys())}")
 print(f"Shapes: {list(sdata.shapes.keys())}")
 print(f"Images: {list(sdata.images.keys())}")

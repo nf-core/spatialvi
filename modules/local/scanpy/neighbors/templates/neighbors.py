@@ -3,6 +3,10 @@
 Compute a neighborhood graph of observations (cells/spots).
 """
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import platform
 import importlib.metadata
 import yaml

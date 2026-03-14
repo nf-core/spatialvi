@@ -4,15 +4,17 @@ Update a SpatialData object's table with a processed AnnData object.
 Also updates associated spatial elements to match filtered observations.
 """
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
 import os
-import sys
-import shutil
+os.environ["KMP_AFFINITY"] = "disabled"
 
 # Fix numba caching issue in read-only containers
 os.environ['NUMBA_CACHE_DIR'] = '/tmp/numba_cache'
 os.environ['MPLCONFIGDIR'] = '/tmp/matplotlib'
 os.environ['XDG_CACHE_HOME'] = '/tmp/cache'
 
+import sys
+import shutil
 import platform
 import importlib.metadata
 import yaml
@@ -127,7 +129,7 @@ try:
         print("WARNING: Missing region/instance_key metadata, copying from original")
         adata.uns["spatialdata_attrs"] = spatialdata_attrs.copy()
         new_table = adata
-        
+
 except Exception as e:
     print(f"WARNING: TableModel.parse failed: {e}")
     print("Copying uns from original table...")
@@ -143,12 +145,12 @@ try:
 except Exception as e:
     print(f"WARNING: Failed to set table via sdata.tables: {e}")
     print("Attempting to set table using internal method...")
-    
+
     try:
         # Try setting directly on the internal dict
         if hasattr(sdata, '_tables'):
             sdata._tables[table_name] = new_table
-            print(f"Set table using _tables dict")
+            print("Set table using _tables dict")
         else:
             raise AttributeError("No _tables attribute found")
     except Exception as e2:
@@ -158,9 +160,9 @@ except Exception as e:
 # Optionally update associated spatial elements to match filtered observations
 if region and adata.shape[0] < original_table.shape[0]:
     print(f"Observations were filtered: {original_table.shape[0]} -> {adata.shape[0]}")
-    
+
     region_name = region if isinstance(region, str) else (region[0] if isinstance(region, list) else None)
-    
+
     if region_name and region_name in sdata.shapes:
         try:
             matched_element, _ = spatialdata.match_element_to_table(

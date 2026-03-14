@@ -4,6 +4,10 @@ Extract a legacy AnnData object from a SpatialData object.
 The legacy format includes spatial coordinates and images compatible with scanpy.
 """
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import platform
 import importlib.metadata
 import yaml
