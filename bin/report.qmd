@@ -87,10 +87,6 @@ adata = sdata.tables[table_name]
 
 # Extract sample ID from table name
 sample_id = table_name.replace("_table", "")
-
-print(f"Loaded SpatialData from: {input_sdata}")
-print(f"Sample ID: {sample_id}")
-print(f"Table name: {table_name}")
 ```
 
 # Sample Overview
