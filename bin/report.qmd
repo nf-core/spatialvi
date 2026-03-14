@@ -385,18 +385,15 @@ if 'clusters' in adata.obs:
 
 # Differential expression
 
-## Top Marker Genes per Cluster
+## Top marker genes per cluster
 
 ```{python}
-#| fig-width: 14
-#| fig-height: 8
-
 if 'rank_genes_groups' in adata.uns:
     # Get number of clusters
     groups = adata.uns['rank_genes_groups']['names'].dtype.names
     n_groups = len(groups)
 
-    print(f"Differential expression computed for {n_groups} clusters")
+    display(Markdown(f"Differential expression computed for `{n_groups}` clusters"))
 
     # Heatmap of top genes
     try:
@@ -404,9 +401,11 @@ if 'rank_genes_groups' in adata.uns:
             adata,
             n_genes=5,
             groupby='clusters',
+            figsize=(8, 6),
             show=False
         )
-        plt.savefig(os.path.join(artifact_dir, 'deg_heatmap.png'), dpi=150, bbox_inches='tight')
+        fig = plt.gcf()
+        save_figure(fig, 'deg-heatmap.png')
         plt.show()
     except Exception as e:
         print(f"Could not generate heatmap: {e}")
