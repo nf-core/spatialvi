@@ -59,6 +59,21 @@ def create_tabset(content):
         display(fig)
         plt.close()
         display(Markdown(f" "))
+
+def save_figure(fig, filename, dpi=150):
+    """
+    Save figure to artefact directory.
+
+    Arguments:
+        fig      -- the figure object to be saved
+        filename -- the file name to be used
+        dpi      -- the DPI to use (default: 150)
+    """
+    fig.savefig(
+        os.path.join(artifact_dir, filename),
+        dpi=dpi,
+        bbox_inches='tight'
+    )
 ```
 
 ```{python load-data}
@@ -139,8 +154,7 @@ if len(qc_metrics) > 0:
         ax.axvline(adata.obs[col].median(), color='red', linestyle='--',
             label=f'Median: {adata.obs[col].median():.1f}')
         ax.legend(fontsize=8)
-        plt.savefig(os.path.join(artifact_dir, 'qc_distributions.png'), dpi=150,
-            bbox_inches='tight')
+        save_figure(fig, f'qc-distribution-{col}.png')
         qc_metrics_plots.append((label, fig))
 else:
     print("No QC metrics found in the data.")
@@ -191,8 +205,7 @@ if has_spatial:
             library_id=f"{sample_id}_hires_image"
         )
         spatial_qc_plots.append((label, fig))
-        plt.savefig(os.path.join(artifact_dir, 'qc_spatial.png'), dpi=150,
-            bbox_inches='tight')
+        save_figure(fig, f'qc-spatial-{col}.png')
 ```
 
 ::: {.panel-tabset}
