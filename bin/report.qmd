@@ -455,24 +455,26 @@ HTML(degs_table.to_html(index=False))
 
 ## Neighbourhood enrichment
 
-```{python}
-#| fig-width: 8
-#| fig-height: 6
+Neighbourhood enrichment analysis shows which cluster pairs are spatially
+enriched (positive, red) or depleted (negative, blue) compared to random
+expectation.
 
-nhood_key = 'clusters_nhood_enrichment'
-if nhood_key in adata.uns:
+```{python}
+if 'clusters_nhood_enrichment' in adata.uns:
     try:
         sq.pl.nhood_enrichment(
             adata,
             cluster_key='clusters',
             method='ward',
             vmin=-100,
-            vmax=100
+            vmax=100,
+            figsize=(9, 7)
         )
-        plt.savefig(os.path.join(artifact_dir, 'nhood_enrichment.png'), dpi=150, bbox_inches='tight')
+        fig = plt.gcf()
+        save_figure(fig, 'neighbourhood-enrichment.png')
         plt.show()
 
-        print("Neighborhood enrichment analysis shows which cluster pairs are spatially enriched (positive, red) or depleted (negative, blue) compared to random expectation.")
+        print("")
     except Exception as e:
         print(f"Could not generate neighborhood enrichment plot: {e}")
 else:
@@ -481,22 +483,21 @@ else:
 
 ## Cluster interaction matrix
 
-```{python}
-#| fig-width: 8
-#| fig-height: 6
+The interaction matrix shows the number of edges between each pair of clusters
+in the spatial neighbour graph.
 
-interaction_key = 'clusters_interactions'
-if interaction_key in adata.uns:
+```{python}
+if 'clusters_interactions' in adata.uns:
     try:
         sq.pl.interaction_matrix(
             adata,
             cluster_key='clusters',
-            method='ward'
+            method='ward',
+            figsize=(9, 7)
         )
-        plt.savefig(os.path.join(artifact_dir, 'interaction_matrix.png'), dpi=150, bbox_inches='tight')
+        fig = plt.gcf()
+        save_figure(fig, 'interaction-matrix.png')
         plt.show()
-
-        print("The interaction matrix shows the number of edges between each pair of clusters in the spatial neighbor graph.")
     except Exception as e:
         print(f"Could not generate interaction matrix plot: {e}")
 else:
