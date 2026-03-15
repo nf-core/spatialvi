@@ -582,26 +582,46 @@ create_tabset(svg_plots)
 summary_sections = []
 
 # Data overview
-summary_sections.append(f"## Data Overview\n- **Sample**: {sample_id}\n- **Spots**: {n_spots:,}\n- **Genes**: {n_genes:,}")
+summary_sections.append(
+    f"## Data overview\n"
+    f"- **Sample**: `{sample_id}`\n"
+    f"- **Spots**: `{n_spots:,}`\n"
+    f"- **Genes**: `{n_genes:,}`\n"
+)
 
 # QC summary
 if 'total_counts' in adata.obs:
     median_counts = adata.obs['total_counts'].median()
-    median_genes = adata.obs['n_genes_by_counts'].median() if 'n_genes_by_counts' in adata.obs else 'N/A'
-    summary_sections.append(f"\n## Quality Control\n- **Median counts per spot**: {median_counts:,.0f}\n- **Median genes per spot**: {median_genes:,.0f}")
+    median_genes = adata.obs['n_genes_by_counts'].median() if \
+        'n_genes_by_counts' in adata.obs else 'N/A'
+    summary_sections.append(
+        f"## Quality controls\n"
+        f"- **Median counts per spot**: `{median_counts:,.0f}`\n"
+        f"- **Median genes per spot**: `{median_genes:,.0f}`\n"
+    )
 
 # Clustering summary
 if 'clusters' in adata.obs:
     n_clusters = adata.obs['clusters'].nunique()
-    summary_sections.append(f"\n## Clustering\n- **Number of clusters**: {n_clusters}\n- **Algorithm**: Leiden")
+    summary_sections.append(
+        f"## Clustering\n"
+        f"- **Number of clusters**: `{n_clusters}`\n"
+        f"- **Algorithm**: `Leiden`\n"
+    )
 
 # SVG summary
 if svg_key:
-    n_sig = (svg_df['pval_norm_fdr_bh'] < 0.05).sum() if 'pval_norm_fdr_bh' in svg_df.columns else 'N/A'
+    n_sig = (svg_df['pval_norm_fdr_bh'] < 0.05).sum() if \
+        'pval_norm_fdr_bh' in svg_df.columns else 'N/A'
     top_gene = svg_df.index[0]
-    summary_sections.append(f"\n## Spatially Variable Genes\n- **Method**: {svg_method}\n- **Significant genes (FDR < 0.05)**: {n_sig}\n- **Top gene**: {top_gene}")
+    summary_sections.append(
+        f"## Spatially variable genes\n"
+        f"- **Method**: `{svg_method}`\n"
+        f"- **Significant genes (FDR < 0.05)**: `{n_sig}`\n"
+        f"- **Top gene**: `{top_gene}`"
+    )
 
-print("\n".join(summary_sections))
+display(Markdown("\n".join(summary_sections)))
 ```
 
 # Session info
