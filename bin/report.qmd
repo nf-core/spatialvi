@@ -55,7 +55,7 @@ def create_tabset(content):
     Programmatically create tabsets with headers and plots.
 
     Arguments:
-        content -- a (name, figure) tuple, where `name` is e.g. sample names
+        content (list): A list of (str, Figure) tuples
     """
     for name, fig in content:
         display(Markdown(f"#### {name}"))
@@ -68,15 +68,47 @@ def save_figure(fig, filename, dpi=150):
     Save figure to artefact directory.
 
     Arguments:
-        fig      -- the figure object to be saved
-        filename -- the file name to be used
-        dpi      -- the DPI to use (default: 150)
+        fig (Figure): The figure object to be saved
+        filename (str): The file name to be used
+        dpi (int): The DPI to use
     """
     fig.savefig(
         os.path.join(artifact_dir, filename),
         dpi=dpi,
         bbox_inches='tight'
     )
+
+def display_table(table, hide_index=True, format_dict=None):
+    """
+    Display a data frame as a table with default styling with optional removal
+    of the axis and the functionality to supply formatting dictionary.
+
+    Arguments:
+        table (DataFrame): The data frame to be displayed
+        hide_index (boolean): Whether to hide the data frame index or not
+        format_dict (dict): A dictionary with column-specific formatting
+    """
+
+    # Default style with nf-core green hover and right alignment for all columns
+    # except the first one
+    styles = [
+        {'selector': 'tr:hover', 'props': [('background-color', '#D5F6E4')]},
+        {'selector': 'td, th', 'props': [
+            ('text-align', 'right')
+        ]},
+        {'selector': 'td:first-child, th:first-child', 'props': [
+            ('text-align', 'left')
+        ]}
+    ]
+    styled = table.style.set_table_styles(styles)
+
+    if hide_index:
+        styled = styled.hide(axis='index')
+
+    if format_dict:
+        styled = styled.format(format_dict)
+
+    display(styled)
 ```
 
 ```{python load-data}
@@ -391,12 +423,13 @@ if 'clusters' in adata.obs:
     cluster_stats = cluster_stats.sort_index().reset_index()
     cluster_stats.columns = ['Cluster'] + column_order
 
-    # Round to one significant digit and display
-    cluster_stats['Spots'] = cluster_stats['Spots'].apply(lambda x: f"{x:,}")
-    cluster_stats['Percentage'] = cluster_stats['Percentage'].apply(lambda x: f"{x:.1f}%")
-    cluster_stats['Mean counts'] = cluster_stats['Mean counts'].apply(lambda x: f"{x:.1f}")
-    cluster_stats['Mean genes'] = cluster_stats['Mean genes'].apply(lambda x: f"{x:.1f}")
-    display(HTML(cluster_stats.to_html(index=False)))
+    # Apply table styling and display
+    format_dict = {
+        'Percentage': '{:.1f} %',
+        'Mean counts': '{:.1f}',
+        'Mean genes': '{:.1f}'
+    }
+    display_table(cluster_stats, hide_index=True, format_dict=format_dict)
 ```
 
 # Differential expression
