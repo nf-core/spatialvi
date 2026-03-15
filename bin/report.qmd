@@ -371,23 +371,32 @@ if 'clusters' in adata.obs and has_spatial:
 ## Cluster statistics
 
 ```{python}
-#| output: asis
 if 'clusters' in adata.obs:
-    print("| Cluster | Spots | Percentage | Mean Counts | Mean Genes |")
-    print("|---------|-------|------------|-------------|------------|")
+    agg_dict = {'clusters': ('clusters', 'size')}
 
-    for cluster in sorted(adata.obs['clusters'].unique()):
-        mask = adata.obs['clusters'] == cluster
-        n_spots = mask.sum()
-        pct = n_spots / len(adata) * 100
+    if 'total_counts' in adata.obs:
+        agg_dict['Mean counts'] = ('total_counts', 'mean')
+    if 'n_genes_by_counts' in adata.obs:
+        agg_dict['Mean genes'] = ('n_genes_by_counts', 'mean')
 
-        mean_counts = adata.obs.loc[mask, 'total_counts'].mean() if 'total_counts' in adata.obs else 'N/A'
-        mean_genes = adata.obs.loc[mask, 'n_genes_by_counts'].mean() if 'n_genes_by_counts' in adata.obs else 'N/A'
+    cluster_stats = adata.obs.groupby('clusters').agg(**agg_dict)
+    cluster_stats.columns = ['Spots', 'Mean counts', 'Mean genes']
+    cluster_stats['Percentage'] = (cluster_stats['Spots'] / len(adata) * 100)
 
-        if isinstance(mean_counts, float):
-            print(f"| {cluster} | {n_spots:,} | {pct:.1f}% | {mean_counts:.1f} | {mean_genes:.1f} |")
-        else:
-            print(f"| {cluster} | {n_spots:,} | {pct:.1f}% | {mean_counts} | {mean_genes} |")
+    # Reorder columns
+    column_order = ['Spots', 'Percentage', 'Mean counts', 'Mean genes']
+    cluster_stats = cluster_stats[column_order]
+
+    # Create `Cluster` column from index
+    cluster_stats = cluster_stats.sort_index().reset_index()
+    cluster_stats.columns = ['Cluster'] + column_order
+
+    # Round to one significant digit and display
+    cluster_stats['Spots'] = cluster_stats['Spots'].apply(lambda x: f"{x:,}")
+    cluster_stats['Percentage'] = cluster_stats['Percentage'].apply(lambda x: f"{x:.1f}%")
+    cluster_stats['Mean counts'] = cluster_stats['Mean counts'].apply(lambda x: f"{x:.1f}")
+    cluster_stats['Mean genes'] = cluster_stats['Mean genes'].apply(lambda x: f"{x:.1f}")
+    display(HTML(cluster_stats.to_html(index=False)))
 ```
 
 # Differential expression
