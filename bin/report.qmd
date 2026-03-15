@@ -142,17 +142,27 @@ has_spatial = 'spatial' in adata.obsm
 n_images = len(sdata.images) if hasattr(sdata, 'images') else 0
 n_shapes = len(sdata.shapes) if hasattr(sdata, 'shapes') else 0
 
-print(f"""
-| Property | Value |
-|----------|-------|
-| **Sample ID** | `{sample_id}` |
-| **Number of spots** | {n_spots:,} |
-| **Number of genes** | {n_genes:,} |
-| **Number of clusters** | {n_clusters} |
-| **Has spatial coordinates** | {has_spatial} |
-| **Number of images** | {n_images} |
-| **Number of shapes** | {n_shapes} |
-""")
+sample_overview = pd.DataFrame({
+    'Property': [
+        'Sample ID',
+        'Number of spots',
+        'Number of genes',
+        'Number of clusters',
+        'Has spatial coordinates',
+        'Number of images',
+        'Number of shapes'
+    ],
+    'Value': [
+        sample_id,
+        n_spots,
+        n_genes,
+        n_clusters,
+        has_spatial,
+        n_images,
+        n_shapes
+    ]
+})
+display_table(sample_overview)
 ```
 
 # Quality controls
@@ -203,21 +213,23 @@ if has_qc:
 ## QC metrics summary
 
 ```{python}
-#| output: asis
 qc_cols = [col for col, _ in qc_metrics]
 qc_labels = [label for _, label in qc_metrics]
 if len(qc_cols) > 0:
-    qc_summary = adata.obs[qc_cols].describe().T
-    qc_summary.columns = ['Count', 'Mean', 'Std', 'Min', '25%', '50%', '75%', 'Max']
-
-    print("| Metric | Mean | Median | Min | Max |")
-    print("|--------|------|--------|-----|-----|")
-    for col, label in zip(qc_cols, qc_labels):
-        mean = adata.obs[col].mean()
-        median = adata.obs[col].median()
-        min_val = adata.obs[col].min()
-        max_val = adata.obs[col].max()
-        print(f"| {label} | {mean:.2f} | {median:.2f} | {min_val:.2f} | {max_val:.2f} |")
+    qc_summary = pd.DataFrame({
+        'Metric': qc_labels,
+        'Mean': [adata.obs[col].mean() for col in qc_cols],
+        'Median': [adata.obs[col].median() for col in qc_cols],
+        'Min': [adata.obs[col].min() for col in qc_cols],
+        'Max': [adata.obs[col].max() for col in qc_cols]
+    })
+    format_dict={
+        'Mean': '{:.2f}',
+        'Median': '{:.2f}',
+        'Min': '{:.2f}',
+        'Max': '{:.2f}'
+    }
+    display_table(qc_summary, format_dict=format_dict)
 ```
 
 ## Spatial QC visualization
@@ -429,7 +441,7 @@ if 'clusters' in adata.obs:
         'Mean counts': '{:.1f}',
         'Mean genes': '{:.1f}'
     }
-    display_table(cluster_stats, hide_index=True, format_dict=format_dict)
+    display_table(cluster_stats, format_dict=format_dict)
 ```
 
 # Differential expression
@@ -476,7 +488,7 @@ if 'rank_genes_groups' in adata.uns:
         print(f"Could not generate dotplot: {e}")
 ```
 
-## Top genes per cluster table
+## Top genes per cluster
 
 ```{python degs-table}
 if 'rank_genes_groups' in adata.uns:
@@ -493,8 +505,8 @@ if 'rank_genes_groups' in adata.uns:
 
     # Convert to data frame and print
     degs_table = pd.DataFrame(data, index=range(1, n_top + 1))
-    degs_table.index.name = "Rank"
-    display(HTML(degs_table.to_html()))
+    degs_table.insert(loc=0, column='Rank', value=degs_table.index)
+    display_table(degs_table)
 ```
 
 # Spatial analysis
@@ -585,7 +597,11 @@ if svg_key:
     top_svg['Rank'] = range(1, len(top_svg) + 1)
     top_svg = top_svg[['Rank', 'Gene', 'I', 'pval_norm_fdr_bh']]
     top_svg.columns = ['Rank', 'Gene', "Moran's I", 'Adj. p-value']
-    display(HTML(top_svg.to_html(index=False)))
+    format_dict = {
+        "Moran's I": '{:.3f}',
+        'Adj. p-value': '{:.3g}'
+    }
+    display_table(top_svg, format_dict=format_dict)
 ```
 
 ## Spatial expression of top SVGs
@@ -689,5 +705,5 @@ for pkg in packages:
         pass
 
 session_info = pd.DataFrame(versions.items(), columns=['Package', 'Version'])
-display(HTML(session_info.to_html(index=False)))
+display_table(session_info)
 ```
