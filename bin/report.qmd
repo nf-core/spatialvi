@@ -541,45 +541,38 @@ if svg_key:
 
 ## Spatial expression of top SVGs
 
-```{python}
-#| fig-width: 12
-#| fig-height: 12
-
+```{python svg-plots}
+#| output: false
 if svg_key and has_spatial:
     top_genes = svg_df.head(9).index.tolist()
 
     # Filter to genes that exist in the data
-    top_genes = [g for g in top_genes if g in adata.var_names]
+    top_genes = [gene for gene in top_genes if gene in adata.var_names]
 
-    if len(top_genes) > 0:
-        n_cols = 3
-        n_rows = (len(top_genes) + n_cols - 1) // n_cols
-
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(4*n_cols, 4*n_rows))
-        axes = np.atleast_2d(axes).flatten()
-
-        for idx, gene in enumerate(top_genes):
-            if idx < len(axes):
-                sc.pl.spatial(
-                    adata,
-                    color=gene,
-                    ax=axes[idx],
-                    show=False,
-                    title=gene,
-                    frameon=False,
-                    library_id=f"{sample_id}_hires_image"
-                )
-
-        # Hide empty axes
-        for idx in range(len(top_genes), len(axes)):
-            axes[idx].axis('off')
-
-        plt.tight_layout()
-        plt.savefig(os.path.join(artifact_dir, 'top_svg_spatial.png'), dpi=150, bbox_inches='tight')
-        plt.show()
+    svg_plots = []
+    for gene in top_genes:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        sc.pl.spatial(
+            adata,
+            color=gene,
+            ax=ax,
+            show=False,
+            title=gene,
+            frameon=False,
+            library_id=f"{sample_id}_hires_image"
+        )
+        svg_plots.append((gene, fig))
+        save_figure(fig, f'spatial-{gene}.png')
     else:
         print("No valid genes found for spatial plotting.")
 ```
+
+::: {.panel-tabset}
+```{python svg-plots-tabset}
+#| output: asis
+create_tabset(svg_plots)
+```
+:::
 
 # Summary
 
