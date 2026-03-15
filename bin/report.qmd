@@ -445,10 +445,7 @@ if 'rank_genes_groups' in adata.uns:
     # Convert to data frame and print
     degs_table = pd.DataFrame(data, index=range(1, n_top + 1))
     degs_table.index.name = "Rank"
-```
-
-```{python}
-HTML(degs_table.to_html(index=False))
+    display(HTML(degs_table.to_html()))
 ```
 
 # Spatial analysis
@@ -459,7 +456,7 @@ Neighbourhood enrichment analysis shows which cluster pairs are spatially
 enriched (positive, red) or depleted (negative, blue) compared to random
 expectation.
 
-```{python}
+```{python neighborhood-enrichment}
 if 'clusters_nhood_enrichment' in adata.uns:
     try:
         sq.pl.nhood_enrichment(
@@ -486,7 +483,7 @@ else:
 The interaction matrix shows the number of edges between each pair of clusters
 in the spatial neighbour graph.
 
-```{python}
+```{python cluster-interactions}
 if 'clusters_interactions' in adata.uns:
     try:
         sq.pl.interaction_matrix(
@@ -508,12 +505,10 @@ else:
 
 ## Spatial autocorrelation
 
-```{python}
-
+```{python spatial-autocorrelation}
 # Check for spatial autocorrelation results
 svg_key = None
 svg_method = None
-
 if 'moranI' in adata.uns:
     svg_key = 'moranI'
     svg_method = "Moran's I"
@@ -524,8 +519,8 @@ elif 'gearyC' in adata.uns:
 if svg_key:
     svg_df = adata.uns[svg_key]
     n_svg = len(svg_df)
-    print(f"Spatial autocorrelation method: {svg_method}")
-    print(f"Number of genes analyzed: {n_svg:,}")
+    display(Markdown(f"Spatial autocorrelation method: `{svg_method}`"))
+    display(Markdown(f"Number of genes analyzed: `{n_svg:,}`"))
 
     # Save top SVGs to CSV
     svg_df.head(100).to_csv(os.path.join(artifact_dir, 'top_spatially_variable_genes.csv'))
@@ -534,32 +529,14 @@ if svg_key:
 ## Top spatially variable genes
 
 ```{python}
-#| output: asis
-
 if svg_key:
     n_display = 20
     top_svg = svg_df.head(n_display)
-
-    if svg_method == "Moran's I":
-        print(f"| Rank | Gene | Moran's I | p-value (FDR) |")
-        print("|------|------|-----------|---------------|")
-        for i, (gene, row) in enumerate(top_svg.iterrows()):
-            moran_i = row.get('I', row.get('moranI', 'N/A'))
-            pval = row.get('pval_norm_fdr_bh', row.get('pval_norm', 'N/A'))
-            if isinstance(moran_i, float):
-                print(f"| {i+1} | {gene} | {moran_i:.4f} | {pval:.2e} |")
-            else:
-                print(f"| {i+1} | {gene} | {moran_i} | {pval} |")
-    else:
-        print(f"| Rank | Gene | Geary's C | p-value (FDR) |")
-        print("|------|------|-----------|---------------|")
-        for i, (gene, row) in enumerate(top_svg.iterrows()):
-            geary_c = row.get('C', row.get('gearyC', 'N/A'))
-            pval = row.get('pval_norm_fdr_bh', row.get('pval_norm', 'N/A'))
-            if isinstance(geary_c, float):
-                print(f"| {i+1} | {gene} | {geary_c:.4f} | {pval:.2e} |")
-            else:
-                print(f"| {i+1} | {gene} | {geary_c} | {pval} |")
+    top_svg['Gene'] = top_svg.index
+    top_svg['Rank'] = range(1, len(top_svg) + 1)
+    top_svg = top_svg[['Rank', 'Gene', 'I', 'pval_norm_fdr_bh']]
+    top_svg.columns = ['Rank', 'Gene', "Moran's I", 'Adj. p-value']
+    display(HTML(top_svg.to_html(index=False)))
 ```
 
 ## Spatial expression of top SVGs
