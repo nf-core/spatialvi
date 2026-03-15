@@ -144,7 +144,8 @@ qc_metrics = [(col, label) for col, label in qc_metrics_map if col in adata.obs]
 
 # Loop over metrics and store plots in list
 qc_metrics_plots = []
-if len(qc_metrics) > 0:
+has_qc = len(qc_metrics) > 0
+if has_qc:
     for col, label in qc_metrics:
         fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
         ax.hist(adata.obs[col].values, bins=50, edgecolor='black', alpha=0.7)
@@ -159,12 +160,13 @@ else:
     print("No QC metrics found in the data.")
 ```
 
-::: {.panel-tabset}
+`{python} Markdown("::: {.panel-tabset}") if has_qc else Markdown(" ")`
 ```{python qc-metrics-tabset}
 #| output: asis
-create_tabset(qc_metrics_plots)
+if has_qc:
+    create_tabset(qc_metrics_plots)
 ```
-:::
+`{python} Markdown(":::") if has_qc else Markdown(" ")`
 
 ## QC metrics summary
 
@@ -207,12 +209,13 @@ if has_spatial:
         save_figure(fig, f'qc-spatial-{col}.png')
 ```
 
-::: {.panel-tabset}
+`{python} Markdown("::: {.panel-tabset}") if has_spatial else Markdown(" ")`
 ```{python spatial-qc-tabset}
 #| output: asis
-create_tabset(spatial_qc_plots)
+if has_spatial:
+    create_tabset(spatial_qc_plots)
 ```
-:::
+`{python} Markdown(":::") if has_spatial else Markdown(" ")`
 
 # Gene expression
 
@@ -295,7 +298,8 @@ else:
 
 ```{python}
 #| output: false
-if 'X_umap' in adata.obsm:
+has_umap = 'X_umap' in adata.obsm
+if has_umap:
     umap_plots = []
     umap_metrics = [('clusters', 'Clusters')] + qc_metrics
     for col, label in umap_metrics:
@@ -307,12 +311,13 @@ else:
     print("UMAP results not found.")
 ```
 
-::: {.panel-tabset}
+`{python} Markdown("::: {.panel-tabset}") if has_umap else Markdown(" ")`
 ```{python umap-tabset}
 #| output: asis
-create_tabset(umap_plots)
+if has_umap:
+    create_tabset(umap_plots)
 ```
-:::
+`{python} Markdown(":::") if has_umap else Markdown(" ")`
 
 # Clustering
 
@@ -545,7 +550,8 @@ if svg_key:
 
 ```{python svg-plots}
 #| output: false
-if svg_key and has_spatial:
+has_spatial_svg = svg_key and has_spatial
+if has_spatial_svg:
     top_genes = svg_df.head(9).index.tolist()
 
     # Filter to genes that exist in the data
@@ -569,12 +575,13 @@ if svg_key and has_spatial:
         print("No valid genes found for spatial plotting.")
 ```
 
-::: {.panel-tabset}
+`{python} Markdown("::: {.panel-tabset}") if has_spatial_svg else Markdown(" ")`
 ```{python svg-plots-tabset}
 #| output: asis
-create_tabset(svg_plots)
+if has_spatial_svg:
+    create_tabset(svg_plots)
 ```
-:::
+`{python} Markdown(":::") if has_spatial_svg else Markdown(" ")`
 
 # Summary
 
