@@ -36,6 +36,8 @@ import scanpy as sc
 import squidpy as sq
 import spatialdata
 import matplotlib.pyplot as plt
+import sys
+import importlib.metadata
 from matplotlib import gridspec
 from IPython.display import display, Markdown, HTML
 
@@ -628,26 +630,15 @@ display(Markdown("\n".join(summary_sections)))
 
 ```{python}
 #| output: asis
-import sys
-import importlib.metadata
-
-packages = ['scanpy', 'squidpy', 'spatialdata', 'anndata', 'numpy', 'pandas', 'matplotlib']
-
-print("| Package | Version |")
-print("|---------|---------|")
-print(f"| Python | {sys.version.split()[0]} |")
-
+packages = ['scanpy', 'squidpy', 'spatialdata', 'anndata', 'numpy', 'pandas',
+    'matplotlib']
+versions = {}
 for pkg in packages:
     try:
-        version = importlib.metadata.version(pkg)
-        print(f"| {pkg} | {version} |")
+        versions[pkg] = importlib.metadata.version(pkg)
     except:
         pass
-```
 
-```{python}
-# Save the final figure paths
-print(f"\nArtifacts saved to: {artifact_dir}/")
-for f in os.listdir(artifact_dir):
-    print(f"  - {f}")
+session_info = pd.DataFrame(versions.items(), columns=['Package', 'Version'])
+display(HTML(session_info.to_html(index=False)))
 ```
