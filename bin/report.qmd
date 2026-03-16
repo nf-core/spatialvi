@@ -92,7 +92,7 @@ def display_table(table, hide_index=True, format_dict=None):
     # Default style with nf-core green hover and right alignment for all columns
     # except the first one
     styles = [
-        {'selector': 'tr:hover', 'props': [('background-color', '#D5F6E4')]},
+        {'selector': 'tbody tr:hover', 'props': [('background-color', '#D5F6E4')]},
         {'selector': 'td, th', 'props': [
             ('text-align', 'right')
         ]},
@@ -127,7 +127,6 @@ sample_id = table_name.replace("_table", "")
 # Sample overview
 
 ```{python overview-table}
-#| output: asis
 # Generate sample overview
 n_spots = adata.n_obs
 n_genes = adata.n_vars
@@ -644,8 +643,6 @@ if has_spatial_svg:
 # Summary
 
 ```{python}
-#| output: asis
-
 summary_sections = []
 
 # Data overview
@@ -694,7 +691,6 @@ display(Markdown("\n".join(summary_sections)))
 # Session info
 
 ```{python}
-#| output: asis
 packages = ['scanpy', 'squidpy', 'spatialdata', 'anndata', 'numpy', 'pandas',
     'matplotlib']
 versions = {}
