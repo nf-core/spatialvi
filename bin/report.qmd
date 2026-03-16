@@ -46,7 +46,6 @@ sc.settings.verbosity = 0
 
 # Set plotting defaults
 sc.settings.set_figure_params(dpi=100, facecolor='white', frameon=False)
-plt.rcParams['figure.figsize'] = [8, 6]
 ```
 
 ```{python common-functions}
