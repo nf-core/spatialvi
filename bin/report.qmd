@@ -57,11 +57,13 @@ def create_tabset(content):
     Arguments:
         content (list): A list of (str, Figure) tuples
     """
+    display(Markdown('::: {.panel-tabset}'))
     for name, fig in content:
         display(Markdown(f"#### {name}"))
         display(fig)
         plt.close()
         display(Markdown(f" "))
+    display(Markdown(':::'))
 
 def save_figure(fig, filename, dpi=150):
     """
@@ -201,13 +203,11 @@ else:
     print("No QC metrics found in the data.")
 ```
 
-`{python} Markdown("::: {.panel-tabset}") if has_qc else Markdown(" ")`
 ```{python qc-metrics-tabset}
 #| output: asis
 if has_qc:
     create_tabset(qc_metrics_plots)
 ```
-`{python} Markdown(":::") if has_qc else Markdown(" ")`
 
 ## QC metrics summary
 
@@ -252,13 +252,11 @@ if has_spatial:
         save_figure(fig, f'qc-spatial-{col}.png')
 ```
 
-`{python} Markdown("::: {.panel-tabset}") if has_spatial else Markdown(" ")`
 ```{python spatial-qc-tabset}
 #| output: asis
 if has_spatial:
     create_tabset(spatial_qc_plots)
 ```
-`{python} Markdown(":::") if has_spatial else Markdown(" ")`
 
 # Gene expression
 
@@ -354,13 +352,11 @@ else:
     print("UMAP results not found.")
 ```
 
-`{python} Markdown("::: {.panel-tabset}") if has_umap else Markdown(" ")`
 ```{python umap-tabset}
 #| output: asis
 if has_umap:
     create_tabset(umap_plots)
 ```
-`{python} Markdown(":::") if has_umap else Markdown(" ")`
 
 # Clustering
 
@@ -632,13 +628,11 @@ if has_spatial_svg:
         print("No valid genes found for spatial plotting.")
 ```
 
-`{python} Markdown("::: {.panel-tabset}") if has_spatial_svg else Markdown(" ")`
 ```{python svg-plots-tabset}
 #| output: asis
 if has_spatial_svg:
     create_tabset(svg_plots)
 ```
-`{python} Markdown(":::") if has_spatial_svg else Markdown(" ")`
 
 # Summary
 
