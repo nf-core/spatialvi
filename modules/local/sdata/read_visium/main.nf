@@ -10,7 +10,7 @@ process SDATA_READ_VISIUM {
 
     output:
     tuple val(meta), path("${prefix}.zarr"), emit: sdata
-    path "versions.yml"                    , emit: versions
+    path "versions.yml"                    , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,10 +27,6 @@ process SDATA_READ_VISIUM {
     """
     mkdir -p ${prefix}.zarr
     touch ${prefix}.zarr/.zgroup
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        spatialdata-io: \$(python -c "import spatialdata_io; print(spatialdata_io.__version__)")
-    END_VERSIONS
+    touch versions.yml
     """
 }

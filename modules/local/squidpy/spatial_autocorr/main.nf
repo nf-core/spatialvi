@@ -9,9 +9,9 @@ process SQUIDPY_SPATIAL_AUTOCORR {
     val mode
 
     output:
-    tuple val(meta), path("${prefix}.h5ad"), emit: adata
+    tuple val(meta), path("${prefix}.h5ad"),    emit: adata
     tuple val(meta), path("${prefix}_svg.csv"), emit: csv
-    path "versions.yml", emit: versions
+    path "versions.yml",                        emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

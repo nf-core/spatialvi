@@ -9,7 +9,7 @@ process SDATA_UPDATE_TABLE {
 
     output:
     tuple val(meta), path("${prefix}_updated.zarr"), emit: sdata
-    path "versions.yml"                    , emit: versions
+    path "versions.yml",                             emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
