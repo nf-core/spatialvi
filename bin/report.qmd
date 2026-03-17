@@ -14,6 +14,7 @@ jupyter: python3
 ```{python parameters}
 #| tags: [parameters]
 input_sdata = "sdata.zarr"
+n_top_svgs = 20
 artifact_dir = "artifacts"
 ```
 
@@ -585,7 +586,7 @@ if svg_key:
 
 ```{python}
 if svg_key:
-    n_display = 20
+    n_display = n_top_svgs
     top_svg = svg_df.head(n_display)
     top_svg['Gene'] = top_svg.index
     top_svg['Rank'] = range(1, len(top_svg) + 1)
