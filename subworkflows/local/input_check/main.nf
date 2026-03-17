@@ -37,7 +37,8 @@ workflow INPUT_CHECK {
     ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
         .mix ( ch_spaceranger.dir.map { meta, dir -> [meta, file(dir)] } )
     // Create final meta map and check input existance
-    ch_spaceranger_input = ch_spaceranger_combined.map { meta, dir -> create_channel_spaceranger(meta, dir) }
+    ch_spaceranger_input = ch_spaceranger_combined
+        .map { meta, dir -> create_channel_spaceranger(meta, dir) }
 
     // Downstream analysis: ----------------------------------------------------
 
@@ -58,7 +59,8 @@ workflow INPUT_CHECK {
         .map { meta, dir -> [meta, dir] }
 
     // Create final meta map and check input file existence
-    ch_downstream_input = ch_downstream_combined.map { it -> check_downstream_dir(it, hd_bin_size) }
+    ch_downstream_input = ch_downstream_combined
+        .map { it -> check_downstream_dir(it, hd_bin_size) }
 
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
@@ -85,7 +87,8 @@ def check_downstream_dir(input, hd_bin_size) {
         "tissue_lowres_image.png"
     ]
     def dir_file_objs = file("${spaceranger_dir}/**")
-    def classic_files_present = classic_required_files.every { f -> dir_file_objs*.name.contains(f) }
+    def classic_files_present = classic_required_files
+        .every { f -> dir_file_objs*.name.contains(f) }
 
     // Visium HD binned output required files (for specified bin size)
     def hd_required_files = [
@@ -96,7 +99,8 @@ def check_downstream_dir(input, hd_bin_size) {
         "spatial/tissue_positions.parquet"
     ]
     def hd_dir = file("${spaceranger_dir}/binned_outputs/square_${String.format('%03d', hd_bin_size)}um")
-    def hd_files_present = hd_required_files.every { f -> file("${hd_dir}/${f}").exists() }
+    def hd_files_present = hd_required_files
+        .every { f -> file("${hd_dir}/${f}").exists() }
 
     if (!(classic_files_present || hd_files_present)) {
         error "The specified spaceranger output directory for sample '${meta.id}' does not contain all required files for either classic Visium: ${classic_required_files.join(', ')} or Visium HD bin size ${hd_bin_size}: ${hd_required_files.join(', ')}."
@@ -113,7 +117,7 @@ def get_file_from_meta(meta, k) {
     return v ? file(v) : []
 }
 
-// Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
+// Function to get [ meta, [fastq_dir, tissue_hires_image, slide, area] ] list
 def create_channel_spaceranger(meta, fastq_dir) {
     meta["id"] = meta.get("sample")
     def slide = meta.get("slide")
@@ -122,7 +126,7 @@ def create_channel_spaceranger(meta, fastq_dir) {
     // Resolve symlinks for local filesystem paths only
     def scheme = fastq_dir.toUri().getScheme()
     if (scheme == null || scheme == 'file') {
-        fastq_dir = fastq_dir.toRealPath() // resolve symlink (if applicable)
+        fastq_dir = fastq_dir.toRealPath()
     }
 
     def fastq_files = fastq_dir.listFiles().findAll { file ->

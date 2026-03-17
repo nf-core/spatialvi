@@ -64,9 +64,11 @@ workflow SPATIALVI {
     // MODULE: FastQC
     //
     FASTQC(
-        INPUT_CHECK.out.ch_spaceranger_input.map{ it -> [it[0] /* meta */, it[1] /* reads */]}
+        INPUT_CHECK.out.ch_spaceranger_input
+            .map { it -> [it[0], it[1]] } // [ meta, reads ]
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ it -> it[1] })
+    ch_multiqc_files = ch_multiqc_files
+        .mix(FASTQC.out.zip.collect { it -> it[1] })
 
     //
     // SUBWORKFLOW: Space Ranger raw data processing
@@ -76,7 +78,8 @@ workflow SPATIALVI {
         spaceranger_reference,
         spaceranger_probeset,
     )
-    ch_multiqc_files = ch_multiqc_files.mix(SPACERANGER.out.sr_dir.collect{ it -> it[1] })
+    ch_multiqc_files = ch_multiqc_files
+        .mix(SPACERANGER.out.sr_dir.collect { it -> it[1] })
 
     //
     // Combine pre-existing spaceranger outputs with newly processed ones
@@ -91,7 +94,7 @@ workflow SPATIALVI {
         ch_spaceranger_dir,
         hd_bin_size
     )
-    
+
     //
     // SUBWORKFLOW: Downstream analyses of ST data
     // This includes: QC, filtering, normalization,
@@ -175,7 +178,8 @@ workflow SPATIALVI {
 
     ch_multiqc_custom_methods_description = multiqc_methods_description ?
         file(multiqc_methods_description, checkIfExists: true) :
-        file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+        file("$projectDir/assets/methods_description_template.yml",
+             checkIfExists: true)
     ch_methods_description = channel.value(
         methodsDescriptionText(ch_multiqc_custom_methods_description))
 
@@ -183,7 +187,7 @@ workflow SPATIALVI {
     // Add filter statistics to MultiQC (JSON format needs custom config)
     //
     ch_multiqc_files = ch_multiqc_files.mix(
-        DOWNSTREAM.out.filter_stats.map{ meta, json -> json }.collect()
+        DOWNSTREAM.out.filter_stats.map { _meta, json -> json }.collect()
     )
 
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
