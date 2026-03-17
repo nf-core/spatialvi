@@ -2,29 +2,14 @@
     "Space Ranger FFPE v2 CytAssist": {
         "content": [
             {
-                "CLUSTERING": {
-                    "papermill": "2.6.0",
-                    "quarto": "1.8.25"
-                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
-                },
-                "QUALITY_CONTROLS": {
-                    "papermill": "2.6.0",
-                    "quarto": "1.8.25"
-                },
-                "READ_DATA": {
-                    "read_data": "0.2.0"
                 },
                 "SPACERANGER_COUNT": {
                     "spaceranger": "4.0.1"
                 },
                 "SPACERANGER_UNTAR_REFERENCE": {
                     "untar": 1.34
-                },
-                "SPATIALLY_VARIABLE_GENES": {
-                    "papermill": "2.6.0",
-                    "quarto": "1.8.25"
                 },
                 "UNTAR_SPACERANGER_INPUT": {
                     "untar": 1.34

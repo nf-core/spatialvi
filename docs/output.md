@@ -76,55 +76,6 @@ as a convenience if you want to explore them in _e.g._ Excel.
 
 </details>
 
-### Quality controls and filtering
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `<SAMPLE>/reports/`
-  - `quality_controls.html`: Rendered HTML report.
-  - `quality_controls.yml`: YAML file containing parameters used in the report.
-  - `quality_controls.qmd`: Quarto document used for rendering the report.
-
-</details>
-
-Report containing analyses related to quality controls and filtering of spatial
-data. Spots are filtered based on total counts, number of expressed genes as
-well as presence in tissue; you can find more details in the report itself.
-
-### Clustering
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `<SAMPLE>/reports/`
-  - `clustering.html`: Rendered HTML report.
-  - `clustering.yml`: YAML file containing parameters used in the report.
-  - `clustering.qmd`: Quarto document used for rendering the report.
-
-</details>
-
-Report containing analyses related to normalisation, dimensionality reduction,
-clustering and spatial visualisation. Leiden clustering is currently the only
-option; you can find more details in the report itself.
-
-### Spatially variable genes
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `<SAMPLE>/reports/`
-  - `spatially_variable_genes.html`: Rendered HTML report.
-  - `spatially_variable_genes.yml`: YAML file containing parameters used in the report.
-  - `spatially_variable_genes.qmd`: Quarto document used for rendering the report.
-
-</details>
-
-Report containing analyses related to differential expression testing and
-spatially varying genes. The [Moran 1](https://en.wikipedia.org/wiki/Moran%27s_I)
-score is currently the only option for spatial testing; you can find more
-details in the report itself.
-
 ## Workflow reporting
 
 ### Pipeline information
