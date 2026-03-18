@@ -21,15 +21,15 @@ import numpy as np
 # Parameters from Nextflow
 input_adata = "${adata}"
 output_adata = "${prefix}" + ".h5ad"
-n_top_genes = int("${n_top_genes}")
-flavor = "${flavor}"
+n_highly_variable_genes = int("${n_highly_variable_genes}")
+flavor = "${hvg_flavor}"
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)
 
 print(f"Finding highly variable genes in: {input_adata}")
 print(f"Shape: {adata.shape}")
-print(f"Number of top genes requested: {n_top_genes}")
+print(f"Number of top genes requested: {n_highly_variable_genes}")
 print(f"Flavor: {flavor}")
 
 n_cells, n_genes = adata.shape
@@ -47,82 +47,82 @@ if n_genes == 0:
 if n_genes < 10:
     print(f"WARNING: AnnData has only {n_genes} genes. This is too few for meaningful HVG selection.")
     print("Marking all genes as highly variable.")
-    
+
     # Mark all genes as highly variable
     adata.var["highly_variable"] = True
     adata.var["highly_variable_rank"] = np.arange(n_genes)
     adata.var["means"] = np.array(adata.X.mean(axis=0)).flatten()
     adata.var["dispersions"] = np.zeros(n_genes)
     adata.var["dispersions_norm"] = np.zeros(n_genes)
-    
+
     n_hvgs = n_genes
-    
+
     # Store parameters in uns
     adata.uns["hvg"] = {
         "flavor": flavor,
-        "n_top_genes": n_top_genes,
+        "n_highly_variable_genes": n_highly_variable_genes,
         "n_hvgs_found": int(n_hvgs),
         "warning": f"Only {n_genes} genes available, all marked as HVG"
     }
 
 else:
-    # Adjust n_top_genes if necessary
-    actual_n_top_genes = min(n_top_genes, n_genes)
-    
-    if actual_n_top_genes < n_top_genes:
-        print(f"WARNING: Requested {n_top_genes} HVGs but only {n_genes} genes available.")
-        print(f"Adjusting to select top {actual_n_top_genes} genes.")
-    
+    # Adjust n_highly_variable_genes if necessary
+    actual_n_hvgs = min(n_highly_variable_genes, n_genes)
+
+    if actual_n_hvgs < n_highly_variable_genes:
+        print(f"WARNING: Requested {n_highly_variable_genes} HVGs but only {n_genes} genes available.")
+        print(f"Adjusting to select top {actual_n_hvgs} genes.")
+
     # Find highly variable genes
     try:
         sc.pp.highly_variable_genes(
             adata,
             flavor=flavor,
-            n_top_genes=actual_n_top_genes,
+            n_top_genes=actual_n_hvgs,
             inplace=True
         )
-        
+
         n_hvgs = adata.var["highly_variable"].sum()
         print(f"Identified {n_hvgs} highly variable genes")
-        
+
     except Exception as e:
         print(f"WARNING: HVG selection with flavor '{flavor}' failed: {e}")
         print("Attempting with flavor 'cell_ranger'...")
-        
+
         try:
             sc.pp.highly_variable_genes(
                 adata,
                 flavor="cell_ranger",
-                n_top_genes=actual_n_top_genes,
+                n_top_genes=actual_n_hvgs,
                 inplace=True
             )
-            
+
             n_hvgs = adata.var["highly_variable"].sum()
             print(f"Identified {n_hvgs} highly variable genes with cell_ranger flavor")
             flavor = "cell_ranger"
-            
+
         except Exception as e2:
             print(f"WARNING: HVG selection with 'cell_ranger' also failed: {e2}")
             print("Falling back to marking top genes by mean expression as HVG...")
-            
+
             # Fallback: use mean expression to select top genes
             mean_expr = np.array(adata.X.mean(axis=0)).flatten()
-            top_indices = np.argsort(mean_expr)[::-1][:actual_n_top_genes]
-            
+            top_indices = np.argsort(mean_expr)[::-1][:actual_n_hvgs]
+
             adata.var["highly_variable"] = False
             adata.var.iloc[top_indices, adata.var.columns.get_loc("highly_variable")] = True
             adata.var["means"] = mean_expr
             adata.var["highly_variable_rank"] = np.nan
-            adata.var.loc[adata.var["highly_variable"], "highly_variable_rank"] = np.arange(actual_n_top_genes)
-            
-            n_hvgs = actual_n_top_genes
+            adata.var.loc[adata.var["highly_variable"], "highly_variable_rank"] = np.arange(actual_n_hvgs)
+
+            n_hvgs = actual_n_hvgs
             print(f"Selected top {n_hvgs} genes by mean expression")
-    
+
     # Store parameters in uns
     adata.uns["hvg"] = {
         "flavor": flavor,
-        "n_top_genes": n_top_genes,
-        "n_top_genes_actual": actual_n_top_genes,
+        "n_highly_variable_genes": n_highly_variable_genes,
+        "actual_n_hvgs": actual_n_hvgs,
         "n_hvgs_found": int(n_hvgs),
     }
 

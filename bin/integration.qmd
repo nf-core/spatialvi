@@ -60,7 +60,7 @@ Next, we select highly variable genes for each dataset. This step is essential t
 
 ```{python}
 for table_name, adata in sdata.tables.items():
-    sc.pp.highly_variable_genes(adata, flavor="seurat", n_top_genes=n_hvgs, inplace=True)
+    sc.pp.highly_variable_genes(adata, hvg_flavor="seurat", n_top_genes=n_hvgs, inplace=True)
 ```
 
 # Data Integration

@@ -71,32 +71,11 @@
             }
         },
 
-        "optional_outputs": {
-            "title": "Optional outputs",
+        "visium_hd_options": {
+            "title": "Visium HD options",
             "type": "object",
-            "fa_icon": "fas fa-floppy-disk",
-            "description": "Additional intermediate output files that can be optionally saved.",
-            "properties": {
-                "spaceranger_save_reference": {
-                    "type": "boolean",
-                    "description": "Save the extracted tar archive of the Space Ranger reference.",
-                    "help_text": "By default, extracted versions of archived Space Ranger reference data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-floppy-disk"
-                },
-                "save_untar_output": {
-                    "type": "boolean",
-                    "description": "Save extracted tar archives of input data.",
-                    "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-floppy-disk"
-                }
-            }
-        },
-
-        "analysis_options": {
-            "title": "Analysis options",
-            "type": "object",
-            "fa_icon": "fas fa-magnifying-glass-chart",
-            "description": "Options related to the downstream analyses performed by the pipeline.",
+            "fa_icon": "fas fa-table-cells",
+            "description": "Options specific to the analysis of Visium HD data.",
             "properties": {
                 "hd_bin_size": {
                     "type": "integer",
@@ -104,7 +83,16 @@
                     "enum": [2, 8, 16],
                     "default": 8,
                     "fa_icon": "fas fa-expand"
-                },
+                }
+            }
+        },
+
+        "filtering_options": {
+            "title": "Filtering options",
+            "type": "object",
+            "fa_icon": "fas fa-filter",
+            "description": "Filtering settings and thresholds used by the pipeline",
+            "properties": {
                 "qc_min_counts": {
                     "type": "integer",
                     "default": 500,
@@ -141,26 +129,179 @@
                     "default": 100,
                     "description": "The maximum proportion of haemoglobin content that a spot is allowed to have to pass the filtering (no filtering is done by default).",
                     "fa_icon": "fas fa-hashtag"
-                },
-                "cluster_n_hvgs": {
+                }
+            }
+        },
+
+        "normalization_options": {
+            "title": "Normalization options",
+            "type": "object",
+            "fa_icon": "fas fa-filter",
+            "description": "Normalisation options used by the pipeline.",
+            "properties": {
+                "normalize_target_sum": {
+                    "type": "string",
+                    "default": "none",
+                    "description": "Target sum for normalization of counts per cell.",
+                    "help_text": "By default, normalizes so that each cell has a total count equal to the median cell total before normalization. By specifying `1e6` the normalization become CPM normalization, while `1e4` is another common option for scRNA-seq data.",
+                    "fa_icon": "fas fa-crosshairs"
+                }
+            }
+        },
+
+        "hvg_options": {
+            "title": "Highly variable genes options",
+            "type": "object",
+            "fa_icon": "fas fa-arrow-trend-up",
+            "description": "Options for calculating highly variable genes.",
+            "properties": {
+                "n_highly_variable_genes": {
                     "type": "integer",
                     "default": 2000,
                     "description": "The number of top highly variable genes to use for the analyses.",
                     "fa_icon": "fas fa-hashtag"
                 },
+                "hvg_flavor": {
+                    "type": "string",
+                    "default": "seurat",
+                    "enum": ["seurat", "seurat_v3", "seurat_v3_paper", "cell_ranger"],
+                    "description": "The method for identifying highly variable genes",
+                    "help_text": "The `seurat` and `cell_ranger` flavors require log-normalized data, while `seurat_v3` and `seurat_v3_paper` requires raw counts.",
+                    "fa_icon": "fas fa-cookie-bite"
+                }
+            }
+        },
+
+        "pca_options": {
+            "title": "Principal component analysis options",
+            "type": "object",
+            "fa_icon": "fas fa-uncharted",
+            "description": "Options for principal component analyses used in the pipeline.",
+            "properties": {
+                "n_principal_components": {
+                    "type": "integer",
+                    "default": 50,
+                    "description": "The number of principal components to use for downstream analyses.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "pca_use_highly_variable": {
+                    "type": "boolean",
+                    "description": "Whether to use highly variable genes only for principal component analyses.",
+                    "fa_icon": "fas fa-arrow-trend-up"
+                }
+            }
+        },
+
+        "nearest_neighbours_options": {
+            "title": "Nearest neighbours options",
+            "type": "object",
+            "fa_icon": "fas fa-square-share-nodes",
+            "description": "Options for nearest neighbours calculations.",
+            "properties": {
+                "n_neighbours": {
+                    "type": "integer",
+                    "default": 15,
+                    "description": "The number of nearest neighbors to use for the neighbourhood graph calculation.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "neighbours_n_pcs": {
+                    "type": "string",
+                    "default": "none",
+                    "description": "The number of principal components to use for the nearest neighbours calculation.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "neighbours_use_rep": {
+                    "type": "string",
+                    "default": "none",
+                    "description": "The representation to use for the nearest neighbour calculation.",
+                    "help_text": "By default, uses `.X_pca` when there are 50 or more genes available, and uses `.X` otherwise.",
+                    "fa_icon": "fas fa-table"
+                }
+            }
+        },
+
+        "dimensionality_reduction_options": {
+            "title": "Dimensionality reduction options",
+            "type": "object",
+            "fa_icon": "fas fa-down-left-and-up-right-to-center",
+            "description": "Options for the dimensionality reductions performed by the pipeline.",
+            "properties": {
+                "umap_min_dist": {
+                    "type": "number",
+                    "default": 0.5,
+                    "description": "Minimium distance between points in the UMAP embedding, where lower values produces tigher clusters.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "umap_spread": {
+                    "type": "number",
+                    "default": 1.0,
+                    "description": "Scale of the UMAP embedding, where larger values spread points further away from each other.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "umap_n_components": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "The number of UMAP components to use.",
+                    "fa_icon": "fas fa-hashtag"
+                }
+            }
+        },
+
+        "clustering_options": {
+            "title": "Clustering options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-nodes",
+            "description": "Options for the dimensionality reductions performed by the pipeline.",
+            "properties": {
                 "cluster_resolution": {
                     "type": "number",
                     "default": 1,
                     "description": "The resolution for the clustering of the spots.",
                     "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
-                    "fa_icon": "fas fa-circle-nodes"
+                    "fa_icon": "fas fa-hashtag"
                 },
+                "cluster_key_added": {
+                    "type": "string",
+                    "default": "clusters",
+                    "description": "Column name under which to add the cluster labels.",
+                    "fa_icon": "fas fa-tag"
+                }
+            }
+        },
+
+        "rank_genes_groups_options": {
+            "title": "Rank genes groups options",
+            "type": "object",
+            "fa_icon": "fas fa-chart-gantt",
+            "description": "Options for determinig spatially variable genes.",
+            "properties": {
+                "rank_genes_group_by": {
+                    "type": "string",
+                    "default": "clusters",
+                    "description": "Column name under which the cluster labels are stored.",
+                    "fa_icon": "fas fa-tag"
+                },
+                "rank_genes_method": {
+                    "type": "string",
+                    "default": "t-test",
+                    "description": "Statistical method to use for differential expression testing.",
+                    "fa_icon": "fas fa-tag"
+                }
+            }
+        },
+
+        "svg_options": {
+            "title": "Spatially variable genes options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-nodes",
+            "description": "Options for determinig spatially variable genes.",
+            "properties": {
                 "svg_autocorr_method": {
                     "type": "string",
                     "default": "moran",
                     "description": "The method to use for spatially variable gene autocorrelation.",
                     "enum": ["moran", "geary"],
-                    "fa_icon": "fas fa-circle-nodes"
+                    "fa_icon": "fas fa-tag"
                 },
                 "n_top_svgs": {
                     "type": "integer",
@@ -199,6 +340,27 @@
                     "default": 2000,
                     "description": "Number of highly variable genes to use for integration of samples.",
                     "fa_icon": "fas fa-hashtag"
+                }
+            }
+        },
+
+        "optional_outputs": {
+            "title": "Optional outputs",
+            "type": "object",
+            "fa_icon": "fas fa-floppy-disk",
+            "description": "Additional intermediate output files that can be optionally saved.",
+            "properties": {
+                "spaceranger_save_reference": {
+                    "type": "boolean",
+                    "description": "Save the extracted tar archive of the Space Ranger reference.",
+                    "help_text": "By default, extracted versions of archived Space Ranger reference data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-floppy-disk"
+                },
+                "save_untar_output": {
+                    "type": "boolean",
+                    "description": "Save extracted tar archives of input data.",
+                    "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-floppy-disk"
                 }
             }
         },
@@ -251,6 +413,7 @@
                 }
             }
         },
+
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -369,13 +532,40 @@
             "$ref": "#/$defs/spaceranger_options"
         },
         {
-            "$ref": "#/$defs/optional_outputs"
+            "$ref": "#/$defs/visium_hd_options"
         },
         {
-            "$ref": "#/$defs/analysis_options"
+            "$ref": "#/$defs/filtering_options"
+        },
+        {
+            "$ref": "#/$defs/normalization_options"
+        },
+        {
+            "$ref": "#/$defs/hvg_options"
+        },
+        {
+            "$ref": "#/$defs/pca_options"
+        },
+        {
+            "$ref": "#/$defs/nearest_neighbours_options"
+        },
+        {
+            "$ref": "#/$defs/dimensionality_reduction_options"
+        },
+        {
+            "$ref": "#/$defs/clustering_options"
+        },
+        {
+            "$ref": "#/$defs/rank_genes_groups_options"
+        },
+        {
+            "$ref": "#/$defs/svg_options"
         },
         {
             "$ref": "#/$defs/aggregation_options"
+        },
+        {
+            "$ref": "#/$defs/optional_outputs"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

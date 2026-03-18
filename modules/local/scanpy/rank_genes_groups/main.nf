@@ -6,6 +6,8 @@ process SCANPY_RANK_GENES_GROUPS {
 
     input:
     tuple val(meta), path(adata)
+    val rank_genes_group_by
+    val rank_genes_method
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,8 +18,6 @@ process SCANPY_RANK_GENES_GROUPS {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_deg"
-    groupby = task.ext.groupby ?: "clusters"
-    method = task.ext.method ?: "t-test"
     template 'rank_genes_groups.py'
 
     stub:

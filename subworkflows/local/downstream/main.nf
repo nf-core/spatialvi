@@ -1,4 +1,4 @@
-//
+
 // Subworkflow for downstream analyses of ST data
 //
 
@@ -25,17 +25,30 @@ include { SQUIDPY_SPATIAL_NEIGHBORS                           } from '../../../m
 workflow DOWNSTREAM {
 
     take:
-    ch_sdata_raw        // channel: [ meta, sdata.zarr ]
-    qc_min_counts       // integer: Minimum UMIs per spot
-    qc_min_genes        // integer: Minimum genes per spot
-    qc_min_spots        // integer: Minimum spots per gene
-    qc_mito_threshold   // float  : Maximum mitochondrial content per spot
-    qc_ribo_threshold   // float  : Minimum ribosomal content per spot
-    qc_hb_threshold     // float  : Maximum haemoglobin content per spot
-    cluster_n_hvgs      // integer: Number of highly variable genes to use
-    cluster_resolution  // float  : Spot clustering resolution
-    svg_autocorr_method // string : Spatial autocorrelation method ('moran' or 'geary')
-    n_top_svgs          // integer: Number of top spatially variable genes to report
+    ch_sdata_raw            // channel: [ meta, sdata.zarr ]
+    qc_min_counts           // integer: Minimum UMIs per spot
+    qc_min_genes            // integer: Minimum genes per spot
+    qc_min_spots            // integer: Minimum spots per gene
+    qc_mito_threshold       //   float: Maximum mitochondrial content per spot
+    qc_ribo_threshold       //   float: Minimum ribosomal content per spot
+    qc_hb_threshold         //   float: Maximum haemoglobin content per spot
+    normalize_target_sum    //  string: Target sum of total count normalization
+    n_highly_variable_genes // integer: Number of highly variable genes to use
+    hvg_flavor              //  string: Flavor for HVG calculations
+    n_principal_components  // integer: Number of principal components to compute
+    pca_use_highly_variable // boolean: Whether to only use highly variable genes for PCA
+    n_neighbours            // integer: Number of nearest neighbours to compute
+    neighbours_n_pcs        // integer: Number of PCs to use for nearest neighbours
+    neighbours_use_rep      //  string: Representation to use for nearest neighbours
+    umap_min_dist           //   float: Minimum distance between embedded points
+    umap_spread             //   float: Scale of embedded points
+    umap_n_components       // integer: Number of UMAP dimensions
+    cluster_resolution      //   float: Spot clustering resolution
+    cluster_key_added       //  string: Obs key where cluster labels are added
+    rank_genes_group_by     //  string: Column name to group by for differential expression testing
+    rank_genes_method       //  string: Method to use for differential expression testing
+    svg_autocorr_method     //  string: Spatial autocorrelation method ('moran' or 'geary')
+    n_top_svgs              // integer: Number of top spatially variable genes to report
 
     main:
 
@@ -88,7 +101,8 @@ workflow DOWNSTREAM {
     // Normalization
     //
     SCANPY_NORMALIZE_TOTAL (
-        SCANPY_FILTER.out.adata
+        SCANPY_FILTER.out.adata,
+        normalize_target_sum
     )
 
     //
@@ -103,7 +117,8 @@ workflow DOWNSTREAM {
     //
     SCANPY_HIGHLY_VARIABLE_GENES (
         SCANPY_LOG1P.out.adata,
-        cluster_n_hvgs
+        n_highly_variable_genes,
+        hvg_flavor
     )
 
     // =========================================================================
@@ -114,21 +129,29 @@ workflow DOWNSTREAM {
     // PCA
     //
     SCANPY_PCA (
-        SCANPY_HIGHLY_VARIABLE_GENES.out.adata
+        SCANPY_HIGHLY_VARIABLE_GENES.out.adata,
+        n_principal_components,
+        pca_use_highly_variable
     )
 
     //
     // Neighbors graph (for UMAP and Leiden)
     //
     SCANPY_NEIGHBORS (
-        SCANPY_PCA.out.adata
+        SCANPY_PCA.out.adata,
+        n_neighbours,
+        neighbours_n_pcs,
+        neighbours_use_rep,
     )
 
     //
     // UMAP
     //
     SCANPY_UMAP (
-        SCANPY_NEIGHBORS.out.adata
+        SCANPY_NEIGHBORS.out.adata,
+        umap_min_dist,
+        umap_spread,
+        umap_n_components
     )
 
     //
@@ -136,7 +159,8 @@ workflow DOWNSTREAM {
     //
     SCANPY_LEIDEN (
         SCANPY_UMAP.out.adata,
-        cluster_resolution
+        cluster_resolution,
+        cluster_key_added
     )
 
     // =========================================================================
@@ -147,7 +171,9 @@ workflow DOWNSTREAM {
     // Differential expression analysis (rank genes by cluster)
     //
     SCANPY_RANK_GENES_GROUPS (
-        SCANPY_LEIDEN.out.adata
+        SCANPY_LEIDEN.out.adata,
+        rank_genes_group_by,
+        rank_genes_method
     )
 
     //

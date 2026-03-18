@@ -6,6 +6,9 @@ process SCANPY_NEIGHBORS {
 
     input:
     tuple val(meta), path(adata)
+    val n_neighbors
+    val neighbours_n_pcs
+    val neighbours_use_rep
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,9 +19,6 @@ process SCANPY_NEIGHBORS {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_neighbors"
-    n_neighbors = task.ext.n_neighbors ?: 15
-    n_pcs = task.ext.n_pcs ?: "null"
-    use_rep = task.ext.use_rep ?: "null"
     template 'neighbors.py'
 
     stub:

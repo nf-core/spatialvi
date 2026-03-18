@@ -13,7 +13,7 @@ import anndata as ad
 input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
 resolution = float("${resolution}")
-key_added = "${key_added}"
+cluster_key_added = "${cluster_key_added}"
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)
@@ -21,7 +21,7 @@ adata = ad.read_h5ad(input_adata)
 print(f"Performing Leiden clustering on: {input_adata}")
 print(f"Shape: {adata.shape}")
 print(f"Resolution: {resolution}")
-print(f"Key added: {key_added}")
+print(f"Key added: {cluster_key_added}")
 
 # Check if neighbors have been computed
 if "neighbors" not in adata.uns:
@@ -31,12 +31,12 @@ if "neighbors" not in adata.uns:
 sc.tl.leiden(
     adata,
     resolution=resolution,
-    key_added=key_added
+    key_added=cluster_key_added
 )
 
 # Print summary
-n_clusters = adata.obs[key_added].nunique()
-cluster_sizes = adata.obs[key_added].value_counts().sort_index()
+n_clusters = adata.obs[cluster_key_added].nunique()
+cluster_sizes = adata.obs[cluster_key_added].value_counts().sort_index()
 
 print(f"Found {n_clusters} clusters")
 print("Cluster sizes:")

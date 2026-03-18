@@ -6,7 +6,8 @@ process SCANPY_HIGHLY_VARIABLE_GENES {
 
     input:
     tuple val(meta), path(adata)
-    val n_top_genes
+    val n_highly_variable_genes
+    val hvg_flavor
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -17,7 +18,6 @@ process SCANPY_HIGHLY_VARIABLE_GENES {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_hvg"
-    flavor = task.ext.flavor ?: "seurat"
     template 'highly_variable_genes.py'
 
     stub:

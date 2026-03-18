@@ -6,6 +6,8 @@ process SCANPY_PCA {
 
     input:
     tuple val(meta), path(adata)
+    val n_principal_components
+    val pca_use_highly_variable
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,8 +18,6 @@ process SCANPY_PCA {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_pca"
-    n_comps = task.ext.n_comps ?: 50
-    use_highly_variable = task.ext.use_highly_variable ?: true
     template 'pca.py'
 
     stub:

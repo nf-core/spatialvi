@@ -6,6 +6,7 @@ process SCANPY_NORMALIZE_TOTAL {
 
     input:
     tuple val(meta), path(adata)
+    val normalize_target_sum
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,7 +17,6 @@ process SCANPY_NORMALIZE_TOTAL {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_normalized"
-    target_sum = task.ext.target_sum ?: "null"
     template 'normalize_total.py'
 
     stub:

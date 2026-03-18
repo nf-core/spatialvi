@@ -6,6 +6,9 @@ process SCANPY_UMAP {
 
     input:
     tuple val(meta), path(adata)
+    val(min_dist)
+    val(spread)
+    val(n_components)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,9 +19,6 @@ process SCANPY_UMAP {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_umap"
-    min_dist = task.ext.min_dist ?: 0.5
-    spread = task.ext.spread ?: 1.0
-    n_components = task.ext.n_components ?: 2
     template 'umap.py'
 
     stub:

@@ -17,8 +17,8 @@ import anndata as ad
 input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
 n_neighbors = int("${n_neighbors}")
-n_pcs_str = "${n_pcs}"
-use_rep_str = "${use_rep}"
+n_pcs_str = "${neighbours_n_pcs}"
+use_rep_str = "${neighbours_use_rep}"
 
 # Parse optional parameters
 n_pcs = None if n_pcs_str.lower() in ["null", "none", ""] else int(n_pcs_str)

@@ -7,6 +7,7 @@ process SCANPY_LEIDEN {
     input:
     tuple val(meta), path(adata)
     val resolution
+    val cluster_key_added
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -17,7 +18,6 @@ process SCANPY_LEIDEN {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_clustered"
-    key_added = task.ext.key_added ?: "clusters"
     template 'leiden.py'
 
     stub:

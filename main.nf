@@ -30,28 +30,41 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_spat
 workflow NFCORE_SPATIALVI {
 
     take:
-    samplesheet                    // file   : samplesheet read in from --input
-    spaceranger_reference          // dir    : /path/to/reference
-    spaceranger_probeset           // file   : /path/to/csv
+    samplesheet                    //    file: samplesheet read in from --input
+    spaceranger_reference          //     dir: /path/to/reference
+    spaceranger_probeset           //    file: /path/to/csv
     hd_bin_size                    // integer: Bin size for Visium HD
     qc_min_counts                  // integer: Minimum UMIs per spot
     qc_min_genes                   // integer: Minimum genes per spot
     qc_min_spots                   // integer: Minimum spots per gene
-    qc_mito_threshold              // float  : Maximum mito. content per spot
-    qc_ribo_threshold              // float  : Minimum ribo. content per spot
-    qc_hb_threshold                // float  : Maximum haem. content per spot
-    cluster_n_hvgs                 // integer: Number of HVGs to use
-    cluster_resolution             // float  : Spot clustering resolution
+    qc_mito_threshold              //   float: Maximum mito. content per spot
+    qc_ribo_threshold              //   float: Minimum ribo. content per spot
+    qc_hb_threshold                //   float: Maximum haem. content per spot
+    normalize_target_sum           //  string: Target sum of total count normalization
+    n_highly_variable_genes        // integer: Number of HVGs to use
+    hvg_flavor                     //  string: Flavor for HVG calculations
+    n_principal_components         // integer: Number of principal components to compute
+    pca_use_highly_variable        // boolean: Whether to only use highly variable genes for PCA
+    n_neighbours                   // integer: Number of nearest neighbours to compute
+    neighbours_n_pcs               // integer: Number of PCs to use for nearest neighbours
+    neighbours_use_rep             //  string: Representation to use for nearest neighbours
+    umap_min_dist                  //   float: Minimum distance between embedded points
+    umap_spread                    //   float: Scale of embedded points
+    umap_n_components              // integer: Number of UMAP dimensions
+    cluster_resolution             //   float: Spot clustering resolution
+    cluster_key_added              //  string: Obs key where cluster labels are added
+    rank_genes_group_by            //  string: Column name to group by for differential expression testing
+    rank_genes_method              //  string: Method to use for differential expression testing
     svg_autocorr_method            // string : Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
     merge_sdata                    // boolean: Whether to merge sdata or not
     integrate_sdata                // boolean: Whether to integrate sdata or not
-    integration_cluster_resolution // float  : Integration cluster resolution
+    integration_cluster_resolution //   float: Integration cluster resolution
     integration_n_hvgs             // integer: Number of HVGs to integrate with
-    multiqc_config                 // file   : /path/to/multiqc/config
-    multiqc_logo                   // file   : /path/to/multiqc/logo
-    multiqc_methods_description    // file   : /path/to/multiqc/description
-    outdir                         // dir    : /path/to/output/directory
+    multiqc_config                 //    file: /path/to/multiqc/config
+    multiqc_logo                   //    file: /path/to/multiqc/logo
+    multiqc_methods_description    //    file: /path/to/multiqc/description
+    outdir                         //     dir: /path/to/output/directory
 
     main:
     //
@@ -68,8 +81,21 @@ workflow NFCORE_SPATIALVI {
         qc_mito_threshold,
         qc_ribo_threshold,
         qc_hb_threshold,
-        cluster_n_hvgs,
+        normalize_target_sum,
+        n_highly_variable_genes,
+        hvg_flavor,
+        n_principal_components,
+        pca_use_highly_variable,
+        n_neighbours,
+        neighbours_n_pcs,
+        neighbours_use_rep,
+        umap_min_dist,
+        umap_spread,
+        umap_n_components,
         cluster_resolution,
+        cluster_key_added,
+        rank_genes_group_by,
+        rank_genes_method,
         svg_autocorr_method,
         n_top_svgs,
         merge_sdata,
@@ -121,8 +147,21 @@ workflow {
         params.qc_mito_threshold,
         params.qc_ribo_threshold,
         params.qc_hb_threshold,
-        params.cluster_n_hvgs,
+        params.normalize_target_sum,
+        params.n_highly_variable_genes,
+        params.hvg_flavor,
+        params.n_principal_components,
+        params.pca_use_highly_variable,
+        params.n_neighbours,
+        params.neighbours_n_pcs,
+        params.neighbours_use_rep,
+        params.umap_min_dist,
+        params.umap_spread,
+        params.umap_n_components,
         params.cluster_resolution,
+        params.cluster_key_added,
+        params.rank_genes_group_by,
+        params.rank_genes_method,
         params.svg_autocorr_method,
         params.n_top_svgs,
         params.merge_sdata,
