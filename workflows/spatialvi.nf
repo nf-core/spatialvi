@@ -145,8 +145,7 @@ workflow SPATIALVI {
     //
     // SUBWORKFLOW: Sample aggregation (optional)
     //
-    // TODO: add back integration
-    /*if (merge_sdata || integrate_sdata) {
+    if (merge_sdata || integrate_sdata) {
         AGGREGATION (
             DOWNSTREAM.out.sdata_svg,
             merge_sdata,
@@ -154,7 +153,7 @@ workflow SPATIALVI {
             integration_cluster_resolution,
             integration_n_hvgs
         )
-    }*/
+    }
 
     //
     // Collate and save software versions
