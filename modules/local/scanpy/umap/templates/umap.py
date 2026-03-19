@@ -18,14 +18,13 @@ input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
 min_dist = float("${min_dist}")
 spread = float("${spread}")
-n_components = int("${n_components}")
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)
 
 print(f"Computing UMAP for: {input_adata}")
 print(f"Shape: {adata.shape}")
-print(f"Parameters: min_dist={min_dist}, spread={spread}, n_components={n_components}")
+print(f"Parameters: min_dist={min_dist}, spread={spread}")
 
 # Check if neighbors have been computed
 if "neighbors" not in adata.uns:
@@ -35,8 +34,7 @@ if "neighbors" not in adata.uns:
 sc.tl.umap(
     adata,
     min_dist=min_dist,
-    spread=spread,
-    n_components=n_components
+    spread=spread
 )
 
 # Print summary

@@ -8,7 +8,6 @@ process SCANPY_UMAP {
     tuple val(meta), path(adata)
     val(min_dist)
     val(spread)
-    val(n_components)
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata

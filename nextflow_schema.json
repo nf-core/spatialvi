@@ -230,12 +230,6 @@
                     "default": 1.0,
                     "description": "Scale of the UMAP embedding, where larger values spread points further away from each other.",
                     "fa_icon": "fas fa-hashtag"
-                },
-                "umap_n_components": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "The number of UMAP components to use.",
-                    "fa_icon": "fas fa-hashtag"
                 }
             }
         },

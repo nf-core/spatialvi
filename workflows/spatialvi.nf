@@ -44,7 +44,6 @@ workflow SPATIALVI {
     neighbours_n_pcs               // integer: Number of PCs to use for nearest neighbours
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
-    umap_n_components              // integer: Number of UMAP dimensions
     cluster_resolution             //   float: Spot clustering resolution
     cluster_key_added              //  string: Obs key where cluster labels are added
     rank_genes_group_by            //  string: Column name to group by for differential expression testing
@@ -132,7 +131,6 @@ workflow SPATIALVI {
         neighbours_n_pcs,
         umap_min_dist,
         umap_spread,
-        umap_n_components,
         cluster_resolution,
         cluster_key_added,
         rank_genes_group_by,
