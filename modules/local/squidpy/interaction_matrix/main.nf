@@ -6,6 +6,7 @@ process SQUIDPY_INTERACTION_MATRIX {
 
     input:
     tuple val(meta), path(adata)
+    val cluster_key
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,7 +17,6 @@ process SQUIDPY_INTERACTION_MATRIX {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_interaction_matrix"
-    cluster_key = task.ext.cluster_key ?: "clusters"
     template 'interaction_matrix.py'
 
     stub:

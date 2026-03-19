@@ -42,7 +42,6 @@ workflow SPATIALVI {
     pca_use_highly_variable        // boolean: Whether to only use highly variable genes for PCA
     n_neighbours                   // integer: Number of nearest neighbours to compute
     neighbours_n_pcs               // integer: Number of PCs to use for nearest neighbours
-    neighbours_use_rep             //  string: Representation to use for nearest neighbours
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
     umap_n_components              // integer: Number of UMAP dimensions
@@ -50,6 +49,9 @@ workflow SPATIALVI {
     cluster_key_added              //  string: Obs key where cluster labels are added
     rank_genes_group_by            //  string: Column name to group by for differential expression testing
     rank_genes_method              //  string: Method to use for differential expression testing
+    spatial_coord_type             //  string: Type of spatial coordinate system
+    spatial_n_neighbours           // integer: Number of spatial neighbourhoods
+    spatial_cluster_key            //  string: Obs key where spatial cluster labels are added
     svg_autocorr_method            //  string: Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
     merge_sdata                    // boolean: Whether to merge sdata or not
@@ -128,7 +130,6 @@ workflow SPATIALVI {
         pca_use_highly_variable,
         n_neighbours,
         neighbours_n_pcs,
-        neighbours_use_rep,
         umap_min_dist,
         umap_spread,
         umap_n_components,
@@ -136,6 +137,9 @@ workflow SPATIALVI {
         cluster_key_added,
         rank_genes_group_by,
         rank_genes_method,
+        spatial_coord_type,
+        spatial_n_neighbours,
+        spatial_cluster_key,
         svg_autocorr_method,
         n_top_svgs
     )

@@ -39,7 +39,6 @@ workflow DOWNSTREAM {
     pca_use_highly_variable // boolean: Whether to only use highly variable genes for PCA
     n_neighbours            // integer: Number of nearest neighbours to compute
     neighbours_n_pcs        // integer: Number of PCs to use for nearest neighbours
-    neighbours_use_rep      //  string: Representation to use for nearest neighbours
     umap_min_dist           //   float: Minimum distance between embedded points
     umap_spread             //   float: Scale of embedded points
     umap_n_components       // integer: Number of UMAP dimensions
@@ -47,6 +46,9 @@ workflow DOWNSTREAM {
     cluster_key_added       //  string: Obs key where cluster labels are added
     rank_genes_group_by     //  string: Column name to group by for differential expression testing
     rank_genes_method       //  string: Method to use for differential expression testing
+    spatial_coord_type      //  string: Type of spatial coordinate system
+    spatial_n_neighbours    // integer: Number of spatial neighbours to use
+    spatial_cluster_key     //  string: Obs key where spatial cluster labels are added
     svg_autocorr_method     //  string: Spatial autocorrelation method ('moran' or 'geary')
     n_top_svgs              // integer: Number of top spatially variable genes to report
 
@@ -141,7 +143,7 @@ workflow DOWNSTREAM {
         SCANPY_PCA.out.adata,
         n_neighbours,
         neighbours_n_pcs,
-        neighbours_use_rep,
+        '', // `use_rep`, Defaults to `X_pca` when n genes > 50, otherwise `.X`
     )
 
     //
@@ -168,7 +170,7 @@ workflow DOWNSTREAM {
     // =========================================================================
 
     //
-    // Differential expression analysis (rank genes by cluster)
+    // Spatial differential expression analysis (rank genes by cluster)
     //
     SCANPY_RANK_GENES_GROUPS (
         SCANPY_LEIDEN.out.adata,
@@ -177,24 +179,28 @@ workflow DOWNSTREAM {
     )
 
     //
-    // Spatial neighbors (for spatial analyses)
+    // Spatial neighbors
     //
     SQUIDPY_SPATIAL_NEIGHBORS (
-        SCANPY_RANK_GENES_GROUPS.out.adata
+        SCANPY_RANK_GENES_GROUPS.out.adata,
+        spatial_coord_type,
+        spatial_n_neighbours
     )
 
     //
-    // Neighborhood enrichment analysis
+    // Spatial neighbourhood enrichment analysis
     //
     SQUIDPY_NHOOD_ENRICHMENT (
-        SQUIDPY_SPATIAL_NEIGHBORS.out.adata
+        SQUIDPY_SPATIAL_NEIGHBORS.out.adata,
+        spatial_cluster_key
     )
 
     //
-    // Interaction matrix
+    // Spatial interaction matrix
     //
     SQUIDPY_INTERACTION_MATRIX (
-        SQUIDPY_NHOOD_ENRICHMENT.out.adata
+        SQUIDPY_NHOOD_ENRICHMENT.out.adata,
+        spatial_cluster_key
     )
 
     //

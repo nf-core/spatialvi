@@ -17,7 +17,7 @@ import anndata as ad
 input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
 coord_type = "${coord_type}"
-n_neighbors = int("${n_neighbors}")
+n_neighs = int("${n_neighs}")
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)
@@ -25,7 +25,7 @@ adata = ad.read_h5ad(input_adata)
 print(f"Computing spatial neighbors for: {input_adata}")
 print(f"Shape: {adata.shape}")
 print(f"Coord type: {coord_type}")
-print(f"Number of neighbors: {n_neighbors}")
+print(f"Number of neighbors: {n_neighs}")
 
 # Check if spatial coordinates exist
 if "spatial" not in adata.obsm:
@@ -35,7 +35,7 @@ if "spatial" not in adata.obsm:
 sq.gr.spatial_neighbors(
     adata,
     coord_type=coord_type,
-    n_neighs=n_neighbors
+    n_neighs=n_neighs
 )
 
 # Print summary

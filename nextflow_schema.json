@@ -79,9 +79,9 @@
             "properties": {
                 "hd_bin_size": {
                     "type": "integer",
-                    "description": "Bin size for Visium HD data. Only used for Visium HD. Allowed values: 2, 8, 16.",
-                    "enum": [2, 8, 16],
                     "default": 8,
+                    "enum": [2, 8, 16],
+                    "description": "Bin size for Visium HD data. Allowed values: 2, 8, 16.",
                     "fa_icon": "fas fa-expand"
                 }
             }
@@ -209,13 +209,6 @@
                     "default": "none",
                     "description": "The number of principal components to use for the nearest neighbours calculation.",
                     "fa_icon": "fas fa-hashtag"
-                },
-                "neighbours_use_rep": {
-                    "type": "string",
-                    "default": "none",
-                    "description": "The representation to use for the nearest neighbour calculation.",
-                    "help_text": "By default, uses `.X_pca` when there are 50 or more genes available, and uses `.X` otherwise.",
-                    "fa_icon": "fas fa-table"
                 }
             }
         },
@@ -285,27 +278,47 @@
                     "type": "string",
                     "default": "t-test",
                     "description": "Statistical method to use for differential expression testing.",
+                    "enum": ["logreg", "t-test", "t-test_overstim_var", "wilcoxon"],
                     "fa_icon": "fas fa-tag"
                 }
             }
         },
 
-        "svg_options": {
-            "title": "Spatially variable genes options",
+        "spatial_analysis_options": {
+            "title": "Spatial analysis options",
             "type": "object",
             "fa_icon": "fas fa-circle-nodes",
-            "description": "Options for determinig spatially variable genes.",
+            "description": "Options for the various spatial analyses performed by the pipeline.",
             "properties": {
+                "spatial_coord_type": {
+                    "type": "string",
+                    "default": "generic",
+                    "enum": ["generic", "grid"],
+                    "description": "The coordinate type to use for spatial neighbourhood enrichment.",
+                    "fa_icon": "fas fa-tag"
+                },
+                "spatial_n_neighbours": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Number of neighbourhoods to use for spatial neighbourhood enrichment.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "spatial_cluster_key": {
+                    "type": "string",
+                    "default": "clusters",
+                    "description": "Column name under which cluster labels are stored for spatial neighborhood enrichment and interaction matrices.",
+                    "fa_icon": "fas fa-tag"
+                },
                 "svg_autocorr_method": {
                     "type": "string",
                     "default": "moran",
-                    "description": "The method to use for spatially variable gene autocorrelation.",
                     "enum": ["moran", "geary"],
+                    "description": "The method to use for spatially variable gene autocorrelation.",
                     "fa_icon": "fas fa-tag"
                 },
                 "n_top_svgs": {
                     "type": "integer",
-                    "default": 14,
+                    "default": 15,
                     "description": "The number of top spatially variable genes to plot.",
                     "fa_icon": "fas fa-hashtag"
                 }
@@ -559,7 +572,7 @@
             "$ref": "#/$defs/rank_genes_groups_options"
         },
         {
-            "$ref": "#/$defs/svg_options"
+            "$ref": "#/$defs/spatial_analysis_options"
         },
         {
             "$ref": "#/$defs/aggregation_options"

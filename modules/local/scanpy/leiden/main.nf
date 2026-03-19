@@ -7,7 +7,7 @@ process SCANPY_LEIDEN {
     input:
     tuple val(meta), path(adata)
     val resolution
-    val cluster_key_added
+    val key_added
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata

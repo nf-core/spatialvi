@@ -6,8 +6,8 @@ process SCANPY_PCA {
 
     input:
     tuple val(meta), path(adata)
-    val n_principal_components
-    val pca_use_highly_variable
+    val n_pcs
+    val use_highly_variable
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata

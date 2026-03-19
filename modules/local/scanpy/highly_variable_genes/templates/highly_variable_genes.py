@@ -21,8 +21,8 @@ import numpy as np
 # Parameters from Nextflow
 input_adata = "${adata}"
 output_adata = "${prefix}" + ".h5ad"
-n_highly_variable_genes = int("${n_highly_variable_genes}")
-flavor = "${hvg_flavor}"
+n_highly_variable_genes = int("${n_hvgs}")
+flavor = "${flavor}"
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)

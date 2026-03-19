@@ -7,8 +7,8 @@ process SCANPY_NEIGHBORS {
     input:
     tuple val(meta), path(adata)
     val n_neighbors
-    val neighbours_n_pcs
-    val neighbours_use_rep
+    val n_pcs
+    val use_rep
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata

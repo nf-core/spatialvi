@@ -16,8 +16,8 @@ import anndata as ad
 # Parameters from Nextflow
 input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
-n_comps = int("${n_principal_components}")
-use_highly_variable = "${pca_use_highly_variable}".lower() == "true"
+n_comps = int("${n_pcs}")
+use_highly_variable = "${use_highly_variable}".lower() == "true"
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)

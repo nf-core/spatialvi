@@ -6,6 +6,8 @@ process SQUIDPY_SPATIAL_NEIGHBORS {
 
     input:
     tuple val(meta), path(adata)
+    val coord_type
+    val n_neighs
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,8 +18,6 @@ process SQUIDPY_SPATIAL_NEIGHBORS {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_spatial_neighbors"
-    coord_type = task.ext.coord_type ?: "generic"
-    n_neighbors = task.ext.n_neighbors ?: 6
     template 'spatial_neighbors.py'
 
     stub:

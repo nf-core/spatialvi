@@ -6,8 +6,8 @@ process SCANPY_HIGHLY_VARIABLE_GENES {
 
     input:
     tuple val(meta), path(adata)
-    val n_highly_variable_genes
-    val hvg_flavor
+    val n_hvgs
+    val flavor
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata

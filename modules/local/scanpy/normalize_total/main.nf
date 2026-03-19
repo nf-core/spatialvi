@@ -6,7 +6,7 @@ process SCANPY_NORMALIZE_TOTAL {
 
     input:
     tuple val(meta), path(adata)
-    val normalize_target_sum
+    val target_sum
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata

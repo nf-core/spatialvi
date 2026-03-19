@@ -6,6 +6,7 @@ process SQUIDPY_NHOOD_ENRICHMENT {
 
     input:
     tuple val(meta), path(adata)
+    val cluster_key
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,7 +17,6 @@ process SQUIDPY_NHOOD_ENRICHMENT {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_nhood_enrichment"
-    cluster_key = task.ext.cluster_key ?: "clusters"
     template 'nhood_enrichment.py'
 
     stub:

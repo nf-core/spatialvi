@@ -18,7 +18,6 @@ process SQUIDPY_SPATIAL_AUTOCORR {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}_spatial_autocorr"
-    n_top_genes = task.ext.n_top_genes ?: 50
     template 'spatial_autocorr.py'
 
     stub:

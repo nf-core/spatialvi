@@ -15,7 +15,7 @@ import anndata as ad
 # Parameters from Nextflow
 input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
-target_sum_str = "${normalize_target_sum}"
+target_sum_str = "${target_sum}"
 
 # Parse target_sum parameter
 if target_sum_str.lower() in ["null", "none", ""]:

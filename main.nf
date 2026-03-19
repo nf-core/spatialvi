@@ -47,7 +47,6 @@ workflow NFCORE_SPATIALVI {
     pca_use_highly_variable        // boolean: Whether to only use highly variable genes for PCA
     n_neighbours                   // integer: Number of nearest neighbours to compute
     neighbours_n_pcs               // integer: Number of PCs to use for nearest neighbours
-    neighbours_use_rep             //  string: Representation to use for nearest neighbours
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
     umap_n_components              // integer: Number of UMAP dimensions
@@ -55,6 +54,9 @@ workflow NFCORE_SPATIALVI {
     cluster_key_added              //  string: Obs key where cluster labels are added
     rank_genes_group_by            //  string: Column name to group by for differential expression testing
     rank_genes_method              //  string: Method to use for differential expression testing
+    spatial_coord_type             //  string: Type of spatial coordinate system
+    spatial_n_neighbours           // integer: Number of spatial neighbourhoods
+    spatial_cluster_key            //  string: Obs key where spatial cluster labels are added
     svg_autocorr_method            // string : Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
     merge_sdata                    // boolean: Whether to merge sdata or not
@@ -88,7 +90,6 @@ workflow NFCORE_SPATIALVI {
         pca_use_highly_variable,
         n_neighbours,
         neighbours_n_pcs,
-        neighbours_use_rep,
         umap_min_dist,
         umap_spread,
         umap_n_components,
@@ -96,6 +97,9 @@ workflow NFCORE_SPATIALVI {
         cluster_key_added,
         rank_genes_group_by,
         rank_genes_method,
+        spatial_coord_type,
+        spatial_n_neighbours,
+        spatial_cluster_key,
         svg_autocorr_method,
         n_top_svgs,
         merge_sdata,
@@ -154,7 +158,6 @@ workflow {
         params.pca_use_highly_variable,
         params.n_neighbours,
         params.neighbours_n_pcs,
-        params.neighbours_use_rep,
         params.umap_min_dist,
         params.umap_spread,
         params.umap_n_components,
@@ -162,6 +165,9 @@ workflow {
         params.cluster_key_added,
         params.rank_genes_group_by,
         params.rank_genes_method,
+        params.spatial_coord_type,
+        params.spatial_n_neighbours,
+        params.spatial_cluster_key,
         params.svg_autocorr_method,
         params.n_top_svgs,
         params.merge_sdata,

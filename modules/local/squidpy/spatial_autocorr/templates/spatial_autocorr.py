@@ -18,7 +18,6 @@ input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
 output_csv = "${prefix}_svg.csv"
 mode = "${mode}"
-n_top_genes = int("${n_top_genes}")
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)
@@ -26,7 +25,6 @@ adata = ad.read_h5ad(input_adata)
 print(f"Computing spatial autocorrelation for: {input_adata}")
 print(f"Shape: {adata.shape}")
 print(f"Mode: {mode}")
-print(f"Number of top genes to export: {n_top_genes}")
 
 # Check if spatial neighbors exist
 if "spatial_connectivities" not in adata.obsp:
@@ -51,10 +49,6 @@ else:
 
 # Get results dataframe
 svg_df = adata.uns[results_key]
-
-# Print top SVGs
-print(f"\\nTop {min(n_top_genes, len(svg_df))} spatially variable genes:")
-print(svg_df.head(n_top_genes).to_string())
 
 # Export to CSV
 svg_df.to_csv(output_csv)

@@ -12,8 +12,8 @@ import anndata as ad
 # Parameters from Nextflow
 input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
-groupby = "${rank_genes_group_by}"
-method = "${rank_genes_method}"
+groupby = "${groupby}"
+method = "${method}"
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)

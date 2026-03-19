@@ -6,8 +6,8 @@ process SCANPY_RANK_GENES_GROUPS {
 
     input:
     tuple val(meta), path(adata)
-    val rank_genes_group_by
-    val rank_genes_method
+    val groupby
+    val method
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
