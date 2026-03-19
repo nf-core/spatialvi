@@ -270,7 +270,7 @@
                 },
                 "rank_genes_method": {
                     "type": "string",
-                    "default": "t-test",
+                    "default": "wilcoxon",
                     "description": "Statistical method to use for differential expression testing.",
                     "enum": ["logreg", "t-test", "t-test_overstim_var", "wilcoxon"],
                     "fa_icon": "fas fa-tag"
