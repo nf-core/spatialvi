@@ -3,12 +3,14 @@
 //
 
 include { SDATA_MERGE                       } from "../../../modules/local/sdata/merge"
+include { SCANPY_SCANORAMA                  } from "../../../modules/local/scanpy/scanorama"
 include { QUARTONOTEBOOK as INTEGRATE_SDATA } from "../../../modules/nf-core/quartonotebook/main"
 
 workflow AGGREGATION {
 
     take:
     ch_sdata                       // channel: [ meta, zarr ]
+    ch_adata                       // channel: [ meta, h5ad ]
     merge_sdata                    // boolean: Whether to merge sdata or not
     integrate_sdata                // boolean: Whether to integrate sdata or not
     integration_cluster_resolution // float  : Integration cluster resolution
@@ -32,6 +34,19 @@ workflow AGGREGATION {
             ch_sdata_files.collect()
         )
         ch_merged_sdata = SDATA_MERGE.out.sdata
+    }
+
+    // Conditionally run integration
+    ch_integrated_sdata = channel.empty()
+    ch_integrated_adata = channel.empty()
+    if (integrate_sdata) {
+
+        //
+        // MODULE: Integration with Scanorama
+        //
+        SCANPY_SCANORAMA {
+            ch_adata.map { _meta, h5ad -> h5ad }.collect()
+        }
     }
 
     // //
@@ -71,7 +86,7 @@ workflow AGGREGATION {
     emit:
     merged_sdata     = ch_merged_sdata     // channel: [ zarr ]
 
-    // integrated_adata = ch_integrated_adata // channel: [ h5ad ]
-    // integrated_sdata = ch_integrated_sdata // channel: [ zarr ]
+    integrated_adata = ch_integrated_adata // channel: [ h5ad ]
+    integrated_sdata = ch_integrated_sdata // channel: [ zarr ]
 
 }
