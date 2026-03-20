@@ -78,7 +78,7 @@ def check_downstream_dir(input, hd_bin_size) {
 
     // Non-HD SpaceRanger output required files
     def classic_required_files = [
-        "raw_feature_bc_matrix.h5",
+        "filtered_feature_bc_matrix.h5",
         "tissue_positions.csv",
         "scalefactors_json.json",
         "tissue_hires_image.png",
@@ -87,16 +87,17 @@ def check_downstream_dir(input, hd_bin_size) {
     def dir_file_objs = file("${spaceranger_dir}/**")
     def classic_files_present = classic_required_files.every { f -> dir_file_objs*.name.contains(f) }
 
-    // Visium HD binned output required files (for specified bin size)
+    // Visium HD required files (for specified bin size)
+    def hd_bin_str = "square_${String.format('%03d', hd_bin_size)}um"
     def hd_required_files = [
-        "raw_feature_bc_matrix.h5",
-        "spatial/scalefactors_json.json",
-        "spatial/tissue_hires_image.png",
-        "spatial/tissue_lowres_image.png",
-        "spatial/tissue_positions.parquet"
+        "feature_slice.h5",
+        "binned_outputs/${hd_bin_str}/filtered_feature_bc_matrix.h5",
+        "binned_outputs/${hd_bin_str}/spatial/scalefactors_json.json",
+        "binned_outputs/${hd_bin_str}/spatial/tissue_hires_image.png",
+        "binned_outputs/${hd_bin_str}/spatial/tissue_lowres_image.png",
+        "binned_outputs/${hd_bin_str}/spatial/tissue_positions.parquet"
     ]
-    def hd_dir = file("${spaceranger_dir}/binned_outputs/square_${String.format('%03d', hd_bin_size)}um")
-    def hd_files_present = hd_required_files.every { f -> file("${hd_dir}/${f}").exists() }
+    def hd_files_present = hd_required_files.every { f -> file("${spaceranger_dir}/${f}").exists() }
 
     if (!(classic_files_present || hd_files_present)) {
         error "The specified spaceranger output directory for sample '${meta.id}' does not contain all required files for either classic Visium: ${classic_required_files.join(', ')} or Visium HD bin size ${hd_bin_size}: ${hd_required_files.join(', ')}."
