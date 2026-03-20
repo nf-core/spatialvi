@@ -243,13 +243,13 @@ workflow DOWNSTREAM {
     )
 
     emit:
-    // SpatialData output
-    sdata_svg          = ch_sdata_svg                       // channel: [ meta, zarr ]
+    // Final data outputs
+    sdata              = ch_sdata_svg                       // channel: [ meta, zarr ]
+    adata              = SQUIDPY_SPATIAL_AUTOCORR.out.adata // channel: [ meta, h5ad ]
 
-    // AnnData outputs (intermediate; useful for debugging)
+    // Intermediate AnnData outputs (useful for debugging)
     adata_qc           = SCANPY_FILTER.out.adata            // channel: [ meta, h5ad ]
     adata_clustered    = SCANPY_LEIDEN.out.adata            // channel: [ meta, h5ad ]
-    adata_svg          = SQUIDPY_SPATIAL_AUTOCORR.out.adata // channel: [ meta, h5ad ]
 
     // Filter statistics (for MultiQC)
     filter_stats       = SCANPY_FILTER.out.stats            // channel: [ meta, json ]

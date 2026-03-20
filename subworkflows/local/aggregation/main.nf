@@ -3,6 +3,9 @@
 //
 
 include { SDATA_MERGE                       } from "../../../modules/local/sdata/merge"
+include { SCANPY_NEIGHBORS                  } from '../../../modules/local/scanpy/neighbors/main'
+include { SCANPY_UMAP                       } from '../../../modules/local/scanpy/umap/main'
+include { SCANPY_LEIDEN                     } from '../../../modules/local/scanpy/leiden/main'
 include { SCANPY_SCANORAMA                  } from "../../../modules/local/scanpy/scanorama"
 include { QUARTONOTEBOOK as INTEGRATE_SDATA } from "../../../modules/nf-core/quartonotebook/main"
 
@@ -13,8 +16,12 @@ workflow AGGREGATION {
     ch_adata                       // channel: [ meta, h5ad ]
     merge_sdata                    // boolean: Whether to merge sdata or not
     integrate_sdata                // boolean: Whether to integrate sdata or not
-    integration_cluster_resolution // float  : Integration cluster resolution
-    integration_n_hvgs             // integer: Number of HVGs to use for integration
+    n_neighbours                   // integer: Number of nearest neighbours to compute
+    neighbours_n_pcs               // integer: Number of PCs to use for nearest neighbours
+    umap_min_dist                  //   float: Minimum distance between embedded points
+    umap_spread                    //   float: Scale of embedded points
+    integration_cluster_resolution //   float: Integration cluster resolution
+    cluster_key_added              //  string: Obs key where cluster labels are added
 
     main:
 
@@ -47,6 +54,37 @@ workflow AGGREGATION {
         SCANPY_SCANORAMA {
             ch_adata.map { _meta, h5ad -> h5ad }.collect()
         }
+        ch_integrated = SCANPY_SCANORAMA.out.adata
+            .map { h5ad -> [[id: h5ad.baseName], h5ad] }
+
+        //
+        // MODULE: Neighbourhood graph
+        //
+        SCANPY_NEIGHBORS (
+            ch_integrated,
+            n_neighbours,
+            neighbours_n_pcs,
+            'X_scanorama',
+        )
+
+        //
+        // MODULE: UMAP
+        //
+        SCANPY_UMAP (
+            SCANPY_NEIGHBORS.out.adata,
+            umap_min_dist,
+            umap_spread
+        )
+
+        //
+        // MODULE: Leiden clustering
+        //
+        integration_cluster_key_added = cluster_key_added + "_scanorama"
+        SCANPY_LEIDEN (
+            SCANPY_UMAP.out.adata,
+            integration_cluster_resolution,
+            integration_cluster_key_added
+        )
     }
 
     // //

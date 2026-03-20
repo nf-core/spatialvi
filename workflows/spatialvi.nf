@@ -147,11 +147,16 @@ workflow SPATIALVI {
     //
     if (merge_sdata || integrate_sdata) {
         AGGREGATION (
-            DOWNSTREAM.out.sdata_svg,
+            DOWNSTREAM.out.sdata,
+            DOWNSTREAM.out.adata,
             merge_sdata,
             integrate_sdata,
+            n_neighbours,
+            neighbours_n_pcs,
+            umap_min_dist,
+            umap_spread,
             integration_cluster_resolution,
-            integration_n_hvgs
+            cluster_key_added
         )
     }
 
@@ -235,9 +240,9 @@ workflow SPATIALVI {
     )
 
     emit:
-    // Final SpatialData outputs
+    // SpatialData outputs
     sdata_raw       = SDATA_READ_VISIUM.out.sdata      // channel: [ meta, zarr ]
-    sdata_svg       = DOWNSTREAM.out.sdata_svg         // channel: [ meta, zarr ]
+    sdata           = DOWNSTREAM.out.sdata             // channel: [ meta, zarr ]
 
     // Reports TODO
     //qc_html         = DOWNSTREAM.out.qc_html           // channel: [ meta, html ]
