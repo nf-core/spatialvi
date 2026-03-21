@@ -104,71 +104,15 @@ else:
 print(f"Using percent_top: {percent_top if percent_top else 'disabled'}")
 print(f"Using qc_vars: {qc_vars if qc_vars else 'none'}")
 
-
-def calculate_qc_manually(adata):
-    """
-    Manually calculate basic QC metrics when scanpy fails.
-    """
-    print("Calculating QC metrics manually...")
-
-    X = adata.X
-
-    # Basic obs metrics
-    adata.obs["total_counts"] = np.array(X.sum(axis=1)).flatten().astype(np.float64)
-    adata.obs["n_genes_by_counts"] = np.array((X > 0).sum(axis=1)).flatten().astype(np.int64)
-
-    # Basic var metrics
-    adata.var["total_counts"] = np.array(X.sum(axis=0)).flatten().astype(np.float64)
-    adata.var["n_cells_by_counts"] = np.array((X > 0).sum(axis=0)).flatten().astype(np.int64)
-    adata.var["mean_counts"] = np.array(X.mean(axis=0)).flatten().astype(np.float64)
-
-    # Calculate percentage for each gene type
-    total_counts = adata.obs["total_counts"].values
-    # Avoid division by zero
-    total_counts_safe = np.where(total_counts == 0, 1, total_counts)
-
-    for var_name in ["mt", "ribo", "hb"]:
-        if var_name in adata.var.columns:
-            var_mask = adata.var[var_name].values
-            if var_mask.sum() > 0:
-                var_counts = np.array(X[:, var_mask].sum(axis=1)).flatten().astype(np.float64)
-            else:
-                var_counts = np.zeros(adata.n_obs, dtype=np.float64)
-
-            adata.obs[f"total_counts_{var_name}"] = var_counts
-            pct = (var_counts / total_counts_safe * 100)
-            # Set to 0 where total_counts was 0
-            pct = np.where(total_counts == 0, 0.0, pct)
-            adata.obs[f"pct_counts_{var_name}"] = pct.astype(np.float64)
-        else:
-            adata.obs[f"total_counts_{var_name}"] = 0.0
-            adata.obs[f"pct_counts_{var_name}"] = 0.0
-
-    print("Manual QC calculation completed.")
-
-
-# Try scanpy's calculate_qc_metrics first
-try:
-    # scanpy requires qc_vars to be a list (can be empty) but not None
-    # percent_top can be None or empty list to disable
-    sc.pp.calculate_qc_metrics(
-        adata,
-        qc_vars=qc_vars if qc_vars else [],
-        percent_top=percent_top if percent_top else None,
-        inplace=True,
-        log1p=False
-    )
-    print("Scanpy QC calculation completed successfully.")
-
-except Exception as e:
-    print(f"WARNING: Scanpy QC calculation failed: {e}")
-    print("Falling back to manual calculation...")
-
-    try:
-        calculate_qc_manually(adata)
-    except Exception as e2:
-        print(f"ERROR: Manual QC calculation also failed: {e2}")
-        sys.exit(1)
+# scanpy requires qc_vars to be a list (can be empty) but not None
+# percent_top can be None or empty list to disable
+sc.pp.calculate_qc_metrics(
+    adata,
+    qc_vars=qc_vars if qc_vars else [],
+    percent_top=percent_top if percent_top else None,
+    inplace=True,
+    log1p=False
+)
 
 # Ensure all expected columns exist (add zeros if missing)
 for var_name in ["mt", "ribo", "hb"]:
