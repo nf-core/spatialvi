@@ -40,7 +40,6 @@ workflow DOWNSTREAM {
     umap_min_dist           //   float: Minimum distance between embedded points
     umap_spread             //   float: Scale of embedded points
     cluster_resolution      //   float: Spot clustering resolution
-    cluster_key_added       //  string: Obs key where cluster labels are added
     rank_genes_group_by     //  string: Column name to group by for differential expression testing
     rank_genes_method       //  string: Method to use for differential expression testing
     spatial_coord_type      //  string: Type of spatial coordinate system
@@ -136,29 +135,33 @@ workflow DOWNSTREAM {
     //
     // Neighbors graph (for UMAP and Leiden)
     //
+    use_rep = ''
     SCANPY_NEIGHBORS (
         SCANPY_PCA.out.adata,
         n_neighbours,
         neighbours_n_pcs,
-        '', // `use_rep`, Defaults to `X_pca` when n genes > 50, otherwise `.X`
+        use_rep
     )
 
     //
     // UMAP
     //
+    umap_key_added = 'X_umap'
     SCANPY_UMAP (
         SCANPY_NEIGHBORS.out.adata,
         umap_min_dist,
-        umap_spread
+        umap_spread,
+        umap_key_added
     )
 
     //
     // Leiden clustering
     //
+    leiden_key_added = 'clusters'
     SCANPY_LEIDEN (
         SCANPY_UMAP.out.adata,
         cluster_resolution,
-        cluster_key_added
+        leiden_key_added
     )
 
     // =========================================================================

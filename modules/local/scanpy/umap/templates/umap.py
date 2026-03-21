@@ -18,6 +18,7 @@ input_adata = "${adata}"
 output_adata = "${prefix}.h5ad"
 min_dist = float("${min_dist}")
 spread = float("${spread}")
+key_added = "${key_added}"
 
 # Read AnnData
 adata = ad.read_h5ad(input_adata)
@@ -34,7 +35,8 @@ if "neighbors" not in adata.uns:
 sc.tl.umap(
     adata,
     min_dist=min_dist,
-    spread=spread
+    spread=spread,
+    key_added=key_added
 )
 
 # Print summary

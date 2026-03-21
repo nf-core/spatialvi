@@ -57,8 +57,8 @@ workflow SPATIALVI {
     n_top_svgs                     // integer: Number of variable genes to plot
     merge_sdata                    // boolean: Whether to merge sdata or not
     integrate_sdata                // boolean: Whether to integrate sdata or not
+    integration_method             //  string: Integration method to use
     integration_cluster_resolution //   float: Integration cluster resolution
-    integration_n_hvgs             // integer: Number of HVGs to integrate with
     multiqc_config                 //    file: /path/to/multiqc/config
     multiqc_logo                   //    file: /path/to/multiqc/logo
     multiqc_methods_description    //    file: /path/to/multiqc/description
@@ -134,7 +134,6 @@ workflow SPATIALVI {
         umap_min_dist,
         umap_spread,
         cluster_resolution,
-        cluster_key_added,
         rank_genes_group_by,
         rank_genes_method,
         spatial_coord_type,
@@ -163,13 +162,12 @@ workflow SPATIALVI {
         INTEGRATION (
             ch_sdata_merged,
             ch_adata,
-            integrate_sdata,
+            integration_method,
             n_neighbours,
             neighbours_n_pcs,
             umap_min_dist,
             umap_spread,
-            integration_cluster_resolution,
-            cluster_key_added
+            integration_cluster_resolution
         )
     }
 

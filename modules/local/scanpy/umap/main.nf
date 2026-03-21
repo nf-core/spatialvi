@@ -6,8 +6,9 @@ process SCANPY_UMAP {
 
     input:
     tuple val(meta), path(adata, stageAs: "input.h5ad")
-    val(min_dist)
-    val(spread)
+    val min_dist
+    val spread
+    val key_added
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata

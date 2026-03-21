@@ -60,8 +60,8 @@ workflow NFCORE_SPATIALVI {
     n_top_svgs                     // integer: Number of variable genes to plot
     merge_sdata                    // boolean: Whether to merge sdata or not
     integrate_sdata                // boolean: Whether to integrate sdata or not
+    integration_method             //  string: Integration method to use
     integration_cluster_resolution //   float: Integration cluster resolution
-    integration_n_hvgs             // integer: Number of HVGs to integrate with
     multiqc_config                 //    file: /path/to/multiqc/config
     multiqc_logo                   //    file: /path/to/multiqc/logo
     multiqc_methods_description    //    file: /path/to/multiqc/description
@@ -102,8 +102,8 @@ workflow NFCORE_SPATIALVI {
         n_top_svgs,
         merge_sdata,
         integrate_sdata,
+        integration_method,
         integration_cluster_resolution,
-        integration_n_hvgs,
         multiqc_config,
         multiqc_logo,
         multiqc_methods_description,
@@ -169,8 +169,8 @@ workflow {
         params.n_top_svgs,
         params.merge_sdata,
         params.integrate_sdata,
+        params.integration_method,
         params.integration_cluster_resolution,
-        params.integration_n_hvgs,
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,
