@@ -6,11 +6,13 @@
 
 include { SDATA_READ_VISIUM      } from '../modules/local/sdata/read_visium/main'
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
+include { SDATA_MERGE            } from "../modules/local/sdata/merge"
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+
 include { INPUT_CHECK            } from '../subworkflows/local/input_check'
 include { SPACERANGER            } from '../subworkflows/local/spaceranger'
 include { DOWNSTREAM             } from '../subworkflows/local/downstream'
-include { AGGREGATION            } from '../subworkflows/local/aggregation'
+include { INTEGRATION            } from '../subworkflows/local/integration'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -141,15 +143,26 @@ workflow SPATIALVI {
         svg_autocorr_method,
         n_top_svgs
     )
+    ch_adata = DOWNSTREAM.out.adata
+
+    //
+    // MODULE: Merge per-sample SpatialData objects into one (optional)
+    //
+    ch_sdata_merged = channel.empty()
+    if (merge_sdata || integrate_sdata) {
+        SDATA_MERGE (
+            DOWNSTREAM.out.sdata.map { _meta, zarr -> return [zarr] }
+        )
+        ch_sdata_merged = SDATA_MERGE.out.sdata
+    }
 
     //
     // SUBWORKFLOW: Sample aggregation (optional)
     //
-    if (merge_sdata || integrate_sdata) {
-        AGGREGATION (
-            DOWNSTREAM.out.sdata,
-            DOWNSTREAM.out.adata,
-            merge_sdata,
+    if (integrate_sdata) {
+        INTEGRATION (
+            ch_sdata_merged,
+            ch_adata,
             integrate_sdata,
             n_neighbours,
             neighbours_n_pcs,

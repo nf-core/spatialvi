@@ -2,7 +2,6 @@
 // Subworkflow for aggregation of sample data
 //
 
-include { SDATA_MERGE                                          } from "../../../modules/local/sdata/merge"
 include { SCANPY_NEIGHBORS                                     } from '../../../modules/local/scanpy/neighbors/main'
 include { SCANPY_UMAP                                          } from '../../../modules/local/scanpy/umap/main'
 include { SCANPY_LEIDEN                                        } from '../../../modules/local/scanpy/leiden/main'
@@ -10,12 +9,11 @@ include { SCANPY_SCANORAMA                                     } from "../../../
 include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from '../../../modules/local/sdata/update_table/main'
 include { QUARTONOTEBOOK as REPORT_INTEGRATED                  } from "../../../modules/nf-core/quartonotebook/main"
 
-workflow AGGREGATION {
+workflow INTEGRATION {
 
     take:
-    ch_sdata                       // channel: [ meta, zarr ]
+    ch_sdata_merged                // channel: [ meta, zarr ]
     ch_adata                       // channel: [ meta, h5ad ]
-    merge_sdata                    // boolean: Whether to merge sdata or not
     integrate_sdata                // boolean: Whether to integrate sdata or not
     n_neighbours                   // integer: Number of nearest neighbours to compute
     neighbours_n_pcs               // integer: Number of PCs to use for nearest neighbours
@@ -25,20 +23,6 @@ workflow AGGREGATION {
     cluster_key_added              //  string: Obs key where cluster labels are added
 
     main:
-
-    // Get sdata files only
-    ch_sdata_files = ch_sdata.map { _meta, zarr -> return [zarr] }
-
-    //
-    // MODULE: Merge per-sample SpatialData objects into one
-    //
-    ch_sdata_merged = channel.empty()
-    if (merge_sdata || integrate_sdata) {
-        SDATA_MERGE (
-            ch_sdata_files.collect()
-        )
-        ch_sdata_merged = SDATA_MERGE.out.sdata
-    }
 
     // Conditionally run integration
     ch_sdata_integrated = channel.empty()
