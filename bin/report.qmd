@@ -18,18 +18,13 @@ n_top_svgs = 20
 artifact_dir = "artifacts"
 ```
 
-```{python import-modules}
-#| output: false
+```{python imports}
 # Disable OpenMP CPU topology detection for MacOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
-# Suppress warnings for cleaner output
-import warnings
-warnings.filterwarnings("ignore")
-
-# Create artefact directory
-os.makedirs(artifact_dir, exist_ok=True)
+import sys
+import importlib.metadata
 
 import numpy as np
 import pandas as pd
@@ -37,16 +32,17 @@ import scanpy as sc
 import squidpy as sq
 import spatialdata
 import matplotlib.pyplot as plt
-import sys
-import importlib.metadata
-from matplotlib import gridspec
 from IPython.display import display, Markdown
+# from matplotlib import gridspec
 
-# Suppress scanpy verbosity
-sc.settings.verbosity = 0
+# Create artefact directory
+os.makedirs(artifact_dir, exist_ok=True)
 
-# Set plotting defaults
-sc.settings.set_figure_params(dpi=100, facecolor='white', frameon=False)
+# # Suppress scanpy verbosity
+# sc.settings.verbosity = 0
+
+# # Set plotting defaults
+# sc.settings.set_figure_params(dpi=100, facecolor='white', frameon=False)
 ```
 
 ```{python common-functions}

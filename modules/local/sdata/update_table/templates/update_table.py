@@ -239,7 +239,7 @@ def main():
     # Template variables
     input_sdata = "${sdata}"
     input_adata = "${adata}"
-    output_sdata = "${prefix}" + "_updated.zarr"
+    output_sdata = "${prefix}.zarr"
     sample_id = "${meta.id}"
     library_key = "${library_key}"
 

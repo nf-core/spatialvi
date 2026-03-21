@@ -1,264 +1,174 @@
 ---
-title: "Data integration and batch correction"
+title: "Data integration"
 format:
-    nf-core-html: default
+    nf-core-html:
+        echo: false
+        warning: false
+lightbox: true
+execute:
+    keep-ipynb: true
 jupyter: python3
 ---
 
 # Introduction
 
-This report describes the integration and quality control processes for spatial
-data analysis using `scanpy`, `scanorama`, and `spatialdata`. After loading
-multiple datasets, we examine various covariates and perform data normalization
-and batch correction. Each dataset is first independently quality controlled
-before merging them into a single integrated dataset for downstream analysis.
+This report shows the results of the integration across all samples; you can
+find the reports for each individual sample in their respective directory under
+`<outdir>/<sample>`.
 
-```{python}
-# Import necessary packages
-import scanpy as sc
-import anndata as an
-import math
-import matplotlib.pyplot as plt
-import seaborn as sns
-import scanorama
-import spatialdata
-import os
-import glob
-import scipy.sparse as sp
-from matplotlib.legend import Legend
-```
-
-```{python}
-# Parameter cell
+```{python parameters}
 #| tags: [parameters]
-#| echo: false
-input_sdata = "merged_sdata.zarr"  # Input: SpatialData file
-cluster_resolution = 1  # Resolution for Leiden clustering
-n_hvgs = 2000  # Parameter: Number of HVGs to use for analyses
+input_adata = "integrated.h5ad"  # Input: H5AD file
+input_sdata = "integrated.zarr"  # Input: Zarr file
 artifact_dir = "artifacts" # Parameter: artifact directory
-output_sdata = "integrated_sdata.zarr"  # Output: Integrated SpatialData file
-output_adata = "integrated_adata.h5ad"  # Output: Integrated AnnData file
 ```
 
-```{python}
-# Setup and parameter configurations
-sc.set_figure_params(facecolor="white", figsize=(8, 8))
-sc.settings.verbosity = 3
+```{python imports}
+# Disable OpenMP CPU topology detection for MacOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+import anndata as an
+import matplotlib.pyplot as plt
+import scanorama
+import scanpy as sc
+import scipy.sparse as sp
+import seaborn as sns
+import spatialdata
+from IPython.display import display, Markdown
+
+# Create artefact directory
+os.makedirs(artifact_dir, exist_ok=True)
 ```
 
-# Load and Inspect Data
+```{python common-functions}
+def create_tabset(content):
+    """
+    Programmatically create tabsets with headers and plots.
 
-The data files are loaded from the file list.
-```{python}
-# Load all zarr SpatialData files
+    Arguments:
+        content (list): A list of (str, Figure) tuples
+    """
+    display(Markdown('::: {.panel-tabset}'))
+    for name, fig in content:
+        display(Markdown(f"#### {name}"))
+        display(fig)
+        plt.close()
+        display(Markdown(f" "))
+    display(Markdown(':::'))
+
+
+def save_figure(fig, filename, dpi=150):
+    """
+    Save figure to artefact directory.
+
+    Arguments:
+        fig (Figure): The figure object to be saved
+        filename (str): The file name to be used
+        dpi (int): The DPI to use
+    """
+    fig.savefig(
+        os.path.join(artifact_dir, filename),
+        dpi=dpi,
+        bbox_inches='tight'
+    )
+
+
+def display_table(table, hide_index=True, format_dict=None):
+    """
+    Display a data frame as a table with default styling with optional removal
+    of the axis and the functionality to supply formatting dictionary.
+
+    Arguments:
+        table (DataFrame): The data frame to be displayed
+        hide_index (boolean): Whether to hide the data frame index or not
+        format_dict (dict): A dictionary with column-specific formatting
+    """
+
+    # Default style with nf-core green hover and right alignment for all columns
+    # except the first one
+    styles = [
+        {'selector': 'tbody tr:hover', 'props': [('background-color', '#D5F6E4')]},
+        {'selector': 'td, th', 'props': [
+            ('text-align', 'right')
+        ]},
+        {'selector': 'td:first-child, th:first-child', 'props': [
+            ('text-align', 'left')
+        ]}
+    ]
+    styled = table.style.set_table_styles(styles)
+
+    if hide_index:
+        styled = styled.hide(axis='index')
+
+    if format_dict:
+        styled = styled.format(format_dict)
+
+    display(styled)
+```
+
+```{python load-data}
 sdata = spatialdata.read_zarr(input_sdata)
+adata = sc.read_h5ad(input_adata)
 ```
 
-# Highly Variable Genes Selection
+# UMAP
 
-Next, we select highly variable genes for each dataset. This step is essential to retain biologically meaningful genes and reduce noise.
-
-```{python}
-for table_name, adata in sdata.tables.items():
-    sc.pp.highly_variable_genes(adata, hvg_flavor="seurat", n_top_genes=n_hvgs, inplace=True)
-```
-
-# Data Integration
-
-To prepare for batch correction, we first convert the data matrices to a sparse format, making them compatible with downstream processing in `scanorama`.
-
-```{python}
-for name, adata in sdata.tables.items():
-    adata.X = sp.csr_matrix(adata.X)
-    adata.var_names_make_unique()
-    adata.obs["library_id"] = name
-```
-
-# Batch Correction
-
-Using `scanorama`, we perform batch correction to minimize differences between datasets.
-
-```{python}
-# List of AnnData tables from each dataset
-adatas = list(sdata.tables.values())
-# Perform batch correction
-adatas_corrected = scanorama.correct_scanpy(adatas, return_dimred=True)
-```
-
-# Data Concatenation
-
-After correction, we concatenate the datasets into a single `AnnData` object for integrated analysis.
-
-```{python}
-adata_integrated = sc.concat(
-    adatas_corrected,
-    label="library_id",
-    uns_merge="unique",
-    keys=sdata.tables.keys(),
-    index_unique="-"
-)
-adata_integrated
-```
-
-# Dimensionality Reduction
-
-We perform dimensionality reduction to visualize the data.
-We compare the UMAP plots before and after batch correction.
-
-```{python}
-# Create a figure with two subplots
-fig, axes = plt.subplots(1, 2, figsize=(12, 6), sharex=True, sharey=True)
-adata_integrated_copy = adata_integrated.copy()
-# Compute neighbors and UMAP before integration
-sc.pp.neighbors(adata_integrated_copy)
-sc.tl.umap(adata_integrated_copy)
-
-# Plot UMAP before integration
-sc.pl.umap(
-    adata_integrated_copy,
-    color=["library_id"],
-    palette=sc.pl.palettes.default_20,
-    ax=axes[0],
-    show=False,
-    legend_loc=None,  # Disable the individual legend
-)
-axes[0].set_title("Before integration")
-
-# Compute neighbors and UMAP after integration
-sc.pp.neighbors(adata_integrated, use_rep="X_scanorama")
-sc.tl.umap(adata_integrated)
-
-# Plot UMAP after integration
-sc.pl.umap(
-    adata_integrated,
-    color=["library_id"],
-    palette=sc.pl.palettes.default_20,
-    ax=axes[1],
-    show=False,
-    legend_loc=None,  # Disable the individual legend
-)
-axes[1].set_title("After integration")
-
-# Add a shared legend at the bottom
-# Extract unique categories and colors from "library_id"
-library_ids = adata_integrated.obs["library_id"].cat.categories
-colors = sc.pl.palettes.default_20[:len(library_ids)]
-
-# Create custom legend elements
-legend_elements = [
-    plt.Line2D([0], [0], marker="o", color=color, linestyle="", markersize=8, label=lib_id)
-    for lib_id, color in zip(library_ids, colors)
+```{python umap}
+#| output: false
+# Check which QC columns are available
+qc_metrics_map = [
+    ('total_counts', 'Total counts'),
+    ('n_genes_by_counts', 'Genes per spot'),
+    ('pct_counts_mt', 'Mito %'),
+    ('pct_counts_ribo', 'Ribo %'),
+    ('pct_counts_hb', 'Hb %'),
 ]
+qc_metrics = [(col, label) for col, label in qc_metrics_map if col in adata.obs]
 
-# Add the legend to the figure
-fig.legend(
-    handles=legend_elements,
-    loc="lower center",
-    ncol=len(library_ids) // 2,  # Adjust columns based on the number of categories
-    bbox_to_anchor=(0.5, -0.05),  # Position the legend outside the plot
-    frameon=False,
-)
-
-# Adjust layout and display the figure
-plt.tight_layout(rect=[0, 0.1, 1, 1])  # Leave space for the legend
-plt.show()
+# Plot and save to a list for later tabset display
+umap_plots = []
+umap_metrics = [('clusters', 'Clusters')] + qc_metrics
+for col, label in umap_metrics:
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.umap(adata, color=col, ax=ax, show=False)
+    umap_plots.append((label, fig))
+    save_figure(fig, f'umap-{col}.png')
 ```
 
-# Clustering
-
-We perform clustering on the integrated dataset. Principal
-Component Analysis (PCA) is applied to reduce dimensionality. The Leiden
-algorithm is employed for clustering with a given resolution.
-
-```{python}
-sc.pp.pca(adata_integrated)
-sc.pp.neighbors(adata_integrated)
-sc.tl.leiden(adata_integrated, key_added="clusters", resolution=cluster_resolution)
-```
-
-We compare the clusters of the integrated samples before and after batch correction.
-
-```{python}
-# Plot UMAP after integration
-sc.pl.umap(
-    adata_integrated,
-    color=["clusters"],
-    palette=sc.pl.palettes.godsnot_102
-)
+```{python umap-tabset}
+#| output: asis
+create_tabset(umap_plots)
 ```
 
 # Spatial Visualization
 
-Finally, we visualize the spatial distribution of clusters on the tissue image of all samples.
-
-```{python}
-# We have N samples, we will create a 2xN/2 grid of plots
-n_samples = len(sdata.tables)
-n_cols = math.ceil(n_samples / 2)
-n_rows = 2
-
-# Create a figure with subplots
-fig, axes = plt.subplots(n_rows, n_cols, figsize=(4 * n_cols, 4 * n_rows))
-
-# Flatten the axes for easier indexing
-axes = axes.flatten()
-
-# Plot spatial distribution of clusters for each sample
-for i, (table_name, adata) in enumerate(sdata.tables.items()):
-    sample_name = table_name.replace("_table", "")
-    sc.pl.spatial(
-        adata_integrated[adata_integrated.obs["library_id"] == table_name],
-        img_key="hires",
-        library_id=f"{sample_name}_hires_image",
-        color="clusters",
-        size=1.25,
-        ax=axes[i],
-        show=False,
-        legend_loc=None,  # Disable the individual legend
+```{python spatial-distribution}
+#| output: false
+spatial_plots = []
+batch_key = "library_id"
+cluster_key = "clusters_scanorama"
+for sample_id in adata.obs[batch_key].unique():
+    # Clean sample names for correct image referencing
+    sample_id_clean = "".join(
+        c for c in sample_id if c.isalnum() or c in ["_", "-"]
     )
-    axes[i].set_title(f"Sample: {sample_name}")
-
-# Hide any remaining axes
-for j in range(i + 1, len(axes)):
-    axes[j].axis("off")
-
-# Add a shared legend at the bottom
-# Extract unique categories and colors from "library_id"
-library_ids = adata_integrated.obs["clusters"].cat.categories
-colors = sc.pl.palettes.godsnot_102[:len(library_ids)]
-
-# Create custom legend elements
-legend_elements = [
-    plt.Line2D([0], [0], marker="o", color=color, linestyle="", markersize=8, label=lib_id)
-    for lib_id, color in zip(library_ids, colors)
-]
-
-# Add the legend to the figure
-fig.legend(
-    handles=legend_elements,
-    loc="lower center",
-    ncol=len(library_ids) // 3,  # Adjust columns based on the number of categories
-    bbox_to_anchor=(0.5, -0.15),  # Position the legend outside the plot
-    frameon=False,
-)
-
-# Adjust layout and display the figure
-plt.tight_layout()
-plt.show()
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.spatial(
+        adata[adata.obs[batch_key] == sample_id],
+        img_key="hires",
+        library_id=f"{sample_id_clean}_hires_image",
+        color=cluster_key,
+        size=1.25,
+        ax=ax,
+        show=False
+    )
+    fig = plt.gcf()
+    spatial_plots.append((sample_id, fig))
+    save_figure(fig, f'spatial-{sample_id}.png')
 ```
 
-# Save Integrated Data
-
-Finally, we save the integrated data to a `zarr` file for downstream analysis.
-
-```{python}
-# We push back the integrated data to the SpatialData object
-for i, table_name in enumerate(sdata.tables.keys()):
-    sdata.tables[table_name].obsm["X_scanorama"] = adatas_corrected[i].obsm["X_scanorama"]
-    sdata.tables[table_name].obsm["X_umap"] = adatas_corrected[i].obsm["X_umap"]
-    sdata.tables[table_name].obs["clusters"] = adatas_corrected[i].obs["clusters"]
-
-# Save the integrated data
-sdata.write(os.path.join(artifact_dir, output_sdata))
-adata_integrated.write(os.path.join(artifact_dir, output_adata))
+```{python spatial-distribution-tabset}
+#| output: asis
+create_tabset(spatial_plots)
 ```

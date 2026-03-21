@@ -26,27 +26,23 @@ workflow AGGREGATION {
 
     main:
 
-    // // Quarto report and extensions files
-    // integration_notebook = file("${projectDir}/bin/integration.qmd", checkIfExists: true)
-    // extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
-
     // Get sdata files only
     ch_sdata_files = ch_sdata.map { _meta, zarr -> return [zarr] }
 
     //
     // MODULE: Merge per-sample SpatialData objects into one
     //
-    ch_merged_sdata = channel.empty()
+    ch_sdata_merged = channel.empty()
     if (merge_sdata || integrate_sdata) {
         SDATA_MERGE (
             ch_sdata_files.collect()
         )
-        ch_merged_sdata = SDATA_MERGE.out.sdata
+        ch_sdata_merged = SDATA_MERGE.out.sdata
     }
 
     // Conditionally run integration
-    ch_integrated_sdata = channel.empty()
-    ch_integrated_adata = channel.empty()
+    ch_sdata_integrated = channel.empty()
+    ch_adata_integrated = channel.empty()
     if (integrate_sdata) {
 
         //
@@ -86,60 +82,46 @@ workflow AGGREGATION {
             integration_cluster_resolution,
             integration_cluster_key_added
         )
-        ch_integrated_adata = SCANPY_LEIDEN.out.adata
+        ch_adata_integrated = SCANPY_LEIDEN.out.adata
+            .map { _meta, h5ad -> h5ad }
 
         //
         // MODULE: Update SpatialData tables
         //
-        ch_sdata_adata = ch_merged_sdata
+        ch_sdata_adata = ch_sdata_merged
             .map { zarr -> [[id: "integrated"], zarr]}
             .join(SCANPY_LEIDEN.out.adata)
         SDATA_UPDATE_TABLE (
             ch_sdata_adata,
             'library_id'
         )
-        ch_sdata = SDATA_UPDATE_TABLE.out.sdata
+        ch_sdata_integrated = SDATA_UPDATE_TABLE.out.sdata
+
+        //
+        // MODULE: Aggregate and integrate per-sample SpatialData
+        //
+        integration_notebook = file("${projectDir}/bin/integration.qmd", checkIfExists: true)
+        extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
+        integration_params = [
+            input_adata: "integrated.h5ad",
+            input_sdata: "integrated.zarr",
+            artifact_dir: "artifacts",
+        ]
+        integration_inputs = ch_sdata_integrated
+            .map { _meta, zarr -> zarr }
+            .mix(ch_adata_integrated)
+            .collect()
+        INTEGRATE_SDATA (
+            [[id:"integration"], integration_notebook],
+            integration_params,
+            integration_inputs,
+            extensions
+        )
 
     }
 
-    // //
-    // // MODULE: Aggregate and integrate per-sample SpatialData
-    // //
-    // ch_integrated_sdata = channel.empty()
-    // ch_integrated_adata = channel.empty()
-    // if (integrate_sdata) {
-    //     integration_params = [
-    //         input_sdata: "merged_sdata.zarr",
-    //         cluster_resolution: integration_cluster_resolution,
-    //         n_hvgs: integration_n_hvgs,
-    //         artifact_dir: "artifacts",
-    //         output_adata: "integrated_adata.h5ad",
-    //         output_sdata: "integrated_sdata.zarr"
-    //     ]
-    //     INTEGRATE_SDATA (
-    //         [[id:"integration"], integration_notebook],
-    //         integration_params,
-    //         ch_merged_sdata,
-    //         extensions
-    //     )
-    //     ch_integration_artifacts = INTEGRATE_SDATA.out.artifacts
-    //         .map {
-    //             _meta, artifacts ->
-    //             return [artifacts]
-    //         }
-    //         .flatten ( )
-    //         .branch { it ->
-    //             adata: it[1].name.endsWith('.h5ad')
-    //             sdata: it[1].name.endsWith('.zarr')
-    //         }
-    //     ch_integrated_adata = ch_integration_artifacts.adata
-    //     ch_integrated_sdata = ch_integration_artifacts.sdata
-    // }
-
     emit:
-    merged_sdata     = ch_merged_sdata     // channel: [ zarr ]
-
-    integrated_adata = ch_integrated_adata // channel: [ h5ad ]
-    integrated_sdata = ch_integrated_sdata // channel: [ zarr ]
-
+    sdata            = ch_sdata_integrated // channel: [ zarr ]
+    sdata_merged     = ch_sdata_merged     // channel: [ zarr ]
+    adata            = ch_adata_integrated // channel: [ h5ad ]
 }
