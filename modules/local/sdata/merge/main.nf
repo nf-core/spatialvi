@@ -7,18 +7,18 @@ process SDATA_MERGE {
     path(sdata, stageAs: "?/*")
 
     output:
-    path("sdata_merged.zarr"), emit: sdata
-    path "versions.yml"      , emit: versions, topic: versions
+    path("${prefix}.zarr"), emit: sdata
+    path "versions.yml"   , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "sdata_merged"
+    prefix = task.ext.prefix ?: "merged"
     template 'merge.py'
 
     stub:
-    prefix = task.ext.prefix ?: "sdata_merged"
+    prefix = task.ext.prefix ?: "merged"
     """
     touch ${prefix}.zarr
     touch versions.yml

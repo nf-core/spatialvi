@@ -2,13 +2,13 @@
 // Subworkflow for aggregation of sample data
 //
 
-include { SDATA_MERGE                         } from "../../../modules/local/sdata/merge"
-include { SCANPY_NEIGHBORS                    } from '../../../modules/local/scanpy/neighbors/main'
-include { SCANPY_UMAP                         } from '../../../modules/local/scanpy/umap/main'
-include { SCANPY_LEIDEN                       } from '../../../modules/local/scanpy/leiden/main'
-include { SCANPY_SCANORAMA                    } from "../../../modules/local/scanpy/scanorama"
-include { SDATA_UPDATE_TABLE                  } from '../../../modules/local/sdata/update_table/main'
-include { QUARTONOTEBOOK as REPORT_INTEGRATED } from "../../../modules/nf-core/quartonotebook/main"
+include { SDATA_MERGE                                          } from "../../../modules/local/sdata/merge"
+include { SCANPY_NEIGHBORS                                     } from '../../../modules/local/scanpy/neighbors/main'
+include { SCANPY_UMAP                                          } from '../../../modules/local/scanpy/umap/main'
+include { SCANPY_LEIDEN                                        } from '../../../modules/local/scanpy/leiden/main'
+include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
+include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from '../../../modules/local/sdata/update_table/main'
+include { QUARTONOTEBOOK as REPORT_INTEGRATED                  } from "../../../modules/nf-core/quartonotebook/main"
 
 workflow AGGREGATION {
 
@@ -91,11 +91,11 @@ workflow AGGREGATION {
         ch_sdata_adata = ch_sdata_merged
             .map  { zarr -> [[id: "integrated"], zarr]}
             .join ( SCANPY_LEIDEN.out.adata )
-        SDATA_UPDATE_TABLE (
+        SDATA_UPDATE_TABLE_INTEGRATION (
             ch_sdata_adata,
             'library_id'
         )
-        ch_sdata_integrated = SDATA_UPDATE_TABLE.out.sdata
+        ch_sdata_integrated = SDATA_UPDATE_TABLE_INTEGRATION.out.sdata
 
         //
         // MODULE: Aggregate and integrate per-sample SpatialData
