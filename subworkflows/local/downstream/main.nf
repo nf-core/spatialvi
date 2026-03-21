@@ -2,25 +2,23 @@
 // Subworkflow for downstream analyses of ST data
 //
 
-include { QUARTONOTEBOOK as REPORT                            } from '../../../modules/nf-core/quartonotebook/main'
-include { SCANPY_CALCULATE_QC_METRICS                         } from '../../../modules/local/scanpy/calculate_qc_metrics/main'
-include { SCANPY_FILTER                                       } from '../../../modules/local/scanpy/filter/main'
-include { SCANPY_HIGHLY_VARIABLE_GENES                        } from '../../../modules/local/scanpy/highly_variable_genes/main'
-include { SCANPY_LEIDEN                                       } from '../../../modules/local/scanpy/leiden/main'
-include { SCANPY_LOG1P                                        } from '../../../modules/local/scanpy/log1p/main'
-include { SCANPY_NEIGHBORS                                    } from '../../../modules/local/scanpy/neighbors/main'
-include { SCANPY_NORMALIZE_TOTAL                              } from '../../../modules/local/scanpy/normalize_total/main'
-include { SCANPY_PCA                                          } from '../../../modules/local/scanpy/pca/main'
-include { SCANPY_RANK_GENES_GROUPS                            } from '../../../modules/local/scanpy/rank_genes_groups/main'
-include { SCANPY_UMAP                                         } from '../../../modules/local/scanpy/umap/main'
-include { SDATA_TO_LEGACY_ANNDATA                             } from '../../../modules/local/sdata/to_legacy_anndata/main'
-include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_CLUSTERING } from '../../../modules/local/sdata/update_table/main'
-include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_QC         } from '../../../modules/local/sdata/update_table/main'
-include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_SVG        } from '../../../modules/local/sdata/update_table/main'
-include { SQUIDPY_INTERACTION_MATRIX                          } from '../../../modules/local/squidpy/interaction_matrix/main'
-include { SQUIDPY_NHOOD_ENRICHMENT                            } from '../../../modules/local/squidpy/nhood_enrichment/main'
-include { SQUIDPY_SPATIAL_AUTOCORR                            } from '../../../modules/local/squidpy/spatial_autocorr/main'
-include { SQUIDPY_SPATIAL_NEIGHBORS                           } from '../../../modules/local/squidpy/spatial_neighbors/main'
+include { QUARTONOTEBOOK as REPORT     } from '../../../modules/nf-core/quartonotebook/main'
+include { SCANPY_CALCULATE_QC_METRICS  } from '../../../modules/local/scanpy/calculate_qc_metrics/main'
+include { SCANPY_FILTER                } from '../../../modules/local/scanpy/filter/main'
+include { SCANPY_HIGHLY_VARIABLE_GENES } from '../../../modules/local/scanpy/highly_variable_genes/main'
+include { SCANPY_LEIDEN                } from '../../../modules/local/scanpy/leiden/main'
+include { SCANPY_LOG1P                 } from '../../../modules/local/scanpy/log1p/main'
+include { SCANPY_NEIGHBORS             } from '../../../modules/local/scanpy/neighbors/main'
+include { SCANPY_NORMALIZE_TOTAL       } from '../../../modules/local/scanpy/normalize_total/main'
+include { SCANPY_PCA                   } from '../../../modules/local/scanpy/pca/main'
+include { SCANPY_RANK_GENES_GROUPS     } from '../../../modules/local/scanpy/rank_genes_groups/main'
+include { SCANPY_UMAP                  } from '../../../modules/local/scanpy/umap/main'
+include { SDATA_TO_LEGACY_ANNDATA      } from '../../../modules/local/sdata/to_legacy_anndata/main'
+include { SDATA_UPDATE_TABLE           } from '../../../modules/local/sdata/update_table/main'
+include { SQUIDPY_INTERACTION_MATRIX   } from '../../../modules/local/squidpy/interaction_matrix/main'
+include { SQUIDPY_NHOOD_ENRICHMENT     } from '../../../modules/local/squidpy/nhood_enrichment/main'
+include { SQUIDPY_SPATIAL_AUTOCORR     } from '../../../modules/local/squidpy/spatial_autocorr/main'
+include { SQUIDPY_SPATIAL_NEIGHBORS    } from '../../../modules/local/squidpy/spatial_neighbors/main'
 
 workflow DOWNSTREAM {
 
@@ -212,10 +210,11 @@ workflow DOWNSTREAM {
     //
     // Update SpatialData with SVG results (final checkpoint)
     //
-    SDATA_UPDATE_TABLE_SVG (
-        ch_sdata_raw.join(SQUIDPY_SPATIAL_AUTOCORR.out.adata)
+    SDATA_UPDATE_TABLE (
+        ch_sdata_raw.join(SQUIDPY_SPATIAL_AUTOCORR.out.adata),
+        ''
     )
-    ch_sdata_svg = SDATA_UPDATE_TABLE_SVG.out.sdata
+    ch_sdata_svg = SDATA_UPDATE_TABLE.out.sdata
 
     // =========================================================================
     // REPORT

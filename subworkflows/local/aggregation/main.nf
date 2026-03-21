@@ -7,6 +7,7 @@ include { SCANPY_NEIGHBORS                  } from '../../../modules/local/scanp
 include { SCANPY_UMAP                       } from '../../../modules/local/scanpy/umap/main'
 include { SCANPY_LEIDEN                     } from '../../../modules/local/scanpy/leiden/main'
 include { SCANPY_SCANORAMA                  } from "../../../modules/local/scanpy/scanorama"
+include { SDATA_UPDATE_TABLE                } from '../../../modules/local/sdata/update_table/main'
 include { QUARTONOTEBOOK as INTEGRATE_SDATA } from "../../../modules/nf-core/quartonotebook/main"
 
 workflow AGGREGATION {
@@ -85,6 +86,20 @@ workflow AGGREGATION {
             integration_cluster_resolution,
             integration_cluster_key_added
         )
+        ch_integrated_adata = SCANPY_LEIDEN.out.adata
+
+        //
+        // MODULE: Update SpatialData tables
+        //
+        ch_sdata_adata = ch_merged_sdata
+            .map { zarr -> [[id: "integrated"], zarr]}
+            .join(SCANPY_LEIDEN.out.adata)
+        SDATA_UPDATE_TABLE (
+            ch_sdata_adata,
+            'library_id'
+        )
+        ch_sdata = SDATA_UPDATE_TABLE.out.sdata
+
     }
 
     // //

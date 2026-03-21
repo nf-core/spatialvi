@@ -6,6 +6,7 @@ process SDATA_UPDATE_TABLE {
 
     input:
     tuple val(meta), path(sdata), path(adata)
+    val library_key
 
     output:
     tuple val(meta), path("${prefix}_updated.zarr"), emit: sdata
