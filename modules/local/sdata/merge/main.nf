@@ -1,5 +1,5 @@
 process SDATA_MERGE {
-    tag 'merged'
+    tag "${prefix}"
     label 'process_low'
 
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"

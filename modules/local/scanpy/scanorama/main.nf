@@ -1,4 +1,5 @@
 process SCANPY_SCANORAMA {
+    tag "${prefix}"
     label 'process_medium'
 
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
