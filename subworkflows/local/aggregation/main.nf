@@ -2,13 +2,13 @@
 // Subworkflow for aggregation of sample data
 //
 
-include { SDATA_MERGE                       } from "../../../modules/local/sdata/merge"
-include { SCANPY_NEIGHBORS                  } from '../../../modules/local/scanpy/neighbors/main'
-include { SCANPY_UMAP                       } from '../../../modules/local/scanpy/umap/main'
-include { SCANPY_LEIDEN                     } from '../../../modules/local/scanpy/leiden/main'
-include { SCANPY_SCANORAMA                  } from "../../../modules/local/scanpy/scanorama"
-include { SDATA_UPDATE_TABLE                } from '../../../modules/local/sdata/update_table/main'
-include { QUARTONOTEBOOK as INTEGRATE_SDATA } from "../../../modules/nf-core/quartonotebook/main"
+include { SDATA_MERGE                         } from "../../../modules/local/sdata/merge"
+include { SCANPY_NEIGHBORS                    } from '../../../modules/local/scanpy/neighbors/main'
+include { SCANPY_UMAP                         } from '../../../modules/local/scanpy/umap/main'
+include { SCANPY_LEIDEN                       } from '../../../modules/local/scanpy/leiden/main'
+include { SCANPY_SCANORAMA                    } from "../../../modules/local/scanpy/scanorama"
+include { SDATA_UPDATE_TABLE                  } from '../../../modules/local/sdata/update_table/main'
+include { QUARTONOTEBOOK as REPORT_INTEGRATED } from "../../../modules/nf-core/quartonotebook/main"
 
 workflow AGGREGATION {
 
@@ -52,7 +52,7 @@ workflow AGGREGATION {
             ch_adata.map { _meta, h5ad -> h5ad }.collect()
         }
         ch_integrated = SCANPY_SCANORAMA.out.adata
-            .map { h5ad -> [[id: h5ad.baseName], h5ad] }
+            .map { h5ad -> [[id: "integrated"], h5ad] }
 
         //
         // MODULE: Neighbourhood graph
@@ -89,8 +89,8 @@ workflow AGGREGATION {
         // MODULE: Update SpatialData tables
         //
         ch_sdata_adata = ch_sdata_merged
-            .map { zarr -> [[id: "integrated"], zarr]}
-            .join(SCANPY_LEIDEN.out.adata)
+            .map  { zarr -> [[id: "integrated"], zarr]}
+            .join ( SCANPY_LEIDEN.out.adata )
         SDATA_UPDATE_TABLE (
             ch_sdata_adata,
             'library_id'
@@ -100,7 +100,7 @@ workflow AGGREGATION {
         //
         // MODULE: Aggregate and integrate per-sample SpatialData
         //
-        integration_notebook = file("${projectDir}/bin/integration.qmd", checkIfExists: true)
+        integration_notebook = file("${projectDir}/bin/report-integrated.qmd", checkIfExists: true)
         extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
         integration_params = [
             input_adata: "integrated.h5ad",
@@ -109,10 +109,10 @@ workflow AGGREGATION {
         ]
         integration_inputs = ch_sdata_integrated
             .map { _meta, zarr -> zarr }
-            .mix(ch_adata_integrated)
+            .mix ( ch_adata_integrated )
             .collect()
-        INTEGRATE_SDATA (
-            [[id:"integration"], integration_notebook],
+        REPORT_INTEGRATED (
+            [[id: "integrated"], integration_notebook],
             integration_params,
             integration_inputs,
             extensions
