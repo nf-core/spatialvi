@@ -20,6 +20,8 @@ find the reports for each individual sample in their respective directory under
 #| tags: [parameters]
 input_adata = "integrated.h5ad"  # Input: H5AD file
 input_sdata = "integrated.zarr"  # Input: Zarr file
+sample_col = "library_id" # Parameter: obs column with sample names
+cluster_col = "clusters_scanorama" # Parameter: obs column with cluster names
 artifact_dir = "artifacts" # Parameter: artifact directory
 ```
 
@@ -128,7 +130,7 @@ qc_metrics = [(col, label) for col, label in qc_metrics_map if col in adata.obs]
 
 # Plot and save to a list for later tabset display
 umap_plots = []
-umap_metrics = [('clusters', 'Clusters')] + qc_metrics
+umap_metrics = [('clusters', 'Clusters')] + [(sample_col, 'Sample')] + qc_metrics
 for col, label in umap_metrics:
     fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
     sc.pl.umap(adata, color=col, ax=ax, show=False)
@@ -146,19 +148,17 @@ create_tabset(umap_plots)
 ```{python spatial-distribution}
 #| output: false
 spatial_plots = []
-batch_key = "library_id"
-cluster_key = "clusters_scanorama"
-for sample_id in adata.obs[batch_key].unique():
+for sample_id in adata.obs[sample_col].unique():
     # Clean sample names for correct image referencing
     sample_id_clean = "".join(
         c for c in sample_id if c.isalnum() or c in ["_", "-"]
     )
     fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
     sc.pl.spatial(
-        adata[adata.obs[batch_key] == sample_id],
+        adata[adata.obs[sample_col] == sample_id],
         img_key="hires",
         library_id=f"{sample_id_clean}_hires_image",
-        color=cluster_key,
+        color=cluster_col,
         size=1.25,
         ax=ax,
         show=False
