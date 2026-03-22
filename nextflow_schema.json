@@ -337,8 +337,8 @@
                 },
                 "integration_method": {
                     "type": "string",
-                    "default": "scanorama",
-                    "enum": ["scanorama"],
+                    "default": "harmony",
+                    "enum": ["harmony", "scanorama"],
                     "description": "The integration method to use",
                     "fa_icon": "fas fa-tag"
                 },

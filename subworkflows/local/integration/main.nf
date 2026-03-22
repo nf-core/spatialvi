@@ -2,12 +2,13 @@
 // Subworkflow for aggregation of sample data
 //
 
-include { SCANPY_NEIGHBORS                                     } from '../../../modules/local/scanpy/neighbors/main'
-include { SCANPY_UMAP                                          } from '../../../modules/local/scanpy/umap/main'
-include { SCANPY_LEIDEN                                        } from '../../../modules/local/scanpy/leiden/main'
-include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
-include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from '../../../modules/local/sdata/update_table/main'
 include { QUARTONOTEBOOK as REPORT_INTEGRATED                  } from "../../../modules/nf-core/quartonotebook/main"
+include { SCANPY_HARMONY                                       } from "../../../modules/local/scanpy/harmony"
+include { SCANPY_LEIDEN                                        } from '../../../modules/local/scanpy/leiden/main'
+include { SCANPY_NEIGHBORS                                     } from '../../../modules/local/scanpy/neighbors/main'
+include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
+include { SCANPY_UMAP                                          } from '../../../modules/local/scanpy/umap/main'
+include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from '../../../modules/local/sdata/update_table/main'
 
 workflow INTEGRATION {
 
@@ -26,9 +27,15 @@ workflow INTEGRATION {
     //
     // MODULE: Integration with Scanorama
     //
-    if (integration_method == 'scanorama') {
+    ch_adata_collected = ch_adata.map { _meta, h5ad -> h5ad }.collect()
+    if (integration_method == 'harmony') {
+        SCANPY_HARMONY {
+            ch_adata_collected
+        }
+        ch_adata_integrated = SCANPY_HARMONY.out.adata
+    } else if (integration_method == 'scanorama') {
         SCANPY_SCANORAMA {
-            ch_adata.map { _meta, h5ad -> h5ad }.collect()
+            ch_adata_collected
         }
         ch_adata_integrated = SCANPY_SCANORAMA.out.adata
     }
@@ -92,6 +99,8 @@ workflow INTEGRATION {
     integration_params = [
         input_adata: integration_method + ".h5ad",
         input_sdata: integration_method + ".zarr",
+        sample_col: 'library_id',
+        cluster_col: 'clusters_' + integration_method,
         artifact_dir: "artifacts",
     ]
     integration_inputs = ch_sdata_integrated

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Integrate AnnData objects using Scanorama.
+Integrate AnnData objects using Harmony.
 """
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
@@ -13,31 +13,41 @@ import yaml
 from pathlib import Path
 
 import anndata as ad
-import scanorama
+import pandas as pd
 import scanpy as sc
+import scanpy.external as sce
 
 
-def integrate_scanorama(adata_list, labels):
-    """Integrate multiple samples using Scanorama."""
+def integrate_harmony(adata_list, sample_names, sample_col='library_id'):
+    """Integrate multiple samples using Harmony."""
 
-    # Perform integration across all AnnData objects
-    print(f"Integrating {len(adata_list)} AnnData objects")
-    adatas_corrected = scanorama.correct_scanpy(
+    print(f"Concatenating {len(adata_list)} AnnData objects")
+
+    # Merge all `.obs` and `.X` into one AnnData object
+    adata = sc.concat(
         adata_list,
-        return_dimred=True
-    )
-
-    # Concatenate integrated AnnData objects
-    adata_integrated = sc.concat(
-        adatas_corrected,
-        label="library_id",
+        label=sample_col,
         uns_merge="unique",
-        keys=labels,
+        keys=sample_names,
+        join='outer',
         index_unique="-"
     )
-    print(f"Final integrated AnnData shape: {adata_integrated.shape}")
 
-    return adata_integrated
+    # `.var` is dropped during the previous merge, so we add them back manually
+    merged_var = pd.concat([adata.var for adata in adata_list], join="outer")
+    merged_var = merged_var[~merged_var.index.duplicated()]
+    adata.var = merged_var.loc[adata.var_names]
+
+    # Integrate with Harmony
+    print(f'Integrating {len(adata_list)} samples with Harmony')
+    sce.pp.harmony_integrate(
+        adata,
+        key=sample_col,
+        adjusted_basis="X_harmony"
+    )
+    print(f"Final integrated AnnData shape: {adata.shape}")
+
+    return adata
 
 
 def write_versions(process_name):
@@ -46,7 +56,7 @@ def write_versions(process_name):
         process_name: {
             "python": platform.python_version(),
             "anndata": importlib.metadata.version("anndata"),
-            "scanorama": importlib.metadata.version("scanorama"),
+            "harmony": importlib.metadata.version("harmonypy"),
             "scanpy": importlib.metadata.version("scanpy"),
         }
     }
@@ -68,14 +78,13 @@ def main():
         adata = ad.read_h5ad(h5ad)
         adata_list.append(adata)
 
-    labels = [Path(f).stem for f in h5ad_files]
-    adata_integrated = integrate_scanorama(adata_list, labels)
+    sample_names = [Path(h5ad).stem for h5ad in h5ad_files]
+    adata_integrated = integrate_harmony(adata_list, sample_names)
 
     adata_integrated.write_h5ad(output_file)
     print(f"Written integrated AnnData to: {output_file}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()
