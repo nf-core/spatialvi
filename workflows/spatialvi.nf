@@ -47,7 +47,6 @@ workflow SPATIALVI {
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
     cluster_resolution             //   float: Spot clustering resolution
-    cluster_key_added              //  string: Obs key where cluster labels are added
     rank_genes_group_by            //  string: Column name to group by for differential expression testing
     rank_genes_method              //  string: Method to use for differential expression testing
     spatial_coord_type             //  string: Type of spatial coordinate system
