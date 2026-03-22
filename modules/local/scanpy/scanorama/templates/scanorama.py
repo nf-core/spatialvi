@@ -13,6 +13,7 @@ import yaml
 from pathlib import Path
 
 import anndata as ad
+import pandas as pd
 import scanorama
 import scanpy as sc
 
@@ -27,17 +28,23 @@ def integrate_scanorama(adata_list, labels):
         return_dimred=True
     )
 
-    # Concatenate integrated AnnData objects
-    adata_integrated = sc.concat(
+    # Merge all `.obs` and `.X` into one AnnData object
+    adata = sc.concat(
         adatas_corrected,
         label="library_id",
         uns_merge="unique",
         keys=labels,
         index_unique="-"
     )
-    print(f"Final integrated AnnData shape: {adata_integrated.shape}")
 
-    return adata_integrated
+    # `.var` is dropped during the previous merge, so we add them back manually
+    merged_var = pd.concat([adata.var for adata in adata_list], join="outer")
+    merged_var = merged_var[~merged_var.index.duplicated()]
+    adata.var = merged_var.loc[adata.var_names]
+
+    print(f"Final integrated AnnData shape: {adata.shape}")
+
+    return adata
 
 
 def write_versions(process_name):
