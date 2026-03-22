@@ -246,12 +246,6 @@
                     "description": "The resolution for the clustering of the spots.",
                     "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
                     "fa_icon": "fas fa-hashtag"
-                },
-                "cluster_key_added": {
-                    "type": "string",
-                    "default": "clusters",
-                    "description": "Column name under which to add the cluster labels.",
-                    "fa_icon": "fas fa-tag"
                 }
             }
         },
@@ -262,12 +256,6 @@
             "fa_icon": "fas fa-chart-gantt",
             "description": "Options for determinig spatially variable genes.",
             "properties": {
-                "rank_genes_group_by": {
-                    "type": "string",
-                    "default": "clusters",
-                    "description": "Column name under which the cluster labels are stored.",
-                    "fa_icon": "fas fa-tag"
-                },
                 "rank_genes_method": {
                     "type": "string",
                     "default": "wilcoxon",
@@ -296,12 +284,6 @@
                     "default": 6,
                     "description": "Number of neighbourhoods to use for spatial neighbourhood enrichment.",
                     "fa_icon": "fas fa-hashtag"
-                },
-                "spatial_cluster_key": {
-                    "type": "string",
-                    "default": "clusters",
-                    "description": "Column name under which cluster labels are stored for spatial neighborhood enrichment and interaction matrices.",
-                    "fa_icon": "fas fa-tag"
                 },
                 "svg_autocorr_method": {
                     "type": "string",

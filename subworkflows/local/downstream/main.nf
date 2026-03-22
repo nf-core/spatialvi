@@ -40,11 +40,9 @@ workflow DOWNSTREAM {
     umap_min_dist           //   float: Minimum distance between embedded points
     umap_spread             //   float: Scale of embedded points
     cluster_resolution      //   float: Spot clustering resolution
-    rank_genes_group_by     //  string: Column name to group by for differential expression testing
     rank_genes_method       //  string: Method to use for differential expression testing
     spatial_coord_type      //  string: Type of spatial coordinate system
     spatial_n_neighbours    // integer: Number of spatial neighbours to use
-    spatial_cluster_key     //  string: Obs key where spatial cluster labels are added
     svg_autocorr_method     //  string: Spatial autocorrelation method ('moran' or 'geary')
     n_top_svgs              // integer: Number of top spatially variable genes to report
 
@@ -171,6 +169,7 @@ workflow DOWNSTREAM {
     //
     // Spatial differential expression analysis (rank genes by cluster)
     //
+    rank_genes_group_by = 'clusters'
     SCANPY_RANK_GENES_GROUPS (
         SCANPY_LEIDEN.out.adata,
         rank_genes_group_by,
@@ -189,9 +188,10 @@ workflow DOWNSTREAM {
     //
     // Spatial neighbourhood enrichment analysis
     //
+    cluster_key = 'clusters'
     SQUIDPY_NHOOD_ENRICHMENT (
         SQUIDPY_SPATIAL_NEIGHBORS.out.adata,
-        spatial_cluster_key
+        cluster_key
     )
 
     //
@@ -199,7 +199,7 @@ workflow DOWNSTREAM {
     //
     SQUIDPY_INTERACTION_MATRIX (
         SQUIDPY_NHOOD_ENRICHMENT.out.adata,
-        spatial_cluster_key
+        cluster_key
     )
 
     //

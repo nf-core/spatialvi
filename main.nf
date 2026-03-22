@@ -50,11 +50,9 @@ workflow NFCORE_SPATIALVI {
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
     cluster_resolution             //   float: Spot clustering resolution
-    rank_genes_group_by            //  string: Column name to group by for differential expression testing
     rank_genes_method              //  string: Method to use for differential expression testing
     spatial_coord_type             //  string: Type of spatial coordinate system
     spatial_n_neighbours           // integer: Number of spatial neighbourhoods
-    spatial_cluster_key            //  string: Obs key where spatial cluster labels are added
     svg_autocorr_method            // string : Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
     merge_sdata                    // boolean: Whether to merge sdata or not
@@ -91,11 +89,9 @@ workflow NFCORE_SPATIALVI {
         umap_min_dist,
         umap_spread,
         cluster_resolution,
-        rank_genes_group_by,
         rank_genes_method,
         spatial_coord_type,
         spatial_n_neighbours,
-        spatial_cluster_key,
         svg_autocorr_method,
         n_top_svgs,
         merge_sdata,
@@ -157,11 +153,9 @@ workflow {
         params.umap_min_dist,
         params.umap_spread,
         params.cluster_resolution,
-        params.rank_genes_group_by,
         params.rank_genes_method,
         params.spatial_coord_type,
         params.spatial_n_neighbours,
-        params.spatial_cluster_key,
         params.svg_autocorr_method,
         params.n_top_svgs,
         params.merge_sdata,
