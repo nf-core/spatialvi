@@ -33,16 +33,12 @@ import squidpy as sq
 import spatialdata
 import matplotlib.pyplot as plt
 from IPython.display import display, Markdown
-# from matplotlib import gridspec
 
 # Create artefact directory
 os.makedirs(artifact_dir, exist_ok=True)
 
-# # Suppress scanpy verbosity
-# sc.settings.verbosity = 0
-
-# # Set plotting defaults
-# sc.settings.set_figure_params(dpi=100, facecolor='white', frameon=False)
+# Suppress scanpy verbosity
+sc.settings.verbosity = 0
 ```
 
 ```{python common-functions}
