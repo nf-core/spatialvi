@@ -15,11 +15,11 @@ process SCANPY_SCANORAMA {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "integrated"
+    prefix = task.ext.prefix ?: "merged"
     template 'scanorama.py'
 
     stub:
-    prefix = task.ext.prefix ?: "integrated"
+    prefix = task.ext.prefix ?: "merged"
     """
     touch ${prefix}.h5ad
     touch versions.yml

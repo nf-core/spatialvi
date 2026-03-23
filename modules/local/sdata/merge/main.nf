@@ -15,11 +15,11 @@ process SDATA_MERGE {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "merged"
+    prefix = task.ext.prefix ?: "collected"
     template 'merge.py'
 
     stub:
-    prefix = task.ext.prefix ?: "merged"
+    prefix = task.ext.prefix ?: "collected"
     """
     touch ${prefix}.zarr
     touch versions.yml
