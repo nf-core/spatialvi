@@ -13,7 +13,6 @@ include { SCANPY_NORMALIZE_TOTAL       } from '../../../modules/local/scanpy/nor
 include { SCANPY_PCA                   } from '../../../modules/local/scanpy/pca/main'
 include { SCANPY_RANK_GENES_GROUPS     } from '../../../modules/local/scanpy/rank_genes_groups/main'
 include { SCANPY_UMAP                  } from '../../../modules/local/scanpy/umap/main'
-include { SDATA_TO_LEGACY_ANNDATA      } from '../../../modules/local/sdata/to_legacy_anndata/main'
 include { SDATA_UPDATE_TABLE           } from '../../../modules/local/sdata/update_table/main'
 include { SQUIDPY_INTERACTION_MATRIX   } from '../../../modules/local/squidpy/interaction_matrix/main'
 include { SQUIDPY_NHOOD_ENRICHMENT     } from '../../../modules/local/squidpy/nhood_enrichment/main'
@@ -23,7 +22,8 @@ include { SQUIDPY_SPATIAL_NEIGHBORS    } from '../../../modules/local/squidpy/sp
 workflow DOWNSTREAM {
 
     take:
-    ch_sdata_raw            // channel: [ meta, sdata.zarr ]
+    ch_sdata_input          // channel: [ meta, zarr ]
+    ch_adata_input          // channel: [ meta, h5ad ]
     qc_min_counts           // integer: Minimum UMIs per spot
     qc_min_genes            // integer: Minimum genes per spot
     qc_min_spots            // integer: Minimum spots per gene
@@ -48,23 +48,6 @@ workflow DOWNSTREAM {
 
     main:
 
-    //
-    // Quarto report template and extensions
-    //
-    report_notebook = file("${projectDir}/bin/report.qmd", checkIfExists: true)
-    extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
-
-    // =========================================================================
-    // DATA LOADING
-    // =========================================================================
-
-    //
-    // Extract legacy AnnData for scanpy processing
-    //
-    SDATA_TO_LEGACY_ANNDATA (
-        ch_sdata_raw
-    )
-
     // =========================================================================
     // QUALITY CONTROL AND FILTERING
     // =========================================================================
@@ -73,7 +56,7 @@ workflow DOWNSTREAM {
     // Quality control metrics
     //
     SCANPY_CALCULATE_QC_METRICS (
-        SDATA_TO_LEGACY_ANNDATA.out.adata
+        ch_adata_input
     )
 
     //
@@ -214,22 +197,24 @@ workflow DOWNSTREAM {
     // Update SpatialData with SVG results (final checkpoint)
     //
     SDATA_UPDATE_TABLE (
-        ch_sdata_raw.join(SQUIDPY_SPATIAL_AUTOCORR.out.adata),
+        ch_sdata_input.join(SQUIDPY_SPATIAL_AUTOCORR.out.adata),
         ''
     )
-    ch_sdata_svg = SDATA_UPDATE_TABLE.out.sdata
+    ch_sdata_output = SDATA_UPDATE_TABLE.out.sdata
 
     // =========================================================================
     // REPORT
     // =========================================================================
 
-    ch_report_input_data = ch_sdata_svg
+    report_notebook = file("${projectDir}/bin/report.qmd", checkIfExists: true)
+    extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
+    ch_report_input_data = ch_sdata_output
         .map { it -> it[1] }
-    ch_report_notebook = ch_sdata_svg
+    ch_report_notebook = ch_sdata_output
         .map { it -> it[0] }
         .combine(channel.value(report_notebook))
         .map { meta, notebook -> tuple(meta, notebook) }
-    ch_report_params = ch_sdata_svg
+    ch_report_params = ch_sdata_output
         .map { _meta, sdata ->
             [
                 input_sdata  : sdata.name,
@@ -246,7 +231,7 @@ workflow DOWNSTREAM {
 
     emit:
     // Final data outputs
-    sdata              = ch_sdata_svg                       // channel: [ meta, zarr ]
+    sdata              = ch_sdata_output                    // channel: [ meta, zarr ]
     adata              = SQUIDPY_SPATIAL_AUTOCORR.out.adata // channel: [ meta, h5ad ]
 
     // Intermediate AnnData outputs (useful for debugging)

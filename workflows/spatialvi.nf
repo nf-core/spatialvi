@@ -4,19 +4,20 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SDATA_READ_VISIUM      } from '../modules/local/sdata/read_visium/main'
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { SDATA_MERGE            } from "../modules/local/sdata/merge"
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { SDATA_READ_VISIUM       } from '../modules/local/sdata/read_visium/main'
+include { FASTQC                  } from '../modules/nf-core/fastqc/main'
+include { SDATA_MERGE             } from "../modules/local/sdata/merge"
+include { SDATA_TO_LEGACY_ANNDATA } from '../modules/local/sdata/to_legacy_anndata/main'
+include { MULTIQC                 } from '../modules/nf-core/multiqc/main'
 
-include { INPUT_CHECK            } from '../subworkflows/local/input_check'
-include { SPACERANGER            } from '../subworkflows/local/spaceranger'
-include { DOWNSTREAM             } from '../subworkflows/local/downstream'
-include { INTEGRATION            } from '../subworkflows/local/integration'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_spatialvi_pipeline'
+include { INPUT_CHECK             } from '../subworkflows/local/input_check'
+include { SPACERANGER             } from '../subworkflows/local/spaceranger'
+include { DOWNSTREAM              } from '../subworkflows/local/downstream'
+include { INTEGRATION             } from '../subworkflows/local/integration'
+include { paramsSummaryMultiqc    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { paramsSummaryMap        } from 'plugin/nf-schema'
+include { softwareVersionsToYAML  } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText  } from '../subworkflows/local/utils_nfcore_spatialvi_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,12 +110,20 @@ workflow SPATIALVI {
     )
 
     //
+    // MODULE: Extract legacy AnnData for scanpy processing
+    //
+    SDATA_TO_LEGACY_ANNDATA (
+        SDATA_READ_VISIUM.out.sdata
+    )
+
+    //
     // SUBWORKFLOW: Downstream analyses of ST data
     // This includes: QC, filtering, normalization,
     // dimensionality reduction, clustering, and spatial analysis
     //
     DOWNSTREAM (
-        SDATA_READ_VISIUM.out.sdata,
+        SDATA_TO_LEGACY_ANNDATA.out.sdata,
+        SDATA_TO_LEGACY_ANNDATA.out.adata,
         qc_min_counts,
         qc_min_genes,
         qc_min_spots,
