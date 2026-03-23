@@ -4,11 +4,10 @@
 
 include { QUARTONOTEBOOK as REPORT_INTEGRATED                  } from "../../../modules/nf-core/quartonotebook/main"
 include { SCANPY_HARMONY                                       } from "../../../modules/local/scanpy/harmony"
-include { SCANPY_LEIDEN                                        } from '../../../modules/local/scanpy/leiden/main'
-include { SCANPY_NEIGHBORS                                     } from '../../../modules/local/scanpy/neighbors/main'
 include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
-include { SCANPY_UMAP                                          } from '../../../modules/local/scanpy/umap/main'
 include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from '../../../modules/local/sdata/update_table/main'
+
+include { CLUSTERING                                           } from '../../../subworkflows/local/clustering'
 
 workflow INTEGRATION {
 
@@ -32,50 +31,36 @@ workflow INTEGRATION {
         SCANPY_HARMONY {
             ch_adata_collected
         }
-        ch_adata_integrated = SCANPY_HARMONY.out.adata
+        ch_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
         SCANPY_SCANORAMA {
             ch_adata_collected
         }
-        ch_adata_integrated = SCANPY_SCANORAMA.out.adata
+        ch_integrated = SCANPY_SCANORAMA.out.adata
     }
 
     // Add `meta` to integrated AnnData channel
-    ch_integrated = ch_adata_integrated
+    ch_adata_integrated = ch_integrated
         .map { h5ad -> [[id: integration_method], h5ad] }
 
     //
-    // MODULE: Neighbourhood graph
+    // SUBWORKFLOW: Clustering
     //
     use_rep = 'X_' + integration_method
-    SCANPY_NEIGHBORS (
-        ch_integrated,
+    umap_key_added = 'X_umap_' + integration_method
+    leiden_key_added = 'clusters_' + integration_method
+    CLUSTERING (
+        ch_adata_integrated,
         n_neighbours,
         neighbours_n_pcs,
-        use_rep
-    )
-
-    //
-    // MODULE: UMAP
-    //
-    umap_key_added = 'X_umap_' + integration_method
-    SCANPY_UMAP (
-        SCANPY_NEIGHBORS.out.adata,
+        use_rep,
         umap_min_dist,
         umap_spread,
-        umap_key_added
-    )
-
-    //
-    // MODULE: Leiden clustering
-    //
-    leiden_key_added = 'clusters_' + integration_method
-    SCANPY_LEIDEN (
-        SCANPY_UMAP.out.adata,
+        umap_key_added,
         integration_cluster_resolution,
         leiden_key_added
     )
-    ch_adata_integrated = SCANPY_LEIDEN.out.adata
+    ch_adata_clustered = CLUSTERING.out.adata
         .map { _meta, h5ad -> h5ad }
 
     //
@@ -84,7 +69,7 @@ workflow INTEGRATION {
     library_key = 'library_id'
     ch_sdata_adata = ch_sdata_merged
         .map  { zarr -> [[id: integration_method], zarr]}
-        .join ( SCANPY_LEIDEN.out.adata )
+        .join ( CLUSTERING.out.adata )
     SDATA_UPDATE_TABLE_INTEGRATION (
         ch_sdata_adata,
         library_key
@@ -105,7 +90,7 @@ workflow INTEGRATION {
     ]
     integration_inputs = ch_sdata_integrated
         .map { _meta, zarr -> zarr }
-        .mix ( ch_adata_integrated )
+        .mix ( ch_adata_clustered )
         .collect()
     REPORT_INTEGRATED (
         [[id: integration_method], integration_notebook],
@@ -115,7 +100,12 @@ workflow INTEGRATION {
     )
 
     emit:
-    sdata            = ch_sdata_integrated // channel: [ zarr ]
-    sdata_merged     = ch_sdata_merged     // channel: [ zarr ]
-    adata            = ch_adata_integrated // channel: [ h5ad ]
+    sdata        = ch_sdata_integrated               // channel: [ zarr ]
+    sdata_merged = ch_sdata_merged                   // channel: [ zarr ]
+    adata        = ch_adata_clustered                // channel: [ h5ad ]
+
+    html         = REPORT_INTEGRATED.out.html        // channel: [ meta, html ]
+    notebook     = REPORT_INTEGRATED.out.notebook    // channel: [ meta, qmd ]
+    params_yaml  = REPORT_INTEGRATED.out.params_yaml // channel: [ meta, yml ]
+    artifacts    = REPORT_INTEGRATED.out.artifacts   // channel: [ meta, dir ]
 }

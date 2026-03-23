@@ -21,7 +21,7 @@ find the reports for each individual sample in their respective directory under
 input_adata = "integrated.h5ad"  # Input: H5AD file
 input_sdata = "integrated.zarr"  # Input: Zarr file
 sample_col = "library_id" # Parameter: obs column with sample names
-cluster_col = "clusters_harmony" # Parameter: obs column with cluster names
+cluster_col = "clusters_integrated" # Parameter: obs column with cluster names
 artifact_dir = "artifacts" # Parameter: artifact directory
 ```
 

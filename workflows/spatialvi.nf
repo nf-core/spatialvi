@@ -4,20 +4,25 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SDATA_READ_VISIUM       } from '../modules/local/sdata/read_visium/main'
-include { FASTQC                  } from '../modules/nf-core/fastqc/main'
-include { SDATA_MERGE             } from "../modules/local/sdata/merge"
-include { SDATA_TO_LEGACY_ANNDATA } from '../modules/local/sdata/to_legacy_anndata/main'
-include { MULTIQC                 } from '../modules/nf-core/multiqc/main'
+include { SDATA_READ_VISIUM        } from '../modules/local/sdata/read_visium/main'
+include { FASTQC                   } from '../modules/nf-core/fastqc/main'
+include { SCANPY_RANK_GENES_GROUPS } from '../modules/local/scanpy/rank_genes_groups/main'
+include { SDATA_MERGE              } from "../modules/local/sdata/merge"
+include { SDATA_TO_LEGACY_ANNDATA  } from '../modules/local/sdata/to_legacy_anndata/main'
+include { MULTIQC                  } from '../modules/nf-core/multiqc/main'
+include { QUARTONOTEBOOK as REPORT } from '../modules/nf-core/quartonotebook/main'
+include { SDATA_UPDATE_TABLE       } from '../modules/local/sdata/update_table/main'
 
-include { INPUT_CHECK             } from '../subworkflows/local/input_check'
-include { SPACERANGER             } from '../subworkflows/local/spaceranger'
-include { DOWNSTREAM              } from '../subworkflows/local/downstream'
-include { INTEGRATION             } from '../subworkflows/local/integration'
-include { paramsSummaryMultiqc    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { paramsSummaryMap        } from 'plugin/nf-schema'
-include { softwareVersionsToYAML  } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText  } from '../subworkflows/local/utils_nfcore_spatialvi_pipeline'
+include { INPUT_CHECK              } from '../subworkflows/local/input_check'
+include { SPACERANGER              } from '../subworkflows/local/spaceranger'
+include { PREPROCESSING            } from '../subworkflows/local/preprocessing'
+include { CLUSTERING               } from '../subworkflows/local/clustering'
+include { SPATIAL                  } from '../subworkflows/local/spatial'
+include { INTEGRATION              } from '../subworkflows/local/integration'
+include { paramsSummaryMultiqc     } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { paramsSummaryMap         } from 'plugin/nf-schema'
+include { softwareVersionsToYAML   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText   } from '../subworkflows/local/utils_nfcore_spatialvi_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,6 +71,10 @@ workflow SPATIALVI {
 
     ch_multiqc_files = channel.empty()
 
+    // =========================================================================
+    // VALIDATION AND SPACE RANGER PROCESSING
+    // =========================================================================
+
     //
     // SUBWORKFLOW: Read and validate samplesheet
     //
@@ -101,6 +110,10 @@ workflow SPATIALVI {
     ch_spaceranger_dir = INPUT_CHECK.out.ch_downstream_input
         .mix(SPACERANGER.out.sr_dir)
 
+    // =========================================================================
+    // PER-SAMPLE ANALYSES
+    // =========================================================================
+
     //
     // MODULE: Read ST data and save as SpatialData
     //
@@ -117,12 +130,9 @@ workflow SPATIALVI {
     )
 
     //
-    // SUBWORKFLOW: Downstream analyses of ST data
-    // This includes: QC, filtering, normalization,
-    // dimensionality reduction, clustering, and spatial analysis
+    // SUBWORKFLOW: Pre-processing
     //
-    DOWNSTREAM (
-        SDATA_TO_LEGACY_ANNDATA.out.sdata,
+    PREPROCESSING (
         SDATA_TO_LEGACY_ANNDATA.out.adata,
         qc_min_counts,
         qc_min_genes,
@@ -134,19 +144,86 @@ workflow SPATIALVI {
         n_highly_variable_genes,
         hvg_flavor,
         n_principal_components,
-        pca_use_highly_variable,
+        pca_use_highly_variable
+    )
+
+    //
+    // SUBWORKFLOW: Clustering
+    //
+    use_rep = ''
+    umap_key_added = 'X_umap'
+    leiden_key_added = 'clusters'
+    CLUSTERING (
+        PREPROCESSING.out.adata,
         n_neighbours,
         neighbours_n_pcs,
+        use_rep,
         umap_min_dist,
         umap_spread,
+        umap_key_added,
         cluster_resolution,
-        rank_genes_method,
+        leiden_key_added
+    )
+
+    //
+    // MODULE: Differential expression analysis
+    //
+    rank_genes_group_by = 'clusters'
+    SCANPY_RANK_GENES_GROUPS (
+        CLUSTERING.out.adata,
+        rank_genes_group_by,
+        rank_genes_method
+    )
+
+    //
+    // SUBWORKFLOW: Spatial analyses
+    //
+    SPATIAL (
+        SCANPY_RANK_GENES_GROUPS.out.adata,
         spatial_coord_type,
         spatial_n_neighbours,
-        svg_autocorr_method,
-        n_top_svgs
+        svg_autocorr_method
     )
-    ch_adata = DOWNSTREAM.out.adata
+    ch_adata = SPATIAL.out.adata
+
+    //
+    // MODULE: Update SpatialData with AnnData results
+    //
+    SDATA_UPDATE_TABLE (
+        SDATA_TO_LEGACY_ANNDATA.out.sdata.join(ch_adata),
+        ''
+    )
+    ch_sdata_output = SDATA_UPDATE_TABLE.out.sdata
+
+    //
+    // MODULE: Per-sample Quarto reports
+    //
+    report_notebook = file("${projectDir}/bin/report.qmd", checkIfExists: true)
+    extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
+    ch_report_input_data = ch_sdata_output
+        .map { it -> it[1] }
+    ch_report_notebook = ch_sdata_output
+        .map { it -> it[0] }
+        .combine(channel.value(report_notebook))
+        .map { meta, notebook -> tuple(meta, notebook) }
+    ch_report_params = ch_sdata_output
+        .map { _meta, sdata ->
+            [
+                input_sdata  : sdata.name,
+                n_top_svgs   : n_top_svgs,
+                artifact_dir : "artifacts"
+            ]
+        }
+    REPORT (
+        ch_report_notebook,
+        ch_report_params,
+        ch_report_input_data,
+        extensions
+    )
+
+    // =========================================================================
+    // AGGREGATION AND INTEGRATION
+    // =========================================================================
 
     //
     // MODULE: Merge per-sample SpatialData objects into one (optional)
@@ -154,7 +231,7 @@ workflow SPATIALVI {
     ch_sdata_merged = channel.empty()
     if (merge_sdata || integrate_sdata) {
         SDATA_MERGE (
-            DOWNSTREAM.out.sdata.map { _meta, zarr -> return [zarr] }
+            ch_sdata_output.map { _meta, zarr -> return [zarr] }
         )
         ch_sdata_merged = SDATA_MERGE.out.sdata
     }
@@ -174,6 +251,10 @@ workflow SPATIALVI {
             integration_cluster_resolution
         )
     }
+
+    // =========================================================================
+    // FINALISATION AND MULTIQC
+    // =========================================================================
 
     //
     // Collate and save software versions
@@ -230,13 +311,6 @@ workflow SPATIALVI {
     ch_methods_description = channel.value(
         methodsDescriptionText(ch_multiqc_custom_methods_description))
 
-    //
-    // Add filter statistics to MultiQC (JSON format needs custom config)
-    //
-    ch_multiqc_files = ch_multiqc_files.mix(
-        DOWNSTREAM.out.filter_stats.map { _meta, json -> json }.collect()
-    )
-
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_methods_description.collectFile(
@@ -256,19 +330,26 @@ workflow SPATIALVI {
 
     emit:
     // SpatialData outputs
-    sdata_raw       = SDATA_READ_VISIUM.out.sdata      // channel: [ meta, zarr ]
-    sdata           = DOWNSTREAM.out.sdata             // channel: [ meta, zarr ]
+    sdata_raw               = SDATA_READ_VISIUM.out.sdata // channel: [ meta, zarr ]
+    sdata                   = ch_sdata_output             // channel: [ meta, zarr ]
 
-    // Reports TODO
-    //qc_html         = DOWNSTREAM.out.qc_html           // channel: [ meta, html ]
-    //clustering_html = DOWNSTREAM.out.clustering_html   // channel: [ meta, html ]
-    //svg_html        = DOWNSTREAM.out.svg_html          // channel: [ meta, html ]
+    // Per-sample report outputs
+    report_html             = REPORT.out.html             // channel: [ meta, html ]
+    report_notebook         = REPORT.out.notebook         // channel: [ meta, qmd ]
+    report_params_yaml      = REPORT.out.params_yaml      // channel: [ meta, yml ]
+    report_artifacts        = REPORT.out.artifacts        // channel: [ meta, dir ]
 
     // SVG results
-    svg_csv         = DOWNSTREAM.out.svg_csv           // channel: [ meta, csv ]
+    svg_csv                 = SPATIAL.out.svg_csv         // channel: [ meta, csv ]
+
+    // Integration report outputs
+    integration_html        = INTEGRATION.out.html        // channel: [ meta, html ]
+    integration_notebook    = INTEGRATION.out.notebook    // channel: [ meta, qmd ]
+    integration_params_yaml = INTEGRATION.out.params_yaml // channel: [ meta, yml ]
+    integration_artifacts   = INTEGRATION.out.artifacts   // channel: [ meta, dir ]
 
     // MultiQC
-    multiqc_report  = MULTIQC.out.report.toList()      // channel: [ multiqc_report.html ]
+    multiqc_report          = MULTIQC.out.report.toList() // channel: [ html ]
 }
 
 /*
