@@ -137,7 +137,7 @@
             "title": "Normalization options",
             "type": "object",
             "fa_icon": "fas fa-filter",
-            "description": "Normalisation options used by the pipeline.",
+            "description": "Normalization options used by the pipeline.",
             "properties": {
                 "normalize_target_sum": {
                     "type": "string",
@@ -192,22 +192,22 @@
             }
         },
 
-        "nearest_neighbours_options": {
-            "title": "Nearest neighbours options",
+        "nearest_neighbors_options": {
+            "title": "Nearest neighbors options",
             "type": "object",
             "fa_icon": "fas fa-square-share-nodes",
-            "description": "Options for nearest neighbours calculations.",
+            "description": "Options for nearest neighbors calculations.",
             "properties": {
-                "n_neighbours": {
+                "n_neighbors": {
                     "type": "integer",
                     "default": 15,
-                    "description": "The number of nearest neighbors to use for the neighbourhood graph calculation.",
+                    "description": "The number of nearest neighbors to use for the neighborhood graph calculation.",
                     "fa_icon": "fas fa-hashtag"
                 },
-                "neighbours_n_pcs": {
+                "neighbors_n_pcs": {
                     "type": "string",
                     "default": "none",
-                    "description": "The number of principal components to use for the nearest neighbours calculation.",
+                    "description": "The number of principal components to use for the nearest neighbors calculation.",
                     "fa_icon": "fas fa-hashtag"
                 }
             }
@@ -276,13 +276,13 @@
                     "type": "string",
                     "default": "generic",
                     "enum": ["generic", "grid"],
-                    "description": "The coordinate type to use for spatial neighbourhood enrichment.",
+                    "description": "The coordinate type to use for spatial neighborhood enrichment.",
                     "fa_icon": "fas fa-tag"
                 },
-                "spatial_n_neighbours": {
+                "spatial_n_neighbors": {
                     "type": "integer",
                     "default": 6,
-                    "description": "Number of neighbourhoods to use for spatial neighbourhood enrichment.",
+                    "description": "Number of neighborhoods to use for spatial neighborhood enrichment.",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "svg_autocorr_method": {
@@ -450,7 +450,7 @@
                 },
                 "monochrome_logs": {
                     "type": "boolean",
-                    "description": "Do not use coloured log outputs.",
+                    "description": "Do not use colored log outputs.",
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
@@ -537,7 +537,7 @@
             "$ref": "#/$defs/pca_options"
         },
         {
-            "$ref": "#/$defs/nearest_neighbours_options"
+            "$ref": "#/$defs/nearest_neighbors_options"
         },
         {
             "$ref": "#/$defs/dimensionality_reduction_options"

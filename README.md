@@ -33,7 +33,7 @@ the following steps:
 
 0. Raw data processing with Space Ranger (optional)
 1. Quality controls and filtering
-2. Normalisation
+2. Normalization
 3. Dimensionality reduction and clustering
 4. Differential gene expression testing
 

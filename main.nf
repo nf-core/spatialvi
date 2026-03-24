@@ -45,14 +45,14 @@ workflow NFCORE_SPATIALVI {
     hvg_flavor                     //  string: Flavor for HVG calculations
     n_principal_components         // integer: Number of principal components to compute
     pca_use_highly_variable        // boolean: Whether to only use highly variable genes for PCA
-    n_neighbours                   // integer: Number of nearest neighbours to compute
-    neighbours_n_pcs               // integer: Number of PCs to use for nearest neighbours
+    n_neighbors                    // integer: Number of nearest neighbors to compute
+    neighbors_n_pcs                // integer: Number of PCs to use for nearest neighbors
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
     cluster_resolution             //   float: Spot clustering resolution
     rank_genes_method              //  string: Method to use for differential expression testing
     spatial_coord_type             //  string: Type of spatial coordinate system
-    spatial_n_neighbours           // integer: Number of spatial neighbourhoods
+    spatial_n_neighbors            // integer: Number of spatial neighborhoods
     svg_autocorr_method            // string : Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
     merge_sdata                    // boolean: Whether to merge sdata or not
@@ -84,14 +84,14 @@ workflow NFCORE_SPATIALVI {
         hvg_flavor,
         n_principal_components,
         pca_use_highly_variable,
-        n_neighbours,
-        neighbours_n_pcs,
+        n_neighbors,
+        neighbors_n_pcs,
         umap_min_dist,
         umap_spread,
         cluster_resolution,
         rank_genes_method,
         spatial_coord_type,
-        spatial_n_neighbours,
+        spatial_n_neighbors,
         svg_autocorr_method,
         n_top_svgs,
         merge_sdata,
@@ -148,14 +148,14 @@ workflow {
         params.hvg_flavor,
         params.n_principal_components,
         params.pca_use_highly_variable,
-        params.n_neighbours,
-        params.neighbours_n_pcs,
+        params.n_neighbors,
+        params.neighbors_n_pcs,
         params.umap_min_dist,
         params.umap_spread,
         params.cluster_resolution,
         params.rank_genes_method,
         params.spatial_coord_type,
-        params.spatial_n_neighbours,
+        params.spatial_n_neighbors,
         params.svg_autocorr_method,
         params.n_top_svgs,
         params.merge_sdata,

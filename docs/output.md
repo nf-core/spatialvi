@@ -18,7 +18,7 @@ data using the following steps:
 - [Space Ranger](#space-ranger)
 - [Data](#data)
 - [Reports](#reports)
-  - [Quality controls and normalisation](#quality-controls-and-normalisation)
+  - [Quality controls and normalization](#quality-controls-and-normalization)
   - [Clustering](#clustering)
   - [Differential expression](#differential-expression)
 - [Workflow reporting](#workflow-reporting)

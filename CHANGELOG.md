@@ -11,7 +11,7 @@ pipeline development was moved to nf-core and NBIS. The pipeline has undergone
 several iterations regarding its functionality and content; there are a
 significant number of changes, of which not all are listed here. In summary, the
 pipeline contains best-practice processing and analyses of pre- and post-Space
-Ranger-processed data, including quality controls, normalisation, dimensionality
+Ranger-processed data, including quality controls, normalization, dimensionality
 reduction, clustering, differential expression testing as well as output files
 compatible with further downstream analyses and/or exploration in _e.g._
 [TissUUmaps](https://tissuumaps.github.io/) or bespoke user code.

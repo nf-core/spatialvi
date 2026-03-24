@@ -293,7 +293,7 @@ else:
 if 'X_pca' in adata.obsm:
     fig, axes = plt.subplots(1, 2, figsize=(7, 3.5), constrained_layout=True)
 
-    # PCA scatter plot coloured by clusters if available
+    # PCA scatter plot colored by clusters if available
     if 'clusters' in adata.obs:
         sc.pl.pca(adata, color='clusters', ax=axes[0], show=False,
             title='PCA (colored by clusters)')
@@ -498,9 +498,9 @@ if 'rank_genes_groups' in adata.uns:
 
 # Spatial analysis
 
-## Neighbourhood enrichment
+## Neighborhood enrichment
 
-Neighbourhood enrichment analysis shows which cluster pairs are spatially
+Neighborhood enrichment analysis shows which cluster pairs are spatially
 enriched (positive, red) or depleted (negative, blue) compared to random
 expectation.
 
@@ -516,7 +516,7 @@ if 'clusters_nhood_enrichment' in adata.uns:
             figsize=(9, 7)
         )
         fig = plt.gcf()
-        save_figure(fig, 'neighbourhood-enrichment.png')
+        save_figure(fig, 'neighborhood-enrichment.png')
         plt.show()
 
         print("")
@@ -529,7 +529,7 @@ else:
 ## Cluster interaction matrix
 
 The interaction matrix shows the number of edges between each pair of clusters
-in the spatial neighbour graph.
+in the spatial neighbor graph.
 
 ```{python cluster-interactions}
 if 'clusters_interactions' in adata.uns:

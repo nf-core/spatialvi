@@ -15,8 +15,8 @@ workflow INTEGRATION {
     ch_sdata_merged                // channel: [ meta, zarr ]
     ch_adata                       // channel: [ meta, h5ad ]
     integration_method             //  string: Integration method to use
-    n_neighbours                   // integer: Number of nearest neighbours to compute
-    neighbours_n_pcs               // integer: Number of PCs to use for nearest neighbours
+    n_neighbors                   // integer: Number of nearest neighbors to compute
+    neighbors_n_pcs               // integer: Number of PCs to use for nearest neighbors
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
     integration_cluster_resolution //   float: Integration cluster resolution
@@ -51,8 +51,8 @@ workflow INTEGRATION {
     leiden_key_added = 'clusters_' + integration_method
     CLUSTERING (
         ch_adata_integrated,
-        n_neighbours,
-        neighbours_n_pcs,
+        n_neighbors,
+        neighbors_n_pcs,
         use_rep,
         umap_min_dist,
         umap_spread,

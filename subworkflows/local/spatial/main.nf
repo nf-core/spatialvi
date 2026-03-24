@@ -8,7 +8,7 @@ workflow SPATIAL {
     take:
     ch_adata                // channel: [ meta, h5ad ]
     spatial_coord_type      //  string: Type of spatial coordinate system
-    spatial_n_neighbours    // integer: Number of spatial neighbours to use
+    spatial_n_neighbors    // integer: Number of spatial neighbors to use
     svg_autocorr_method     //  string: Spatial autocorrelation method to use
 
     main:
@@ -19,11 +19,11 @@ workflow SPATIAL {
     SQUIDPY_SPATIAL_NEIGHBORS (
         ch_adata,
         spatial_coord_type,
-        spatial_n_neighbours
+        spatial_n_neighbors
     )
 
     //
-    // Spatial neighbourhood enrichment analysis
+    // Spatial neighborhood enrichment analysis
     //
     cluster_key = 'clusters'
     SQUIDPY_NHOOD_ENRICHMENT (

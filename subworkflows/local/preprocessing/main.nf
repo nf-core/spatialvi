@@ -44,7 +44,7 @@ workflow PREPROCESSING {
     )
 
     //
-    // MODULE: Normalisation
+    // MODULE: Normalization
     //
     SCANPY_NORMALIZE_TOTAL (
         SCANPY_FILTER.out.adata,
