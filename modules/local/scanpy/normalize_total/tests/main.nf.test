@@ -1,0 +1,54 @@
+nextflow_process {
+
+    name "Test Process SCANPY_NORMALIZE_TOTAL"
+    script "../main.nf"
+    process "SCANPY_NORMALIZE_TOTAL"
+
+    tag "modules"
+    tag "modules_local"
+    tag "scanpy_normalize_total"
+
+    test("homo_sapiens - h5ad") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'test' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 10000 // target_sum
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'test' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 10000 // target_sum
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

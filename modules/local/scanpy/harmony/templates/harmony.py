@@ -29,12 +29,12 @@ def integrate_harmony(adata_list, sample_names, sample_col='library_id'):
         label=sample_col,
         uns_merge="unique",
         keys=sample_names,
-        join='outer',
+        join='inner',
         index_unique="-"
     )
 
     # `.var` is dropped during the previous merge, so we add them back manually
-    merged_var = pd.concat([adata.var for adata in adata_list], join="outer")
+    merged_var = pd.concat([adata.var for adata in adata_list], join="inner")
     merged_var = merged_var[~merged_var.index.duplicated()]
     adata.var = merged_var.loc[adata.var_names]
 

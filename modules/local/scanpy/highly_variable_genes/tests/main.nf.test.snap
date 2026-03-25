@@ -1,0 +1,68 @@
+{
+    "homo_sapiens - h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_hvg.h5ad:md5,ed7cc73074dc2d6385a6a0a508918a2b"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_hvg.h5ad:md5,ed7cc73074dc2d6385a6a0a508918a2b"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-25T13:53:39.766024",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_hvg.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_hvg.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-25T13:53:48.73264",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

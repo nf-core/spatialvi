@@ -16,10 +16,16 @@ import anndata as ad
 import pandas as pd
 import scanorama
 import scanpy as sc
+import scipy.sparse as sp
 
 
 def integrate_scanorama(adata_list, labels):
     """Integrate multiple samples using Scanorama."""
+
+    # Convert to CSR format as required by Scanorama, if data is CSC
+    for adata in adata_list:
+        if sp.issparse(adata.X) and not isinstance(adata.X, sp.csr_matrix):
+            adata.X = adata.X.tocsr()
 
     # Perform integration across all AnnData objects
     print(f"Integrating {len(adata_list)} AnnData objects")

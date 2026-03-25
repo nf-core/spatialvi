@@ -1,0 +1,94 @@
+nextflow_process {
+
+    name "Test Process SCANPY_NEIGHBORS"
+    script "../main.nf"
+    process "SCANPY_NEIGHBORS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "scanpy_neighbors"
+
+    test("homo_sapiens - h5ad - with pca") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_PCA.out.adata
+                input[1] = 15      // n_neighbors
+                input[2] = 50      // n_pcs
+                input[3] = 'X_pca' // use_rep
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'test' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 15     // n_neighbors
+                input[2] = "none" // n_pcs
+                input[3] = ''     // use_rep
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'test' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 15     // n_neighbors
+                input[2] = "none" // n_pcs
+                input[3] = ''     // use_rep
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

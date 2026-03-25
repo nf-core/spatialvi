@@ -1,0 +1,88 @@
+nextflow_process {
+
+    name "Test Process SCANPY_FILTER"
+    script "../main.nf"
+    process "SCANPY_FILTER"
+
+    tag "modules"
+    tag "modules_local"
+    tag "scanpy_filter"
+
+    test("homo_sapiens - h5ad") {
+
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                input[1] = 500   // min_counts
+                input[2] = 250   // min_genes
+                input[3] = 1     // min_spots
+                input[4] = 20.0  // mito_threshold
+                input[5] = 0.0   // ribo_threshold
+                input[6] = 100.0 // hb_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                input[1] = 500   // min_counts
+                input[2] = 250   // min_genes
+                input[3] = 1     // min_spots
+                input[4] = 20.0  // mito_threshold
+                input[5] = 0.0   // ribo_threshold
+                input[6] = 100.0 // hb_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
