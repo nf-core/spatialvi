@@ -32,39 +32,6 @@
             "nextflow": "25.10.4"
         }
     },
-    "homo_sapiens - h5ad - raw matrix - stub": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_qc.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "adata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_qc.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ]
-            }
-        ],
-        "timestamp": "2026-03-25T10:24:16.561796",
-        "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
-        }
-    },
     "homo_sapiens - h5ad - stub": {
         "content": [
             {
