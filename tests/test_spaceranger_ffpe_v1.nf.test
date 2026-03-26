@@ -14,35 +14,37 @@ nextflow_pipeline {
         }
 
         then {
+
+            // Names of all output files and directories with unstable contents
+            def unstable = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                ignore: ['pipeline_info/*.{html,json,txt}']
+            )
+
+            // Paths of all output files with stable contents
+            def stable = getAllFilesFromDir(
+                params.outdir,
+                ignoreFile: 'tests/.nftignore'
+            )
+
+            // Test sample names
+            def sample = "Visium_FFPE_Human_Ovarian_Cancer"
+
             assertAll(
 
-                // Workflow
-                { assert workflow.success },
+                { assert workflow.success},
+                { assert snapshot(unstable, stable).match() }
+
+                // Remove Nextflow versions since testing is done on several versions
                 { assert snapshot(removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml")).match() },
 
-                // Data
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/adata_processed.h5ad").exists() },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/sdata_processed.zarr").exists() },
+                // Report contents
+                { assert file ("${outputDir}/${sample}/reports/report-${sample}.html").text.contains("Spatially variable genes")}
+                { assert file ("${outputDir}/${sample}.2/reports/report-${sample}.2.html").text.contains("Spatially variable genes")}
+                { assert file ("${outputDir}/integration/reports/report-integrated.html").text.contains("Spatial visualization")}
 
-                // Reports
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/quality_controls.html").text.contains("final results of all the filtering") },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
-
-                // Spatially variable genes
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/data/spatially_variable_genes.csv").exists() },
-
-                // Space Ranger
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/web_summary.html").exists() },
-                { assert snapshot(
-                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/raw_feature_bc_matrix.h5"),
-                    path("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/filtered_feature_bc_matrix.h5"),
-                )},
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/raw_feature_bc_matrix.h5").exists() },
-                { assert file("$outputDir/Visium_FFPE_Human_Ovarian_Cancer/spaceranger/outs/spatial/tissue_positions.csv").exists() },
-
-                // MultiQC
-                { assert file("$outputDir/multiqc/multiqc_report.html").text.contains("Visium_FFPE_Human_Ovarian_Cancer")}
             )
         }
     }
