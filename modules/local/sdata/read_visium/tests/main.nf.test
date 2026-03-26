@@ -1,0 +1,81 @@
+nextflow_process {
+
+    name "Test Process SDATA_READ_VISIUM"
+    script "../main.nf"
+    process "SDATA_READ_VISIUM"
+
+    tag "modules"
+    tag "modules_local"
+    tag "sdata_read_visium"
+
+    test("homo_sapiens - h5ad") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    // TODO: Add module test data (or is it okay to use pipeline-level test data?)
+                    """
+                    input[0] = [
+                        [ id: 'test' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = UNTAR.out.untar
+                input[1] = 8 // hd_bin_size
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    // TODO: Add `outs.tar.gz` from Space Ranger HD outputs, so that HD reading
+    // can be tested as well; currently, there is HD input for Space Ranger, but
+    // no HD output
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = UNTAR.out.untar
+                input[1] = 8 // hd_bin_size
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

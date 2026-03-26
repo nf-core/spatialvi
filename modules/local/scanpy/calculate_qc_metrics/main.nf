@@ -5,7 +5,7 @@ process SCANPY_CALCULATE_QC_METRICS {
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    tuple val(meta), path(adata)
+    tuple val(meta), path(adata, stageAs: "input.h5ad")
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -15,11 +15,11 @@ process SCANPY_CALCULATE_QC_METRICS {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "${meta.id}_qc"
+    prefix = task.ext.prefix ?: "${meta.id}"
     template 'calculate_qc_metrics.py'
 
     stub:
-    prefix = task.ext.prefix ?: "${meta.id}_qc"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
     touch versions.yml

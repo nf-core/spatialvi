@@ -1,0 +1,94 @@
+nextflow_process {
+
+    name "Test Process SDATA_TO_LEGACY_ANNDATA"
+    script "../main.nf"
+    process "SDATA_TO_LEGACY_ANNDATA"
+
+    tag "modules"
+    tag "modules_local"
+    tag "sdata_to_legacy_anndata"
+
+    test("homo_sapiens - h5ad") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+        }
+
+        when {
+            // TODO: Add module test data in SpatialData format, so that setup
+            // won't be required
+            process {
+                """
+                input[0] = SDATA_READ_VISIUM.out.sdata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SDATA_READ_VISIUM.out.sdata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

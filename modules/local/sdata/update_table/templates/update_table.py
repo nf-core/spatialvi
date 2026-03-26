@@ -128,17 +128,6 @@ def replace_table(sdata, adata, table_name):
         print(f"WARNING: Failed to set table via sdata.tables: {e}")
         print("Attempting to set table using internal method...")
 
-    # try:
-    #     # Try setting directly on the internal dict
-    #     if hasattr(sdata, '_tables'):
-    #         sdata._tables[table_name] = new_table
-    #         print("Set table using _tables dict")
-    #     else:
-    #         raise AttributeError("No _tables attribute found")
-    # except Exception as e2:
-    #     print(f"ERROR: All methods failed: {e2}")
-    #     sys.exit(1)
-
     # Update spatial elements if observations were filtered
     if region and adata.shape[0] < original_table.shape[0]:
         print(f"Observations were filtered: {original_table.shape[0]} -> {adata.shape[0]}")
