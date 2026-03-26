@@ -1,0 +1,68 @@
+{
+    "homo_sapiens - h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_nhood_enrichment.h5ad:md5,7434151e4906e194f3607b644eb67f96"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,3a9dec789188d5283280cd9de9897f53"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_nhood_enrichment.h5ad:md5,7434151e4906e194f3607b644eb67f96"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,3a9dec789188d5283280cd9de9897f53"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-26T11:52:53.623903885",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "homo_sapiens - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_nhood_enrichment.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_nhood_enrichment.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-26T11:53:10.935774326",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

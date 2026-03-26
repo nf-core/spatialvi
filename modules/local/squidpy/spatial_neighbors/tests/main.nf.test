@@ -1,0 +1,112 @@
+nextflow_process {
+
+    name "Test Process SQUIDPY_SPATIAL_NEIGHBORS"
+    script "../main.nf"
+    process "SQUIDPY_SPATIAL_NEIGHBORS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "squidpy_spatial_neighbors"
+
+    test("homo_sapiens - h5ad") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../../sdata/read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_READ_VISIUM.out.sdata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                input[1] = "generic" // coord_type
+                input[2] = 6         // n_neighs
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialtranscriptomics/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../../sdata/read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_READ_VISIUM.out.sdata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                input[1] = "generic" // coord_type
+                input[2] = 6         // n_neighs
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "homo_sapiens - h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_interaction_matrix.h5ad:md5,727bdfec388d04146fea65685b3e53e2"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,78677e1663cf16b9059e86c4765cfd1f"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_interaction_matrix.h5ad:md5,727bdfec388d04146fea65685b3e53e2"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,78677e1663cf16b9059e86c4765cfd1f"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-26T11:50:53.483173533",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "homo_sapiens - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_interaction_matrix.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_interaction_matrix.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-26T11:51:11.173112679",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

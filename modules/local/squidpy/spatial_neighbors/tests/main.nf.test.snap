@@ -1,0 +1,68 @@
+{
+    "homo_sapiens - h5ad": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_spatial_neighbors.h5ad:md5,752c2b0b2b93da96eab195efef3f1d58"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,1af8ea16ef6f0a48c58bca6f26a978a0"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_spatial_neighbors.h5ad:md5,752c2b0b2b93da96eab195efef3f1d58"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1af8ea16ef6f0a48c58bca6f26a978a0"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-26T11:54:36.173547579",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "homo_sapiens - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_spatial_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_spatial_neighbors.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-26T11:54:50.706278414",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
