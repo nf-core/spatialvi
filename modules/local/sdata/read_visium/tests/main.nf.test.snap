@@ -189,12 +189,12 @@
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,90e375d14bb678c25396c0ab07de9081"
+                                            "0:md5,79329b1ffd230c1f5c5ba56c9de0a8a3"
                                         ],
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,4db9c73b0f3b9321f06cd5626c71f5ec"
+                                            "0:md5,cdd4ad43289e258c1b2ef0d4c2ef37a9"
                                         ],
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
@@ -406,12 +406,12 @@
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,90e375d14bb678c25396c0ab07de9081"
+                                            "0:md5,79329b1ffd230c1f5c5ba56c9de0a8a3"
                                         ],
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,4db9c73b0f3b9321f06cd5626c71f5ec"
+                                            "0:md5,cdd4ad43289e258c1b2ef0d4c2ef37a9"
                                         ],
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
@@ -438,7 +438,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-26T09:06:30.877979",
+        "timestamp": "2026-03-26T13:17:47.362044",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

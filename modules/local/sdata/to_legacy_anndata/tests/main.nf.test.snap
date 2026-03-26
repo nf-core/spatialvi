@@ -197,17 +197,17 @@
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,a4c67c78a6fa3d1e0a137cc91633d36f"
+                                            "0:md5,90e375d14bb678c25396c0ab07de9081"
                                         ],
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,dcc5eaf8af19894524a8846f6e004261"
+                                            "0:md5,26eab22e5c8a5d9fcf501bbd98d2e9a1"
                                         ],
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,f9d28f041b52571f9b58033435d41f9e"
+                                            "0:md5,c0af9c4a5efe538534c7aa1206042c98"
                                         ]
                                     ],
                                     [
@@ -422,17 +422,17 @@
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,a4c67c78a6fa3d1e0a137cc91633d36f"
+                                            "0:md5,90e375d14bb678c25396c0ab07de9081"
                                         ],
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,dcc5eaf8af19894524a8846f6e004261"
+                                            "0:md5,26eab22e5c8a5d9fcf501bbd98d2e9a1"
                                         ],
                                         [
                                             ".zarray:md5,1cffe458291d50878206cdba22039194",
                                             ".zattrs:md5,c6759c37f5968bbe26a24623923e9002",
-                                            "0:md5,f9d28f041b52571f9b58033435d41f9e"
+                                            "0:md5,c0af9c4a5efe538534c7aa1206042c98"
                                         ]
                                     ],
                                     [
@@ -454,7 +454,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-26T09:21:23.083228",
+        "timestamp": "2026-03-26T13:18:48.666393",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

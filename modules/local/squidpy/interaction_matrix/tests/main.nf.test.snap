@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test_interaction_matrix.h5ad:md5,727bdfec388d04146fea65685b3e53e2"
+                        "test_interaction_matrix.h5ad:md5,ed27fd771a9c430310222b980df2c3aa"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "test"
                         },
-                        "test_interaction_matrix.h5ad:md5,727bdfec388d04146fea65685b3e53e2"
+                        "test_interaction_matrix.h5ad:md5,ed27fd771a9c430310222b980df2c3aa"
                     ]
                 ],
                 "versions": [
@@ -26,10 +26,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-26T11:50:53.483173533",
+        "timestamp": "2026-03-26T13:22:14.254734",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {

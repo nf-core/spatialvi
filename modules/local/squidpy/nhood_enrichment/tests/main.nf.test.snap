@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test_nhood_enrichment.h5ad:md5,7434151e4906e194f3607b644eb67f96"
+                        "test_nhood_enrichment.h5ad:md5,e207fc2789dd4115283b8b9027d48dcf"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "test"
                         },
-                        "test_nhood_enrichment.h5ad:md5,7434151e4906e194f3607b644eb67f96"
+                        "test_nhood_enrichment.h5ad:md5,e207fc2789dd4115283b8b9027d48dcf"
                     ]
                 ],
                 "versions": [
@@ -26,10 +26,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-26T11:52:53.623903885",
+        "timestamp": "2026-03-26T13:25:09.891041",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {

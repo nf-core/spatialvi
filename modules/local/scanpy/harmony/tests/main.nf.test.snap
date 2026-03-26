@@ -3,20 +3,20 @@
         "content": [
             {
                 "0": [
-                    "merged.h5ad:md5,3727eaf0c917e5b36cce792815fa1514"
+                    "merged.h5ad:md5,3c35e6a01baba5ff50c75cee5efa4252"
                 ],
                 "1": [
                     "versions.yml:md5,504a0fc917d98309ce187dd230c92143"
                 ],
                 "adata": [
-                    "merged.h5ad:md5,3727eaf0c917e5b36cce792815fa1514"
+                    "merged.h5ad:md5,3c35e6a01baba5ff50c75cee5efa4252"
                 ],
                 "versions": [
                     "versions.yml:md5,504a0fc917d98309ce187dd230c92143"
                 ]
             }
         ],
-        "timestamp": "2026-03-25T18:43:29.195316",
+        "timestamp": "2026-03-26T13:05:48.930321",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
