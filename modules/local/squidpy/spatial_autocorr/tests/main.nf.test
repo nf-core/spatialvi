@@ -43,18 +43,20 @@ nextflow_process {
                 process {
                     """
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = "generic" // coord_type
-                    input[2] = 6         // n_neighs
+                    input[1] = 'grid' // coord_type
+                    input[2] = 6      // n_neighs
                     """
                 }
             }
         }
 
         when {
+            // TODO: Add a SpatialData test dataset, so some setup can be
+            // skipped
             process {
                 """
                 input[0] = SQUIDPY_SPATIAL_NEIGHBORS.out.adata
-                input[1] = "moran" // mode
+                input[1] = 'moran' // mode
                 """
             }
         }
@@ -104,8 +106,8 @@ nextflow_process {
                 process {
                     """
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = "generic" // coord_type
-                    input[2] = 6         // n_neighs
+                    input[1] = 'grid' // coord_type
+                    input[2] = 6      // n_neighs
                     """
                 }
             }
@@ -115,7 +117,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SQUIDPY_SPATIAL_NEIGHBORS.out.adata
-                input[1] = "moran" // mode
+                input[1] = 'moran' // mode
                 """
             }
         }

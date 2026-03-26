@@ -12,19 +12,6 @@ import squidpy as sq
 import anndata as ad
 
 
-def read_adata(file_path):
-    """Read an AnnData object from h5ad file."""
-    print(f"Reading: {file_path}")
-    adata = ad.read_h5ad(file_path)
-    return adata
-
-
-def validate_adata(adata):
-    """Check that required data exists in the AnnData object."""
-    if "spatial" not in adata.obsm:
-        raise ValueError("Spatial coordinates not found in adata.obsm['spatial']")
-
-
 def write_versions(process_name):
     """Write software versions to YAML file."""
     versions = {
@@ -41,18 +28,20 @@ def write_versions(process_name):
 def main():
     """Compute spatial neighbors graph based on spatial coordinates."""
     input_adata = "${adata}"
-    output_adata = "${prefix}.h5ad"
     coord_type = "${coord_type}"
     n_neighs = int("${n_neighs}")
+    output_adata = "${prefix}.h5ad"
 
     # Read AnnData
-    adata = read_adata(input_adata)
+    adata = ad.read_h5ad(input_adata)
+    print(f"Reading: {input_adata}")
     print(f"Shape: {adata.shape}")
     print(f"Coord type: {coord_type}")
     print(f"Number of neighbors: {n_neighs}")
 
     # Validate input
-    validate_adata(adata)
+    if "spatial" not in adata.obsm:
+        raise ValueError("Spatial coordinates not found in adata.obsm['spatial']")
 
     # Compute spatial neighbors
     sq.gr.spatial_neighbors(

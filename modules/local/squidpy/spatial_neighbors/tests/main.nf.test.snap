@@ -7,7 +7,7 @@
                         {
                             "id": "test"
                         },
-                        "test_spatial_neighbors.h5ad:md5,752c2b0b2b93da96eab195efef3f1d58"
+                        "test_spatial_neighbors.h5ad:md5,cc88d813f055fb0487bcbb89338d4bdd"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "test"
                         },
-                        "test_spatial_neighbors.h5ad:md5,752c2b0b2b93da96eab195efef3f1d58"
+                        "test_spatial_neighbors.h5ad:md5,cc88d813f055fb0487bcbb89338d4bdd"
                     ]
                 ],
                 "versions": [
@@ -26,10 +26,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-26T11:54:36.173547579",
+        "timestamp": "2026-03-26T10:49:27.691357",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -59,10 +59,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-26T11:54:50.706278414",
+        "timestamp": "2026-03-26T10:50:03.723361",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.4"
         }
     }
 }

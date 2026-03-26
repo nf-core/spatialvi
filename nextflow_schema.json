@@ -274,7 +274,7 @@
             "properties": {
                 "spatial_coord_type": {
                     "type": "string",
-                    "default": "generic",
+                    "default": "grid",
                     "enum": ["generic", "grid"],
                     "description": "The coordinate type to use for spatial neighborhood enrichment.",
                     "fa_icon": "fas fa-tag"
