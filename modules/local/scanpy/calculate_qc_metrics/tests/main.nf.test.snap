@@ -1,35 +1,15 @@
 {
     "homo_sapiens - h5ad": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,10c10509a01ce8889a317bf89edc5e7e"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,6f4b87dd8d7574d03eb384519a2f6283"
-                ],
-                "adata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,10c10509a01ce8889a317bf89edc5e7e"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,6f4b87dd8d7574d03eb384519a2f6283"
-                ]
-            }
+            [
+                "versions.yml:md5,6f4b87dd8d7574d03eb384519a2f6283"
+            ],
+            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - n_genes_by_counts\n    - pct_counts_hb\n    - pct_counts_in_top_100_genes\n    - pct_counts_in_top_200_genes\n    - pct_counts_in_top_500_genes\n    - pct_counts_in_top_50_genes\n    - pct_counts_mt\n    - pct_counts_ribo\n    - sample\n    - total_counts\n    - total_counts_hb\n    - total_counts_mt\n    - total_counts_ribo\nvar:\n  index: _index\n  columns:\n    - hb\n    - mean_counts\n    - mt\n    - n_cells_by_counts\n    - pct_dropout_by_counts\n    - ribo\n    - symbols\n    - total_counts\nlayers:\n  - counts\n  - raw\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n"
         ],
-        "timestamp": "2026-03-26T13:04:31.180345",
+        "timestamp": "2026-03-26T22:33:41.701147706",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.0"
         }
     },
     "homo_sapiens - h5ad - stub": {

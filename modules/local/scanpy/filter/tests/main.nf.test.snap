@@ -1,51 +1,23 @@
 {
     "homo_sapiens - h5ad": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,1b0e9574737ae50a6070529aa8d3f3c4"
-                    ]
-                ],
-                "1": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_stats.json:md5,e0fc8291b21b9166c61ea09bbbe30730"
-                    ]
-                ],
-                "2": [
-                    "versions.yml:md5,b6a994de579a3ecaab530e42ab0b9d2d"
-                ],
-                "adata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,1b0e9574737ae50a6070529aa8d3f3c4"
-                    ]
-                ],
-                "stats": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_stats.json:md5,e0fc8291b21b9166c61ea09bbbe30730"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,b6a994de579a3ecaab530e42ab0b9d2d"
+            [
+                "versions.yml:md5,b6a994de579a3ecaab530e42ab0b9d2d"
+            ],
+            "n_obs: 9\nn_vars: 1015\nobs:\n  index: _index\n  columns:\n    - n_counts\n    - n_genes\n    - n_genes_by_counts\n    - pct_counts_hb\n    - pct_counts_in_top_100_genes\n    - pct_counts_in_top_200_genes\n    - pct_counts_in_top_500_genes\n    - pct_counts_in_top_50_genes\n    - pct_counts_mt\n    - pct_counts_ribo\n    - sample\n    - total_counts\n    - total_counts_hb\n    - total_counts_mt\n    - total_counts_ribo\nvar:\n  index: _index\n  columns:\n    - hb\n    - mean_counts\n    - mt\n    - n_cells\n    - n_cells_by_counts\n    - pct_dropout_by_counts\n    - ribo\n    - symbols\n    - total_counts\nlayers:\n  - counts\n  - raw\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n  - filtering_stats\n",
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_stats.json:md5,e0fc8291b21b9166c61ea09bbbe30730"
                 ]
-            }
+            ]
         ],
-        "timestamp": "2026-03-25T18:33:00.154373",
+        "timestamp": "2026-03-26T23:25:38.909767108",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.0"
         }
     },
     "homo_sapiens - h5ad - stub": {
