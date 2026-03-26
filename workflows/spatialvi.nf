@@ -239,6 +239,10 @@ workflow SPATIALVI {
     //
     // SUBWORKFLOW: Sample aggregation (optional)
     //
+    ch_integration_html        = channel.empty()
+    ch_integration_notebook    = channel.empty()
+    ch_integration_params_yaml = channel.empty()
+    ch_integration_artifacts   = channel.empty()
     if (integrate_sdata) {
         INTEGRATION (
             ch_sdata_merged,
@@ -250,6 +254,10 @@ workflow SPATIALVI {
             umap_spread,
             integration_cluster_resolution
         )
+        ch_integration_html        = INTEGRATION.out.html
+        ch_integration_notebook    = INTEGRATION.out.notebook
+        ch_integration_params_yaml = INTEGRATION.out.params_yaml
+        ch_integration_artifacts   = INTEGRATION.out.artifacts
     }
 
     // =========================================================================
@@ -332,6 +340,7 @@ workflow SPATIALVI {
     // SpatialData outputs
     sdata_raw               = SDATA_READ_VISIUM.out.sdata // channel: [ meta, zarr ]
     sdata                   = ch_sdata_output             // channel: [ meta, zarr ]
+    sdata_merged            = ch_sdata_merged             // channel: [ zarr ]
 
     // Per-sample report outputs
     report_html             = REPORT.out.html             // channel: [ meta, html ]
@@ -343,10 +352,10 @@ workflow SPATIALVI {
     svg_csv                 = SPATIAL.out.svg_csv         // channel: [ meta, csv ]
 
     // Integration report outputs
-    integration_html        = INTEGRATION.out.html        // channel: [ meta, html ]
-    integration_notebook    = INTEGRATION.out.notebook    // channel: [ meta, qmd ]
-    integration_params_yaml = INTEGRATION.out.params_yaml // channel: [ meta, yml ]
-    integration_artifacts   = INTEGRATION.out.artifacts   // channel: [ meta, dir ]
+    integration_html        = ch_integration_html        // channel: [ meta, html ]
+    integration_notebook    = ch_integration_notebook    // channel: [ meta, qmd ]
+    integration_params_yaml = ch_integration_params_yaml // channel: [ meta, yml ]
+    integration_artifacts   = ch_integration_artifacts   // channel: [ meta, dir ]
 
     // MultiQC
     multiqc_report          = MULTIQC.out.report.toList() // channel: [ html ]
