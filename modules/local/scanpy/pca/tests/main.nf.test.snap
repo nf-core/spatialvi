@@ -1,32 +1,12 @@
 {
     "homo_sapiens - h5ad - with highly variable genes": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,880f3ed185f595ebf0e521b5b9aeabb4"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
-                ],
-                "adata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,880f3ed185f595ebf0e521b5b9aeabb4"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
-                ]
-            }
+            [
+                "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
+            ],
+            "n_obs: 300000\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - highly_variable\n    - highly_variable_rank\n    - means\nlayers:\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\nvarp:\nuns:\n  - hvg\n  - pca\n"
         ],
-        "timestamp": "2026-03-25T18:43:20.920707",
+        "timestamp": "2026-03-26T15:47:56.432184",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
@@ -34,32 +14,12 @@
     },
     "homo_sapiens - h5ad": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,a64729ef758893f1241d015959c1d1a8"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
-                ],
-                "adata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,a64729ef758893f1241d015959c1d1a8"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
-                ]
-            }
+            [
+                "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
+            ],
+            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\nvarp:\nuns:\n  - pca\n"
         ],
-        "timestamp": "2026-03-25T14:03:47.237351",
+        "timestamp": "2026-03-26T15:48:06.951826",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

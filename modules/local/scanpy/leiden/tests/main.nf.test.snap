@@ -1,32 +1,12 @@
 {
     "homo_sapiens - h5ad": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,14796c9b9cbcab19aa8882df2d307ebf"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,310276833f0e291b5c85bb9b866b80bd"
-                ],
-                "adata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.h5ad:md5,14796c9b9cbcab19aa8882df2d307ebf"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,310276833f0e291b5c85bb9b866b80bd"
-                ]
-            }
+            [
+                "versions.yml:md5,310276833f0e291b5c85bb9b866b80bd"
+            ],
+            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - leiden\n    - sample\nvar:\n  index: _index\n  columns:\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\n  - connectivities\n  - distances\nvarp:\nuns:\n  - leiden\n  - neighbors\n  - pca\n"
         ],
-        "timestamp": "2026-03-25T15:24:41.534568",
+        "timestamp": "2026-03-26T15:43:23.963417",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
