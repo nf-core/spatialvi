@@ -243,6 +243,9 @@ workflow SPATIALVI {
     ch_integration_notebook    = channel.empty()
     ch_integration_params_yaml = channel.empty()
     ch_integration_artifacts   = channel.empty()
+    ch_sdata_integrated        = channel.empty()
+    ch_sdata_merged            = channel.empty()
+    ch_adata_integrated        = channel.empty()
     if (integrate_sdata) {
         INTEGRATION (
             ch_sdata_merged,
@@ -258,6 +261,9 @@ workflow SPATIALVI {
         ch_integration_notebook    = INTEGRATION.out.notebook
         ch_integration_params_yaml = INTEGRATION.out.params_yaml
         ch_integration_artifacts   = INTEGRATION.out.artifacts
+        ch_sdata_integrated        = INTEGRATION.out.sdata
+        ch_sdata_merged            = INTEGRATION.out.sdata_merged
+        ch_adata_integrated        = INTEGRATION.out.adata
     }
 
     // =========================================================================
@@ -341,6 +347,11 @@ workflow SPATIALVI {
     sdata_raw               = SDATA_READ_VISIUM.out.sdata // channel: [ meta, zarr ]
     sdata                   = ch_sdata_output             // channel: [ meta, zarr ]
     sdata_merged            = ch_sdata_merged             // channel: [ zarr ]
+    sdata_integrated        = ch_sdata_integrated         // channel: [ zarr ]
+
+    // AnnData outputs
+    adata                   = ch_adata                    // channel: [ meta, h5ad ]
+    adata_integrated        = ch_adata_integrated         // channel: [ h5ad ]
 
     // Per-sample report outputs
     report_html             = REPORT.out.html             // channel: [ meta, html ]
