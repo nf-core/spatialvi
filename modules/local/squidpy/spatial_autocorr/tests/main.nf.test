@@ -64,7 +64,11 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.csv,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
             )
         }
     }

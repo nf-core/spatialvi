@@ -1,35 +1,15 @@
 {
     "homo_sapiens - h5ad": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_interaction_matrix.h5ad:md5,ed27fd771a9c430310222b980df2c3aa"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,78677e1663cf16b9059e86c4765cfd1f"
-                ],
-                "adata": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_interaction_matrix.h5ad:md5,ed27fd771a9c430310222b980df2c3aa"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,78677e1663cf16b9059e86c4765cfd1f"
-                ]
-            }
+            [
+                "versions.yml:md5,78677e1663cf16b9059e86c4765cfd1f"
+            ],
+            "n_obs: 11397\nn_vars: 19023\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - in_tissue\n    - leiden\n    - region\n    - spot_id\nvar:\n  index: _index\n  columns:\n    - feature_types\n    - gene_ids\n    - genome\nlayers:\n  - raw\nobsm:\n  - X_pca\n  - spatial\nvarm:\n  - PCs\nobsp:\n  - connectivities\n  - distances\n  - spatial_connectivities\n  - spatial_distances\nvarp:\nuns:\n  - coordinate_system\n  - leiden\n  - leiden_interactions\n  - neighbors\n  - pca\n  - sample_id\n  - spatial\n  - spatial_neighbors\n  - spatialdata_attrs\n  - table_name\n"
         ],
-        "timestamp": "2026-03-26T13:22:14.254734",
+        "timestamp": "2026-03-26T20:24:51.270594754",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.0"
         }
     },
     "homo_sapiens - h5ad - stub": {
