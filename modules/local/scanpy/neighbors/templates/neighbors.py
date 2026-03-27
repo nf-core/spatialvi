@@ -57,13 +57,12 @@ def main():
     # Template variables
     input_adata = "${adata}"
     n_neighbors = int("${n_neighbors}")
-    n_pcs = "${n_pcs}"
+    n_pcs = int("${n_pcs}")
     use_rep = "${use_rep}"
     output_adata = "${prefix}.h5ad"
     process_name = "${task.process}"
 
     # Parse optional parameters
-    n_pcs = None if n_pcs.lower() in ["null", "none", ""] else int(n_pcs)
     use_rep = None if use_rep.lower() in ["null", "none", ""] else use_rep
 
     # Read AnnData

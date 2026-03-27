@@ -204,8 +204,8 @@
                     "fa_icon": "fas fa-hashtag"
                 },
                 "neighbors_n_pcs": {
-                    "type": "string",
-                    "default": "none",
+                    "type": "integer",
+                    "default": 50,
                     "description": "The number of principal components to use for the nearest neighbors calculation.",
                     "fa_icon": "fas fa-hashtag"
                 }
