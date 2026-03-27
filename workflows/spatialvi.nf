@@ -244,7 +244,6 @@ workflow SPATIALVI {
     ch_integration_params_yaml = channel.empty()
     ch_integration_artifacts   = channel.empty()
     ch_sdata_integrated        = channel.empty()
-    ch_sdata_merged            = channel.empty()
     ch_adata_integrated        = channel.empty()
     if (integrate_sdata) {
         INTEGRATION (
