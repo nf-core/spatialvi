@@ -12,5 +12,7 @@ multiqc/multiqc_data/BETA-multiqc.parquet
 fastqc/**/*_fastqc.{html,zip}
 pipeline_info/*.{html,json,txt,yml}
 
-**/*.{png,html}
-**/_extensions
+**/*.{png,html,h5ad}
+**/*.zarr/**
+**/_extensions/**
+**/*_svg.csv

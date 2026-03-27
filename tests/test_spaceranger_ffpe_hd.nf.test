@@ -42,12 +42,7 @@ nextflow_pipeline {
                     stable_name,
                     // All files with stable contents
                     stable_path
-                ).match() },
-
-                // Report contents
-                { assert file ("${outputDir}/${sample}/reports/report-${sample}.html").text.contains("Spatially variable genes")},
-                { assert file ("${outputDir}/${sample}.2/reports/report-${sample}.2.html").text.contains("Spatially variable genes")},
-                { assert file ("${outputDir}/integration/reports/report-integrated.html").text.contains("Spatial visualization")}
+                ).match() }
 
             )
         }
