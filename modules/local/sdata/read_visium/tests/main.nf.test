@@ -38,7 +38,7 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    path(process.out.sdata[0][1]).list().sort()
+                    path(process.out.sdata[0][1]).list().collect { it.getFileName().toString() }.sort()
                 ).match() }
             )
         }
