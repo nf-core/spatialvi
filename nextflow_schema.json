@@ -164,9 +164,8 @@
                 "hvg_flavor": {
                     "type": "string",
                     "default": "seurat",
-                    "enum": ["seurat", "seurat_v3", "seurat_v3_paper", "cell_ranger"],
+                    "enum": ["seurat", "cell_ranger"],
                     "description": "The method for identifying highly variable genes",
-                    "help_text": "The `seurat` and `cell_ranger` flavors require log-normalized data, while `seurat_v3` and `seurat_v3_paper` requires raw counts.",
                     "fa_icon": "fas fa-cookie-bite"
                 }
             }
