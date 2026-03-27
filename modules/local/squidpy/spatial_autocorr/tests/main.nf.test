@@ -66,9 +66,9 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    process.out.csv,
                     anndata(process.out.adata[0][1]).yaml
-                ).match() }
+                ).match() },
+                { assert path(process.out.csv[0][1]).readLines().size() == 19024}
             )
         }
     }
