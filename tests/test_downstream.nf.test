@@ -15,16 +15,16 @@ nextflow_pipeline {
 
         then {
 
-            // Names of all output files and directories with unstable contents
-            def unstable = getAllFilesFromDir(
+            // Names of all output files and directories with stable_name contents
+            def stable_name = getAllFilesFromDir(
                 params.outdir,
                 relative: true,
                 includeDir: true,
                 ignore: ['pipeline_info/*.{html,json,txt}']
             )
 
-            // Paths of all output files with stable contents
-            def stable = getAllFilesFromDir(
+            // Paths of all output files with stable_path contents
+            def stable_path = getAllFilesFromDir(
                 params.outdir,
                 ignoreFile: 'tests/.nftignore'
             )
@@ -35,14 +35,20 @@ nextflow_pipeline {
             assertAll(
 
                 { assert workflow.success},
-                { assert snapshot(unstable, stable).match() }
-
-                // Remove Nextflow versions since testing is done on several versions
-                { assert snapshot(removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml")).match() },
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we tests pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() },
 
                 // Report contents
-                { assert file ("${outputDir}/${sample}/reports/report-${sample}.html").text.contains("Spatially variable genes")}
-                { assert file ("${outputDir}/${sample}.2/reports/report-${sample}.2.html").text.contains("Spatially variable genes")}
+                { assert file ("${outputDir}/${sample}/reports/report-${sample}.html").text.contains("Spatially variable genes")},
+                { assert file ("${outputDir}/${sample}.2/reports/report-${sample}.2.html").text.contains("Spatially variable genes")},
                 { assert file ("${outputDir}/integration/reports/report-integrated.html").text.contains("Spatial visualization")}
 
             )
