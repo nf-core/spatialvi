@@ -1,12 +1,12 @@
 {
-    "homo_sapiens - h5ad": {
+    "homo_sapiens - h5ad - cell_ranger flavor": {
         "content": [
             [
                 "versions.yml:md5,e13181af4757604b85af5368250a94d7"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - highly_variable\n    - highly_variable_rank\n    - means\n    - symbols\nlayers:\n  - counts\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n  - hvg\n"
+            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - highly_variable\n    - highly_variable_rank\n    - means\n    - symbols\nlayers:\n  - counts\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n  - hvg\n  - log1p\n  - normalization\n"
         ],
-        "timestamp": "2026-03-26T15:38:03.303167",
+        "timestamp": "2026-03-27T11:19:17.850699",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
@@ -40,6 +40,19 @@
             }
         ],
         "timestamp": "2026-03-25T13:53:48.73264",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad - seurat flavor": {
+        "content": [
+            [
+                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+            ],
+            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - highly_variable\n    - means\n    - symbols\nlayers:\n  - counts\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n  - hvg\n  - log1p\n  - normalization\n"
+        ],
+        "timestamp": "2026-03-27T11:10:15.472405",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

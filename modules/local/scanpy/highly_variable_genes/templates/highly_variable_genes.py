@@ -55,57 +55,6 @@ def mark_all_genes_hvg(adata, n_genes, flavor, n_requested):
     return adata
 
 
-def select_hvgs_by_mean_expression(adata, n_hvgs):
-    """Fallback method: select top genes by mean expression."""
-    print("Falling back to marking top genes by mean expression as HVG...")
-
-    mean_expr = np.array(adata.X.mean(axis=0)).flatten()
-    top_indices = np.argsort(mean_expr)[::-1][:n_hvgs]
-
-    adata.var["highly_variable"] = False
-    adata.var.iloc[top_indices, adata.var.columns.get_loc("highly_variable")] = True
-    adata.var["means"] = mean_expr
-    adata.var["highly_variable_rank"] = np.nan
-    adata.var.loc[adata.var["highly_variable"], "highly_variable_rank"] = np.arange(n_hvgs)
-
-    print(f"Selected top {n_hvgs} genes by mean expression")
-
-    return adata, n_hvgs
-
-
-def find_hvgs_scanpy(adata, flavor, n_hvgs):
-    """Find highly variable genes using scanpy methods."""
-    try:
-        sc.pp.highly_variable_genes(
-            adata,
-            flavor=flavor,
-            n_top_genes=n_hvgs,
-            inplace=True
-        )
-        n_found = adata.var["highly_variable"].sum()
-        print(f"Identified {n_found} highly variable genes")
-        return adata, flavor, n_found
-
-    except Exception as e:
-        print(f"WARNING: HVG selection with flavor '{flavor}' failed: {e}")
-        print("Attempting with flavor 'cell_ranger'...")
-
-        try:
-            sc.pp.highly_variable_genes(
-                adata,
-                flavor="cell_ranger",
-                n_top_genes=n_hvgs,
-                inplace=True
-            )
-            n_found = adata.var["highly_variable"].sum()
-            print(f"Identified {n_found} highly variable genes with cell_ranger flavor")
-            return adata, "cell_ranger", n_found
-
-        except Exception as e2:
-            print(f"WARNING: HVG selection with 'cell_ranger' also failed: {e2}")
-            return None, None, None
-
-
 def find_highly_variable_genes(adata, n_highly_variable_genes, flavor):
     """Identify highly variable genes in the dataset."""
     print(f"Shape: {adata.shape}")
@@ -120,27 +69,32 @@ def find_highly_variable_genes(adata, n_highly_variable_genes, flavor):
 
     # Adjust n_highly_variable_genes if necessary
     actual_n_hvgs = min(n_highly_variable_genes, n_genes)
-
     if actual_n_hvgs < n_highly_variable_genes:
         print(f"WARNING: Requested {n_highly_variable_genes} HVGs but only {n_genes} genes available.")
         print(f"Adjusting to select top {actual_n_hvgs} genes.")
 
-    # Try scanpy HVG methods
-    result = find_hvgs_scanpy(adata, flavor, actual_n_hvgs)
-
-    if result[0] is not None:
-        adata, used_flavor, n_hvgs = result
-    else:
-        # Fallback to mean expression method
-        adata, n_hvgs = select_hvgs_by_mean_expression(adata, actual_n_hvgs)
-        used_flavor = "mean_expression_fallback"
+    # Get HVGs
+    try:
+        sc.pp.highly_variable_genes(
+            adata,
+            flavor=flavor,
+            n_top_genes=actual_n_hvgs,
+            inplace=True
+        )
+    except ValueError as e:
+        if "Bin edges must be unique" in str(e):
+            print("WARNING: Binning failed - marking all genes as HVG.")
+            return mark_all_genes_hvg(adata, n_genes, flavor, n_highly_variable_genes)
+        raise
+    n_found = adata.var["highly_variable"].sum()
+    print(f"Identified {n_found} highly variable genes")
 
     # Store parameters in uns
     adata.uns["hvg"] = {
-        "flavor": used_flavor,
+        "flavor": flavor,
         "n_highly_variable_genes": n_highly_variable_genes,
         "actual_n_hvgs": actual_n_hvgs,
-        "n_hvgs_found": int(n_hvgs),
+        "n_hvgs_found": int(actual_n_hvgs),
     }
 
     # Ensure highly_variable column exists and is boolean
