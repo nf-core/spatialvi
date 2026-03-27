@@ -53,9 +53,9 @@ nextflow_process {
                 process {
                     """
                     input[0] = SQUIDPY_SPATIAL_NEIGHBORS.out.adata
-                    input[1] = 15     // n_neighbors
-                    input[2] = "none" // n_pcs
-                    input[3] = ''     // use_rep
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
                     """
                 }
             }
@@ -138,9 +138,9 @@ nextflow_process {
                 process {
                     """
                     input[0] = SQUIDPY_SPATIAL_NEIGHBORS.out.adata
-                    input[1] = 15     // n_neighbors
-                    input[2] = "none" // n_pcs
-                    input[3] = ''     // use_rep
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
                     """
                 }
             }
