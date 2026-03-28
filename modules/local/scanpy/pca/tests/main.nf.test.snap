@@ -4,9 +4,9 @@
             [
                 "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
             ],
-            "n_obs: 300000\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - highly_variable\n    - highly_variable_rank\n    - means\nlayers:\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\nvarp:\nuns:\n  - hvg\n  - pca\n"
+            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - highly_variable\n    - means\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\nvarp:\nuns:\n  - hvg\n  - log1p\n  - normalization\n  - pca\n"
         ],
-        "timestamp": "2026-03-26T15:47:56.432184",
+        "timestamp": "2026-03-28T07:22:46.830385",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
