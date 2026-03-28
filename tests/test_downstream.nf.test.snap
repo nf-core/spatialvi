@@ -693,6 +693,10 @@
                 "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/n_neighbors/.zarray",
                 "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/n_neighbors/.zattrs",
                 "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/n_neighbors/0",
+                "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/n_pcs",
+                "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/n_pcs/.zarray",
+                "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/n_pcs/.zattrs",
+                "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/n_pcs/0",
                 "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/random_state",
                 "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/random_state/.zarray",
                 "integration/data/collected.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/neighbors/params/random_state/.zattrs",
@@ -1531,6 +1535,10 @@
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/n_neighbors/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/n_neighbors/.zattrs",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/n_neighbors/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/n_pcs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/n_pcs/.zarray",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/n_pcs/.zattrs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/n_pcs/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/random_state",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/random_state/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_22_table/uns/neighbors/params/random_state/.zattrs",
@@ -1944,7 +1952,7 @@
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ]
         ],
-        "timestamp": "2026-03-27T16:16:13.108473",
+        "timestamp": "2026-03-27T17:06:43.907774726",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
