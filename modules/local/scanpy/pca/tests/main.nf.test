@@ -79,6 +79,27 @@ nextflow_process {
         }
     }
 
+    test("homo_sapiens - h5ad - should fail without HVGs when use_highly_variable is true") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'test' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 50   // n_pcs
+                input[2] = true // use_highly_variable
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed }
+            )
+        }
+    }
+
     test("homo_sapiens - h5ad - stub") {
 
         options "-stub"

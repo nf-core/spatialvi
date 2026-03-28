@@ -9,6 +9,7 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import platform
+import sys
 import yaml
 
 import anndata as ad
@@ -23,13 +24,12 @@ def perform_pca(adata, n_comps, use_highly_variable):
 
     # Check if HVGs are available
     has_hvg = "highly_variable" in adata.var.columns
-
     if use_highly_variable and has_hvg:
         n_hvgs = adata.var["highly_variable"].sum()
         print(f"Using {n_hvgs} highly variable genes for PCA")
     elif use_highly_variable and not has_hvg:
-        print("Warning: highly_variable not found in var, using all genes")
-        use_highly_variable = False
+        print("ERROR: Highly variable genes not found in var.")
+        sys.exit(1)
 
     # Perform PCA
     sc.pp.pca(
