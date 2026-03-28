@@ -63,10 +63,6 @@ def find_highly_variable_genes(adata, n_highly_variable_genes, flavor):
 
     n_cells, n_genes = validate_adata(adata)
 
-    # Handle edge case: too few genes
-    if n_genes < 10:
-        return mark_all_genes_hvg(adata, n_genes, flavor, n_highly_variable_genes)
-
     # Adjust n_highly_variable_genes if necessary
     actual_n_hvgs = min(n_highly_variable_genes, n_genes)
     if actual_n_hvgs < n_highly_variable_genes:
