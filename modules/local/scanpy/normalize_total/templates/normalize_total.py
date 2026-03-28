@@ -14,13 +14,6 @@ import anndata as ad
 import scanpy as sc
 
 
-def parse_target_sum(target_sum_str):
-    """Parse target_sum parameter from string."""
-    if target_sum_str.lower() in ["null", "none", ""]:
-        return None
-    return float(target_sum_str)
-
-
 def normalize_adata(adata, target_sum):
     """Normalize total counts per cell/spot."""
     print(f"Shape: {adata.shape}")
@@ -76,7 +69,7 @@ def main():
     process_name = "${task.process}"
 
     # Parse target_sum parameter
-    target_sum = parse_target_sum(target_sum)
+    target_sum = None if target_sum == "" else int(target_sum)
 
     # Read AnnData
     print(f"Normalizing AnnData from: {input_adata}")

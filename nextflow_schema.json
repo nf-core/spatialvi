@@ -140,10 +140,10 @@
             "description": "Normalization options used by the pipeline.",
             "properties": {
                 "normalize_target_sum": {
-                    "type": "string",
-                    "default": "none",
+                    "type": "integer",
+                    "default": "",
                     "description": "Target sum for normalization of counts per cell.",
-                    "help_text": "By default, normalizes so that each cell has a total count equal to the median cell total before normalization. By specifying `1e6` the normalization become CPM normalization, while `1e4` is another common option for scRNA-seq data.",
+                    "help_text": "By default, normalizes so that each cell has a total count equal to the median cell total before normalization. By specifying `1000000` the normalization become CPM normalization, while `10000` is another common option for scRNA-seq data.",
                     "fa_icon": "fas fa-crosshairs"
                 }
             }
