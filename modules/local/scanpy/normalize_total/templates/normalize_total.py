@@ -65,11 +65,12 @@ def main():
     # Template variables
     input_adata = "${adata}"
     output_adata = "${prefix}.h5ad"
-    target_sum = "${target_sum}"
+    target_sum = int("${target_sum}")
     process_name = "${task.process}"
 
-    # Parse target_sum parameter
-    target_sum = None if target_sum == "" else int(target_sum)
+    # Target sum should be `None` when the default behaviour of median across
+    # all cells is desired, which is coded as zero in the pipeline
+    target_sum = None if target_sum == 0 else target_sum
 
     # Read AnnData
     print(f"Normalizing AnnData from: {input_adata}")
