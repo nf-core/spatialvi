@@ -27,6 +27,12 @@ nextflow_pipeline {
                 ignoreFile: 'tests/.nftignore'
             )
 
+            // Paths of all output AnnData files
+            def adata_files = getAllFilesFromDir(
+                params.outdir,
+                include: ['**/*.h5ad']
+            )
+
             // Test sample names
             def sample = "Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2"
 
@@ -41,7 +47,9 @@ nextflow_pipeline {
                     // All stable path name, with a relative path
                     stable_name,
                     // All files with stable contents
-                    stable_path
+                    stable_path,
+                    // AnnData files with unstable content
+                    adata_files.collect { file -> anndata(file.toPath()).yaml }
                 ).match() }
 
             )
