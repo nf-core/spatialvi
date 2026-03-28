@@ -19,7 +19,7 @@ nextflow_pipeline {
                 relative: true,
                 includeDir: true,
                 ignore: ['pipeline_info/*.{html,json,txt}']
-            )
+            ).sort()
 
             // Paths of all output files with stable_path contents
             def stable_path = getAllFilesFromDir(
