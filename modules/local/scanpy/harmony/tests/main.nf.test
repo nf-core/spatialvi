@@ -19,8 +19,8 @@ nextflow_process {
                         tuple([ id: 'test_1' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
                         tuple([ id: 'test_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
                     ])
-                    input[1] = 50   // n_pcs
-                    input[2] = true // use_highly_variable
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
                     """
                 }
             }
@@ -60,8 +60,8 @@ nextflow_process {
                         tuple([ id: 'test_1' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
                         tuple([ id: 'test_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
                     ])
-                    input[1] = 50   // n_pcs
-                    input[2] = true // use_highly_variable
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
                     """
                 }
             }

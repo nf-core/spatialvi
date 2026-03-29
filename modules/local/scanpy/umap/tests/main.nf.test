@@ -13,13 +13,21 @@ nextflow_process {
 	// Including multiple updstream modules greatly reduces computation
 	// time, even though it's technically not needed
         setup {
-            run("SCANPY_HIGHLY_VARIABLE_GENES") {
-                script "../../highly_variable_genes/main.nf"
+            run("SCANPY_LOG1P") {
+                script "../../log1p/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'test' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
+                    """
+                }
+            }
+            run("SCANPY_HIGHLY_VARIABLE_GENES") {
+                script "../../highly_variable_genes/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_LOG1P.out.adata
                     input[1] = 2000     // n_hvgs
                     input[2] = 'seurat' // flavor
                     """
