@@ -16,7 +16,9 @@ pipeline_info/*.{html,json,txt,yml}
 **/*.zarr/**
 **/_extensions/**
 **/*_svg.csv
-**/{components,projection,variance}.csv
-**/{feature_slice,molecule_info}.h5
+**/{components,projection,variance,}.csv
+**/{barcodes,features}.tsv.gz
+**/{feature_slice,molecule_info,raw_feature_cell_matrix}.h5
 **/scalefactors_json.json
 **/fastqc*.txt
+**/{multiqc_fastqc,multiqc_general_stats}.txt
