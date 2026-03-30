@@ -5,7 +5,7 @@ process SQUIDPY_SPATIAL_NEIGHBORS {
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    tuple val(meta), path(adata)
+    tuple val(meta), path(adata, stageAs: "input.h5ad")
     val coord_type
     val n_neighs
 
@@ -17,11 +17,11 @@ process SQUIDPY_SPATIAL_NEIGHBORS {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "${meta.id}_spatial_neighbors"
+    prefix = task.ext.prefix ?: "${meta.id}"
     template 'spatial_neighbors.py'
 
     stub:
-    prefix = task.ext.prefix ?: "${meta.id}_spatial_neighbors"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
     touch versions.yml
