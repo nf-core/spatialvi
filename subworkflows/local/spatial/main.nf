@@ -6,10 +6,10 @@ include { SQUIDPY_SPATIAL_NEIGHBORS    } from '../../../modules/local/squidpy/sp
 workflow SPATIAL {
 
     take:
-    ch_adata                // channel: [ meta, h5ad ]
-    spatial_coord_type      //  string: Type of spatial coordinate system
-    spatial_n_neighbors    // integer: Number of spatial neighbors to use
-    svg_autocorr_method     //  string: Spatial autocorrelation method to use
+    ch_adata            // channel: [ meta, h5ad ]
+    spatial_coord_type  //  string: Type of spatial coordinate system
+    spatial_n_neighbors // integer: Number of spatial neighbors to use
+    svg_autocorr_method //  string: Spatial autocorrelation method to use
 
     main:
 
@@ -48,6 +48,6 @@ workflow SPATIAL {
     )
 
     emit:
-    adata              = SQUIDPY_SPATIAL_AUTOCORR.out.adata // channel: [ meta, h5ad ]
-    svg_csv            = SQUIDPY_SPATIAL_AUTOCORR.out.csv   // channel: [ meta, csv ]
+    adata   = SQUIDPY_SPATIAL_AUTOCORR.out.adata // channel: [ meta, h5ad ]
+    svg_csv = SQUIDPY_SPATIAL_AUTOCORR.out.csv   // channel: [ meta, csv ]
 }
