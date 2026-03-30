@@ -10,7 +10,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
-            :cn
+            }
         }
 
         then {
@@ -47,7 +47,7 @@ nextflow_pipeline {
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"),
                     stable_name,
                     stable_name_zarr,
-                    stable_path,
+                    stable_path
                 ).match() }
 
             )
