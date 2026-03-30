@@ -256,7 +256,7 @@ workflow SPATIALVI {
         //
         if (merge_sdata || integrate_sdata) {
             SDATA_MERGE (
-                ch_sdata_output.map { _meta, zarr -> return [zarr] }
+                ch_sdata_output.map { _meta, zarr -> return [zarr] }.collect()
             )
             ch_sdata_merged = SDATA_MERGE.out.sdata
         }
