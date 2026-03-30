@@ -2085,14 +2085,10 @@
                 "dispersion.csv:md5,a5e9a31658bd04b6308c039eac9e50f2",
                 "features_selected.csv:md5,ae4779f5cc814b3f1d1534033518b626",
                 "filtered_feature_bc_matrix.h5:md5,271669e4bf826da2ddff743a6117119b",
-                "barcodes.tsv.gz:md5,1e83c4e15d4b2dfa1d29a5296f88153c",
-                "features.tsv.gz:md5,53092c021f35473a120886f08871c246",
                 "matrix.mtx.gz:md5,41f4c8d4b71cef1ff921a177f8afe9ad",
                 "metrics_summary.csv:md5,5af6a326178857d703945c076717e290",
                 "probe_set.csv:md5,5bfb8f12319be1b2b6c14142537c3804",
                 "raw_feature_bc_matrix.h5:md5,18014d7cf9d61813f63330ca7c046a87",
-                "barcodes.tsv.gz:md5,d05954c6df80933aa8abab661dd57c16",
-                "features.tsv.gz:md5,cf40b533d41bbb2f197ed8d75b3a9a67",
                 "matrix.mtx.gz:md5,bf393bad88f9f9cab3b49da8267f7126",
                 "raw_probe_bc_matrix.h5:md5,538b4db4505bed53de70c9b837fced5c",
                 "aligned_fiducials.jpg:md5,b2adbbb1324a09025332fd1e76d391d9",
@@ -2106,18 +2102,243 @@
                 "mqc_spaceranger_count_genomic_dna.txt:md5,5148a48bf99ec61b648188caf0558e26",
                 "mqc_spaceranger_count_saturation.txt:md5,8a81c8b9831588776559c3e3a3d42aef",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
-                "multiqc_fastqc.txt:md5,cec82c7cd4f3e4bbacf9fe1e8d0fc83e",
-                "multiqc_general_stats.txt:md5,e6bd9c972ea471bccfe29e0d4b5b914f",
                 "multiqc_spaceranger_count.txt:md5,94d6308c11039ce04818426b49f27b22",
                 "spaceranger-count-stats.txt:md5,e47ed2e4e151aef489950b02d0765e54"
             ],
             [
-                "n_obs: 14336\nn_vars: 19023\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - in_tissue\n    - region\n    - spot_id\nvar:\n  index: _index\n  columns:\n    - feature_types\n    - gene_ids\n    - genome\nlayers:\n  - raw\nobsm:\n  - spatial\nvarm:\nobsp:\nvarp:\nuns:\n  - coordinate_system\n  - sample_id\n  - spatial\n  - spatialdata_attrs\n  - table_name\n",
-                "n_obs: 844\nn_vars: 3606\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - clusters\n    - in_tissue\n    - n_counts\n    - n_genes\n    - n_genes_by_counts\n    - pct_counts_hb\n    - pct_counts_in_top_100_genes\n    - pct_counts_in_top_200_genes\n    - pct_counts_in_top_500_genes\n    - pct_counts_in_top_50_genes\n    - pct_counts_mt\n    - pct_counts_ribo\n    - region\n    - spot_id\n    - total_counts\n    - total_counts_hb\n    - total_counts_mt\n    - total_counts_normalized\n    - total_counts_ribo\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - feature_types\n    - gene_ids\n    - genome\n    - hb\n    - highly_variable\n    - mean_counts\n    - means\n    - mt\n    - n_cells\n    - n_cells_by_counts\n    - pct_dropout_by_counts\n    - ribo\n    - total_counts\nlayers:\n  - raw\nobsm:\n  - X_pca\n  - X_umap\n  - spatial\nvarm:\n  - PCs\nobsp:\n  - connectivities\n  - distances\n  - spatial_connectivities\n  - spatial_distances\nvarp:\nuns:\n  - X_umap\n  - clusters\n  - clusters_interactions\n  - clusters_nhood_enrichment\n  - coordinate_system\n  - filtering_stats\n  - hvg\n  - leiden\n  - log1p\n  - moranI\n  - neighbors\n  - normalization\n  - pca\n  - rank_genes_groups\n  - sample_id\n  - spatial\n  - spatial_neighbors\n  - spatialdata_attrs\n  - table_name\n",
-                "n_obs: 844\nn_vars: 3606\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - clusters\n    - clusters_harmony\n    - in_tissue\n    - library_id\n    - n_counts\n    - n_genes\n    - n_genes_by_counts\n    - pct_counts_hb\n    - pct_counts_in_top_100_genes\n    - pct_counts_in_top_200_genes\n    - pct_counts_in_top_500_genes\n    - pct_counts_in_top_50_genes\n    - pct_counts_mt\n    - pct_counts_ribo\n    - region\n    - spot_id\n    - total_counts\n    - total_counts_hb\n    - total_counts_mt\n    - total_counts_normalized\n    - total_counts_ribo\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - feature_types\n    - gene_ids\n    - genome\n    - hb\n    - highly_variable\n    - mean_counts\n    - means\n    - mt\n    - n_cells\n    - n_cells_by_counts\n    - pct_dropout_by_counts\n    - ribo\n    - total_counts\nlayers:\n  - raw\nobsm:\n  - X_harmony\n  - X_pca\n  - X_umap\n  - X_umap_harmony\n  - spatial\nvarm:\nobsp:\n  - connectivities\n  - distances\nvarp:\nuns:\n  - X_umap\n  - X_umap_harmony\n  - clusters\n  - clusters_harmony\n  - clusters_interactions\n  - clusters_nhood_enrichment\n  - coordinate_system\n  - filtering_stats\n  - hvg\n  - leiden\n  - log1p\n  - moranI\n  - neighbors\n  - normalization\n  - pca\n  - rank_genes_groups\n  - sample_id\n  - spatial\n  - spatial_neighbors\n  - spatialdata_attrs\n  - table_name\n"
+                {
+                    "n_obs": 14336,
+                    "n_vars": 19023,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "array_col",
+                            "array_row",
+                            "in_tissue",
+                            "region",
+                            "spot_id"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "feature_types",
+                            "gene_ids",
+                            "genome"
+                        ]
+                    },
+                    "layers": [
+                        "raw"
+                    ],
+                    "obsm": [
+                        "spatial"
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        "coordinate_system",
+                        "sample_id",
+                        "spatial",
+                        "spatialdata_attrs",
+                        "table_name"
+                    ]
+                },
+                {
+                    "n_obs": 844,
+                    "n_vars": 3606,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "array_col",
+                            "array_row",
+                            "clusters",
+                            "in_tissue",
+                            "n_counts",
+                            "n_genes",
+                            "n_genes_by_counts",
+                            "pct_counts_hb",
+                            "pct_counts_in_top_100_genes",
+                            "pct_counts_in_top_200_genes",
+                            "pct_counts_in_top_500_genes",
+                            "pct_counts_in_top_50_genes",
+                            "pct_counts_mt",
+                            "pct_counts_ribo",
+                            "region",
+                            "spot_id",
+                            "total_counts",
+                            "total_counts_hb",
+                            "total_counts_mt",
+                            "total_counts_normalized",
+                            "total_counts_ribo"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "dispersions",
+                            "dispersions_norm",
+                            "feature_types",
+                            "gene_ids",
+                            "genome",
+                            "hb",
+                            "highly_variable",
+                            "mean_counts",
+                            "means",
+                            "mt",
+                            "n_cells",
+                            "n_cells_by_counts",
+                            "pct_dropout_by_counts",
+                            "ribo",
+                            "total_counts"
+                        ]
+                    },
+                    "layers": [
+                        "raw"
+                    ],
+                    "obsm": [
+                        "X_pca",
+                        "X_umap",
+                        "spatial"
+                    ],
+                    "varm": [
+                        "PCs"
+                    ],
+                    "obsp": [
+                        "connectivities",
+                        "distances",
+                        "spatial_connectivities",
+                        "spatial_distances"
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        "X_umap",
+                        "clusters",
+                        "clusters_interactions",
+                        "clusters_nhood_enrichment",
+                        "coordinate_system",
+                        "filtering_stats",
+                        "hvg",
+                        "leiden",
+                        "log1p",
+                        "moranI",
+                        "neighbors",
+                        "normalization",
+                        "pca",
+                        "rank_genes_groups",
+                        "sample_id",
+                        "spatial",
+                        "spatial_neighbors",
+                        "spatialdata_attrs",
+                        "table_name"
+                    ]
+                },
+                {
+                    "n_obs": 844,
+                    "n_vars": 3606,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "array_col",
+                            "array_row",
+                            "clusters",
+                            "clusters_harmony",
+                            "in_tissue",
+                            "library_id",
+                            "n_counts",
+                            "n_genes",
+                            "n_genes_by_counts",
+                            "pct_counts_hb",
+                            "pct_counts_in_top_100_genes",
+                            "pct_counts_in_top_200_genes",
+                            "pct_counts_in_top_500_genes",
+                            "pct_counts_in_top_50_genes",
+                            "pct_counts_mt",
+                            "pct_counts_ribo",
+                            "region",
+                            "spot_id",
+                            "total_counts",
+                            "total_counts_hb",
+                            "total_counts_mt",
+                            "total_counts_normalized",
+                            "total_counts_ribo"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "dispersions",
+                            "dispersions_norm",
+                            "feature_types",
+                            "gene_ids",
+                            "genome",
+                            "hb",
+                            "highly_variable",
+                            "mean_counts",
+                            "means",
+                            "mt",
+                            "n_cells",
+                            "n_cells_by_counts",
+                            "pct_dropout_by_counts",
+                            "ribo",
+                            "total_counts"
+                        ]
+                    },
+                    "layers": [
+                        "raw"
+                    ],
+                    "obsm": [
+                        "X_harmony",
+                        "X_pca",
+                        "X_umap",
+                        "X_umap_harmony",
+                        "spatial"
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        "connectivities",
+                        "distances"
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        "X_umap",
+                        "X_umap_harmony",
+                        "clusters",
+                        "clusters_harmony",
+                        "clusters_interactions",
+                        "clusters_nhood_enrichment",
+                        "coordinate_system",
+                        "filtering_stats",
+                        "hvg",
+                        "leiden",
+                        "log1p",
+                        "moranI",
+                        "neighbors",
+                        "normalization",
+                        "pca",
+                        "rank_genes_groups",
+                        "sample_id",
+                        "spatial",
+                        "spatial_neighbors",
+                        "spatialdata_attrs",
+                        "table_name"
+                    ]
+                }
             ]
         ],
-        "timestamp": "2026-03-29T09:36:34.314942189",
+        "timestamp": "2026-03-30T07:23:14.052563186",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

@@ -2198,12 +2198,8 @@
                 "report.qmd:md5,7c619f39364b1c206d2d26ad49e16503",
                 "report.yml:md5,88f09c9369b88a4c3ebb22a71d2ad6fa",
                 "filtered_feature_bc_matrix.h5:md5,57a1c2bc46bec9317074675c73f08939",
-                "barcodes.tsv.gz:md5,b24a9f7bb39f2dcd4e662cbe1eaf7763",
-                "features.tsv.gz:md5,53092c021f35473a120886f08871c246",
                 "matrix.mtx.gz:md5,556b60f31ceaf14028dd757c0ddd98bc",
                 "raw_feature_bc_matrix.h5:md5,4a35b8f4c3407c7c39202d1ee78d10c4",
-                "barcodes.tsv.gz:md5,688ee8c98b61ddbff9c192d806e07191",
-                "features.tsv.gz:md5,cf40b533d41bbb2f197ed8d75b3a9a67",
                 "matrix.mtx.gz:md5,bd44429d765c377ae74ed294af6ebeee",
                 "raw_probe_bc_matrix.h5:md5,7ec050aec4555fcd144f07e001622b7c",
                 "aligned_fiducials.jpg:md5,6b38b6b480b0abaf8c74b445acfa9153",
@@ -2233,12 +2229,8 @@
                 "dispersion.csv:md5,825408c9678100049f0244361138a844",
                 "features_selected.csv:md5,7fcad5f834af732ca287ad6ce3901b37",
                 "filtered_feature_bc_matrix.h5:md5,d404600610de0ec57858d6daff6afd08",
-                "barcodes.tsv.gz:md5,2f707eec36c8c8478071836e375c589d",
-                "features.tsv.gz:md5,53092c021f35473a120886f08871c246",
                 "matrix.mtx.gz:md5,a0ae49a1c5dd7220b30e2dfb4b9bc115",
                 "raw_feature_bc_matrix.h5:md5,028b7eac253454c3752664472f8e44ee",
-                "barcodes.tsv.gz:md5,9583a947728ff91b3d675ea809b16ad6",
-                "features.tsv.gz:md5,cf40b533d41bbb2f197ed8d75b3a9a67",
                 "matrix.mtx.gz:md5,473d5b08ac3ad472dd8c00d20df375da",
                 "aligned_fiducials.jpg:md5,6b38b6b480b0abaf8c74b445acfa9153",
                 "aligned_tissue_image.jpg:md5,bc12089729d5cdfb06ae0591eefc8417",
@@ -2267,12 +2259,8 @@
                 "dispersion.csv:md5,7a3d38d43bc8d6b328de90cfbe90660c",
                 "features_selected.csv:md5,708baf61d4532a9aab66d2446475ab7c",
                 "filtered_feature_bc_matrix.h5:md5,1a6e3ff6e02066ef4d78c05b30a4c7d4",
-                "barcodes.tsv.gz:md5,ec696f2a78ecb6aa4ff17afad0ebe075",
-                "features.tsv.gz:md5,53092c021f35473a120886f08871c246",
                 "matrix.mtx.gz:md5,4665919df2a54ccbac25ddeef5a9064d",
                 "raw_feature_bc_matrix.h5:md5,36314caa981e847343859859740dc484",
-                "barcodes.tsv.gz:md5,fde392c10f947a2d21cbe2554279624f",
-                "features.tsv.gz:md5,cf40b533d41bbb2f197ed8d75b3a9a67",
                 "matrix.mtx.gz:md5,8796c0a2c69e2e113b74217a11b80e8c",
                 "aligned_fiducials.jpg:md5,6b38b6b480b0abaf8c74b445acfa9153",
                 "aligned_tissue_image.jpg:md5,bc12089729d5cdfb06ae0591eefc8417",
@@ -2303,12 +2291,7 @@
                 "dispersion.csv:md5,9a2ad42591a18a8db3f070f3bcc50540",
                 "features_selected.csv:md5,38de0a2af6ef6ddd41a68a7b70ed6969",
                 "filtered_feature_cell_matrix.h5:md5,697da3ee8d1ba0f2946c89264aaf8a8d",
-                "barcodes.tsv.gz:md5,d260dbea0f755faa4c77b150ed1ee7a2",
-                "features.tsv.gz:md5,53092c021f35473a120886f08871c246",
                 "matrix.mtx.gz:md5,873d6b5764a309662bf95e7a9a719e66",
-                "raw_feature_cell_matrix.h5:md5,761a749a4420a2e8d32cefe5cc445050",
-                "barcodes.tsv.gz:md5,6562d0d953d7508759096807227647fc",
-                "features.tsv.gz:md5,cf40b533d41bbb2f197ed8d75b3a9a67",
                 "matrix.mtx.gz:md5,6752fd826ba11e198151acd01f777c00",
                 "aligned_fiducials.jpg:md5,6b38b6b480b0abaf8c74b445acfa9153",
                 "aligned_tissue_image.jpg:md5,bc12089729d5cdfb06ae0591eefc8417",
@@ -2320,17 +2303,242 @@
                 "detected_tissue_image.jpg:md5,a29e4dbf4b39d7cda3e381050d81b92e",
                 "report-integrated.qmd:md5,439ede320c01def68ef41650f78911a8",
                 "report-integrated.yml:md5,a4d0e2a88b83c3c5035ab9570430991e",
-                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
-                "multiqc_fastqc.txt:md5,3d3a393fb81237fb938e6755219efe08",
-                "multiqc_general_stats.txt:md5,3699509bffcc731364546c99b70beb1b"
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
             ],
             [
-                "n_obs: 105978\nn_vars: 18085\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - in_tissue\n    - location_id\n    - region\nvar:\n  index: _index\n  columns:\n    - feature_types\n    - gene_ids\n    - genome\nlayers:\n  - raw\nobsm:\n  - spatial\nvarm:\nobsp:\nvarp:\nuns:\n  - coordinate_system\n  - sample_id\n  - spatial\n  - spatialdata_attrs\n  - table_name\n",
-                "n_obs: 466\nn_vars: 14756\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - clusters\n    - in_tissue\n    - location_id\n    - n_counts\n    - n_genes\n    - n_genes_by_counts\n    - pct_counts_hb\n    - pct_counts_in_top_100_genes\n    - pct_counts_in_top_200_genes\n    - pct_counts_in_top_500_genes\n    - pct_counts_in_top_50_genes\n    - pct_counts_mt\n    - pct_counts_ribo\n    - region\n    - total_counts\n    - total_counts_hb\n    - total_counts_mt\n    - total_counts_normalized\n    - total_counts_ribo\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - feature_types\n    - gene_ids\n    - genome\n    - hb\n    - highly_variable\n    - mean_counts\n    - means\n    - mt\n    - n_cells\n    - n_cells_by_counts\n    - pct_dropout_by_counts\n    - ribo\n    - total_counts\nlayers:\n  - raw\nobsm:\n  - X_pca\n  - X_umap\n  - spatial\nvarm:\n  - PCs\nobsp:\n  - connectivities\n  - distances\n  - spatial_connectivities\n  - spatial_distances\nvarp:\nuns:\n  - X_umap\n  - clusters\n  - clusters_interactions\n  - clusters_nhood_enrichment\n  - coordinate_system\n  - filtering_stats\n  - hvg\n  - leiden\n  - log1p\n  - moranI\n  - neighbors\n  - normalization\n  - pca\n  - rank_genes_groups\n  - sample_id\n  - spatial\n  - spatial_neighbors\n  - spatialdata_attrs\n  - table_name\n",
-                "n_obs: 466\nn_vars: 14756\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - clusters\n    - clusters_harmony\n    - in_tissue\n    - library_id\n    - location_id\n    - n_counts\n    - n_genes\n    - n_genes_by_counts\n    - pct_counts_hb\n    - pct_counts_in_top_100_genes\n    - pct_counts_in_top_200_genes\n    - pct_counts_in_top_500_genes\n    - pct_counts_in_top_50_genes\n    - pct_counts_mt\n    - pct_counts_ribo\n    - region\n    - total_counts\n    - total_counts_hb\n    - total_counts_mt\n    - total_counts_normalized\n    - total_counts_ribo\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - feature_types\n    - gene_ids\n    - genome\n    - hb\n    - highly_variable\n    - mean_counts\n    - means\n    - mt\n    - n_cells\n    - n_cells_by_counts\n    - pct_dropout_by_counts\n    - ribo\n    - total_counts\nlayers:\n  - raw\nobsm:\n  - X_harmony\n  - X_pca\n  - X_umap\n  - X_umap_harmony\n  - spatial\nvarm:\nobsp:\n  - connectivities\n  - distances\nvarp:\nuns:\n  - X_umap\n  - X_umap_harmony\n  - clusters\n  - clusters_harmony\n  - clusters_interactions\n  - clusters_nhood_enrichment\n  - coordinate_system\n  - filtering_stats\n  - hvg\n  - leiden\n  - log1p\n  - moranI\n  - neighbors\n  - normalization\n  - pca\n  - rank_genes_groups\n  - sample_id\n  - spatial\n  - spatial_neighbors\n  - spatialdata_attrs\n  - table_name\n"
+                {
+                    "n_obs": 105978,
+                    "n_vars": 18085,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "array_col",
+                            "array_row",
+                            "in_tissue",
+                            "location_id",
+                            "region"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "feature_types",
+                            "gene_ids",
+                            "genome"
+                        ]
+                    },
+                    "layers": [
+                        "raw"
+                    ],
+                    "obsm": [
+                        "spatial"
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        "coordinate_system",
+                        "sample_id",
+                        "spatial",
+                        "spatialdata_attrs",
+                        "table_name"
+                    ]
+                },
+                {
+                    "n_obs": 466,
+                    "n_vars": 14756,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "array_col",
+                            "array_row",
+                            "clusters",
+                            "in_tissue",
+                            "location_id",
+                            "n_counts",
+                            "n_genes",
+                            "n_genes_by_counts",
+                            "pct_counts_hb",
+                            "pct_counts_in_top_100_genes",
+                            "pct_counts_in_top_200_genes",
+                            "pct_counts_in_top_500_genes",
+                            "pct_counts_in_top_50_genes",
+                            "pct_counts_mt",
+                            "pct_counts_ribo",
+                            "region",
+                            "total_counts",
+                            "total_counts_hb",
+                            "total_counts_mt",
+                            "total_counts_normalized",
+                            "total_counts_ribo"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "dispersions",
+                            "dispersions_norm",
+                            "feature_types",
+                            "gene_ids",
+                            "genome",
+                            "hb",
+                            "highly_variable",
+                            "mean_counts",
+                            "means",
+                            "mt",
+                            "n_cells",
+                            "n_cells_by_counts",
+                            "pct_dropout_by_counts",
+                            "ribo",
+                            "total_counts"
+                        ]
+                    },
+                    "layers": [
+                        "raw"
+                    ],
+                    "obsm": [
+                        "X_pca",
+                        "X_umap",
+                        "spatial"
+                    ],
+                    "varm": [
+                        "PCs"
+                    ],
+                    "obsp": [
+                        "connectivities",
+                        "distances",
+                        "spatial_connectivities",
+                        "spatial_distances"
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        "X_umap",
+                        "clusters",
+                        "clusters_interactions",
+                        "clusters_nhood_enrichment",
+                        "coordinate_system",
+                        "filtering_stats",
+                        "hvg",
+                        "leiden",
+                        "log1p",
+                        "moranI",
+                        "neighbors",
+                        "normalization",
+                        "pca",
+                        "rank_genes_groups",
+                        "sample_id",
+                        "spatial",
+                        "spatial_neighbors",
+                        "spatialdata_attrs",
+                        "table_name"
+                    ]
+                },
+                {
+                    "n_obs": 466,
+                    "n_vars": 14756,
+                    "obs": {
+                        "index": "_index",
+                        "columns": [
+                            "array_col",
+                            "array_row",
+                            "clusters",
+                            "clusters_harmony",
+                            "in_tissue",
+                            "library_id",
+                            "location_id",
+                            "n_counts",
+                            "n_genes",
+                            "n_genes_by_counts",
+                            "pct_counts_hb",
+                            "pct_counts_in_top_100_genes",
+                            "pct_counts_in_top_200_genes",
+                            "pct_counts_in_top_500_genes",
+                            "pct_counts_in_top_50_genes",
+                            "pct_counts_mt",
+                            "pct_counts_ribo",
+                            "region",
+                            "total_counts",
+                            "total_counts_hb",
+                            "total_counts_mt",
+                            "total_counts_normalized",
+                            "total_counts_ribo"
+                        ]
+                    },
+                    "var": {
+                        "index": "_index",
+                        "columns": [
+                            "dispersions",
+                            "dispersions_norm",
+                            "feature_types",
+                            "gene_ids",
+                            "genome",
+                            "hb",
+                            "highly_variable",
+                            "mean_counts",
+                            "means",
+                            "mt",
+                            "n_cells",
+                            "n_cells_by_counts",
+                            "pct_dropout_by_counts",
+                            "ribo",
+                            "total_counts"
+                        ]
+                    },
+                    "layers": [
+                        "raw"
+                    ],
+                    "obsm": [
+                        "X_harmony",
+                        "X_pca",
+                        "X_umap",
+                        "X_umap_harmony",
+                        "spatial"
+                    ],
+                    "varm": [
+                        
+                    ],
+                    "obsp": [
+                        "connectivities",
+                        "distances"
+                    ],
+                    "varp": [
+                        
+                    ],
+                    "uns": [
+                        "X_umap",
+                        "X_umap_harmony",
+                        "clusters",
+                        "clusters_harmony",
+                        "clusters_interactions",
+                        "clusters_nhood_enrichment",
+                        "coordinate_system",
+                        "filtering_stats",
+                        "hvg",
+                        "leiden",
+                        "log1p",
+                        "moranI",
+                        "neighbors",
+                        "normalization",
+                        "pca",
+                        "rank_genes_groups",
+                        "sample_id",
+                        "spatial",
+                        "spatial_neighbors",
+                        "spatialdata_attrs",
+                        "table_name"
+                    ]
+                }
             ]
         ],
-        "timestamp": "2026-03-29T11:57:27.347423917",
+        "timestamp": "2026-03-30T09:20:15.85305212",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

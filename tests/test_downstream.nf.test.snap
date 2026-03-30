@@ -2304,6 +2304,7 @@
                         "hvg",
                         "leiden",
                         "log1p",
+                        "moranI",
                         "neighbors",
                         "normalization",
                         "pca",
@@ -2315,7 +2316,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-03-29T20:32:37.361615",
+        "timestamp": "2026-03-30T07:32:16.57258446",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
