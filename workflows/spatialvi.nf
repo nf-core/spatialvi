@@ -59,7 +59,6 @@ workflow SPATIALVI {
     spatial_n_neighbors            // integer: Number of spatial neighborhoods
     svg_autocorr_method            //  string: Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
-    merge_sdata                    // boolean: Whether to merge sdata or not
     integrate_sdata                // boolean: Whether to integrate sdata or not
     integration_method             //  string: Integration method to use
     integration_cluster_resolution //   float: Integration cluster resolution
@@ -105,13 +104,23 @@ workflow SPATIALVI {
     ch_multiqc_files = ch_multiqc_files
         .mix(SPACERANGER.out.sr_dir.collect { it -> it[1] })
 
+    //
+    // MODULE: Read ST data and save as SpatialData
+    //
+    ch_spaceranger_dir = INPUT_CHECK.out.ch_downstream_input
+        .mix(SPACERANGER.out.sr_dir)
+    SDATA_READ_VISIUM (
+        ch_spaceranger_dir,
+        hd_bin_size
+    )
+    ch_sdata_raw = SDATA_READ_VISIUM.out.sdata
+
     // =========================================================================
     // PER-SAMPLE ANALYSES
     // =========================================================================
 
     ch_adata              = channel.empty()
     ch_svg_csv            = channel.empty()
-    ch_sdata_raw          = channel.empty()
     ch_sdata_output       = channel.empty()
     ch_report_html        = channel.empty()
     ch_report_notebook    = channel.empty()
@@ -121,21 +130,10 @@ workflow SPATIALVI {
     if (!skip_downstream) {
 
         //
-        // MODULE: Read ST data and save as SpatialData
-        //
-        ch_spaceranger_dir = INPUT_CHECK.out.ch_downstream_input
-            .mix(SPACERANGER.out.sr_dir)
-        SDATA_READ_VISIUM (
-            ch_spaceranger_dir,
-            hd_bin_size
-        )
-        ch_sdata_raw = SDATA_READ_VISIUM.out.sdata
-
-        //
         // MODULE: Extract legacy AnnData for scanpy processing
         //
         SDATA_TO_LEGACY_ANNDATA (
-            SDATA_READ_VISIUM.out.sdata
+            ch_sdata_raw
         )
 
         //
@@ -235,13 +233,22 @@ workflow SPATIALVI {
         ch_report_params_yaml = REPORT.out.params_yaml
         ch_report_artifacts   = REPORT.out.artifacts
 
+    } else {
+        ch_sdata_output = ch_sdata_raw
     }
 
     // =========================================================================
-    // AGGREGATION AND INTEGRATION
+    // MERGING AND INTEGRATION
     // =========================================================================
 
-    ch_sdata_merged            = channel.empty()
+    //
+    // MODULE: Merge per-sample SpatialData objects into one
+    //
+    SDATA_MERGE (
+        ch_sdata_output.map { _meta, zarr -> zarr }.collect()
+    )
+    ch_sdata_merged = SDATA_MERGE.out.sdata
+
     ch_integration_html        = channel.empty()
     ch_integration_notebook    = channel.empty()
     ch_integration_params_yaml = channel.empty()
@@ -250,16 +257,6 @@ workflow SPATIALVI {
     ch_adata_integrated        = channel.empty()
 
     if (!skip_downstream) {
-
-        //
-        // MODULE: Merge per-sample SpatialData objects into one (optional)
-        //
-        if (merge_sdata || integrate_sdata) {
-            SDATA_MERGE (
-                ch_sdata_output.map { _meta, zarr -> return [zarr] }.collect()
-            )
-            ch_sdata_merged = SDATA_MERGE.out.sdata
-        }
 
         //
         // SUBWORKFLOW: Sample aggregation (optional)

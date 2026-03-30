@@ -56,7 +56,6 @@ workflow NFCORE_SPATIALVI {
     spatial_n_neighbors            // integer: Number of spatial neighborhoods
     svg_autocorr_method            // string : Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
-    merge_sdata                    // boolean: Whether to merge sdata or not
     integrate_sdata                // boolean: Whether to integrate sdata or not
     integration_method             //  string: Integration method to use
     integration_cluster_resolution //   float: Integration cluster resolution
@@ -96,7 +95,6 @@ workflow NFCORE_SPATIALVI {
         spatial_n_neighbors,
         svg_autocorr_method,
         n_top_svgs,
-        merge_sdata,
         integrate_sdata,
         integration_method,
         integration_cluster_resolution,
@@ -161,7 +159,6 @@ workflow {
         params.spatial_n_neighbors,
         params.svg_autocorr_method,
         params.n_top_svgs,
-        params.merge_sdata,
         params.integrate_sdata,
         params.integration_method,
         params.integration_cluster_resolution,

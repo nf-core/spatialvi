@@ -300,17 +300,12 @@
             }
         },
 
-        "aggregation_options": {
-            "title": "Data aggregation options",
+        "integration_options": {
+            "title": "Integration options",
             "type": "object",
             "fa_icon": "fas fa-rocket",
             "description": "Options related to aggregation of final data objects",
             "properties": {
-                "merge_sdata": {
-                    "type": "boolean",
-                    "description": "Merge per-sample SpatialData objects into one.",
-                    "fa_icon": "fas fa-arrows-to-dot"
-                },
                 "integrate_sdata": {
                     "type": "boolean",
                     "description": "Integrate per-sample SpatialData objects into one and output a integration report.",
@@ -353,7 +348,8 @@
                 },
                 "skip_downstream": {
                     "type": "boolean",
-                    "description": "Skip downstream analyses and output only Space Ranger-related files along with a MultiQC report.",
+                    "description": "Skip downstream analyses.",
+                    "help_text": "This option will only give Space Ranger outputs, a MultiQC report and unmodified SpatialData objects (both per-sample and merged).",
                     "fa_icon": "fas fa-ban"
                 }
             }
@@ -556,7 +552,7 @@
             "$ref": "#/$defs/spatial_analysis_options"
         },
         {
-            "$ref": "#/$defs/aggregation_options"
+            "$ref": "#/$defs/integration_options"
         },
         {
             "$ref": "#/$defs/optional_outputs"

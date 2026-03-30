@@ -20,7 +20,15 @@ nextflow_pipeline {
                 params.outdir,
                 relative: true,
                 includeDir: true,
-                ignore: ['pipeline_info/*.{html,json,txt}']
+                ignore: ['pipeline_info/*.{html,json,txt}', '**/*.zarr/**']
+            )
+
+            // Names of all SpatialData (.zarr) files and directories (unstable contents)
+            def stable_name_zarr = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                include: ['**/*.zarr/**']
             )
 
             // Paths of all output files (stable contents)
@@ -38,6 +46,7 @@ nextflow_pipeline {
                     // Pipeline versions.yml file for multiqc from which Nextflow version is removed because we tests pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"),
                     stable_name,
+                    stable_name_zarr,
                     stable_path,
                 ).match() }
 
