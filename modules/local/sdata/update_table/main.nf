@@ -10,7 +10,6 @@ process SDATA_UPDATE_TABLE {
 
     output:
     tuple val(meta), path("${prefix}.zarr"), emit: sdata
-    tuple val(meta), path(adata)           , emit: adata
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:

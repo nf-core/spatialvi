@@ -21,7 +21,8 @@ process SDATA_MERGE {
     stub:
     prefix = task.ext.prefix ?: "merged"
     """
-    touch ${prefix}.zarr
+    mkdir -p ${prefix}.zarr
+    touch ${prefix}.zarr/.zgroup
     touch versions.yml
     """
 }

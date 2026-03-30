@@ -198,7 +198,7 @@ workflow SPATIALVI {
         // MODULE: Update SpatialData with AnnData results
         //
         SDATA_UPDATE_TABLE (
-            SDATA_TO_LEGACY_ANNDATA.out.sdata.join(ch_adata),
+            ch_sdata_raw.join(ch_adata),
             ''
         )
         ch_sdata_output = SDATA_UPDATE_TABLE.out.sdata
