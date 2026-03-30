@@ -4,9 +4,43 @@
             [
                 "versions.yml:md5,e38ec89768de8bf84a68a506577d0e4e"
             ],
-            "n_obs: 20313\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - library_id\n    - sample\nvar:\n  index: _index\n  columns:\n    - symbols\nlayers:\nobsm:\n  - X_scanorama\nvarm:\nobsp:\nvarp:\nuns:\n"
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "library_id",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_scanorama"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
         ],
-        "timestamp": "2026-03-26T15:57:50.366146",
+        "timestamp": "2026-03-30T07:19:42.574285",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

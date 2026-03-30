@@ -4,9 +4,44 @@
             [
                 "versions.yml:md5,3ed02ce5d9eb07b2e974b8d7b80e7c8d"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\n  - connectivities\n  - distances\nvarp:\nuns:\n  - neighbors\n  - pca\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "neighbors",
+                    "pca"
+                ]
+            }
         ],
-        "timestamp": "2026-03-26T15:47:03.060214",
+        "timestamp": "2026-03-30T07:14:11.990987",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
@@ -50,9 +85,44 @@
             [
                 "versions.yml:md5,3ed02ce5d9eb07b2e974b8d7b80e7c8d"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\n  - connectivities\n  - distances\nvarp:\nuns:\n  - neighbors\n  - pca\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "neighbors",
+                    "pca"
+                ]
+            }
         ],
-        "timestamp": "2026-03-26T15:44:42.390241",
+        "timestamp": "2026-03-30T07:13:37.845151",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

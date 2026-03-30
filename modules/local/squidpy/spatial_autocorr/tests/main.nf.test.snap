@@ -4,9 +4,55 @@
             [
                 "versions.yml:md5,47a9ced7fad317df79a0be23f28c3642"
             ],
-            "n_obs: 11397\nn_vars: 19023\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - in_tissue\n    - region\n    - spot_id\nvar:\n  index: _index\n  columns:\n    - feature_types\n    - gene_ids\n    - genome\nlayers:\n  - raw\nobsm:\n  - spatial\nvarm:\nobsp:\n  - spatial_connectivities\n  - spatial_distances\nvarp:\nuns:\n  - coordinate_system\n  - moranI\n  - sample_id\n  - spatial\n  - spatial_neighbors\n  - spatialdata_attrs\n  - table_name\n"
+            {
+                "n_obs": 11397,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "in_tissue",
+                        "region",
+                        "spot_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "spatial"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    "spatial_connectivities",
+                    "spatial_distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "coordinate_system",
+                    "moranI",
+                    "sample_id",
+                    "spatial",
+                    "spatial_neighbors",
+                    "spatialdata_attrs",
+                    "table_name"
+                ]
+            }
         ],
-        "timestamp": "2026-03-27T09:25:22.317552",
+        "timestamp": "2026-03-30T07:30:43.041357",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

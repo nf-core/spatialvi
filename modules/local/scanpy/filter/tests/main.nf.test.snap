@@ -4,7 +4,63 @@
             [
                 "versions.yml:md5,b6a994de579a3ecaab530e42ab0b9d2d"
             ],
-            "n_obs: 9\nn_vars: 1015\nobs:\n  index: _index\n  columns:\n    - n_counts\n    - n_genes\n    - n_genes_by_counts\n    - pct_counts_hb\n    - pct_counts_in_top_100_genes\n    - pct_counts_in_top_200_genes\n    - pct_counts_in_top_500_genes\n    - pct_counts_in_top_50_genes\n    - pct_counts_mt\n    - pct_counts_ribo\n    - sample\n    - total_counts\n    - total_counts_hb\n    - total_counts_mt\n    - total_counts_ribo\nvar:\n  index: _index\n  columns:\n    - hb\n    - mean_counts\n    - mt\n    - n_cells\n    - n_cells_by_counts\n    - pct_dropout_by_counts\n    - ribo\n    - symbols\n    - total_counts\nlayers:\n  - counts\n  - raw\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n  - filtering_stats\n",
+            {
+                "n_obs": 9,
+                "n_vars": 1015,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_100_genes",
+                        "pct_counts_in_top_200_genes",
+                        "pct_counts_in_top_500_genes",
+                        "pct_counts_in_top_50_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "hb",
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts",
+                    "raw"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "filtering_stats"
+                ]
+            },
             [
                 [
                     {
@@ -14,10 +70,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-03-26T23:25:38.909767108",
+        "timestamp": "2026-03-30T07:10:19.878926",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {

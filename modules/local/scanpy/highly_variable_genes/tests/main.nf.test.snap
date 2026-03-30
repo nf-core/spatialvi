@@ -4,9 +4,49 @@
             [
                 "versions.yml:md5,e13181af4757604b85af5368250a94d7"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - highly_variable\n    - highly_variable_rank\n    - means\n    - symbols\nlayers:\n  - counts\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n  - hvg\n  - log1p\n  - normalization\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "highly_variable_rank",
+                        "means",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p",
+                    "normalization"
+                ]
+            }
         ],
-        "timestamp": "2026-03-27T11:19:17.850699",
+        "timestamp": "2026-03-30T07:11:39.972877",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
@@ -50,9 +90,48 @@
             [
                 "versions.yml:md5,e13181af4757604b85af5368250a94d7"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - highly_variable\n    - means\n    - symbols\nlayers:\n  - counts\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n  - hvg\n  - log1p\n  - normalization\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "means",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p",
+                    "normalization"
+                ]
+            }
         ],
-        "timestamp": "2026-03-27T11:10:15.472405",
+        "timestamp": "2026-03-30T07:11:23.210904",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

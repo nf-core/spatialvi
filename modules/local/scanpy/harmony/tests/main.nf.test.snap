@@ -4,9 +4,44 @@
             [
                 "versions.yml:md5,504a0fc917d98309ce187dd230c92143"
             ],
-            "n_obs: 20313\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - library_id\n    - sample\nvar:\n  index: _index\n  columns:\nlayers:\nobsm:\n  - X_harmony\n  - X_pca\nvarm:\nobsp:\nvarp:\nuns:\n  - pca\n"
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "library_id",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_harmony",
+                    "X_pca"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "pca"
+                ]
+            }
         ],
-        "timestamp": "2026-03-26T15:36:10.138502",
+        "timestamp": "2026-03-30T07:10:55.722709",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

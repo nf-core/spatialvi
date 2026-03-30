@@ -4,9 +4,49 @@
             [
                 "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - highly_variable\n    - means\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\nvarp:\nuns:\n  - hvg\n  - log1p\n  - normalization\n  - pca\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "means",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p",
+                    "normalization",
+                    "pca"
+                ]
+            }
         ],
-        "timestamp": "2026-03-28T07:22:46.830385",
+        "timestamp": "2026-03-30T07:15:04.797125",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
@@ -17,9 +57,42 @@
             [
                 "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\nvarp:\nuns:\n  - pca\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "pca"
+                ]
+            }
         ],
-        "timestamp": "2026-03-26T15:48:06.951826",
+        "timestamp": "2026-03-30T07:15:15.753431",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

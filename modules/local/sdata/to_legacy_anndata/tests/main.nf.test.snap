@@ -4,12 +4,55 @@
             [
                 "versions.yml:md5,f06afd6f97a6444b6f887d36e397792b"
             ],
-            "n_obs: 11397\nn_vars: 19023\nobs:\n  index: _index\n  columns:\n    - array_col\n    - array_row\n    - in_tissue\n    - region\n    - spot_id\nvar:\n  index: _index\n  columns:\n    - feature_types\n    - gene_ids\n    - genome\nlayers:\n  - raw\nobsm:\n  - spatial\nvarm:\nobsp:\nvarp:\nuns:\n  - coordinate_system\n  - sample_id\n  - spatial\n  - spatialdata_attrs\n  - table_name\n"
+            {
+                "n_obs": 11397,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "in_tissue",
+                        "region",
+                        "spot_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "spatial"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "coordinate_system",
+                    "sample_id",
+                    "spatial",
+                    "spatialdata_attrs",
+                    "table_name"
+                ]
+            }
         ],
-        "timestamp": "2026-03-26T20:39:06.502675263",
+        "timestamp": "2026-03-30T07:23:32.63379",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {

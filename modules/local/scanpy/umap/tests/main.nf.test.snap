@@ -4,9 +4,53 @@
             [
                 "versions.yml:md5,644846add945175d74eb0fce068a0241"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - dispersions\n    - dispersions_norm\n    - highly_variable\n    - means\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\n  - X_umap\nvarm:\n  - PCs\nobsp:\n  - connectivities\n  - distances\nvarp:\nuns:\n  - X_umap\n  - hvg\n  - log1p\n  - neighbors\n  - normalization\n  - pca\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "means",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca",
+                    "X_umap"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_umap",
+                    "hvg",
+                    "log1p",
+                    "neighbors",
+                    "normalization",
+                    "pca"
+                ]
+            }
         ],
-        "timestamp": "2026-03-29T07:39:37.137268",
+        "timestamp": "2026-03-30T07:21:01.367176",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

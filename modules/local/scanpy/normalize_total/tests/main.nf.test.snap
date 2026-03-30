@@ -4,12 +4,45 @@
             [
                 "versions.yml:md5,76284d81803fab43f0ae80b07e38f742"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - sample\nvar:\n  index: _index\n  columns:\n    - symbols\nlayers:\n  - counts\nobsm:\nvarm:\nobsp:\nvarp:\nuns:\n  - normalization\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "normalization"
+                ]
+            }
         ],
-        "timestamp": "2026-03-26T22:37:15.941675589",
+        "timestamp": "2026-03-30T07:14:34.787297",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {

@@ -4,9 +4,47 @@
             [
                 "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
             ],
-            "n_obs: 12940\nn_vars: 9887\nobs:\n  index: _index\n  columns:\n    - leiden\n    - sample\nvar:\n  index: _index\n  columns:\n    - symbols\nlayers:\n  - counts\nobsm:\n  - X_pca\nvarm:\n  - PCs\nobsp:\n  - connectivities\n  - distances\nvarp:\nuns:\n  - leiden\n  - neighbors\n  - pca\n  - rank_genes_groups\n"
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "leiden",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "leiden",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
+                ]
+            }
         ],
-        "timestamp": "2026-03-26T15:50:23.402487",
+        "timestamp": "2026-03-30T07:16:25.47802",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
