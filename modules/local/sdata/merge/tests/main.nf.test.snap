@@ -23,20 +23,20 @@
         "content": [
             {
                 "0": [
-                    "collected.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "merged.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "1": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "sdata": [
-                    "collected.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "merged.zarr:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-03-26T09:48:18.962518",
+        "timestamp": "2026-03-30T12:04:10.527231",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
