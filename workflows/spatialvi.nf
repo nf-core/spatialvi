@@ -37,6 +37,7 @@ workflow SPATIALVI {
     spaceranger_reference          //     dir: /path/to/reference
     spaceranger_probeset           //    file: /path/to/csv
     hd_bin_size                    // integer: Bin size for Visium HD
+    skip_downstream                // boolean: Whether to skip downstream steps or not
     qc_min_counts                  // integer: Minimum UMIs per spot
     qc_min_genes                   // integer: Minimum genes per spot
     qc_min_spots                   // integer: Minimum spots per gene
@@ -104,165 +105,185 @@ workflow SPATIALVI {
     ch_multiqc_files = ch_multiqc_files
         .mix(SPACERANGER.out.sr_dir.collect { it -> it[1] })
 
-    //
-    // Combine pre-existing spaceranger outputs with newly processed ones
-    //
-    ch_spaceranger_dir = INPUT_CHECK.out.ch_downstream_input
-        .mix(SPACERANGER.out.sr_dir)
-
     // =========================================================================
     // PER-SAMPLE ANALYSES
     // =========================================================================
 
-    //
-    // MODULE: Read ST data and save as SpatialData
-    //
-    SDATA_READ_VISIUM (
-        ch_spaceranger_dir,
-        hd_bin_size
-    )
+    ch_adata              = channel.empty()
+    ch_svg_csv            = channel.empty()
+    ch_sdata_raw          = channel.empty()
+    ch_sdata_output       = channel.empty()
+    ch_report_html        = channel.empty()
+    ch_report_notebook    = channel.empty()
+    ch_report_params_yaml = channel.empty()
+    ch_report_artifacts   = channel.empty()
 
-    //
-    // MODULE: Extract legacy AnnData for scanpy processing
-    //
-    SDATA_TO_LEGACY_ANNDATA (
-        SDATA_READ_VISIUM.out.sdata
-    )
+    if (!skip_downstream) {
 
-    //
-    // SUBWORKFLOW: Pre-processing
-    //
-    PREPROCESSING (
-        SDATA_TO_LEGACY_ANNDATA.out.adata,
-        qc_min_counts,
-        qc_min_genes,
-        qc_min_spots,
-        qc_mito_threshold,
-        qc_ribo_threshold,
-        qc_hb_threshold,
-        normalize_target_sum,
-        n_highly_variable_genes,
-        hvg_flavor,
-        n_principal_components,
-        pca_use_highly_variable
-    )
+        //
+        // MODULE: Read ST data and save as SpatialData
+        //
+        ch_spaceranger_dir = INPUT_CHECK.out.ch_downstream_input
+            .mix(SPACERANGER.out.sr_dir)
+        SDATA_READ_VISIUM (
+            ch_spaceranger_dir,
+            hd_bin_size
+        )
+        ch_sdata_raw = SDATA_READ_VISIUM.out.sdata
 
-    //
-    // SUBWORKFLOW: Clustering
-    //
-    use_rep = ''
-    umap_key_added = 'X_umap'
-    leiden_key_added = 'clusters'
-    CLUSTERING (
-        PREPROCESSING.out.adata,
-        n_neighbors,
-        neighbors_n_pcs,
-        use_rep,
-        umap_min_dist,
-        umap_spread,
-        umap_key_added,
-        cluster_resolution,
-        leiden_key_added
-    )
+        //
+        // MODULE: Extract legacy AnnData for scanpy processing
+        //
+        SDATA_TO_LEGACY_ANNDATA (
+            SDATA_READ_VISIUM.out.sdata
+        )
 
-    //
-    // MODULE: Differential expression analysis
-    //
-    rank_genes_group_by = 'clusters'
-    SCANPY_RANK_GENES_GROUPS (
-        CLUSTERING.out.adata,
-        rank_genes_group_by,
-        rank_genes_method
-    )
+        //
+        // SUBWORKFLOW: Pre-processing
+        //
+        PREPROCESSING (
+            SDATA_TO_LEGACY_ANNDATA.out.adata,
+            qc_min_counts,
+            qc_min_genes,
+            qc_min_spots,
+            qc_mito_threshold,
+            qc_ribo_threshold,
+            qc_hb_threshold,
+            normalize_target_sum,
+            n_highly_variable_genes,
+            hvg_flavor,
+            n_principal_components,
+            pca_use_highly_variable
+        )
 
-    //
-    // SUBWORKFLOW: Spatial analyses
-    //
-    SPATIAL (
-        SCANPY_RANK_GENES_GROUPS.out.adata,
-        spatial_coord_type,
-        spatial_n_neighbors,
-        svg_autocorr_method
-    )
-    ch_adata = SPATIAL.out.adata
+        //
+        // SUBWORKFLOW: Clustering
+        //
+        use_rep = ''
+        umap_key_added = 'X_umap'
+        leiden_key_added = 'clusters'
+        CLUSTERING (
+            PREPROCESSING.out.adata,
+            n_neighbors,
+            neighbors_n_pcs,
+            use_rep,
+            umap_min_dist,
+            umap_spread,
+            umap_key_added,
+            cluster_resolution,
+            leiden_key_added
+        )
 
-    //
-    // MODULE: Update SpatialData with AnnData results
-    //
-    SDATA_UPDATE_TABLE (
-        SDATA_TO_LEGACY_ANNDATA.out.sdata.join(ch_adata),
-        ''
-    )
-    ch_sdata_output = SDATA_UPDATE_TABLE.out.sdata
+        //
+        // MODULE: Differential expression analysis
+        //
+        rank_genes_group_by = 'clusters'
+        SCANPY_RANK_GENES_GROUPS (
+            CLUSTERING.out.adata,
+            rank_genes_group_by,
+            rank_genes_method
+        )
 
-    //
-    // MODULE: Per-sample Quarto reports
-    //
-    report_notebook = file("${projectDir}/bin/report.qmd", checkIfExists: true)
-    extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
-    ch_report_input_data = ch_sdata_output
-        .map { it -> it[1] }
-    ch_report_notebook = ch_sdata_output
-        .map { it -> it[0] }
-        .combine(channel.value(report_notebook))
-        .map { meta, notebook -> tuple(meta, notebook) }
-    ch_report_params = ch_sdata_output
-        .map { _meta, sdata ->
-            [
-                input_sdata  : sdata.name,
-                n_top_svgs   : n_top_svgs,
-                artifact_dir : "artifacts"
-            ]
-        }
-    REPORT (
-        ch_report_notebook,
-        ch_report_params,
-        ch_report_input_data,
-        extensions
-    )
+        //
+        // SUBWORKFLOW: Spatial analyses
+        //
+        SPATIAL (
+            SCANPY_RANK_GENES_GROUPS.out.adata,
+            spatial_coord_type,
+            spatial_n_neighbors,
+            svg_autocorr_method
+        )
+        ch_adata   = SPATIAL.out.adata
+        ch_svg_csv = SPATIAL.out.svg_csv
+
+        //
+        // MODULE: Update SpatialData with AnnData results
+        //
+        SDATA_UPDATE_TABLE (
+            SDATA_TO_LEGACY_ANNDATA.out.sdata.join(ch_adata),
+            ''
+        )
+        ch_sdata_output = SDATA_UPDATE_TABLE.out.sdata
+
+        //
+        // MODULE: Per-sample Quarto reports
+        //
+        report_notebook = file("${projectDir}/bin/report.qmd", checkIfExists: true)
+        extensions = channel.fromPath("${projectDir}/assets/_extensions").collect()
+        ch_report_input_data = ch_sdata_output
+            .map { it -> it[1] }
+        ch_report_notebook = ch_sdata_output
+            .map { it -> it[0] }
+            .combine(channel.value(report_notebook))
+            .map { meta, notebook -> tuple(meta, notebook) }
+        ch_report_params = ch_sdata_output
+            .map { _meta, sdata ->
+                [
+                    input_sdata  : sdata.name,
+                    n_top_svgs   : n_top_svgs,
+                    artifact_dir : "artifacts"
+                ]
+            }
+        REPORT (
+            ch_report_notebook,
+            ch_report_params,
+            ch_report_input_data,
+            extensions
+        )
+        ch_report_html        = REPORT.out.html
+        ch_report_notebook    = REPORT.out.notebook
+        ch_report_params_yaml = REPORT.out.params_yaml
+        ch_report_artifacts   = REPORT.out.artifacts
+
+    }
 
     // =========================================================================
     // AGGREGATION AND INTEGRATION
     // =========================================================================
 
-    //
-    // MODULE: Merge per-sample SpatialData objects into one (optional)
-    //
-    ch_sdata_merged = channel.empty()
-    if (merge_sdata || integrate_sdata) {
-        SDATA_MERGE (
-            ch_sdata_output.map { _meta, zarr -> return [zarr] }
-        )
-        ch_sdata_merged = SDATA_MERGE.out.sdata
-    }
-
-    //
-    // SUBWORKFLOW: Sample aggregation (optional)
-    //
+    ch_sdata_merged            = channel.empty()
     ch_integration_html        = channel.empty()
     ch_integration_notebook    = channel.empty()
     ch_integration_params_yaml = channel.empty()
     ch_integration_artifacts   = channel.empty()
     ch_sdata_integrated        = channel.empty()
     ch_adata_integrated        = channel.empty()
-    if (integrate_sdata) {
-        INTEGRATION (
-            ch_sdata_merged,
-            ch_adata,
-            integration_method,
-            n_neighbors,
-            neighbors_n_pcs,
-            umap_min_dist,
-            umap_spread,
-            integration_cluster_resolution
-        )
-        ch_integration_html        = INTEGRATION.out.html
-        ch_integration_notebook    = INTEGRATION.out.notebook
-        ch_integration_params_yaml = INTEGRATION.out.params_yaml
-        ch_integration_artifacts   = INTEGRATION.out.artifacts
-        ch_sdata_integrated        = INTEGRATION.out.sdata
-        ch_sdata_merged            = INTEGRATION.out.sdata_merged
-        ch_adata_integrated        = INTEGRATION.out.adata
+
+    if (!skip_downstream) {
+
+        //
+        // MODULE: Merge per-sample SpatialData objects into one (optional)
+        //
+        if (merge_sdata || integrate_sdata) {
+            SDATA_MERGE (
+                ch_sdata_output.map { _meta, zarr -> return [zarr] }
+            )
+            ch_sdata_merged = SDATA_MERGE.out.sdata
+        }
+
+        //
+        // SUBWORKFLOW: Sample aggregation (optional)
+        //
+        if (integrate_sdata) {
+            INTEGRATION (
+                ch_sdata_merged,
+                ch_adata,
+                integration_method,
+                n_neighbors,
+                neighbors_n_pcs,
+                umap_min_dist,
+                umap_spread,
+                integration_cluster_resolution
+            )
+            ch_integration_html        = INTEGRATION.out.html
+            ch_integration_notebook    = INTEGRATION.out.notebook
+            ch_integration_params_yaml = INTEGRATION.out.params_yaml
+            ch_integration_artifacts   = INTEGRATION.out.artifacts
+            ch_sdata_integrated        = INTEGRATION.out.sdata
+            ch_sdata_merged            = INTEGRATION.out.sdata_merged
+            ch_adata_integrated        = INTEGRATION.out.adata
+        }
+
     }
 
     // =========================================================================
@@ -343,23 +364,23 @@ workflow SPATIALVI {
 
     emit:
     // SpatialData outputs
-    sdata_raw               = SDATA_READ_VISIUM.out.sdata // channel: [ meta, zarr ]
-    sdata                   = ch_sdata_output             // channel: [ meta, zarr ]
-    sdata_merged            = ch_sdata_merged             // channel: [ zarr ]
-    sdata_integrated        = ch_sdata_integrated         // channel: [ zarr ]
+    sdata_raw               = ch_sdata_raw               // channel: [ meta, zarr ]
+    sdata                   = ch_sdata_output            // channel: [ meta, zarr ]
+    sdata_merged            = ch_sdata_merged            // channel: [ zarr ]
+    sdata_integrated        = ch_sdata_integrated        // channel: [ zarr ]
 
     // AnnData outputs
-    adata                   = ch_adata                    // channel: [ meta, h5ad ]
-    adata_integrated        = ch_adata_integrated         // channel: [ h5ad ]
+    adata                   = ch_adata                   // channel: [ meta, h5ad ]
+    adata_integrated        = ch_adata_integrated        // channel: [ h5ad ]
 
     // Per-sample report outputs
-    report_html             = REPORT.out.html             // channel: [ meta, html ]
-    report_notebook         = REPORT.out.notebook         // channel: [ meta, qmd ]
-    report_params_yaml      = REPORT.out.params_yaml      // channel: [ meta, yml ]
-    report_artifacts        = REPORT.out.artifacts        // channel: [ meta, dir ]
+    report_html             = ch_report_html             // channel: [ meta, html ]
+    report_notebook         = ch_report_notebook         // channel: [ meta, qmd ]
+    report_params_yaml      = ch_report_params_yaml      // channel: [ meta, yml ]
+    report_artifacts        = ch_report_artifacts        // channel: [ meta, dir ]
 
     // SVG results
-    svg_csv                 = SPATIAL.out.svg_csv         // channel: [ meta, csv ]
+    svg_csv                 = ch_svg_csv                 // channel: [ meta, csv ]
 
     // Integration report outputs
     integration_html        = ch_integration_html        // channel: [ meta, html ]

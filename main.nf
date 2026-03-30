@@ -34,6 +34,7 @@ workflow NFCORE_SPATIALVI {
     spaceranger_reference          //     dir: /path/to/reference
     spaceranger_probeset           //    file: /path/to/csv
     hd_bin_size                    // integer: Bin size for Visium HD
+    skip_downstream                // boolean: Whether to skip downstream steps or not
     qc_min_counts                  // integer: Minimum UMIs per spot
     qc_min_genes                   // integer: Minimum genes per spot
     qc_min_spots                   // integer: Minimum spots per gene
@@ -73,6 +74,7 @@ workflow NFCORE_SPATIALVI {
         spaceranger_reference,
         spaceranger_probeset,
         hd_bin_size,
+        skip_downstream,
         qc_min_counts,
         qc_min_genes,
         qc_min_spots,
@@ -137,6 +139,7 @@ workflow {
         params.spaceranger_reference,
         params.spaceranger_probeset,
         params.hd_bin_size,
+        params.skip_downstream,
         params.qc_min_counts,
         params.qc_min_genes,
         params.qc_min_spots,

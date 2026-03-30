@@ -35,9 +35,6 @@ nextflow_pipeline {
                 include: ['**/*.h5ad']
             )
 
-            // Test sample names
-            def sample = "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
-
             assertAll(
 
                 { assert workflow.success},

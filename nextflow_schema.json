@@ -350,6 +350,11 @@
                     "description": "Save extracted tar archives of input data.",
                     "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-floppy-disk"
+                },
+                "skip_downstream": {
+                    "type": "boolean",
+                    "description": "Skip downstream analyses and output only Space Ranger-related files along with a MultiQC report.",
+                    "fa_icon": "fas fa-ban"
                 }
             }
         },

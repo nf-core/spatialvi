@@ -1,15 +1,15 @@
 nextflow_pipeline {
 
-    name "Test full workflow (incl. Space Ranger v1)"
+    name "Test skipping of downstream workflow"
     script "../main.nf"
     tag "pipeline"
-    profile "test_spaceranger_v1"
+    profile "test_skip_downstream"
 
-    test("Space Ranger FFPE v1 Standard") {
+    test("Space Ranger FFPE v2 CytAssist - skip downstream") {
 
         when {
             params {
-                outdir = "$outputDir"
+                outdir          = "$outputDir"
             }
         }
 
@@ -29,12 +29,6 @@ nextflow_pipeline {
                 ignoreFile: 'tests/.nftignore'
             )
 
-            // Paths of all output AnnData files
-            def adata_files = getAllFilesFromDir(
-                params.outdir,
-                include: ['**/*.h5ad']
-            )
-
             assertAll(
 
                 { assert workflow.success},
@@ -47,8 +41,6 @@ nextflow_pipeline {
                     stable_name,
                     // All files with stable contents
                     stable_path,
-                    // AnnData files with unstable content
-                    adata_files.collect { file -> anndata(file.toPath()).yaml }
                 ).match() }
 
             )

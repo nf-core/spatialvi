@@ -33,9 +33,6 @@ nextflow_pipeline {
                 include: ['**/*.h5ad']
             )
 
-            // Test sample names
-            def sample = "Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2"
-
             assertAll(
 
                 { assert workflow.success},
