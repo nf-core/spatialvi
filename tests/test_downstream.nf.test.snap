@@ -3617,6 +3617,53 @@
             ],
             [
                 {
+                    "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2-raw.h5ad",
+                    "contents": {
+                        "n_obs": 11397,
+                        "n_vars": 19023,
+                        "obs": {
+                            "index": "_index",
+                            "columns": [
+                                "array_col",
+                                "array_row",
+                                "in_tissue",
+                                "region",
+                                "spot_id"
+                            ]
+                        },
+                        "var": {
+                            "index": "_index",
+                            "columns": [
+                                "feature_types",
+                                "gene_ids",
+                                "genome"
+                            ]
+                        },
+                        "layers": [
+                            "raw"
+                        ],
+                        "obsm": [
+                            "spatial"
+                        ],
+                        "varm": [
+                            
+                        ],
+                        "obsp": [
+                            
+                        ],
+                        "varp": [
+                            
+                        ],
+                        "uns": [
+                            "coordinate_system",
+                            "sample_id",
+                            "spatial",
+                            "spatialdata_attrs",
+                            "table_name"
+                        ]
+                    }
+                },
+                {
                     "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2.2-raw.h5ad",
                     "contents": {
                         "n_obs": 11397,
@@ -3752,53 +3799,6 @@
                             "sample_id",
                             "spatial",
                             "spatial_neighbors",
-                            "spatialdata_attrs",
-                            "table_name"
-                        ]
-                    }
-                },
-                {
-                    "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2-raw.h5ad",
-                    "contents": {
-                        "n_obs": 11397,
-                        "n_vars": 19023,
-                        "obs": {
-                            "index": "_index",
-                            "columns": [
-                                "array_col",
-                                "array_row",
-                                "in_tissue",
-                                "region",
-                                "spot_id"
-                            ]
-                        },
-                        "var": {
-                            "index": "_index",
-                            "columns": [
-                                "feature_types",
-                                "gene_ids",
-                                "genome"
-                            ]
-                        },
-                        "layers": [
-                            "raw"
-                        ],
-                        "obsm": [
-                            "spatial"
-                        ],
-                        "varm": [
-                            
-                        ],
-                        "obsp": [
-                            
-                        ],
-                        "varp": [
-                            
-                        ],
-                        "uns": [
-                            "coordinate_system",
-                            "sample_id",
-                            "spatial",
                             "spatialdata_attrs",
                             "table_name"
                         ]
@@ -3994,7 +3994,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-03-31T10:55:55.305344",
+        "timestamp": "2026-03-31T14:55:49.263246",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

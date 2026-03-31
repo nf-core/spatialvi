@@ -88,10 +88,10 @@ nextflow_process {
                 process {
                     """
                     input[0] = UNTAR.out.untar
-		        .toSortedList { a, b -> a[0].id <=> b[0].id }
-		        .flatMap { it }
-		        .map { _meta, zarr -> zarr }
-		        .collect()
+                        .toSortedList { a, b -> a[0].id <=> b[0].id }
+                        .flatMap { it }
+                        .map { _meta, zarr -> zarr }
+                        .collect()
                     """
                 }
             }
@@ -118,10 +118,10 @@ nextflow_process {
                 process {
                     """
                     input[0] = SCANPY_PCA.out.adata
-		        .toSortedList { a, b -> a[0].id <=> b[0].id }
-		        .flatMap { it }
-		        .map { _meta, zarr -> zarr }
-		        .collect()
+                        .toSortedList { a, b -> a[0].id <=> b[0].id }
+                        .flatMap { it }
+                        .map { _meta, zarr -> zarr }
+                        .collect()
                     """
                 }
             }

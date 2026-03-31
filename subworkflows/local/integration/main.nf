@@ -26,7 +26,11 @@ workflow INTEGRATION {
     //
     // MODULE: Integration with Scanorama
     //
-    ch_adata_collected = ch_adata.map { _meta, h5ad -> h5ad }.collect()
+    ch_adata_collected = ch_adata
+        .toSortedList { a, b -> a[0].id <=> b[0].id }
+        .flatMap()
+        .map { _meta, zarr -> zarr }
+        .collect()
     if (integration_method == 'harmony') {
         SCANPY_HARMONY {
             ch_adata_collected

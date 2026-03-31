@@ -41,7 +41,8 @@ nextflow_pipeline {
             def adata_files = getAllFilesFromDir(
                 params.outdir,
                 include: ['**/*.h5ad']
-            ).collect { file ->
+            ).sort { it.name }
+            .collect { file ->
                 [
                     file: file.name,
                     contents: anndata(file.toPath()).yaml
