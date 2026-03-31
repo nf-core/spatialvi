@@ -1,31 +1,4 @@
 {
-    "homo_sapiens - zarr - stub": {
-        "content": [
-            {
-                "0": [
-                    [
-                        ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "sdata": [
-                    [
-                        ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ]
-            }
-        ],
-        "timestamp": "2026-03-30T19:45:49.073912",
-        "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
-        }
-    },
     "homo_sapiens - zarr": {
         "content": [
             [
@@ -154,20 +127,20 @@
                 "tables/table_0/uns/spatial",
                 "tables/table_0/uns/spatial/.zattrs",
                 "tables/table_0/uns/spatial/.zgroup",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/.zattrs",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/.zgroup",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/.zattrs",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/.zgroup",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/chemistry_description",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/chemistry_description/.zarray",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/chemistry_description/.zattrs",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/chemistry_description/0",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/software_version",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/software_version/.zarray",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/software_version/.zattrs",
-                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/software_version/0",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/.zattrs",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/.zgroup",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/.zattrs",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/.zgroup",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/.zarray",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/.zattrs",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/0",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/.zarray",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/.zattrs",
+                "tables/table_0/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/0",
                 "tables/table_0/uns/spatialdata_attrs",
                 "tables/table_0/uns/spatialdata_attrs/.zattrs",
                 "tables/table_0/uns/spatialdata_attrs/.zgroup",
@@ -281,20 +254,20 @@
                 "tables/table_1/uns/spatial",
                 "tables/table_1/uns/spatial/.zattrs",
                 "tables/table_1/uns/spatial/.zgroup",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/.zattrs",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/.zgroup",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/.zattrs",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/.zgroup",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/.zarray",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/.zattrs",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/0",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/.zarray",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/.zattrs",
-                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/0",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/.zattrs",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/.zgroup",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/.zattrs",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/.zgroup",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/chemistry_description",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/chemistry_description/.zarray",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/chemistry_description/.zattrs",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/chemistry_description/0",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/software_version",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/software_version/.zarray",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/software_version/.zattrs",
+                "tables/table_1/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/metadata/software_version/0",
                 "tables/table_1/uns/spatialdata_attrs",
                 "tables/table_1/uns/spatialdata_attrs/.zattrs",
                 "tables/table_1/uns/spatialdata_attrs/.zgroup",
@@ -338,7 +311,34 @@
                 "zmetadata"
             ]
         ],
-        "timestamp": "2026-03-30T20:11:07.942596",
+        "timestamp": "2026-03-31T13:03:39.340233",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - zarr - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "sdata": [
+                    [
+                        ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-31T13:08:42.980055",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

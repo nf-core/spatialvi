@@ -8,7 +8,7 @@ nextflow_process {
     tag "modules_local"
     tag "sdata_read_visium"
 
-    test("homo_sapiens - h5ad") {
+    test("homo_sapiens - outs") {
 
         setup {
             run("UNTAR") {
@@ -34,11 +34,19 @@ nextflow_process {
         }
 
         then {
+
+            // Names of all SpatialData (.zarr) files and directories (unstable contents)
+            def stable_name_zarr = getAllFilesFromDir(
+                process.out.sdata[0][1],
+                relative: true,
+                includeDir: true
+            )
+
             assertAll(
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    path(process.out.sdata[0][1]).list().collect { it.getFileName().toString() }.sort()
+                    stable_name_zarr
                 ).match() }
             )
         }
@@ -48,7 +56,7 @@ nextflow_process {
     // can be tested as well; currently, there is HD input for Space Ranger, but
     // no HD output
 
-    test("homo_sapiens - h5ad - stub") {
+    test("homo_sapiens - outs - stub") {
 
         options "-stub"
 

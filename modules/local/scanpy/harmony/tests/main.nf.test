@@ -30,7 +30,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_PCA.out.adata
-                    .map{ _meta, h5ad -> h5ad }
+                    .map { _meta, zarr -> zarr }
                     .collect()
                 """
             }
@@ -71,7 +71,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_PCA.out.adata
-                    .map{ _meta, h5ad -> h5ad }
+                    .map { _meta, zarr -> zarr }
                     .collect()
                 """
             }

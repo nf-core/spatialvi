@@ -244,8 +244,13 @@ workflow SPATIALVI {
     //
     // MODULE: Merge per-sample SpatialData objects into one
     //
+    ch_sdata_output_sorted = ch_sdata_output
+        .toSortedList { a, b -> a[0].id <=> b[0].id }
+        .flatMap()
+        .map { _meta, zarr -> zarr }
+        .collect()
     SDATA_MERGE (
-        ch_sdata_output.map { _meta, zarr -> zarr }.collect()
+        ch_sdata_output_sorted
     )
     ch_sdata_merged = SDATA_MERGE.out.sdata
 
