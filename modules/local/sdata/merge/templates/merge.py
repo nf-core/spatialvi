@@ -14,7 +14,7 @@ import spatialdata
 def read_sdatas(file_paths):
     """Read multiple SpatialData objects from Zarr directories."""
     sdata_list = []
-    for file in file_paths:
+    for file in sorted(file_paths):
         print(f"Reading: {file}")
         sdata = spatialdata.read_zarr(file)
         sdata_list.append(sdata)
