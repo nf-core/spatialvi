@@ -306,9 +306,9 @@
             "fa_icon": "fas fa-rocket",
             "description": "Options related to aggregation of final data objects",
             "properties": {
-                "integrate_sdata": {
+                "integrate_data": {
                     "type": "boolean",
-                    "description": "Integrate per-sample SpatialData objects into one and output a integration report.",
+                    "description": "Integrate per-sample objects into one and output a integration report.",
                     "fa_icon": "fas fa-arrows-to-dot"
                 },
                 "integration_method": {

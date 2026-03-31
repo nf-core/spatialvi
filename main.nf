@@ -56,7 +56,7 @@ workflow NFCORE_SPATIALVI {
     spatial_n_neighbors            // integer: Number of spatial neighborhoods
     svg_autocorr_method            // string : Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
-    integrate_sdata                // boolean: Whether to integrate sdata or not
+    integrate_data                 // boolean: Whether to integrate sdata or not
     integration_method             //  string: Integration method to use
     integration_cluster_resolution //   float: Integration cluster resolution
     multiqc_config                 //    file: /path/to/multiqc/config
@@ -95,7 +95,7 @@ workflow NFCORE_SPATIALVI {
         spatial_n_neighbors,
         svg_autocorr_method,
         n_top_svgs,
-        integrate_sdata,
+        integrate_data,
         integration_method,
         integration_cluster_resolution,
         multiqc_config,
@@ -159,7 +159,7 @@ workflow {
         params.spatial_n_neighbors,
         params.svg_autocorr_method,
         params.n_top_svgs,
-        params.integrate_sdata,
+        params.integrate_data,
         params.integration_method,
         params.integration_cluster_resolution,
         params.multiqc_config,

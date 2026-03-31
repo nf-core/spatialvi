@@ -59,7 +59,7 @@ workflow SPATIALVI {
     spatial_n_neighbors            // integer: Number of spatial neighborhoods
     svg_autocorr_method            //  string: Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
-    integrate_sdata                // boolean: Whether to integrate sdata or not
+    integrate_data                 // boolean: Whether to integrate sdata or not
     integration_method             //  string: Integration method to use
     integration_cluster_resolution //   float: Integration cluster resolution
     multiqc_config                 //    file: /path/to/multiqc/config
@@ -256,30 +256,26 @@ workflow SPATIALVI {
     ch_sdata_integrated        = channel.empty()
     ch_adata_integrated        = channel.empty()
 
-    if (!skip_downstream) {
-
-        //
-        // SUBWORKFLOW: Sample aggregation (optional)
-        //
-        if (integrate_sdata) {
-            INTEGRATION (
-                ch_sdata_merged,
-                ch_adata,
-                integration_method,
-                n_neighbors,
-                neighbors_n_pcs,
-                umap_min_dist,
-                umap_spread,
-                integration_cluster_resolution
-            )
-            ch_integration_html        = INTEGRATION.out.html
-            ch_integration_notebook    = INTEGRATION.out.notebook
-            ch_integration_params_yaml = INTEGRATION.out.params_yaml
-            ch_integration_artifacts   = INTEGRATION.out.artifacts
-            ch_sdata_integrated        = INTEGRATION.out.sdata
-            ch_adata_integrated        = INTEGRATION.out.adata
-        }
-
+    //
+    // SUBWORKFLOW: Sample aggregation (optional)
+    //
+    if (!skip_downstream && integrate_data) {
+        INTEGRATION (
+            ch_sdata_merged,
+            ch_adata,
+            integration_method,
+            n_neighbors,
+            neighbors_n_pcs,
+            umap_min_dist,
+            umap_spread,
+            integration_cluster_resolution
+        )
+        ch_integration_html        = INTEGRATION.out.html
+        ch_integration_notebook    = INTEGRATION.out.notebook
+        ch_integration_params_yaml = INTEGRATION.out.params_yaml
+        ch_integration_artifacts   = INTEGRATION.out.artifacts
+        ch_sdata_integrated        = INTEGRATION.out.sdata
+        ch_adata_integrated        = INTEGRATION.out.adata
     }
 
     // =========================================================================
