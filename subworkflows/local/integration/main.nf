@@ -100,12 +100,11 @@ workflow INTEGRATION {
     )
 
     emit:
-    sdata        = ch_sdata_integrated               // channel: [ zarr ]
-    sdata_merged = ch_sdata_merged                   // channel: [ zarr ]
-    adata        = ch_adata_clustered                // channel: [ h5ad ]
+    sdata       = ch_sdata_integrated               // channel: [ zarr ]
+    adata       = ch_adata_clustered                // channel: [ h5ad ]
 
-    html         = REPORT_INTEGRATED.out.html        // channel: [ meta, html ]
-    notebook     = REPORT_INTEGRATED.out.notebook    // channel: [ meta, qmd ]
-    params_yaml  = REPORT_INTEGRATED.out.params_yaml // channel: [ meta, yml ]
-    artifacts    = REPORT_INTEGRATED.out.artifacts   // channel: [ meta, dir ]
+    html        = REPORT_INTEGRATED.out.html        // channel: [ meta, html ]
+    notebook    = REPORT_INTEGRATED.out.notebook    // channel: [ meta, qmd ]
+    params_yaml = REPORT_INTEGRATED.out.params_yaml // channel: [ meta, yml ]
+    artifacts   = REPORT_INTEGRATED.out.artifacts   // channel: [ meta, dir ]
 }

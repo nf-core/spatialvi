@@ -277,7 +277,6 @@ workflow SPATIALVI {
             ch_integration_params_yaml = INTEGRATION.out.params_yaml
             ch_integration_artifacts   = INTEGRATION.out.artifacts
             ch_sdata_integrated        = INTEGRATION.out.sdata
-            ch_sdata_merged            = INTEGRATION.out.sdata_merged
             ch_adata_integrated        = INTEGRATION.out.adata
         }
 
