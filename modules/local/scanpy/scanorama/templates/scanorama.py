@@ -15,7 +15,6 @@ from pathlib import Path
 import anndata as ad
 import pandas as pd
 import scanorama
-import scanpy as sc
 import scipy.sparse as sp
 
 
@@ -35,7 +34,7 @@ def integrate_scanorama(adata_list, labels):
     )
 
     # Merge all `.obs` and `.X` into one AnnData object
-    adata = sc.concat(
+    adata = ad.concat(
         adatas_corrected,
         label="library_id",
         uns_merge="unique",

@@ -14,7 +14,6 @@ from pathlib import Path
 
 import anndata as ad
 import pandas as pd
-import scanpy as sc
 import scanpy.external as sce
 
 
@@ -24,10 +23,10 @@ def integrate_harmony(adata_list, sample_names, sample_col='library_id'):
     print(f"Concatenating {len(adata_list)} AnnData objects")
 
     # Merge all `.obs` and `.X` into one AnnData object
-    adata = sc.concat(
+    adata = ad.concat(
         adata_list,
         label=sample_col,
-        uns_merge="unique",
+        uns_merge='unique',
         keys=sample_names,
         join='inner',
         index_unique="-"
