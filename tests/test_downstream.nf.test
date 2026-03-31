@@ -42,6 +42,12 @@ nextflow_pipeline {
                 params.outdir,
                 include: ['**/*.h5ad']
             )
+            def adata_info = adata_files.sort().collect { file ->
+                [
+                    filename: file.name,
+                    content: anndata(file.toPath()).yaml
+                ]
+            }
 
             assertAll(
 
@@ -55,6 +61,7 @@ nextflow_pipeline {
                     stable_name_zarr,
                     stable_path,
                     // AnnData files parsed into YAML format
+                    adata_info,
                     adata_files.collect { file -> anndata(file.toPath()).yaml }
                 ).match() }
 
