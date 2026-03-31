@@ -37,11 +37,17 @@ nextflow_pipeline {
                 ignoreFile: 'tests/.nftignore'
             )
 
-            // Paths of all output AnnData files (unstable contents)
+            // JSON-formatted AnnData information (unstable contents)
             def adata_files = getAllFilesFromDir(
                 params.outdir,
                 include: ['**/*.h5ad']
-            )
+            ).sort { it.name }
+            .collect { file ->
+                [
+                    file: file.name,
+                    contents: anndata(file.toPath()).yaml
+                ]
+            }
 
             assertAll(
 
