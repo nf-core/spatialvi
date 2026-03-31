@@ -3617,8 +3617,8 @@
             ],
             [
                 {
-                    "filename": "CytAssist_11mm_FFPE_Human_Glioblastoma_2.2-raw.h5ad",
-                    "content": {
+                    "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2.2-raw.h5ad",
+                    "contents": {
                         "n_obs": 11397,
                         "n_vars": 19023,
                         "obs": {
@@ -3664,8 +3664,8 @@
                     }
                 },
                 {
-                    "filename": "CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.h5ad",
-                    "content": {
+                    "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.h5ad",
+                    "contents": {
                         "n_obs": 834,
                         "n_vars": 3580,
                         "obs": {
@@ -3758,8 +3758,8 @@
                     }
                 },
                 {
-                    "filename": "CytAssist_11mm_FFPE_Human_Glioblastoma_2-raw.h5ad",
-                    "content": {
+                    "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2-raw.h5ad",
+                    "contents": {
                         "n_obs": 11397,
                         "n_vars": 19023,
                         "obs": {
@@ -3805,8 +3805,8 @@
                     }
                 },
                 {
-                    "filename": "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad",
-                    "content": {
+                    "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad",
+                    "contents": {
                         "n_obs": 834,
                         "n_vars": 3580,
                         "obs": {
@@ -3899,8 +3899,8 @@
                     }
                 },
                 {
-                    "filename": "harmony.h5ad",
-                    "content": {
+                    "file": "harmony.h5ad",
+                    "contents": {
                         "n_obs": 1668,
                         "n_vars": 3580,
                         "obs": {
@@ -3994,7 +3994,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-03-31T10:14:18.648496",
+        "timestamp": "2026-03-31T10:55:55.305344",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
