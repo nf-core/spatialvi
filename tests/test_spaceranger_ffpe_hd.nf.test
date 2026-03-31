@@ -58,8 +58,7 @@ nextflow_pipeline {
                     stable_name,
                     stable_name_zarr,
                     stable_path,
-                    // AnnData files parsed into YAML format
-                    adata_files.collect { file -> anndata(file.toPath()).yaml }
+                    adata_files
                 ).match() }
 
             )
