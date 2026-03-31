@@ -71,12 +71,12 @@ def main():
     """Integrate multiple AnnData objects into one."""
 
     # Template variables
-    h5ad_files = "${h5ad}".split()
+    h5ad_files = sorted("${h5ad}".split())
     output_file = "${prefix}.h5ad"
     process_name = "${task.process}"
 
     adata_list = []
-    for h5ad in sorted(h5ad_files):
+    for h5ad in h5ad_files:
         print(f"Reading {h5ad} AnnData object")
         adata = ad.read_h5ad(h5ad)
         adata_list.append(adata)
