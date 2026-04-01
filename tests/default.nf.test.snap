@@ -1,8 +1,12 @@
 {
     "Space Ranger FFPE v2 CytAssist": {
         "content": [
-            30,
+            31,
             {
+                "ADATA_MERGE": {
+                    "anndata": "0.12.4",
+                    "python": "3.12.12"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -464,6 +468,10 @@
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters/codes/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters/codes/.zattrs",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters/codes/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters_harmony",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters_harmony/.zarray",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters_harmony/.zattrs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters_harmony/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue/.zattrs",
@@ -546,6 +554,11 @@
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/.zattrs",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/.zgroup",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony/.zarray",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony/.zattrs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony/0/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca/.zattrs",
@@ -556,6 +569,11 @@
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap/.zattrs",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap/0/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony/.zarray",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony/.zattrs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony/0/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial/.zattrs",
@@ -2109,238 +2127,231 @@
             ],
             [
                 {
-                    "n_obs": 14336,
-                    "n_vars": 19023,
-                    "obs": {
-                        "index": "_index",
-                        "columns": [
-                            "array_col",
-                            "array_row",
-                            "in_tissue",
-                            "region",
-                            "spot_id"
+                    "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2-raw.h5ad",
+                    "contents": {
+                        "n_obs": 14336,
+                        "n_vars": 19023,
+                        "obs": {
+                            "index": "_index",
+                            "columns": [
+                                "array_col",
+                                "array_row",
+                                "in_tissue",
+                                "region",
+                                "spot_id"
+                            ]
+                        },
+                        "var": {
+                            "index": "_index",
+                            "columns": [
+                                "feature_types",
+                                "gene_ids",
+                                "genome"
+                            ]
+                        },
+                        "layers": [
+                            "raw"
+                        ],
+                        "obsm": [
+                            "spatial"
+                        ],
+                        "varm": [
+                            
+                        ],
+                        "obsp": [
+                            
+                        ],
+                        "varp": [
+                            
+                        ],
+                        "uns": [
+                            "coordinate_system",
+                            "sample_id",
+                            "spatial",
+                            "spatialdata_attrs",
+                            "table_name"
                         ]
-                    },
-                    "var": {
-                        "index": "_index",
-                        "columns": [
-                            "feature_types",
-                            "gene_ids",
-                            "genome"
-                        ]
-                    },
-                    "layers": [
-                        "raw"
-                    ],
-                    "obsm": [
-                        "spatial"
-                    ],
-                    "varm": [
-                        
-                    ],
-                    "obsp": [
-                        
-                    ],
-                    "varp": [
-                        
-                    ],
-                    "uns": [
-                        "coordinate_system",
-                        "sample_id",
-                        "spatial",
-                        "spatialdata_attrs",
-                        "table_name"
-                    ]
+                    }
                 },
                 {
-                    "n_obs": 844,
-                    "n_vars": 3606,
-                    "obs": {
-                        "index": "_index",
-                        "columns": [
-                            "array_col",
-                            "array_row",
+                    "file": "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad",
+                    "contents": {
+                        "n_obs": 844,
+                        "n_vars": 3606,
+                        "obs": {
+                            "index": "_index",
+                            "columns": [
+                                "array_col",
+                                "array_row",
+                                "clusters",
+                                "in_tissue",
+                                "n_counts",
+                                "n_genes",
+                                "n_genes_by_counts",
+                                "pct_counts_hb",
+                                "pct_counts_in_top_100_genes",
+                                "pct_counts_in_top_200_genes",
+                                "pct_counts_in_top_500_genes",
+                                "pct_counts_in_top_50_genes",
+                                "pct_counts_mt",
+                                "pct_counts_ribo",
+                                "region",
+                                "spot_id",
+                                "total_counts",
+                                "total_counts_hb",
+                                "total_counts_mt",
+                                "total_counts_normalized",
+                                "total_counts_ribo"
+                            ]
+                        },
+                        "var": {
+                            "index": "_index",
+                            "columns": [
+                                "dispersions",
+                                "dispersions_norm",
+                                "feature_types",
+                                "gene_ids",
+                                "genome",
+                                "hb",
+                                "highly_variable",
+                                "mean_counts",
+                                "means",
+                                "mt",
+                                "n_cells",
+                                "n_cells_by_counts",
+                                "pct_dropout_by_counts",
+                                "ribo",
+                                "total_counts"
+                            ]
+                        },
+                        "layers": [
+                            "raw"
+                        ],
+                        "obsm": [
+                            "X_pca",
+                            "X_umap",
+                            "spatial"
+                        ],
+                        "varm": [
+                            "PCs"
+                        ],
+                        "obsp": [
+                            "connectivities",
+                            "distances",
+                            "spatial_connectivities",
+                            "spatial_distances"
+                        ],
+                        "varp": [
+                            
+                        ],
+                        "uns": [
+                            "X_umap",
                             "clusters",
-                            "in_tissue",
-                            "n_counts",
-                            "n_genes",
-                            "n_genes_by_counts",
-                            "pct_counts_hb",
-                            "pct_counts_in_top_100_genes",
-                            "pct_counts_in_top_200_genes",
-                            "pct_counts_in_top_500_genes",
-                            "pct_counts_in_top_50_genes",
-                            "pct_counts_mt",
-                            "pct_counts_ribo",
-                            "region",
-                            "spot_id",
-                            "total_counts",
-                            "total_counts_hb",
-                            "total_counts_mt",
-                            "total_counts_normalized",
-                            "total_counts_ribo"
+                            "clusters_interactions",
+                            "clusters_nhood_enrichment",
+                            "coordinate_system",
+                            "filtering_stats",
+                            "hvg",
+                            "leiden",
+                            "log1p",
+                            "moranI",
+                            "neighbors",
+                            "normalization",
+                            "pca",
+                            "rank_genes_groups",
+                            "sample_id",
+                            "spatial",
+                            "spatial_neighbors",
+                            "spatialdata_attrs",
+                            "table_name"
                         ]
-                    },
-                    "var": {
-                        "index": "_index",
-                        "columns": [
-                            "dispersions",
-                            "dispersions_norm",
-                            "feature_types",
-                            "gene_ids",
-                            "genome",
-                            "hb",
-                            "highly_variable",
-                            "mean_counts",
-                            "means",
-                            "mt",
-                            "n_cells",
-                            "n_cells_by_counts",
-                            "pct_dropout_by_counts",
-                            "ribo",
-                            "total_counts"
-                        ]
-                    },
-                    "layers": [
-                        "raw"
-                    ],
-                    "obsm": [
-                        "X_pca",
-                        "X_umap",
-                        "spatial"
-                    ],
-                    "varm": [
-                        "PCs"
-                    ],
-                    "obsp": [
-                        "connectivities",
-                        "distances",
-                        "spatial_connectivities",
-                        "spatial_distances"
-                    ],
-                    "varp": [
-                        
-                    ],
-                    "uns": [
-                        "X_umap",
-                        "clusters",
-                        "clusters_interactions",
-                        "clusters_nhood_enrichment",
-                        "coordinate_system",
-                        "filtering_stats",
-                        "hvg",
-                        "leiden",
-                        "log1p",
-                        "moranI",
-                        "neighbors",
-                        "normalization",
-                        "pca",
-                        "rank_genes_groups",
-                        "sample_id",
-                        "spatial",
-                        "spatial_neighbors",
-                        "spatialdata_attrs",
-                        "table_name"
-                    ]
+                    }
                 },
                 {
-                    "n_obs": 844,
-                    "n_vars": 3606,
-                    "obs": {
-                        "index": "_index",
-                        "columns": [
-                            "array_col",
-                            "array_row",
-                            "clusters",
+                    "file": "harmony.h5ad",
+                    "contents": {
+                        "n_obs": 844,
+                        "n_vars": 3606,
+                        "obs": {
+                            "index": "_index",
+                            "columns": [
+                                "array_col",
+                                "array_row",
+                                "clusters",
+                                "clusters_harmony",
+                                "in_tissue",
+                                "library_id",
+                                "n_counts",
+                                "n_genes",
+                                "n_genes_by_counts",
+                                "pct_counts_hb",
+                                "pct_counts_in_top_100_genes",
+                                "pct_counts_in_top_200_genes",
+                                "pct_counts_in_top_500_genes",
+                                "pct_counts_in_top_50_genes",
+                                "pct_counts_mt",
+                                "pct_counts_ribo",
+                                "region",
+                                "spot_id",
+                                "total_counts",
+                                "total_counts_hb",
+                                "total_counts_mt",
+                                "total_counts_normalized",
+                                "total_counts_ribo"
+                            ]
+                        },
+                        "var": {
+                            "index": "_index",
+                            "columns": [
+                                "dispersions",
+                                "dispersions_norm",
+                                "feature_types",
+                                "gene_ids",
+                                "genome",
+                                "hb",
+                                "highly_variable",
+                                "mean_counts",
+                                "means",
+                                "mt",
+                                "n_cells",
+                                "n_cells_by_counts",
+                                "pct_dropout_by_counts",
+                                "ribo",
+                                "total_counts"
+                            ]
+                        },
+                        "layers": [
+                            "raw"
+                        ],
+                        "obsm": [
+                            "X_harmony",
+                            "X_pca",
+                            "X_umap",
+                            "X_umap_harmony",
+                            "spatial"
+                        ],
+                        "varm": [
+                            
+                        ],
+                        "obsp": [
+                            "connectivities",
+                            "distances"
+                        ],
+                        "varp": [
+                            
+                        ],
+                        "uns": [
+                            "X_umap_harmony",
                             "clusters_harmony",
-                            "in_tissue",
-                            "library_id",
-                            "n_counts",
-                            "n_genes",
-                            "n_genes_by_counts",
-                            "pct_counts_hb",
-                            "pct_counts_in_top_100_genes",
-                            "pct_counts_in_top_200_genes",
-                            "pct_counts_in_top_500_genes",
-                            "pct_counts_in_top_50_genes",
-                            "pct_counts_mt",
-                            "pct_counts_ribo",
-                            "region",
-                            "spot_id",
-                            "total_counts",
-                            "total_counts_hb",
-                            "total_counts_mt",
-                            "total_counts_normalized",
-                            "total_counts_ribo"
+                            "leiden",
+                            "neighbors",
+                            "spatial"
                         ]
-                    },
-                    "var": {
-                        "index": "_index",
-                        "columns": [
-                            "dispersions",
-                            "dispersions_norm",
-                            "feature_types",
-                            "gene_ids",
-                            "genome",
-                            "hb",
-                            "highly_variable",
-                            "mean_counts",
-                            "means",
-                            "mt",
-                            "n_cells",
-                            "n_cells_by_counts",
-                            "pct_dropout_by_counts",
-                            "ribo",
-                            "total_counts"
-                        ]
-                    },
-                    "layers": [
-                        "raw"
-                    ],
-                    "obsm": [
-                        "X_harmony",
-                        "X_pca",
-                        "X_umap",
-                        "X_umap_harmony",
-                        "spatial"
-                    ],
-                    "varm": [
-                        
-                    ],
-                    "obsp": [
-                        "connectivities",
-                        "distances"
-                    ],
-                    "varp": [
-                        
-                    ],
-                    "uns": [
-                        "X_umap",
-                        "X_umap_harmony",
-                        "clusters",
-                        "clusters_harmony",
-                        "clusters_interactions",
-                        "clusters_nhood_enrichment",
-                        "coordinate_system",
-                        "filtering_stats",
-                        "hvg",
-                        "leiden",
-                        "log1p",
-                        "moranI",
-                        "neighbors",
-                        "normalization",
-                        "pca",
-                        "rank_genes_groups",
-                        "sample_id",
-                        "spatial",
-                        "spatial_neighbors",
-                        "spatialdata_attrs",
-                        "table_name"
-                    ]
+                    }
                 }
             ]
         ],
-        "timestamp": "2026-03-30T12:04:29.191128366",
+        "timestamp": "2026-04-01T15:01:34.219011777",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
