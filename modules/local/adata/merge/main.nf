@@ -1,6 +1,5 @@
 process ADATA_MERGE {
-    tag "${prefix}"
-    label 'process_medium'
+    label 'process_low'
 
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
@@ -15,11 +14,11 @@ process ADATA_MERGE {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "collected"
+    prefix = task.ext.prefix ?: "merged"
     template 'merge.py'
 
     stub:
-    prefix = task.ext.prefix ?: "collected"
+    prefix = task.ext.prefix ?: "merged"
     """
     touch ${prefix}.h5ad
     touch versions.yml

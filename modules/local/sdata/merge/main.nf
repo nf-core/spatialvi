@@ -1,5 +1,4 @@
 process SDATA_MERGE {
-    tag "${prefix}"
     label 'process_low'
 
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
@@ -15,11 +14,11 @@ process SDATA_MERGE {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "collected"
+    prefix = task.ext.prefix ?: "merged"
     template 'merge.py'
 
     stub:
-    prefix = task.ext.prefix ?: "collected"
+    prefix = task.ext.prefix ?: "merged"
     """
     mkdir -p ${prefix}.zarr
     touch ${prefix}.zarr/.zgroup
