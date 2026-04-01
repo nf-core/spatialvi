@@ -123,17 +123,17 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                         },
-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
                     [
                         {
-                            "id": "test"
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                         },
-                        "test_svg.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2_svg.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -142,17 +142,17 @@
                 "adata": [
                     [
                         {
-                            "id": "test"
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                         },
-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "csv": [
                     [
                         {
-                            "id": "test"
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                         },
-                        "test_svg.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2_svg.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
@@ -160,7 +160,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-26T11:05:29.141135",
+        "timestamp": "2026-04-01T21:17:27.392373",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

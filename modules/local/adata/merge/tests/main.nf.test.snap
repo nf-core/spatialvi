@@ -33,13 +33,13 @@
                     "spatial"
                 ],
                 "varm": [
-
+                    
                 ],
                 "obsp": [
-
+                    
                 ],
                 "varp": [
-
+                    
                 ],
                 "uns": [
                     "spatial"
@@ -70,26 +70,26 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-
+                        
                     ]
                 },
                 "layers": [
-
+                    
                 ],
                 "obsm": [
-
+                    
                 ],
                 "varm": [
-
+                    
                 ],
                 "obsp": [
-
+                    
                 ],
                 "varp": [
-
+                    
                 ],
                 "uns": [
-
+                    
                 ]
             }
         ],

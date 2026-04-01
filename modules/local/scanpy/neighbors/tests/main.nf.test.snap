@@ -53,9 +53,9 @@
                 "0": [
                     [
                         {
-                            "id": "test"
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                         },
-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -64,9 +64,9 @@
                 "adata": [
                     [
                         {
-                            "id": "test"
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                         },
-                        "test.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
@@ -74,7 +74,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-25T14:24:26.382796",
+        "timestamp": "2026-04-01T21:00:27.3532",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

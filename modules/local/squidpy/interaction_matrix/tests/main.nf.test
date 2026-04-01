@@ -16,7 +16,7 @@ nextflow_process {
                 process {
                     """
                     input[0] = [
-                        [ id: 'test' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
                     ]
                     """
                 }
@@ -101,7 +101,7 @@ nextflow_process {
                 process {
                     """
                     input[0] = [
-                        [ id: 'test' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
                     ]
                     """
                 }
