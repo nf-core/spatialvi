@@ -43,8 +43,8 @@ nextflow_process {
                 process {
                     """
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = "generic" // coord_type
-                    input[2] = 6         // n_neighs
+                    input[1] = "grid" // coord_type
+                    input[2] = 6      // n_neighs
                     """
                 }
             }
@@ -64,8 +64,8 @@ nextflow_process {
                 process {
                     """
                     input[0] = SCANPY_NEIGHBORS.out.adata
-                    input[1] = 1.0      // resolution
-                    input[2] = 'leiden' // key_added
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
                     """
                 }
             }
@@ -75,7 +75,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_LEIDEN.out.adata
-                input[1] = 'leiden' // cluster_key
+                input[1] = 'clusters' // cluster_key
                 """
             }
         }
@@ -128,8 +128,8 @@ nextflow_process {
                 process {
                     """
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = "generic" // coord_type
-                    input[2] = 6         // n_neighs
+                    input[1] = "grid" // coord_type
+                    input[2] = 6      // n_neighs
                     """
                 }
             }
@@ -149,8 +149,8 @@ nextflow_process {
                 process {
                     """
                     input[0] = SCANPY_NEIGHBORS.out.adata
-                    input[1] = 1.0      // resolution
-                    input[2] = 'leiden' // key_added
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
                     """
                 }
             }
@@ -160,7 +160,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_LEIDEN.out.adata
-                input[1] = 'leiden' // cluster_key
+                input[1] = 'clusters' // cluster_key
                 """
             }
         }

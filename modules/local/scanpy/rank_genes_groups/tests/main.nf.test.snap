@@ -1,5 +1,5 @@
 {
-    "homo_sapiens - h5ad": {
+    "homo_sapiens - h5ad - wilcoxon": {
         "content": [
             [
                 "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
@@ -10,7 +10,7 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "leiden",
+                        "clusters",
                         "sample"
                     ]
                 },
@@ -37,6 +37,7 @@
                     
                 ],
                 "uns": [
+                    "clusters",
                     "leiden",
                     "neighbors",
                     "pca",
@@ -44,7 +45,59 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-30T07:16:25.47802",
+        "timestamp": "2026-04-01T18:43:43.425106",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad - logreg": {
+        "content": [
+            [
+                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "leiden",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T19:05:22.628685",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
@@ -78,6 +131,110 @@
             }
         ],
         "timestamp": "2026-03-25T15:33:13.172981",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad - t-test_overstim_var": {
+        "content": [
+            [
+                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "leiden",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T18:50:35.543846",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad - t-test": {
+        "content": [
+            [
+                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "leiden",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T18:44:25.651553",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

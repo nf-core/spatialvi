@@ -12,8 +12,8 @@
                     "columns": [
                         "array_col",
                         "array_row",
+                        "clusters",
                         "in_tissue",
-                        "leiden",
                         "region",
                         "spot_id"
                     ]
@@ -46,9 +46,10 @@
                     
                 ],
                 "uns": [
+                    "clusters",
+                    "clusters_interactions",
                     "coordinate_system",
                     "leiden",
-                    "leiden_interactions",
                     "neighbors",
                     "pca",
                     "sample_id",
@@ -59,7 +60,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-30T07:26:42.236478",
+        "timestamp": "2026-04-01T19:12:08.169831",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

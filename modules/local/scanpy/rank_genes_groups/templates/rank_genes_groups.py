@@ -3,6 +3,10 @@
 Rank genes for characterizing groups (differential expression analysis).
 """
 
+# Disable OpenMP CPU topology detection for MacOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import importlib.metadata
 import platform
 import yaml

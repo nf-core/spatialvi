@@ -10,7 +10,7 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "leiden",
+                        "clusters",
                         "sample"
                     ]
                 },
@@ -37,13 +37,14 @@
                     
                 ],
                 "uns": [
+                    "clusters",
                     "leiden",
                     "neighbors",
                     "pca"
                 ]
             }
         ],
-        "timestamp": "2026-03-30T07:12:29.894921",
+        "timestamp": "2026-04-01T18:36:53.824544",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

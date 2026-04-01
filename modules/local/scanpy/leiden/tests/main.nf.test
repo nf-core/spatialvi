@@ -30,8 +30,8 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_NEIGHBORS.out.adata
-                input[1] = 1.0      // resolution
-                input[2] = 'leiden' // key_added
+                input[1] = 1.0        // resolution
+                input[2] = 'clusters' // key_added
                 """
             }
         }
@@ -71,8 +71,8 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_NEIGHBORS.out.adata
-                input[1] = 1.0      // resolution
-                input[2] = 'leiden' // key_added
+                input[1] = 1.0        // resolution
+                input[2] = 'clusters' // key_added
                 """
             }
         }

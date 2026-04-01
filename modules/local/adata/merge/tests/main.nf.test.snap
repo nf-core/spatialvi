@@ -33,13 +33,13 @@
                     "spatial"
                 ],
                 "varm": [
-                    
+
                 ],
                 "obsp": [
-                    
+
                 ],
                 "varp": [
-                    
+
                 ],
                 "uns": [
                     "spatial"
@@ -70,26 +70,26 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+
                     ]
                 },
                 "layers": [
-                    
+
                 ],
                 "obsm": [
-                    
+
                 ],
                 "varm": [
-                    
+
                 ],
                 "obsp": [
-                    
+
                 ],
                 "varp": [
-                    
+
                 ],
                 "uns": [
-                    
+
                 ]
             }
         ],
@@ -103,20 +103,20 @@
         "content": [
             {
                 "0": [
-                    "collected.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "merged.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "1": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
-                    "collected.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "merged.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T11:59:04.518102",
+        "timestamp": "2026-04-01T18:56:30.816943",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
