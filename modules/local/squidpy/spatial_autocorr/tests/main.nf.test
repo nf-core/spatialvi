@@ -51,8 +51,6 @@ nextflow_process {
         }
 
         when {
-            // TODO: Add a SpatialData test dataset, so some setup can be
-            // skipped
             process {
                 """
                 input[0] = SQUIDPY_SPATIAL_NEIGHBORS.out.adata

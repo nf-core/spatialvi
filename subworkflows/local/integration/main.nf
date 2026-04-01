@@ -2,6 +2,7 @@
 // Subworkflow for aggregation of sample data
 //
 
+include { ADATA_MERGE                                          } from "../../../modules/local/adata/merge"
 include { QUARTONOTEBOOK as REPORT_INTEGRATED                  } from "../../../modules/nf-core/quartonotebook/main"
 include { SCANPY_HARMONY                                       } from "../../../modules/local/scanpy/harmony"
 include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
@@ -24,21 +25,29 @@ workflow INTEGRATION {
     main:
 
     //
-    // MODULE: Integration with Scanorama
+    // MODULE: Merge AnnData objects
     //
     ch_adata_collected = ch_adata
         .toSortedList { a, b -> a[0].id <=> b[0].id }
         .flatMap()
         .map { _meta, zarr -> zarr }
         .collect()
+    ADATA_MERGE (
+        ch_adata_collected
+    )
+    ch_adata_merged = ADATA_MERGE.out.adata
+
+    //
+    // MODULE: Integration
+    //
     if (integration_method == 'harmony') {
         SCANPY_HARMONY {
-            ch_adata_collected
+            ch_adata_merged
         }
         ch_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
         SCANPY_SCANORAMA {
-            ch_adata_collected
+            ch_adata_merged
         }
         ch_integrated = SCANPY_SCANORAMA.out.adata
     }

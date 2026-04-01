@@ -10,38 +10,17 @@ os.environ["KMP_AFFINITY"] = "disabled"
 import importlib.metadata
 import platform
 import yaml
-from pathlib import Path
 
 import anndata as ad
-import pandas as pd
 import scanpy.external as sce
 
 
-def integrate_harmony(adata_list, sample_names, sample_col='library_id'):
+def integrate_harmony(adata, key='library_id'):
     """Integrate multiple samples using Harmony."""
 
-    print(f"Concatenating {len(adata_list)} AnnData objects")
-
-    # Merge all `.obs` and `.X` into one AnnData object
-    adata = ad.concat(
-        adata_list,
-        label=sample_col,
-        uns_merge='unique',
-        keys=sample_names,
-        join='inner',
-        index_unique="-"
-    )
-
-    # `.var` is dropped during the previous merge, so we add them back manually
-    merged_var = pd.concat([adata.var for adata in adata_list], join="inner")
-    merged_var = merged_var[~merged_var.index.duplicated()]
-    adata.var = merged_var.loc[adata.var_names]
-
-    # Integrate with Harmony
-    print(f'Integrating {len(adata_list)} samples with Harmony')
     sce.pp.harmony_integrate(
         adata,
-        key=sample_col,
+        key=key,
         adjusted_basis="X_harmony"
     )
     print(f"Final integrated AnnData shape: {adata.shape}")
@@ -67,18 +46,14 @@ def main():
     """Integrate multiple AnnData objects into one."""
 
     # Template variables
-    h5ad_files = sorted("${h5ad}".split())
+    h5ad = "${h5ad}"
     output_file = "${prefix}.h5ad"
     process_name = "${task.process}"
 
-    adata_list = []
-    for h5ad in h5ad_files:
-        print(f"Reading {h5ad} AnnData object")
-        adata = ad.read_h5ad(h5ad)
-        adata_list.append(adata)
+    adata = ad.read_h5ad(h5ad)
+    print(f"Read AnnData object {h5ad}")
 
-    sample_names = [Path(h5ad).stem for h5ad in h5ad_files]
-    adata_integrated = integrate_harmony(adata_list, sample_names)
+    adata_integrated = integrate_harmony(adata)
 
     adata_integrated.write_h5ad(output_file)
     print(f"Written integrated AnnData to: {output_file}")

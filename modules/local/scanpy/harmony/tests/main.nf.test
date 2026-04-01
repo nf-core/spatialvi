@@ -24,14 +24,22 @@ nextflow_process {
                     """
                 }
             }
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                        .map { _meta, h5ad -> h5ad }
+                        .collect()
+                    """
+                }
+            }
         }
 
         when {
             process {
                 """
-                input[0] = SCANPY_PCA.out.adata
-                    .map { _meta, zarr -> zarr }
-                    .collect()
+                input[0] = ADATA_MERGE.out.adata
                 """
             }
         }
@@ -65,14 +73,22 @@ nextflow_process {
                     """
                 }
             }
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                        .map { _meta, h5ad -> h5ad }
+                        .collect()
+                    """
+                }
+            }
         }
 
         when {
             process {
                 """
-                input[0] = SCANPY_PCA.out.adata
-                    .map { _meta, zarr -> zarr }
-                    .collect()
+                input[0] = ADATA_MERGE.out.adata
                 """
             }
         }

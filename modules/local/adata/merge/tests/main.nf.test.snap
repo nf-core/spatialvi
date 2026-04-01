@@ -1,0 +1,125 @@
+{
+    "homo_sapiens - zarr - with spatial data": {
+        "content": [
+            [
+                "versions.yml:md5,000ad1cdc4326c1b33c0fbd3557056f5"
+            ],
+            {
+                "n_obs": 22794,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "in_tissue",
+                        "library_id",
+                        "region",
+                        "spot_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "spatial"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "spatial"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T12:14:19.397107",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad": {
+        "content": [
+            [
+                "versions.yml:md5,000ad1cdc4326c1b33c0fbd3557056f5"
+            ],
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "library_id",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T12:13:50.291367",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    "collected.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    "collected.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T11:59:04.518102",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

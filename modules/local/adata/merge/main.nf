@@ -1,15 +1,15 @@
-process SDATA_MERGE {
+process ADATA_MERGE {
     tag "${prefix}"
-    label 'process_low'
+    label 'process_medium'
 
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    path(sdata, stageAs: "?/*")
+    path h5ad
 
     output:
-    path("${prefix}.zarr"), emit: sdata
-    path "versions.yml"   , emit: versions, topic: versions
+    path "${prefix}.h5ad", emit: adata
+    path "versions.yml"  , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,8 +21,7 @@ process SDATA_MERGE {
     stub:
     prefix = task.ext.prefix ?: "collected"
     """
-    mkdir -p ${prefix}.zarr
-    touch ${prefix}.zarr/.zgroup
+    touch ${prefix}.h5ad
     touch versions.yml
     """
 }

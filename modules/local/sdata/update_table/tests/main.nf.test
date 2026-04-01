@@ -113,15 +113,21 @@ nextflow_process {
                     """
                 }
             }
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                        .map { _meta, zarr -> zarr }
+                        .collect()
+                    """
+                }
+            }
             run("SCANPY_HARMONY") {
                 script "../../../scanpy/harmony/main.nf"
                 process {
                     """
-                    input[0] = SCANPY_PCA.out.adata
-                        .toSortedList { a, b -> a[0].id <=> b[0].id }
-                        .flatMap { it }
-                        .map { _meta, zarr -> zarr }
-                        .collect()
+                    input[0] = ADATA_MERGE.out.adata
                     """
                 }
             }

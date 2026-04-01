@@ -10,13 +10,36 @@ nextflow_process {
 
     test("homo_sapiens - h5ad") {
 
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = channel.fromList([
+                        tuple([ id: 'test_1' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                        tuple([ id: 'test_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                    ])
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    """
+                }
+            }
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                        .map { _meta, h5ad -> h5ad }
+                        .collect()
+                    """
+                }
+            }
+        }
+
         when {
             process {
                 """
-                input[0] = [
-                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
-                ]
+                input[0] = ADATA_MERGE.out.adata
                 """
             }
         }
@@ -36,13 +59,36 @@ nextflow_process {
 
         options "-stub"
 
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = channel.fromList([
+                        tuple([ id: 'test_1' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                        tuple([ id: 'test_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                    ])
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    """
+                }
+            }
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                        .map { _meta, h5ad -> h5ad }
+                        .collect()
+                    """
+                }
+            }
+        }
+
         when {
             process {
                 """
-                input[0] = [
-                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
-                ]
+                input[0] = ADATA_MERGE.out.adata
                 """
             }
         }

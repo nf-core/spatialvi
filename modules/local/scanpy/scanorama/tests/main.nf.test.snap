@@ -17,13 +17,14 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "symbols"
+                        
                     ]
                 },
                 "layers": [
                     
                 ],
                 "obsm": [
+                    "X_pca",
                     "X_scanorama"
                 ],
                 "varm": [
@@ -40,7 +41,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-03-30T07:19:42.574285",
+        "timestamp": "2026-04-01T12:05:09.356453",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

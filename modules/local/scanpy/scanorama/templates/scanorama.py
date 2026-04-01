@@ -10,42 +10,25 @@ os.environ["KMP_AFFINITY"] = "disabled"
 import importlib.metadata
 import platform
 import yaml
-from pathlib import Path
 
 import anndata as ad
-import pandas as pd
-import scanorama
+import scanpy.external as sce
 import scipy.sparse as sp
 
 
-def integrate_scanorama(adata_list, labels):
+def integrate_scanorama(adata, key='library_id'):
     """Integrate multiple samples using Scanorama."""
 
     # Convert to CSR format as required by Scanorama, if data is CSC
-    for adata in adata_list:
-        if sp.issparse(adata.X) and not isinstance(adata.X, sp.csr_matrix):
-            adata.X = adata.X.tocsr()
+    if sp.issparse(adata.X) and not isinstance(adata.X, sp.csr_matrix):
+        print('Converting to CSR data format')
+        adata.X = adata.X.tocsr()
 
-    # Perform integration across all AnnData objects
-    print(f"Integrating {len(adata_list)} AnnData objects")
-    adatas_corrected = scanorama.correct_scanpy(
-        adata_list,
-        return_dimred=True
+    sce.pp.scanorama_integrate(
+        adata,
+        key=key,
+        adjusted_basis='X_scanorama'
     )
-
-    # Merge all `.obs` and `.X` into one AnnData object
-    adata = ad.concat(
-        adatas_corrected,
-        label="library_id",
-        uns_merge="unique",
-        keys=labels,
-        index_unique="-"
-    )
-
-    # `.var` is dropped during the previous merge, so we add them back manually
-    merged_var = pd.concat([adata.var for adata in adata_list], join="outer")
-    merged_var = merged_var[~merged_var.index.duplicated()]
-    adata.var = merged_var.loc[adata.var_names]
 
     print(f"Final integrated AnnData shape: {adata.shape}")
 
@@ -70,18 +53,14 @@ def main():
     """Integrate multiple AnnData objects into one."""
 
     # Template variables
-    h5ad_files = sorted("${h5ad}".split())
+    h5ad = "${h5ad}"
     output_file = "${prefix}.h5ad"
     process_name = "${task.process}"
 
-    adata_list = []
-    for h5ad in h5ad_files:
-        print(f"Reading {h5ad} AnnData object")
-        adata = ad.read_h5ad(h5ad)
-        adata_list.append(adata)
+    print(f"Read AnnData object {h5ad}")
+    adata = ad.read_h5ad(h5ad)
 
-    labels = [Path(f).stem for f in h5ad_files]
-    adata_integrated = integrate_scanorama(adata_list, labels)
+    adata_integrated = integrate_scanorama(adata)
 
     adata_integrated.write_h5ad(output_file)
     print(f"Written integrated AnnData to: {output_file}")
