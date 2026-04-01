@@ -154,6 +154,31 @@ def replace_table(sdata, adata, table_name):
 # -----------------------------------------------------------------------------
 
 
+def find_table_for_library(sdata, library_id):
+    """
+    Find matching table name for a library ID. First tries matching exactly,
+    secondly with a `_table` suffix, with `None` as fallback.
+    """
+    if library_id in sdata.tables:
+        return library_id
+    if f"{library_id}_table" in sdata.tables:
+        return f"{library_id}_table"
+    return None
+
+
+def build_library_to_table_dict(sdata, library_ids):
+    """Build library-to-table dictionary."""
+    library_to_table_dict = {}
+    for library_id in library_ids:
+        table_name = find_table_for_library(sdata, library_id)
+        if table_name:
+            library_to_table_dict[library_id] = table_name
+        else:
+            print(f"WARNING: No matching table found for library '{library_id}'")
+    print(f"Library-to-table mapping: {library_to_table_dict}")
+    return library_to_table_dict
+
+
 def update_tables_from_concat(sdata, adata_concat, library_key):
     """Update multiple tables from concatenated AnnData."""
     if library_key not in adata_concat.obs.columns:
@@ -162,16 +187,19 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
 
     library_ids = adata_concat.obs[library_key].unique()
     print(f"Found {len(library_ids)} libraries: {library_ids.tolist()}")
+    print(f"Available tables: {list(sdata.tables.keys())}")
 
-    for table_name in sdata.tables.keys():
-        mask = adata_concat.obs[library_key] == table_name
+    library_to_table_dict = build_library_to_table_dict(sdata, library_ids)
+
+    for library_id, table_name in library_to_table_dict.items():
+        mask = adata_concat.obs[library_key] == library_id
         if not mask.any():
-            print(f"WARNING: No observations for '{table_name}'")
+            print(f"WARNING: No observations for library '{library_id}'")
             continue
 
         adata_subset = adata_concat[mask].copy()
         table = sdata.tables[table_name]
-        print(f"Updating '{table_name}' ({adata_subset.shape[0]} obs)")
+        print(f"Updating table '{table_name}' from library '{library_id}' ({adata_subset.shape[0]} obs)")
 
         # Build index mapping (remove concatenation suffix)
         index_map = {idx: idx.rsplit("-", 1)[0] for idx in adata_subset.obs_names}

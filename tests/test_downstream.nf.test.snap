@@ -5,9 +5,7 @@
             {
                 "ADATA_MERGE": {
                     "anndata": "0.12.4",
-                    "harmony": "0.0.10",
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5"
+                    "python": "3.12.12"
                 },
                 "REPORT": {
                     "papermill": "2.6.0",
@@ -2855,6 +2853,10 @@
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters/codes/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters/codes/.zattrs",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters/codes/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters_harmony",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters_harmony/.zarray",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters_harmony/.zattrs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/clusters_harmony/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue/.zattrs",
@@ -2937,6 +2939,11 @@
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/.zattrs",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/.zgroup",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony/.zarray",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony/.zattrs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_harmony/0/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca/.zattrs",
@@ -2947,6 +2954,11 @@
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap/.zattrs",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap/0/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony/.zarray",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony/.zattrs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap_harmony/0/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial/.zattrs",
@@ -3988,7 +4000,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-04-01T11:47:23.382061",
+        "timestamp": "2026-04-01T13:44:05.352123",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
