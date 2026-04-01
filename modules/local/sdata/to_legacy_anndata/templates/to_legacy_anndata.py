@@ -22,9 +22,11 @@ def find_table_name(sdata, sample_id_clean):
     expected_name = f"{sample_id_clean}_table"
     if expected_name in sdata.tables:
         return expected_name
-    fallback_name = list(sdata.tables.keys())[0]
-    print(f"Warning: Expected table '{expected_name}' not found, using '{fallback_name}'")
-    return fallback_name
+    available_tables = list(sdata.tables.keys())
+    raise ValueError(
+        f"Expected table '{expected_name}' not found in SpatialData. "
+        f"Available tables: {available_tables}"
+    )
 
 
 def find_coordinate_system(sdata, sample_id_clean):
@@ -32,9 +34,11 @@ def find_coordinate_system(sdata, sample_id_clean):
     expected_name = f"{sample_id_clean}_downscaled_hires"
     if expected_name in sdata.coordinate_systems:
         return expected_name
-    fallback_name = list(sdata.coordinate_systems)[0]
-    print(f"Warning: Expected coordinate system not found, using '{fallback_name}'")
-    return fallback_name
+    available_systems = list(sdata.coordinate_systems)
+    raise ValueError(
+        f"Expected coordinate system '{expected_name}' not found in SpatialData. "
+        f"Available coordinate systems: {available_systems}"
+    )
 
 
 def extract_to_legacy_anndata(sdata, table_name, coord_system):
