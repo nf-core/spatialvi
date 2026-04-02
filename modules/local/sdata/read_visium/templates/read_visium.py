@@ -118,7 +118,7 @@ def validate_table(sdata, table_name, sample_id_clean):
 
 
 def write_versions(process_name):
-    """Write software versions to YAML file."""
+    """Write software versions to a YAML file."""
     versions = {
         process_name: {
             "python": platform.python_version(),

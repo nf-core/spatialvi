@@ -155,7 +155,7 @@ def print_qc_summary(adata):
 
 
 def write_versions(process_name):
-    """Write software versions to YAML file."""
+    """Write software versions to a YAML file."""
     versions = {
         process_name: {
             "python": platform.python_version(),

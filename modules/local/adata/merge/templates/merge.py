@@ -81,7 +81,7 @@ def merge_adata(adata_list,
     return adata
 
 def write_versions(process_name):
-    """Write software versions to YAML file."""
+    """Write software versions to a YAML file."""
     versions = {
         process_name: {
             "python": platform.python_version(),
@@ -99,8 +99,8 @@ def main():
     h5ad_files = "${h5ad}".split()
     join = "${join}"
     label = "${label}"
-    preserve_var = "${preserve_var}" != "false"
-    preserve_spatial = "${preserve_spatial}" != "false"
+    preserve_var = "${preserve_var}" == "true"
+    preserve_spatial = "${preserve_spatial}" == "true"
     output_file = "${prefix}.h5ad"
     process_name = "${task.process}"
 
