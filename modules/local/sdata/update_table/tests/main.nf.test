@@ -120,6 +120,10 @@ nextflow_process {
                     input[0] = SCANPY_PCA.out.adata
                         .map { _meta, zarr -> zarr }
                         .collect()
+                    input[1] = 'inner'      // join
+                    input[2] = 'library_id' // label
+                    input[3] = false        // preserve_var
+                    input[4] = false        // preserve_spatial
                     """
                 }
             }
