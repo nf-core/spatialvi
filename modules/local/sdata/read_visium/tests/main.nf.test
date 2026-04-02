@@ -52,9 +52,10 @@ nextflow_process {
         }
     }
 
-    // TODO: Add `outs.tar.gz` from Space Ranger HD outputs, so that HD reading
-    // can be tested as well; currently, there is HD input for Space Ranger, but
-    // no HD output
+    // N.B.
+    // Currently, there is only non-HD Space Ranger output to use for testing
+    // this module; the `outs.tar.gz` file from the HD test data is 1.5 GB in
+    // size, so likely too large to store in nf-core/test-datasets.
 
     test("homo_sapiens - outs - stub") {
 
