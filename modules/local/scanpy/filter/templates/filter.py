@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """
-Filter observations (cells or spots) and renes from an AnnData object based on
-QC metrics.
-
-Observations correspond to spots in spatial transcriptomics (e.g., Visium)
-and cells in single-cell RNA-seq.
+Filter observations (cells for scRNA-seq data, spots for spatial data) and genes
+from an AnnData object based on QC metrics.
 
 Filtering steps (in order):
  1. Remove observations outside tissue (spatial data only)
@@ -154,9 +151,6 @@ def filter_adata(
     n_total_obs = adata.shape[0]
     n_total_genes = adata.shape[1]
 
-    # Save a copy as restore-point if filtering results in 0 spots
-    adata_backup = adata.copy()
-
     stats = {
         "total_obs_before": n_total_obs,
         "total_genes_before": n_total_genes,
@@ -200,15 +194,12 @@ def filter_adata(
         stats=stats
     )
 
-    # Restore backup if filtering removed all data
-    filtering_failed = adata.shape[0] == 0 or adata.shape[1] == 0
-    if filtering_failed:
-        print("WARNING: Filtering resulted in 0 obs or genes remaining!")
-        print("Restoring original unfiltered data.")
-        adata = adata_backup
+    if adata.shape[0] == 0:
+        raise ValueError("Filtering resulted in 0 observations remaining.")
+    if adata.shape[1] == 0:
+        raise ValueError("Filtering resulted in 0 genes remaining.")
 
     # Final statistics
-    stats["filtering_failed"] = filtering_failed
     stats["total_obs_after"] = adata.shape[0]
     stats["total_genes_after"] = adata.shape[1]
     stats["total_obs_filtered"] = n_total_obs - adata.shape[0]
