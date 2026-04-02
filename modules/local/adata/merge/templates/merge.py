@@ -69,6 +69,13 @@ def merge_adata(adata_list,
     if preserve_spatial:
         adata = add_spatial(adata, adata_list)
 
+    adata.uns['merge'] = {
+        'n_samples': len(keys),
+        'join': join,
+        'label': label,
+        'preserve_var': preserve_var,
+        'preserve_spatial': preserve_spatial,
+    }
     print(f"Final merged AnnData {adata}")
 
     return adata
@@ -90,6 +97,10 @@ def main():
 
     # Template variables
     h5ad_files = "${h5ad}".split()
+    join = "${join}"
+    label = "${label}"
+    preserve_var = "${preserve_var}" != "false"
+    preserve_spatial = "${preserve_spatial}" != "false"
     output_file = "${prefix}.h5ad"
     process_name = "${task.process}"
 
@@ -100,7 +111,14 @@ def main():
         print(f"Read AnnData object {adata}")
 
     sample_names = [Path(h5ad).stem for h5ad in h5ad_files]
-    adata_integrated = merge_adata(adata_list, sample_names)
+    adata_integrated = merge_adata(
+        adata_list,
+        sample_names,
+        join=join,
+        label=label,
+        preserve_var=preserve_var,
+        preserve_spatial=preserve_spatial
+    )
 
     adata_integrated.write_h5ad(output_file)
     print(f"Written merged AnnData to: {output_file}")

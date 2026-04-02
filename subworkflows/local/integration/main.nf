@@ -33,7 +33,12 @@ workflow INTEGRATION {
         .map { _meta, zarr -> zarr }
         .collect()
     ADATA_MERGE (
-        ch_adata_collected
+        ch_adata_collected,
+        'inner',      // join
+        'library_id', // label
+        'true',       // preserve_var
+        'true',       // preserve_spatial
+
     )
     ch_adata_merged = ADATA_MERGE.out.adata
 

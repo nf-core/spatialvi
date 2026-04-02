@@ -5,6 +5,10 @@ process ADATA_MERGE {
 
     input:
     path h5ad
+    val join
+    val label
+    val preserve_var
+    val preserve_spatial
 
     output:
     path "${prefix}.h5ad", emit: adata

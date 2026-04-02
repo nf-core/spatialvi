@@ -28,7 +28,8 @@ nextflow_pipeline {
                 params.outdir,
                 relative: true,
                 includeDir: true,
-                include: ['**/*.zarr/**']
+                include: ['**/*.zarr/**'],
+                ignore: ['**/*.zarr/**/[0-9]*']
             )
 
             // Paths of all output files (stable contents)

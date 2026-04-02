@@ -3993,6 +3993,7 @@
                             "X_umap_harmony",
                             "clusters_harmony",
                             "leiden",
+                            "merge",
                             "neighbors",
                             "spatial"
                         ]

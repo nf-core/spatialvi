@@ -8,7 +8,7 @@ nextflow_process {
     tag "modules_local"
     tag "adata_merge"
 
-    test("homo_sapiens - h5ad") {
+    test("homo_sapiens - h5ad - inner") {
 
         when {
             process {
@@ -16,11 +16,14 @@ nextflow_process {
                 input[0] = channel.fromList([
                     tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
                     tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
-                ])
-                .toSortedList { a, b -> a[0].id <=> b[0].id }
-                .flatMap()
-                .map { _meta, zarr -> zarr }
-                .collect()
+                ])  .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_var
+                input[4] = false        // preserve_spatial
                 """
             }
         }
@@ -36,7 +39,69 @@ nextflow_process {
         }
     }
 
-    test("homo_sapiens - zarr - with spatial data") {
+    test("homo_sapiens - h5ad - outer") {
+
+        when {
+            process {
+                """
+                input[0] = channel.fromList([
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                ])  .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'outer'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_var
+                input[4] = false        // preserve_spatial
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - preserve var data") {
+
+        when {
+            process {
+                """
+                input[0] = channel.fromList([
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                ])  .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = true         // preserve_var
+                input[4] = false        // preserve_spatial
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - zarr - preserve spatial data") {
 
         setup {
             run("UNTAR") {
@@ -68,6 +133,10 @@ nextflow_process {
                     .flatMap { it }
                     .map { _meta, zarr -> zarr }
                     .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_var
+                input[4] = true         // preserve_spatial
                 """
             }
         }
@@ -93,11 +162,14 @@ nextflow_process {
                 input[0] = channel.fromList([
                     tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
                     tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
-                ])
-                .toSortedList { a, b -> a[0].id <=> b[0].id }
-                .flatMap()
-                .map { _meta, zarr -> zarr }
-                .collect()
+                ])  .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = true         // preserve_var
+                input[4] = false        // preserve_spatial
                 """
             }
         }
