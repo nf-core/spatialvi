@@ -124,5 +124,92 @@
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
         }
+    },
+    "homo_sapiens - h5ad - with spatial data": {
+        "content": [
+            [
+                "versions.yml:md5,b6a994de579a3ecaab530e42ab0b9d2d"
+            ],
+            {
+                "n_obs": 6583,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "in_tissue",
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_100_genes",
+                        "pct_counts_in_top_200_genes",
+                        "pct_counts_in_top_500_genes",
+                        "pct_counts_in_top_50_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "region",
+                        "spot_id",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome",
+                        "hb",
+                        "mean_counts",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "spatial"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "coordinate_system",
+                    "filtering_stats",
+                    "sample_id",
+                    "spatial",
+                    "spatialdata_attrs",
+                    "table_name"
+                ]
+            },
+            [
+                [
+                    {
+                        "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                    },
+                    "CytAssist_11mm_FFPE_Human_Glioblastoma_2_stats.json:md5,4ac0700b95fcc2412bf56f61fcaec22d"
+                ]
+            ]
+        ],
+        "timestamp": "2026-04-02T20:17:25.845947",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
     }
 }
