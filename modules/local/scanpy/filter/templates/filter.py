@@ -1,187 +1,231 @@
 #!/usr/bin/env python3
 """
-Filter spots and genes from an AnnData object based on QC metrics.
+Filter observations (cells or spots) and renes from an AnnData object based on
+QC metrics.
+
+Observations correspond to spots in spatial transcriptomics (e.g., Visium)
+and cells in single-cell RNA-seq.
 
 Filtering steps (in order):
-1. Remove spots outside tissue
-2. Filter spots by minimum counts
-3. Filter spots by minimum genes
-4. Filter genes by minimum spots
-5. Filter spots by mitochondrial content
-6. Filter spots by ribosomal content
-7. Filter spots by haemoglobin content
+ 1. Remove observations outside tissue (spatial data only)
+ 2. Filter observations by minimum counts
+ 3. Filter observations by minimum genes
+ 4. Filter genes by minimum observations
+ 5. Filter observations by maximum mitochondrial content
+ 6. Filter observations by minimum ribosomal content
+ 7. Filter observations by maximum haemoglobin content
 """
 
 import importlib.metadata
 import json
 import platform
-import yaml
 
 import anndata as ad
 import scanpy as sc
+import yaml
+
+
+def filter_by_obs_column(adata, col, threshold, filter_below, stat_key, stats):
+    """
+    Filter observations based on a threshold for a given column.
+
+    Parameters
+    ----------
+    adata : AnnData
+        AnnData object to filter.
+    col : str
+        Column name in adata.obs to filter on.
+    threshold : float
+        Threshold value for filtering.
+    filter_below : bool
+        If True, filter obs with values smaller than the threshold, otherwise
+        filter values larger than the threshold.
+    stat_key : str
+        Key for storing the filtered count in stats dictionary.
+    stats : dict
+        Statistics dictionary to update.
+
+    Returns
+    -------
+    tuple
+        Filtered AnnData and updated statistics.
+    """
+    if col not in adata.obs.columns:
+        print(f"Column '{col}' not found, skipping filtering")
+        stats[stat_key] = 0
+        return adata, stats
+
+    n_before = adata.shape[0]
+    if filter_below:
+        adata = adata[adata.obs[col] >= threshold].copy()
+        symbol = "<"
+    else:
+        adata = adata[adata.obs[col] <= threshold].copy()
+        symbol = ">"
+
+    n_filtered = n_before - adata.shape[0]
+    print(f"Removed {n_filtered} obs with {symbol} {threshold}% {col}")
+    stats[stat_key] = n_filtered
+    return adata, stats
 
 
 def filter_outside_tissue(adata, stats):
-    """Filter spots outside tissue based on 'in_tissue' column."""
-    if "in_tissue" in adata.obs.columns:
-        n_before = adata.shape[0]
-        adata = adata[adata.obs["in_tissue"] == 1].copy()
-        n_filtered = n_before - adata.shape[0]
-        print(f"Removed {n_filtered} spots outside tissue")
-    else:
-        n_filtered = 0
-        print("Column 'in_tissue' not found, skipping tissue filtering")
+    """Filter observations outside tissue based on 'in_tissue' column."""
+    in_tissue_col = "in_tissue"
+    if in_tissue_col not in adata.obs.columns:
+        print(f"Column '{in_tissue_col}' not found, skipping tissue filtering")
+        stats["obs_filtered_outside_tissue"] = 0
+        return adata, stats
 
-    stats["spots_filtered_outside_tissue"] = n_filtered
+    n_before = adata.shape[0]
+    adata = adata[adata.obs[in_tissue_col] == 1].copy()
+    n_filtered = n_before - adata.shape[0]
+    print(f"Removed {n_filtered} obs outside tissue")
+    stats["obs_filtered_outside_tissue"] = n_filtered
     return adata, stats
 
 
 def filter_min_counts(adata, min_counts, stats):
-    """Filter spots with fewer than min_counts total counts."""
+    """Filter observations with fewer than min_counts total counts."""
     n_before = adata.shape[0]
     sc.pp.filter_cells(adata, min_counts=min_counts)
     n_filtered = n_before - adata.shape[0]
-    print(f"Removed {n_filtered} spots with < {min_counts} counts")
-
-    stats["spots_filtered_min_counts"] = n_filtered
+    print(f"Removed {n_filtered} obs with < {min_counts} counts")
+    stats["obs_filtered_min_counts"] = n_filtered
     return adata, stats
 
 
 def filter_min_genes(adata, min_genes, stats):
-    """Filter spots with fewer than min_genes expressed genes."""
+    """Filter observations with fewer than min_genes expressed genes."""
     n_before = adata.shape[0]
     sc.pp.filter_cells(adata, min_genes=min_genes)
     n_filtered = n_before - adata.shape[0]
-    print(f"Removed {n_filtered} spots with < {min_genes} genes")
-
-    stats["spots_filtered_min_genes"] = n_filtered
+    print(f"Removed {n_filtered} obs with < {min_genes} genes")
+    stats["obs_filtered_min_genes"] = n_filtered
     return adata, stats
 
 
-def filter_genes_min_spots(adata, min_spots, stats):
-    """Filter genes expressed in fewer than min_spots spots."""
+def filter_genes_min_obs(adata, min_obs, stats):
+    """Filter genes expressed in fewer than min_obs observations."""
     n_before = adata.shape[1]
-    sc.pp.filter_genes(adata, min_cells=min_spots)
+    sc.pp.filter_genes(adata, min_cells=min_obs)
     n_filtered = n_before - adata.shape[1]
-    print(f"Removed {n_filtered} genes expressed in < {min_spots} spots")
-
-    stats["genes_filtered_min_spots"] = n_filtered
+    print(f"Removed {n_filtered} genes expressed in < {min_obs} obs")
+    stats["genes_filtered_min_obs"] = n_filtered
     return adata, stats
 
 
-def filter_mito(adata, mito_threshold, stats):
-    """Filter spots with mitochondrial content above threshold."""
-    if "pct_counts_mt" in adata.obs.columns:
-        n_before = adata.shape[0]
-        adata = adata[adata.obs["pct_counts_mt"] <= mito_threshold].copy()
-        n_filtered = n_before - adata.shape[0]
-        print(f"Removed {n_filtered} spots with > {mito_threshold}% mito content")
-    else:
-        n_filtered = 0
-        print("Column 'pct_counts_mt' not found, skipping mito filtering")
+def filter_adata(
+    adata,
+    min_counts,
+    min_genes,
+    min_obs,
+    mito_threshold,
+    ribo_threshold,
+    hb_threshold,
+):
+    """
+    Apply all filtering steps to AnnData object.
 
-    stats["spots_filtered_mito"] = n_filtered
-    return adata, stats
+    Parameters
+    ----------
+    adata : AnnData
+        AnnData object to be filtered.
+    min_counts : int
+        Minimum total counts per observation.
+    min_genes : int
+        Minimum genes expressed per observation.
+    min_obs : int
+        Minimum observations expressing each gene.
+    mito_threshold : float
+        Maximum mitochondrial content percentage.
+    ribo_threshold : float
+        Minimum ribosomal content percentage.
+    hb_threshold : float
+        Maximum haemoglobin content percentage.
 
-
-def filter_ribo(adata, ribo_threshold, stats):
-    """Filter spots with ribosomal content below threshold."""
-    if "pct_counts_ribo" in adata.obs.columns:
-        n_before = adata.shape[0]
-        adata = adata[adata.obs["pct_counts_ribo"] >= ribo_threshold].copy()
-        n_filtered = n_before - adata.shape[0]
-        print(f"Removed {n_filtered} spots with < {ribo_threshold}% ribo content")
-    else:
-        n_filtered = 0
-        print("Column 'pct_counts_ribo' not found, skipping ribo filtering")
-
-    stats["spots_filtered_ribo"] = n_filtered
-    return adata, stats
-
-
-def filter_hb(adata, hb_threshold, stats):
-    """Filter spots with haemoglobin content above threshold."""
-    if "pct_counts_hb" in adata.obs.columns:
-        n_before = adata.shape[0]
-        adata = adata[adata.obs["pct_counts_hb"] <= hb_threshold].copy()
-        n_filtered = n_before - adata.shape[0]
-        print(f"Removed {n_filtered} spots with > {hb_threshold}% hb content")
-    else:
-        n_filtered = 0
-        print("Column 'pct_counts_hb' not found, skipping hb filtering")
-
-    stats["spots_filtered_hb"] = n_filtered
-    return adata, stats
-
-
-def filter_adata(adata, min_counts, min_genes, min_spots, mito_threshold, ribo_threshold, hb_threshold):
-    """Apply all filtering steps to AnnData object."""
+    Returns
+    -------
+    tuple
+        Filtered AnnData and filtering statistics dictionary.
+    """
     print(f"Initial shape: {adata.shape}")
 
-    # Store initial counts
-    n_total_spots = adata.shape[0]
+    n_total_obs = adata.shape[0]
     n_total_genes = adata.shape[1]
 
     # Save a copy as restore-point if filtering results in 0 spots
     adata_backup = adata.copy()
 
-    # Initialize statistics dictionary
     stats = {
-        "total_spots_before": n_total_spots,
+        "total_obs_before": n_total_obs,
         "total_genes_before": n_total_genes,
         "min_counts_threshold": min_counts,
         "min_genes_threshold": min_genes,
-        "min_spots_threshold": min_spots,
+        "min_obs_threshold": min_obs,
         "mito_threshold": mito_threshold,
         "ribo_threshold": ribo_threshold,
         "hb_threshold": hb_threshold,
     }
 
-    # Make var names unique before filtering
     adata.var_names_make_unique()
 
-    # Apply filtering steps in order
+    # Apply filtering steps
     adata, stats = filter_outside_tissue(adata, stats)
     adata, stats = filter_min_counts(adata, min_counts, stats)
     adata, stats = filter_min_genes(adata, min_genes, stats)
-    adata, stats = filter_genes_min_spots(adata, min_spots, stats)
-    adata, stats = filter_mito(adata, mito_threshold, stats)
-    adata, stats = filter_ribo(adata, ribo_threshold, stats)
-    adata, stats = filter_hb(adata, hb_threshold, stats)
+    adata, stats = filter_genes_min_obs(adata, min_obs, stats)
+    adata, stats = filter_by_obs_column(
+        adata,
+        "pct_counts_mt",
+        mito_threshold,
+        filter_below=False,
+        stat_key="obs_filtered_mito",
+        stats=stats
+    )
+    adata, stats = filter_by_obs_column(
+        adata,
+        "pct_counts_ribo",
+        ribo_threshold,
+        filter_below=True,
+        stat_key="obs_filtered_ribo",
+        stats=stats
+    )
+    adata, stats = filter_by_obs_column(
+        adata,
+        "pct_counts_hb",
+        hb_threshold,
+        filter_below=False,
+        stat_key="obs_filtered_hb",
+        stats=stats
+    )
 
-    # Check if filtering resulted in 0 spots or genes
-    filtering_failed = False
-    if adata.shape[0] == 0 or adata.shape[1] == 0:
-        print("WARNING: Filtering resulted in 0 spots or genes remaining!")
+    # Restore backup if filtering removed all data
+    filtering_failed = adata.shape[0] == 0 or adata.shape[1] == 0
+    if filtering_failed:
+        print("WARNING: Filtering resulted in 0 obs or genes remaining!")
         print("Restoring original unfiltered data.")
         adata = adata_backup
-        filtering_failed = True
 
+    # Final statistics
     stats["filtering_failed"] = filtering_failed
-
-    # Calculate final statistics
-    n_remaining_spots = adata.shape[0]
-    n_remaining_genes = adata.shape[1]
-    n_spots_filtered = n_total_spots - n_remaining_spots
-    n_genes_filtered = n_total_genes - n_remaining_genes
-
-    stats["total_spots_after"] = n_remaining_spots
-    stats["total_genes_after"] = n_remaining_genes
-    stats["total_spots_filtered"] = n_spots_filtered
-    stats["total_genes_filtered"] = n_genes_filtered
-
-    # Store filtering stats in adata.uns for downstream use
+    stats["total_obs_after"] = adata.shape[0]
+    stats["total_genes_after"] = adata.shape[1]
+    stats["total_obs_filtered"] = n_total_obs - adata.shape[0]
+    stats["total_genes_filtered"] = n_total_genes - adata.shape[1]
     adata.uns["filtering_stats"] = stats
 
     print("Filtering summary:")
-    print(f"  Spots: {n_total_spots} -> {n_remaining_spots} ({n_spots_filtered} removed)")
-    print(f"  Genes: {n_total_genes} -> {n_remaining_genes} ({n_genes_filtered} removed)")
+    print(f"  Obs: {n_total_obs} -> {stats['total_obs_after']} "
+          f"({stats['total_obs_filtered']} removed)")
+    print(f"  Genes: {n_total_genes} -> {stats['total_genes_after']} "
+          f"({stats['total_genes_filtered']} removed)")
 
     return adata, stats
 
 
 def write_stats(stats, output_path):
-    """Write filtering statistics to JSON file."""
+    """Write filtering statistics to a JSON file."""
     with open(output_path, "w") as f:
         json.dump(stats, f, indent=2)
     print(f"Written filtering statistics to: {output_path}")
@@ -201,45 +245,39 @@ def write_versions(process_name):
 
 
 def main():
-    """Filter spots and genes from an AnnData object based on QC metrics."""
-
+    """Filter observations and genes from an AnnData object."""
     # Template variables
     input_adata = "${adata}"
+    sample_id = "${meta.id}"
     output_adata = "${prefix}.h5ad"
     output_stats = "${prefix}_stats.json"
     process_name = "${task.process}"
 
-    # Filtering parameters
     min_counts = int("${min_counts}")
     min_genes = int("${min_genes}")
-    min_spots = int("${min_spots}")
+    min_obs = int("${min_obs}")
     mito_threshold = float("${mito_threshold}")
     ribo_threshold = float("${ribo_threshold}")
     hb_threshold = float("${hb_threshold}")
 
-    # Read AnnData
     print(f"Filtering AnnData from: {input_adata}")
     adata = ad.read_h5ad(input_adata)
 
-    # Apply filtering
     adata, stats = filter_adata(
         adata,
         min_counts=min_counts,
         min_genes=min_genes,
-        min_spots=min_spots,
+        min_obs=min_obs,
         mito_threshold=mito_threshold,
         ribo_threshold=ribo_threshold,
-        hb_threshold=hb_threshold
+        hb_threshold=hb_threshold,
     )
+    stats["sample_id"] = sample_id
 
-    # Add sample ID to stats
-    stats["sample_id"] = "${meta.id}"
-
-    # Write outputs
     adata.write_h5ad(output_adata)
     print(f"Written filtered AnnData to: {output_adata}")
-
     write_stats(stats, output_stats)
+
     write_versions(process_name)
 
 

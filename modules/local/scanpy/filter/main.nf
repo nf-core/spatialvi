@@ -8,7 +8,7 @@ process SCANPY_FILTER {
     tuple val(meta), path(adata, stageAs: "input.h5ad")
     val min_counts
     val min_genes
-    val min_spots
+    val min_obs
     val mito_threshold
     val ribo_threshold
     val hb_threshold
