@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
 Integrate AnnData objects using Harmony.
+
+Harmony is an algorithm for integrating single-cell data from multiple
+batches or experiments by removing batch effects while preserving
+biological variation.
 """
 
 # Disable OpenMP CPU topology detection for MacOS compatibility
@@ -9,21 +13,40 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import platform
-import yaml
 
 import anndata as ad
 import scanpy.external as sce
+import yaml
 
 
-def integrate_harmony(adata, key='library_id'):
-    """Integrate multiple samples using Harmony."""
+def integrate_harmony(adata, key, adjusted_basis):
+    """
+    Integrate observations using Harmony.
 
-    sce.pp.harmony_integrate(
-        adata,
-        key=key,
-        adjusted_basis="X_harmony"
-    )
-    print(f"Final integrated AnnData shape: {adata.shape}")
+    Parameters
+    ----------
+    adata : AnnData
+        Annotated data matrix with PCA computed.
+    key : str
+        Column in adata.obs containing batch/sample labels.
+
+    Returns
+    -------
+    AnnData
+        AnnData with integrated embedding in obsm[adjusted_basis].
+    """
+    if key not in adata.obs.columns:
+        raise ValueError(f"Integration key '{key}' not found in adata.obs.")
+
+    if "X_pca" not in adata.obsm:
+        raise ValueError(
+            "PCA not found in adata.obsm; run PCA before integration."
+        )
+
+    n_batches = adata.obs[key].nunique()
+    print(f"Integrating {n_batches} batches using key: {key}")
+
+    sce.pp.harmony_integrate(adata, key=key, adjusted_basis=adjusted_basis)
 
     return adata
 
@@ -34,7 +57,7 @@ def write_versions(process_name):
         process_name: {
             "python": platform.python_version(),
             "anndata": importlib.metadata.version("anndata"),
-            "harmony": importlib.metadata.version("harmonypy"),
+            "harmonypy": importlib.metadata.version("harmonypy"),
             "scanpy": importlib.metadata.version("scanpy"),
         }
     }
@@ -43,22 +66,25 @@ def write_versions(process_name):
 
 
 def main():
-    """Integrate multiple AnnData objects into one."""
-
+    """Integrate observations in an AnnData object using Harmony."""
     # Template variables
     h5ad = "${h5ad}"
-    output_file = "${prefix}.h5ad"
+    output_h5ad = "${prefix}.h5ad"
     process_name = "${task.process}"
 
+    key = "${key}"
+    adjusted_basis = "${embedding_added}"
+
     adata = ad.read_h5ad(h5ad)
-    print(f"Read AnnData object {h5ad}")
+    print(f"Input shape: {adata.shape}")
 
-    adata_integrated = integrate_harmony(adata)
+    adata = integrate_harmony(adata, key=key, adjusted_basis=adjusted_basis)
 
-    adata_integrated.write_h5ad(output_file)
-    print(f"Written integrated AnnData to: {output_file}")
+    adata.write_h5ad(output_h5ad)
+    print(f"Written integrated AnnData to: {output_h5ad}")
 
     write_versions(process_name)
+
 
 if __name__ == "__main__":
     main()

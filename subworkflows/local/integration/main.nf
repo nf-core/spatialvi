@@ -47,7 +47,9 @@ workflow INTEGRATION {
     //
     if (integration_method == 'harmony') {
         SCANPY_HARMONY {
-            ch_adata_merged
+            ch_adata_merged,
+            'library_id', // key
+            'X_harmony'   // adjusted_basis
         }
         ch_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
