@@ -6,6 +6,8 @@ process SCANPY_SCANORAMA {
 
     input:
     path h5ad
+    val key
+    val embedding_added
 
     output:
     path "${prefix}.h5ad", emit: adata

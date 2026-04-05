@@ -44,6 +44,8 @@ nextflow_process {
             process {
                 """
                 input[0] = ADATA_MERGE.out.adata
+                input[1] = 'library_id'  // key
+                input[2] = 'X_scanorama' // embedding_added
                 """
             }
         }
@@ -56,6 +58,62 @@ nextflow_process {
                     anndata(process.out.adata[0]).yaml
                 ).match() }
             )
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail without PCA") {
+
+        setup {
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = channel.fromList([
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                    ])
+                        .map { _meta, h5ad -> h5ad }
+                        .collect()
+                    input[1] = 'inner'      // join
+                    input[2] = 'library_id' // label
+                    input[3] = false        // preserve_var
+                    input[4] = false        // preserve_spatial
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = ADATA_MERGE.out.adata
+                input[1] = 'library_id'  // key
+                input[2] = 'X_scanorama' // embedding_added
+                """
+            }
+        }
+
+        then {
+            { assert process.failed }
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail with missing key") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 'missing_key' // key
+                input[2] = 'X_scanorama' // embedding_added
+                """
+            }
+        }
+
+        then {
+            { assert process.failed }
         }
     }
 
@@ -97,6 +155,8 @@ nextflow_process {
             process {
                 """
                 input[0] = ADATA_MERGE.out.adata
+                input[1] = 'library_id'  // key
+                input[2] = 'X_scanorama' // embedding_added
                 """
             }
         }

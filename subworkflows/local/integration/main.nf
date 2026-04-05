@@ -37,8 +37,7 @@ workflow INTEGRATION {
         'inner',      // join
         'library_id', // label
         'true',       // preserve_var
-        'true',       // preserve_spatial
-
+        'true'        // preserve_spatial
     )
     ch_adata_merged = ADATA_MERGE.out.adata
 
@@ -46,16 +45,18 @@ workflow INTEGRATION {
     // MODULE: Integration
     //
     if (integration_method == 'harmony') {
-        SCANPY_HARMONY {
+        SCANPY_HARMONY (
             ch_adata_merged,
             'library_id', // key
             'X_harmony'   // adjusted_basis
-        }
+        )
         ch_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
-        SCANPY_SCANORAMA {
-            ch_adata_merged
-        }
+        SCANPY_SCANORAMA (
+            ch_adata_merged,
+            'library_id', // key
+            'X_scanorama' // embedding_added
+        )
         ch_integrated = SCANPY_SCANORAMA.out.adata
     }
 
