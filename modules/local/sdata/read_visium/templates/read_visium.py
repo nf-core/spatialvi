@@ -3,17 +3,17 @@
 Read Visium or Visium HD data from Space Ranger output into SpatialData format.
 """
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import platform
+import re
 import shutil
-import sys
-import yaml
 
 import spatialdata_io
+import yaml
 
 
 def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size):
@@ -27,8 +27,8 @@ def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size):
     feature_slice_dst = os.path.join(
         spaceranger_dir, f"{sample_id_clean}_feature_slice.h5"
     )
-    if os.path.exists(feature_slice_src) \
-        and not os.path.exists(feature_slice_dst):
+    if (os.path.exists(feature_slice_src)
+        and not os.path.exists(feature_slice_dst)):
             print(f"Copying {feature_slice_src} to {feature_slice_dst}")
             shutil.copyfile(feature_slice_src, feature_slice_dst)
 
@@ -74,27 +74,27 @@ def read_visium_data(spaceranger_dir, sample_id_clean, hd_bin_size):
             sample_id_clean
         )
 
-    print("SpatialData object created")
-    print(f"Tables: {list(sdata.tables.keys())}")
-    print(f"Shapes: {list(sdata.shapes.keys())}")
-    print(f"Images: {list(sdata.images.keys())}")
+    print("SpatialData object created:")
+    print(f"  Tables: {list(sdata.tables.keys())}")
+    print(f"  Shapes: {list(sdata.shapes.keys())}")
+    print(f"  Images: {list(sdata.images.keys())}")
 
     return sdata, table_name
 
 
 def validate_table(sdata, table_name, sample_id_clean):
     """Validate table exists and process it."""
-    # Check if the table exists
     if table_name not in sdata.tables:
-        print(f"ERROR: Expected table '{table_name}' not found in SpatialData")
-        print(f"Available tables: {list(sdata.tables.keys())}")
-        sys.exit(1)
+        raise ValueError(
+            f"Expected table '{table_name}' not found in SpatialData. "
+            f"Available tables: {list(sdata.tables.keys())}"
+        )
 
     # Get table and print info
     adata = sdata.tables[table_name]
     print(f"Table '{table_name}' shape: {adata.shape}")
     print(f"Number of genes: {adata.n_vars}")
-    print(f"Number of cells/spots: {adata.n_obs}")
+    print(f"Number of observations: {adata.n_obs}")
 
     # Remove `sample_id` metadata from table uns, if present
     if sample_id_clean in adata.uns.keys():
@@ -140,9 +140,7 @@ def main():
     process_name = "${task.process}"
 
     # Sample ID must only contain alphanumerics, underscores and dashes
-    sample_id_clean = "".join(
-        filter(lambda x: x.isalnum() or x in ["_", "-"], sample_id)
-    )
+    sample_id_clean = re.sub(r"[^a-zA-Z0-9_-]", "", sample_id)
 
     sdata, table_name = read_visium_data(
         spaceranger_dir,

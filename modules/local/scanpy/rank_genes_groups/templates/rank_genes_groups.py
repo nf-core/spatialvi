@@ -1,38 +1,38 @@
 #!/usr/bin/env python3
 """
 Rank genes for characterizing groups (differential expression analysis).
+
+Identifies marker genes for each group by comparing gene expression
+between groups. Results are stored in adata.uns["rank_genes_groups"].
 """
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import platform
-import yaml
 
 import anndata as ad
 import scanpy as sc
+import yaml
 
 
 def rank_genes(adata, groupby, method):
     """Rank genes by groups for differential expression analysis."""
-    print(f"Shape: {adata.shape}")
+    print(f"Adata shape: {adata.shape}")
     print(f"Groupby: {groupby}")
     print(f"Method: {method}")
 
-    # Validate input
     if groupby not in adata.obs.columns:
         raise ValueError(f"Column '{groupby}' not found in adata.obs")
 
-    # Rank genes by groups
     sc.tl.rank_genes_groups(
         adata,
         groupby=groupby,
         method=method
     )
 
-    # Print summary
     n_groups = adata.obs[groupby].nunique()
     print(f"Computed DEGs for {n_groups} groups")
 
@@ -50,8 +50,8 @@ def write_versions(process_name):
     versions = {
         process_name: {
             "python": platform.python_version(),
-            "scanpy": importlib.metadata.version("scanpy"),
             "anndata": importlib.metadata.version("anndata"),
+            "scanpy": importlib.metadata.version("scanpy"),
         }
     }
     with open("versions.yml", "w") as f:
@@ -60,17 +60,16 @@ def write_versions(process_name):
 
 def main():
     """Rank genes for characterizing groups in an AnnData object."""
-
     # Template variables
-    input_adata = "${adata}"
+    h5ad = "${adata}"
     groupby = "${groupby}"
     method = "${method}"
     output_adata = "${prefix}.h5ad"
     process_name = "${task.process}"
 
     # Read AnnData
-    print(f"Performing differential expression analysis on: {input_adata}")
-    adata = ad.read_h5ad(input_adata)
+    adata = ad.read_h5ad(h5ad)
+    print(f"Performing differential expression analysis on: {h5ad}")
 
     # Rank genes
     adata = rank_genes(adata, groupby, method)

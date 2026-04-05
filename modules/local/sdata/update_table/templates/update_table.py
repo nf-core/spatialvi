@@ -8,19 +8,19 @@ Supports:
 - Multi-sample: update tables from concatenated AnnData using library_key.
 """
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 # Fix numba caching issue in read-only containers
-os.environ['NUMBA_CACHE_DIR'] = '/tmp/numba_cache'
-os.environ['MPLCONFIGDIR'] = '/tmp/matplotlib'
-os.environ['XDG_CACHE_HOME'] = '/tmp/cache'
+os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
+os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
+os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
 
 import importlib.metadata
 import platform
+import re
 import shutil
-import sys
 
 import anndata as ad
 import numpy as np
@@ -34,29 +34,47 @@ from spatialdata.models import TableModel
 
 
 def find_table_name(sdata, adata, sample_id):
-    """Determine which table to update for single-sample mode."""
+    """
+    Determine which table to update for single-sample mode.
 
-    # Keep only alphanumeric characters, underscores and hyphens in sample ID
-    sample_id_clean = "".join(
-        c for c in sample_id if c.isalnum() or c in ["_", "-"]
-    )
+    Parameters
+    ----------
+    sdata : SpatialData
+        SpatialData object.
+    adata : AnnData
+        AnnData object with potential table_name in uns.
+    sample_id : str
+        Sample identifier.
 
+    Returns
+    -------
+    str
+        Table name to update.
+    """
     if "table_name" in adata.uns:
         return adata.uns["table_name"]
-    elif f"{sample_id_clean}_table" in sdata.tables:
-        return f"{sample_id_clean}_table"
+    elif f"{sample_id}_table" in sdata.tables:
+        return f"{sample_id}_table"
     elif len(sdata.tables) > 0:
         return list(sdata.tables.keys())[0]
     else:
-        print("ERROR: No tables found in SpatialData object")
-        sys.exit(1)
+        raise ValueError("No tables found in SpatialData object")
 
 
 def replace_table(sdata, adata, table_name):
-    """Replace a table entirely, preserving SpatialData metadata."""
+    """
+    Replace a table entirely, preserving SpatialData metadata.
 
+    Parameters
+    ----------
+    sdata : SpatialData
+        SpatialData object.
+    adata : AnnData
+        New AnnData to replace the table with.
+    table_name : str
+        Name of table to replace.
+    """
     print(f"Replacing table '{table_name}'")
-    # print(f"Updating table: {table_name}")
     print(f"Original table shape: {sdata.tables[table_name].shape}")
     print(f"New AnnData shape: {adata.shape}")
 
@@ -65,9 +83,6 @@ def replace_table(sdata, adata, table_name):
     region = spatialdata_attrs.get("region")
     region_key = spatialdata_attrs.get("region_key")
     instance_key = spatialdata_attrs.get("instance_key")
-    # region = spatialdata_attrs.get("region", None)
-    # region_key = spatialdata_attrs.get("region_key", None)
-    # instance_key = spatialdata_attrs.get("instance_key", None)
     print(f"Original region: {region}")
     print(f"Original region_key: {region_key}")
     print(f"Original instance_key: {instance_key}")
@@ -132,9 +147,7 @@ def replace_table(sdata, adata, table_name):
     if region and adata.shape[0] < original_table.shape[0]:
         print(f"Observations were filtered: {original_table.shape[0]} -> {adata.shape[0]}")
         region_name = region if isinstance(region, str) else region[0]
-        # region_name = region if isinstance(region, str) else (region[0] if isinstance(region, list) else None)
         if region_name in sdata.shapes:
-        # if region_name and region_name in sdata.shapes:
             try:
                 matched, _ = spatialdata.match_element_to_table(
                     sdata,
@@ -180,10 +193,20 @@ def build_library_to_table_dict(sdata, library_ids):
 
 
 def update_tables_from_concat(sdata, adata_concat, library_key):
-    """Update multiple tables from concatenated AnnData."""
+    """
+    Update multiple tables from concatenated AnnData.
+
+    Parameters
+    ----------
+    sdata : SpatialData
+        SpatialData object.
+    adata_concat : AnnData
+        Concatenated AnnData with library_key column.
+    library_key : str
+        Column in obs containing library identifiers.
+    """
     if library_key not in adata_concat.obs.columns:
-        print(f"ERROR: Column '{library_key}' not found in AnnData")
-        sys.exit(1)
+        raise ValueError(f"Column '{library_key}' not found in AnnData")
 
     library_ids = adata_concat.obs[library_key].unique()
     print(f"Found {len(library_ids)} libraries: {library_ids.tolist()}")
@@ -199,7 +222,10 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
 
         adata_subset = adata_concat[mask].copy()
         table = sdata.tables[table_name]
-        print(f"Updating table '{table_name}' from library '{library_id}' ({adata_subset.shape[0]} obs)")
+        print(
+            f"Updating table '{table_name}' from library '{library_id}' "
+            f"({adata_subset.shape[0]} obs)"
+        )
 
         # Build index mapping (remove concatenation suffix)
         index_map = {idx: idx.rsplit("-", 1)[0] for idx in adata_subset.obs_names}
@@ -208,7 +234,9 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
         for key in adata_subset.obsm.keys():
             n_features = adata_subset.obsm[key].shape[1]
             if key not in table.obsm:
-                table.obsm[key] = np.full((table.n_obs, n_features), np.nan, dtype=np.float32)
+                table.obsm[key] = np.full(
+                    (table.n_obs, n_features), np.nan, dtype=np.float32
+                )
 
             for i, new_idx in enumerate(adata_subset.obs_names):
                 orig_idx = index_map[new_idx]
@@ -237,13 +265,13 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
 # -----------------------------------------------------------------------------
 
 
-def write_versions():
+def write_versions(process_name):
     """Write software versions to YAML."""
     versions = {
-        "${task.process}": {
+        process_name: {
             "python": platform.python_version(),
-            "spatialdata": importlib.metadata.version("spatialdata"),
             "anndata": importlib.metadata.version("anndata"),
+            "spatialdata": importlib.metadata.version("spatialdata"),
         }
     }
     with open("versions.yml", "w") as f:
@@ -252,31 +280,32 @@ def write_versions():
 
 def main():
     """Synchronize AnnData back to SpatialData."""
-
     # Template variables
-    input_sdata = "${sdata}"
-    input_adata = "${adata}"
-    output_sdata = "${prefix}.zarr"
+    zarr = "${sdata}"
+    h5ad = "${adata}"
     sample_id = "${meta.id}"
     library_key = "${library_key}"
+    output_sdata = "${prefix}.zarr"
+    process_name = "${task.process}"
 
-    print(f"Input SpatialData: {input_sdata}")
-    print(f"Input AnnData: {input_adata}")
+    # Sample ID must only contain alphanumerics, underscores and dashes
+    sample_id = re.sub(r"[^a-zA-Z0-9_-]", "", sample_id)
+
+    print(f"Input SpatialData: {zarr}")
+    print(f"Input AnnData: {h5ad}")
     print(f"Output: {output_sdata} SpatialData")
     print(f"Mode: {'multi-sample' if library_key else 'single-sample'}")
 
-    # Validate
-    if os.path.abspath(input_sdata) == os.path.abspath(output_sdata):
-        print("ERROR: Input and output paths are the same!")
-        sys.exit(1)
+    if os.path.abspath(zarr) == os.path.abspath(output_sdata):
+        raise ValueError("Input and output paths are the same!")
 
     if os.path.exists(output_sdata):
         print(f"Removing existing output directory: {output_sdata}")
         shutil.rmtree(output_sdata)
 
     # Read data
-    sdata = spatialdata.read_zarr(input_sdata)
-    adata = ad.read_h5ad(input_adata)
+    sdata = spatialdata.read_zarr(zarr)
+    adata = ad.read_h5ad(h5ad)
     print(f"Available tables: {list(sdata.tables.keys())}")
     print(f"Available shapes: {list(sdata.shapes.keys())}")
 
@@ -291,7 +320,7 @@ def main():
     sdata.write(output_sdata)
     print(f"Written: {output_sdata}")
 
-    write_versions()
+    write_versions(process_name)
 
 
 if __name__ == "__main__":

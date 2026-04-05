@@ -19,7 +19,7 @@ artifact_dir = "artifacts"
 ```
 
 ```{python imports}
-# Disable OpenMP CPU topology detection for MacOS compatibility
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 

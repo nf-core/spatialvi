@@ -5,20 +5,30 @@ Apply log(1+x) transformation to the data matrix.
 
 import importlib.metadata
 import platform
-import yaml
 
 import anndata as ad
 import scanpy as sc
+import yaml
 
 
 def log_transform(adata):
-    """Apply log1p transformation to AnnData object."""
-    print(f"Shape: {adata.shape}")
+    """
+    Apply log1p transformation to AnnData object.
 
-    # Apply log1p transformation
+    Parameters
+    ----------
+    adata : AnnData
+        Annotated data matrix (typically normalized counts).
+
+    Returns
+    -------
+    AnnData
+        Log-transformed AnnData.
+    """
+    print(f"AnnData shape: {adata.shape}")
+
     sc.pp.log1p(adata)
 
-    # Update uns to track transformation
     if "normalization" not in adata.uns:
         adata.uns["normalization"] = {}
     adata.uns["normalization"]["log1p"] = True
@@ -43,24 +53,19 @@ def write_versions(process_name):
 
 def main():
     """Apply log1p transformation to an AnnData object."""
-
     # Template variables
-    input_adata = "${adata}"
-    output_adata = "${prefix}.h5ad"
+    h5ad = "${adata}"
+    output_h5ad = "${prefix}.h5ad"
     process_name = "${task.process}"
 
-    # Read AnnData
-    print(f"Log-transforming AnnData from: {input_adata}")
-    adata = ad.read_h5ad(input_adata)
+    adata = ad.read_h5ad(h5ad)
+    print(f"Log-transforming AnnData from: {h5ad}")
 
-    # Transform
     adata = log_transform(adata)
 
-    # Write output
-    adata.write_h5ad(output_adata)
-    print(f"Written log-transformed AnnData to: {output_adata}")
+    adata.write_h5ad(output_h5ad)
+    print(f"Written log-transformed AnnData to: {output_h5ad}")
 
-    # Write versions
     write_versions(process_name)
 
 

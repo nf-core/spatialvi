@@ -2,18 +2,22 @@
 """
 Compute spatial autocorrelation statistics to identify spatially variable
 genes.
+
+Supports Moran's I and Geary's C statistics for identifying genes with
+spatially variable expression patterns. Results are stored in adata.uns
+and exported to CSV.
 """
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import platform
-import yaml
 
 import anndata as ad
 import squidpy as sq
+import yaml
 
 
 def get_results_key(mode):
@@ -27,7 +31,10 @@ def compute_spatial_autocorr(adata, mode):
 
     # Validate input
     if "spatial_connectivities" not in adata.obsp:
-        raise ValueError("Spatial connectivities not found. Run squidpy.gr.spatial_neighbors first.")
+        raise ValueError(
+            "Spatial connectivities not found; "
+            "run squidpy.gr.spatial_neighbors first."
+        )
 
     # Make var names unique
     adata.var_names_make_unique()
@@ -43,8 +50,6 @@ def compute_spatial_autocorr(adata, mode):
 
 def write_svg_to_csv(adata, mode, output_csv):
     """Export spatially variable genes results to CSV."""
-
-    # Validate mode
     if mode == "moran":
         results_key = "moranI"
     elif mode == "geary":
@@ -52,7 +57,6 @@ def write_svg_to_csv(adata, mode, output_csv):
     else:
         raise ValueError(f"Unknown mode: {mode}. Use 'moran' or 'geary'.")
 
-    # Export genes to CSV
     svg_df = adata.uns[results_key]
     svg_df.to_csv(output_csv)
     print(f"Exported SVG results to: {output_csv}")
@@ -75,27 +79,22 @@ def main():
     """Compute spatial autocorrelation for an AnnData object."""
 
     # Template variables
-    input_adata = "${adata}"
+    h5ad = "${adata}"
     mode = "${mode}"
     output_adata = "${prefix}.h5ad"
     output_csv = "${prefix}_svg.csv"
     process_name = "${task.process}"
 
-    # Read AnnData
-    print(f"Computing spatial autocorrelation for: {input_adata}")
-    adata = ad.read_h5ad(input_adata)
+    adata = ad.read_h5ad(h5ad)
+    print(f"Computing spatial autocorrelation for: {h5ad}")
 
-    # Compute spatial autocorrelation
     adata = compute_spatial_autocorr(adata, mode)
 
-    # Write results to CSV
     write_svg_to_csv(adata, mode, output_csv)
 
-    # Write output H5AD
     adata.write_h5ad(output_adata)
     print(f"Written AnnData with spatial autocorrelation to: {output_adata}")
 
-    # Write versions
     write_versions(process_name)
 
 

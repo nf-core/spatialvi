@@ -77,15 +77,14 @@ def main():
     """Integrate observations in an AnnData object using Scanorama."""
     # Template variables
     h5ad = "${h5ad}"
+    key = "${key}"
+    adjusted_basis = "${embedding_added}"
     output_h5ad = "${prefix}.h5ad"
     process_name = "${task.process}"
 
-    key = "${key}"
-    adjusted_basis = "${embedding_added}"
-
     adata = ad.read_h5ad(h5ad)
     print(f"Read AnnData object: {h5ad}")
-    print(f"Input shape: {adata.shape}")
+    print(f"AnnData shape: {adata.shape}")
 
     adata = integrate_scanorama(adata, key=key, adjusted_basis=adjusted_basis)
 

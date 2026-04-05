@@ -166,7 +166,7 @@ def main():
 
     print(f"Calculating QC metrics for sample: {input_adata}")
     adata = ad.read_h5ad(input_adata)
-    print(f"Input shape: {adata.shape}")
+    print(f"AnnData shape: {adata.shape}")
 
     validate_adata(adata)
     adata = calculate_qc_metrics(adata)

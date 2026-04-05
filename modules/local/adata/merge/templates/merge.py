@@ -3,20 +3,20 @@
 Merge multiple AnnData objects into one.
 """
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import platform
-import yaml
 from pathlib import Path
 
 import anndata as ad
 import pandas as pd
+import yaml
 
 
-def add_var(adata, adata_list, join='inner'):
+def add_var(adata, adata_list, join):
     """
     Adds `.var` back into a merged AnnData object from the original list of
     multiple AnnData objects.
@@ -24,7 +24,7 @@ def add_var(adata, adata_list, join='inner'):
     merged_var = pd.concat([adata.var for adata in adata_list], join=join)
     merged_var = merged_var[~merged_var.index.duplicated()]
     adata.var = merged_var.loc[adata.var_names]
-    print('Preserved `.var` data')
+    print("Preserved `.var` data")
     return adata
 
 
@@ -35,20 +35,15 @@ def add_spatial(adata, adata_list):
     """
     merged_spatial = {}
     for adata_orig in adata_list:
-        if 'spatial' in adata_orig.uns:
-            merged_spatial.update(adata_orig.uns['spatial'])
+        if "spatial" in adata_orig.uns:
+            merged_spatial.update(adata_orig.uns["spatial"])
     if merged_spatial:
-        adata.uns['spatial'] = merged_spatial
-        print('Preserved `.uns["spatial"]` data')
+        adata.uns["spatial"] = merged_spatial
+        print("Preserved `.uns['spatial']` data")
     return adata
 
 
-def merge_adata(adata_list,
-                keys,
-                join='inner',
-                label='library_id',
-                preserve_var=True,
-                preserve_spatial=True):
+def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
     """
     Merge multiple AnnData objects into one. Can optionally preserve both `.var`
     and `.uns['spatial']` for the final merged object.
@@ -69,12 +64,12 @@ def merge_adata(adata_list,
     if preserve_spatial:
         adata = add_spatial(adata, adata_list)
 
-    adata.uns['merge'] = {
-        'n_samples': len(keys),
-        'join': join,
-        'label': label,
-        'preserve_var': preserve_var,
-        'preserve_spatial': preserve_spatial,
+    adata.uns["merge"] = {
+        "n_samples": len(keys),
+        "join": join,
+        "label": label,
+        "preserve_var": preserve_var,
+        "preserve_spatial": preserve_spatial,
     }
     print(f"Final merged AnnData {adata}")
 
@@ -94,9 +89,8 @@ def write_versions(process_name):
 
 def main():
     """Merge multiple AnnData objects into one."""
-
     # Template variables
-    h5ad_files = "${h5ad}".split()
+    h5ads = "${h5ad}".split()
     join = "${join}"
     label = "${label}"
     preserve_var = "${preserve_var}" == "true"
@@ -105,12 +99,12 @@ def main():
     process_name = "${task.process}"
 
     adata_list = []
-    for h5ad in h5ad_files:
+    for h5ad in h5ads:
         adata = ad.read_h5ad(h5ad)
         adata_list.append(adata)
         print(f"Read AnnData object {adata}")
 
-    sample_names = [Path(h5ad).stem for h5ad in h5ad_files]
+    sample_names = [Path(h5ad).stem for h5ad in h5ads]
     adata_integrated = merge_adata(
         adata_list,
         sample_names,

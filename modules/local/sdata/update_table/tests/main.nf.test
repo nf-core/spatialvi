@@ -132,6 +132,8 @@ nextflow_process {
                 process {
                     """
                     input[0] = ADATA_MERGE.out.adata
+                    input[1] = 'library_id' // key
+                    input[2] = 'X_harmony'  // embedding_added
                     """
                 }
             }

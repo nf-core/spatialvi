@@ -204,6 +204,25 @@ nextflow_process {
         }
     }
 
+    test("homo_sapiens - h5ad - should fail with missing groupby column") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 'missing_column' // groupby
+                input[2] = 'wilcoxon'       // method
+                """
+            }
+        }
+
+        then {
+            { assert process.failed }
+        }
+    }
+
     test("homo_sapiens - h5ad - stub") {
 
         options "-stub"

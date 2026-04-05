@@ -1,28 +1,50 @@
 #!/usr/bin/env python3
 """
-Compute a neighborhood graph of observations (cells/spots).
+Compute a neighborhood graph of observations.
+
+The neighborhood graph is the basis for clustering and UMAP visualization.
+It connects each observation to its nearest neighbors in the specified
+representation space (typically PCA).
 """
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import platform
-import yaml
 
 import anndata as ad
 import scanpy as sc
+import yaml
 
 
 def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
-    """Compute neighborhood graph for AnnData object."""
-    print(f"Shape: {adata.shape}")
-    print(f"Number of neighbors: {n_neighbors}")
-    print(f"Number of PCs: {n_pcs if n_pcs else 'default'}")
-    print(f"Use representation: {use_rep if use_rep else 'X_pca'}")
+    """
+    Compute neighborhood graph for AnnData object.
 
-    # Compute neighbors
+    Parameters
+    ----------
+    adata : AnnData
+        Annotated data matrix with PCA or other representation computed.
+    n_neighbors : int
+        Number of neighbors to use.
+    n_pcs : int
+        Number of principal components to use.
+    use_rep : str or None
+        Representation to use. If None, uses either `.X` when `.n_vars < 50` or
+        `X_pca` otherwise.
+
+    Returns
+    -------
+    AnnData
+        AnnData with neighbor graph in obsp.
+    """
+    print(f"AnnData shape: {adata.shape}")
+    print(f"Number of neighbors: {n_neighbors}")
+    print(f"Number of PCs: {n_pcs}")
+    print(f"Representation: {use_rep}")
+
     sc.pp.neighbors(
         adata,
         n_neighbors=n_neighbors,
@@ -30,8 +52,7 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
         use_rep=use_rep
     )
 
-    # Print summary
-    print("Computed neighbor graph")
+    print("Computed neighbor graph:")
     print(f"  Connectivities shape: {adata.obsp['connectivities'].shape}")
     print(f"  Distances shape: {adata.obsp['distances'].shape}")
 
@@ -53,30 +74,27 @@ def write_versions(process_name):
 
 def main():
     """Compute neighborhood graph for an AnnData object."""
-
     # Template variables
-    input_adata = "${adata}"
+    h5ad = "${adata}"
     n_neighbors = int("${n_neighbors}")
     n_pcs = int("${n_pcs}")
-    use_rep = "${use_rep}"
-    output_adata = "${prefix}.h5ad"
+    use_rep = None if "${use_rep}".lower() in ["none", ""] else "${use_rep}"
+    output_h5ad = "${prefix}.h5ad"
     process_name = "${task.process}"
 
-    # Parse optional parameters
-    use_rep = None if use_rep.lower() in ["null", "none", ""] else use_rep
+    print(f"Computing neighbors for: {h5ad}")
+    adata = ad.read_h5ad(h5ad)
 
-    # Read AnnData
-    print(f"Computing neighbors for: {input_adata}")
-    adata = ad.read_h5ad(input_adata)
+    adata = compute_neighbors(
+        adata,
+        n_neighbors=n_neighbors,
+        n_pcs=n_pcs,
+        use_rep=use_rep
+    )
 
-    # Compute neighbors
-    adata = compute_neighbors(adata, n_neighbors, n_pcs, use_rep)
+    adata.write_h5ad(output_h5ad)
+    print(f"Written AnnData with neighbors to: {output_h5ad}")
 
-    # Write output
-    adata.write_h5ad(output_adata)
-    print(f"Written AnnData with neighbors to: {output_adata}")
-
-    # Write versions
     write_versions(process_name)
 
 

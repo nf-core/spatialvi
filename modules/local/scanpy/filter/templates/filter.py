@@ -238,21 +238,20 @@ def write_versions(process_name):
 def main():
     """Filter observations and genes from an AnnData object."""
     # Template variables
-    input_adata = "${adata}"
+    h5ad = "${adata}"
     sample_id = "${meta.id}"
-    output_adata = "${prefix}.h5ad"
-    output_stats = "${prefix}_stats.json"
-    process_name = "${task.process}"
-
     min_counts = int("${min_counts}")
     min_genes = int("${min_genes}")
     min_obs = int("${min_obs}")
     mito_threshold = float("${mito_threshold}")
     ribo_threshold = float("${ribo_threshold}")
     hb_threshold = float("${hb_threshold}")
+    output_adata = "${prefix}.h5ad"
+    output_stats = "${prefix}_stats.json"
+    process_name = "${task.process}"
 
-    print(f"Filtering AnnData from: {input_adata}")
-    adata = ad.read_h5ad(input_adata)
+    print(f"Filtering AnnData from: {h5ad}")
+    adata = ad.read_h5ad(h5ad)
 
     adata, stats = filter_adata(
         adata,

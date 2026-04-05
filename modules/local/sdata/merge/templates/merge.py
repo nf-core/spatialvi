@@ -6,9 +6,11 @@ Merge multiple SpatialData objects into one.
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+import importlib.metadata
 import platform
-import yaml
+
 import spatialdata
+import yaml
 
 
 def read_sdatas(file_paths):
@@ -26,7 +28,7 @@ def write_versions(process_name):
     versions = {
         process_name: {
             "python": platform.python_version(),
-            "spatialdata": spatialdata.__version__,
+            "spatialdata": importlib.metadata.version("spatialdata"),
         }
     }
     with open("versions.yml", "w") as f:
@@ -35,14 +37,15 @@ def write_versions(process_name):
 
 def main():
     """Merge multiple SpatialData objects into one."""
-    input_files = "${sdata}".split()
-    output_path = "${prefix}.zarr"
+    # Template variables
+    zarrs = "${sdata}".split()
+    output_zarr = "${prefix}.zarr"
+    process_name = "${task.process}"
 
-    # Read all SpatialData objects
-    print(f"Merging {len(input_files)} SpatialData objects")
-    sdata_list = read_sdatas(input_files)
+    sdata_list = read_sdatas(zarrs)
+    print(f"Merging {len(zarrs)} SpatialData objects")
 
-    # Merge the objects into one
+    # TODO: Should some of these be template variables that the user can change?
     output_sdata = spatialdata.concatenate(
         sdata_list,
         region_key=None,
@@ -52,11 +55,10 @@ def main():
         modify_tables_inplace=False,
     )
 
-    # Write output
-    output_sdata.write(output_path, overwrite=True)
-    print(f"Written merged SpatialData to: {output_path}")
+    output_sdata.write(output_zarr, overwrite=True)
+    print(f"Written merged SpatialData to: {output_zarr}")
 
-    write_versions("${task.process}")
+    write_versions(process_name)
 
 
 if __name__ == "__main__":

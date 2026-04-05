@@ -3,31 +3,27 @@
 Compute UMAP (Uniform Manifold Approximation and Projection) embedding.
 """
 
-# Disable OpenMP CPU topology detection for MacOS compatibility
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import platform
-import yaml
 
 import anndata as ad
 import scanpy as sc
-
-
-def validate_neighbors(adata):
-    """Validate that neighbor graph has been computed."""
-    if "neighbors" not in adata.uns:
-        raise ValueError("Neighbor graph not found. Run scanpy.pp.neighbors first.")
+import yaml
 
 
 def compute_umap(adata, min_dist, spread, key_added):
     """Compute UMAP embedding for AnnData object."""
-    print(f"Shape: {adata.shape}")
+    print(f"AnnData shape: {adata.shape}")
     print(f"Parameters: min_dist={min_dist}, spread={spread}")
 
-    # Validate input
-    validate_neighbors(adata)
+    if "neighbors" not in adata.uns:
+        raise ValueError(
+            "Neighbor graph not found; run scanpy.pp.neighbors first."
+        )
 
     # Compute UMAP
     sc.tl.umap(
@@ -38,20 +34,22 @@ def compute_umap(adata, min_dist, spread, key_added):
     )
 
     # Print summary
-    print(f"UMAP embedding shape: {adata.obsm['X_umap'].shape}")
+    print(f"UMAP embedding shape: {adata.obsm[key_added].shape}")
     print("UMAP coordinate ranges:")
-    print(f"  UMAP1: [{adata.obsm['X_umap'][:, 0].min():.2f}, {adata.obsm['X_umap'][:, 0].max():.2f}]")
-    print(f"  UMAP2: [{adata.obsm['X_umap'][:, 1].min():.2f}, {adata.obsm['X_umap'][:, 1].max():.2f}]")
+    embedding = adata.obsm[key_added]
+    print(f"  UMAP1: [{embedding[:, 0].min():.2f}, {embedding[:, 0].max():.2f}]")
+    print(f"  UMAP2: [{embedding[:, 1].min():.2f}, {embedding[:, 1].max():.2f}]")
 
     return adata
+
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
         process_name: {
             "python": platform.python_version(),
-            "scanpy": importlib.metadata.version("scanpy"),
             "anndata": importlib.metadata.version("anndata"),
+            "scanpy": importlib.metadata.version("scanpy"),
         }
     }
     with open("versions.yml", "w") as f:
@@ -60,9 +58,8 @@ def write_versions(process_name):
 
 def main():
     """Compute UMAP embedding for an AnnData object."""
-
     # Template variables
-    input_adata = "${adata}"
+    h5ad = "${adata}"
     min_dist = float("${min_dist}")
     spread = float("${spread}")
     key_added = "${key_added}"
@@ -70,8 +67,8 @@ def main():
     process_name = "${task.process}"
 
     # Read AnnData
-    print(f"Computing UMAP for: {input_adata}")
-    adata = ad.read_h5ad(input_adata)
+    print(f"Computing UMAP for: {h5ad}")
+    adata = ad.read_h5ad(h5ad)
 
     # Compute UMAP
     adata = compute_umap(adata, min_dist, spread, key_added)

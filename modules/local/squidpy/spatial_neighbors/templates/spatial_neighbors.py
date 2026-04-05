@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 """
 Compute spatial neighbors graph based on spatial coordinates.
+
+Creates a spatial connectivity graph where observations are connected
+to their nearest neighbors in physical space. Results are stored in
+adata.obsp as sparse matrices.
 """
 
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+import importlib.metadata
 import platform
-import yaml
-import squidpy as sq
+
 import anndata as ad
+import squidpy as sq
+import yaml
 
 
 def write_versions(process_name):
@@ -17,8 +24,8 @@ def write_versions(process_name):
     versions = {
         process_name: {
             "python": platform.python_version(),
-            "squidpy": sq.__version__,
-            "anndata": ad.__version__,
+            "anndata": importlib.metadata.version("anndata"),
+            "squidpy": importlib.metadata.version("squidpy")
         }
     }
     with open("versions.yml", "w") as f:
@@ -27,39 +34,34 @@ def write_versions(process_name):
 
 def main():
     """Compute spatial neighbors graph based on spatial coordinates."""
-    input_adata = "${adata}"
+    # Template variables
+    h5ad = "${adata}"
     coord_type = "${coord_type}"
     n_neighs = int("${n_neighs}")
     output_adata = "${prefix}.h5ad"
+    process_name = "${task.process}"
 
-    # Read AnnData
-    adata = ad.read_h5ad(input_adata)
-    print(f"Reading: {input_adata}")
-    print(f"Shape: {adata.shape}")
+    print(f"Reading: {h5ad}")
+    adata = ad.read_h5ad(h5ad)
+    print(f"AnnData shape: {adata.shape}")
     print(f"Coord type: {coord_type}")
     print(f"Number of neighbors: {n_neighs}")
 
-    # Validate input
     if "spatial" not in adata.obsm:
-        raise ValueError("Spatial coordinates not found in adata.obsm['spatial']")
+        raise ValueError(
+            "Spatial coordinates not found in adata.obsm['spatial']"
+        )
 
-    # Compute spatial neighbors
-    sq.gr.spatial_neighbors(
-        adata,
-        coord_type=coord_type,
-        n_neighs=n_neighs,
-    )
+    sq.gr.spatial_neighbors(adata, coord_type=coord_type, n_neighs=n_neighs)
 
-    # Print summary
     print("Computed spatial neighbor graph")
-    print(f"  Connectivities shape: {adata.obsp['spatial_connectivities'].shape}")
-    print(f"  Distances shape: {adata.obsp['spatial_distances'].shape}")
+    print(f"Connectivities shape: {adata.obsp['spatial_connectivities'].shape}")
+    print(f"Distances shape: {adata.obsp['spatial_distances'].shape}")
 
-    # Write output
     adata.write_h5ad(output_adata)
     print(f"Written AnnData with spatial neighbors to: {output_adata}")
 
-    write_versions("${task.process}")
+    write_versions(process_name)
 
 
 if __name__ == "__main__":

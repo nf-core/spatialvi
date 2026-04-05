@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 """
 Compute neighborhood enrichment by permutation test.
+
+Neighborhood enrichment analysis tests whether clusters are spatially
+co-localized more or less frequently than expected by chance.
+Results are stored in adata.uns.
 """
 
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 os.environ["KMP_INIT_AT_FORK"] = "FALSE"
 
+import importlib.metadata
 import platform
-import yaml
-import squidpy as sq
+
 import anndata as ad
-
-
-def read_adata(file_path):
-    """Read an AnnData object from h5ad file."""
-    print(f"Reading: {file_path}")
-    adata = ad.read_h5ad(file_path)
-    return adata
+import squidpy as sq
+import yaml
 
 
 def validate_adata(adata, cluster_key):
@@ -25,7 +25,10 @@ def validate_adata(adata, cluster_key):
     if cluster_key not in adata.obs.columns:
         raise ValueError(f"Column '{cluster_key}' not found in adata.obs")
     if "spatial_connectivities" not in adata.obsp:
-        raise ValueError("Spatial connectivities not found. Run squidpy.gr.spatial_neighbors first.")
+        raise ValueError(
+            "Spatial connectivities not found; "
+            "run squidpy.gr.spatial_neighbors first."
+        )
 
 
 def write_versions(process_name):
@@ -33,8 +36,8 @@ def write_versions(process_name):
     versions = {
         process_name: {
             "python": platform.python_version(),
-            "squidpy": sq.__version__,
-            "anndata": ad.__version__,
+            "anndata": importlib.metadata.version("anndata"),
+            "squidpy": importlib.metadata.version("squidpy")
         }
     }
     with open("versions.yml", "w") as f:
@@ -43,34 +46,32 @@ def write_versions(process_name):
 
 def main():
     """Compute neighborhood enrichment by permutation test."""
-    input_adata = "${adata}"
-    output_adata = "${prefix}.h5ad"
+    # Template variables
+    h5ad = "${adata}"
     cluster_key = "${cluster_key}"
+    output_adata = "${prefix}.h5ad"
+    process_name = "${task.process}"
 
-    # Read AnnData
-    adata = read_adata(input_adata)
-    print(f"Shape: {adata.shape}")
+    print(f"Reading: {h5ad}")
+    adata = ad.read_h5ad(h5ad)
+    print(f"AnnData shape: {adata.shape}")
     print(f"Cluster key: {cluster_key}")
 
-    # Validate input
     validate_adata(adata, cluster_key)
 
-    # Compute neighborhood enrichment
     sq.gr.nhood_enrichment(
         adata,
         cluster_key=cluster_key,
     )
 
-    # Print summary
     n_clusters = adata.obs[cluster_key].nunique()
     print(f"Computed neighborhood enrichment for {n_clusters} clusters")
     print(f"Results stored in adata.uns['{cluster_key}_nhood_enrichment']")
 
-    # Write output
     adata.write_h5ad(output_adata)
     print(f"Written AnnData with neighborhood enrichment to: {output_adata}")
 
-    write_versions("${task.process}")
+    write_versions(process_name)
 
 
 if __name__ == "__main__":
