@@ -14,6 +14,7 @@ os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
 os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
 
 import importlib.metadata
+import logging
 import platform
 
 import anndata as ad
@@ -21,6 +22,8 @@ import numpy as np
 import scanpy as sc
 import yaml
 
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def validate_adata(adata):
     """
@@ -51,7 +54,6 @@ def validate_adata(adata):
 
     return n_obs, n_genes
 
-
 def mark_all_genes_hvg(adata, flavor):
     """
     Mark all genes as highly variable when too few genes exist.
@@ -70,8 +72,8 @@ def mark_all_genes_hvg(adata, flavor):
     """
     n_genes = adata.shape[1]
 
-    print("WARNING: Too few genes for meaningful HVG selection.")
-    print("Marking all genes as highly variable.")
+    logger.warning("Too few genes for meaningful HVG selection.")
+    logger.info("Marking all genes as highly variable.")
 
     adata.var["highly_variable"] = True
     adata.var["highly_variable_rank"] = np.arange(n_genes)
@@ -87,7 +89,6 @@ def mark_all_genes_hvg(adata, flavor):
     }
 
     return adata
-
 
 def find_highly_variable_genes(adata, n_top_genes, flavor):
     """
@@ -109,13 +110,13 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
     """
     n_obs, n_genes = validate_adata(adata)
 
-    print(f"AnnData shape: {adata.shape}")
-    print(f"HVGs requested: {n_top_genes}")
-    print(f"Flavor: {flavor}")
+    logger.info(f"AnnData shape: {adata.shape}")
+    logger.info(f"HVGs requested: {n_top_genes}")
+    logger.info(f"Flavor: {flavor}")
 
     # Adjust n_top_genes if necessary
     if n_top_genes >= n_genes:
-        print(f"WARNING: Requested {n_top_genes} HVGs "
+        logger.info(f"WARNING: Requested {n_top_genes} HVGs "
                "but only {n_genes} genes available.")
         return mark_all_genes_hvg(adata, flavor)
 
@@ -128,7 +129,7 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
         )
     except ValueError as e:
         if "Bin edges must be unique" in str(e):
-            print("WARNING: Binning failed due to low gene variance.")
+            logger.warning("Binning failed due to low gene variance.")
             return mark_all_genes_hvg(adata, flavor)
         raise
 
@@ -141,11 +142,10 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
         "n_hvgs_found": int(n_hvgs_found),
     }
 
-    print(f"Identified {n_hvgs_found} highly variable genes")
-    print(f"Percentage of genes: {n_hvgs_found / n_genes * 100:.1f}%")
+    logger.info(f"Identified {n_hvgs_found} highly variable genes")
+    logger.info(f"Percentage of genes: {n_hvgs_found / n_genes * 100:.1f}%")
 
     return adata
-
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -159,9 +159,9 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Identify highly variable genes in an AnnData object."""
+
     # Template variables
     h5ad = "${h5ad}"
     n_top_genes = int("${n_hvgs}")
@@ -170,15 +170,14 @@ def main():
     process_name = "${task.process}"
 
     adata = ad.read_h5ad(h5ad)
-    print(f"Finding highly variable genes in: {h5ad}")
+    logger.info(f"Finding highly variable genes in: {h5ad}")
 
     adata = find_highly_variable_genes(adata, n_top_genes=n_top_genes, flavor=flavor)
 
     adata.write_h5ad(output_h5ad)
-    print(f"Written AnnData with HVG annotations to: {output_h5ad}")
+    logger.info(f"Written AnnData with HVG annotations to: {output_h5ad}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()

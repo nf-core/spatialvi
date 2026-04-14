@@ -8,17 +8,20 @@ import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
+import logging
 import platform
 
 import anndata as ad
 import scanpy as sc
 import yaml
 
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def compute_umap(adata, min_dist, spread, key_added):
     """Compute UMAP embedding for AnnData object."""
-    print(f"AnnData shape: {adata.shape}")
-    print(f"Parameters: min_dist={min_dist}, spread={spread}")
+    logger.info(f"AnnData shape: {adata.shape}")
+    logger.info(f"Parameters: min_dist={min_dist}, spread={spread}")
 
     if "neighbors" not in adata.uns:
         raise ValueError(
@@ -34,14 +37,13 @@ def compute_umap(adata, min_dist, spread, key_added):
     )
 
     # Print summary
-    print(f"UMAP embedding shape: {adata.obsm[key_added].shape}")
-    print("UMAP coordinate ranges:")
+    logger.info(f"UMAP embedding shape: {adata.obsm[key_added].shape}")
+    logger.info("UMAP coordinate ranges:")
     embedding = adata.obsm[key_added]
-    print(f"  UMAP1: [{embedding[:, 0].min():.2f}, {embedding[:, 0].max():.2f}]")
-    print(f"  UMAP2: [{embedding[:, 1].min():.2f}, {embedding[:, 1].max():.2f}]")
+    logger.info(f"  UMAP1: [{embedding[:, 0].min():.2f}, {embedding[:, 0].max():.2f}]")
+    logger.info(f"  UMAP2: [{embedding[:, 1].min():.2f}, {embedding[:, 1].max():.2f}]")
 
     return adata
-
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -55,9 +57,9 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Compute UMAP embedding for an AnnData object."""
+
     # Template variables
     h5ad = "${adata}"
     min_dist = float("${min_dist}")
@@ -67,7 +69,7 @@ def main():
     process_name = "${task.process}"
 
     # Read AnnData
-    print(f"Computing UMAP for: {h5ad}")
+    logger.info(f"Computing UMAP for: {h5ad}")
     adata = ad.read_h5ad(h5ad)
 
     # Compute UMAP
@@ -75,11 +77,10 @@ def main():
 
     # Write output
     adata.write_h5ad(output_adata)
-    print(f"Written AnnData with UMAP to: {output_adata}")
+    logger.info(f"Written AnnData with UMAP to: {output_adata}")
 
     # Write versions
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()

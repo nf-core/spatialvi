@@ -12,12 +12,15 @@ import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
+import logging
 import platform
 
 import anndata as ad
 import squidpy as sq
 import yaml
 
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -31,9 +34,9 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Compute spatial neighbors graph based on spatial coordinates."""
+
     # Template variables
     h5ad = "${adata}"
     coord_type = "${coord_type}"
@@ -41,11 +44,11 @@ def main():
     output_adata = "${prefix}.h5ad"
     process_name = "${task.process}"
 
-    print(f"Reading: {h5ad}")
+    logger.info(f"Reading: {h5ad}")
     adata = ad.read_h5ad(h5ad)
-    print(f"AnnData shape: {adata.shape}")
-    print(f"Coord type: {coord_type}")
-    print(f"Number of neighbors: {n_neighs}")
+    logger.info(f"AnnData shape: {adata.shape}")
+    logger.info(f"Coord type: {coord_type}")
+    logger.info(f"Number of neighbors: {n_neighs}")
 
     if "spatial" not in adata.obsm:
         raise ValueError(
@@ -54,15 +57,14 @@ def main():
 
     sq.gr.spatial_neighbors(adata, coord_type=coord_type, n_neighs=n_neighs)
 
-    print("Computed spatial neighbor graph")
-    print(f"Connectivities shape: {adata.obsp['spatial_connectivities'].shape}")
-    print(f"Distances shape: {adata.obsp['spatial_distances'].shape}")
+    logger.info("Computed spatial neighbor graph")
+    logger.info(f"Connectivities shape: {adata.obsp['spatial_connectivities'].shape}")
+    logger.info(f"Distances shape: {adata.obsp['spatial_distances'].shape}")
 
     adata.write_h5ad(output_adata)
-    print(f"Written AnnData with spatial neighbors to: {output_adata}")
+    logger.info(f"Written AnnData with spatial neighbors to: {output_adata}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()

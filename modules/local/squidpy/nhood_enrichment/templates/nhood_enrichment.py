@@ -13,12 +13,15 @@ os.environ["KMP_AFFINITY"] = "disabled"
 os.environ["KMP_INIT_AT_FORK"] = "FALSE"
 
 import importlib.metadata
+import logging
 import platform
 
 import anndata as ad
 import squidpy as sq
 import yaml
 
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def validate_adata(adata, cluster_key):
     """Check that required data exists in the AnnData object."""
@@ -29,7 +32,6 @@ def validate_adata(adata, cluster_key):
             "Spatial connectivities not found; "
             "run squidpy.gr.spatial_neighbors first."
         )
-
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -43,19 +45,19 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Compute neighborhood enrichment by permutation test."""
+
     # Template variables
     h5ad = "${adata}"
     cluster_key = "${cluster_key}"
     output_adata = "${prefix}.h5ad"
     process_name = "${task.process}"
 
-    print(f"Reading: {h5ad}")
+    logger.info(f"Reading: {h5ad}")
     adata = ad.read_h5ad(h5ad)
-    print(f"AnnData shape: {adata.shape}")
-    print(f"Cluster key: {cluster_key}")
+    logger.info(f"AnnData shape: {adata.shape}")
+    logger.info(f"Cluster key: {cluster_key}")
 
     validate_adata(adata, cluster_key)
 
@@ -65,14 +67,13 @@ def main():
     )
 
     n_clusters = adata.obs[cluster_key].nunique()
-    print(f"Computed neighborhood enrichment for {n_clusters} clusters")
-    print(f"Results stored in adata.uns['{cluster_key}_nhood_enrichment']")
+    logger.info(f"Computed neighborhood enrichment for {n_clusters} clusters")
+    logger.info(f"Results stored in adata.uns['{cluster_key}_nhood_enrichment']")
 
     adata.write_h5ad(output_adata)
-    print(f"Written AnnData with neighborhood enrichment to: {output_adata}")
+    logger.info(f"Written AnnData with neighborhood enrichment to: {output_adata}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()

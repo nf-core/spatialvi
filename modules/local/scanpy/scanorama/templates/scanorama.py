@@ -11,6 +11,7 @@ import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
+import logging
 import platform
 
 import anndata as ad
@@ -18,6 +19,8 @@ import scanpy.external as sce
 import scipy.sparse as sp
 import yaml
 
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def integrate_scanorama(adata, key, adjusted_basis):
     """
@@ -45,19 +48,17 @@ def integrate_scanorama(adata, key, adjusted_basis):
             "PCA not found in adata.obsm; run PCA before integration."
         )
 
-
     # Convert to CSR format (if applicable; required by Scanorama)
     if sp.issparse(adata.X) and not isinstance(adata.X, sp.csr_matrix):
-        print("Converting to CSR data format")
+        logger.info("Converting to CSR data format")
         adata.X = adata.X.tocsr()
 
     n_batches = adata.obs[key].nunique()
-    print(f"Integrating {n_batches} batches using key: {key}")
+    logger.info(f"Integrating {n_batches} batches using key: {key}")
 
     sce.pp.scanorama_integrate(adata, key=key, adjusted_basis=adjusted_basis)
 
     return adata
-
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -72,9 +73,9 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Integrate observations in an AnnData object using Scanorama."""
+
     # Template variables
     h5ad = "${h5ad}"
     key = "${key}"
@@ -83,16 +84,15 @@ def main():
     process_name = "${task.process}"
 
     adata = ad.read_h5ad(h5ad)
-    print(f"Read AnnData object: {h5ad}")
-    print(f"AnnData shape: {adata.shape}")
+    logger.info(f"Read AnnData object: {h5ad}")
+    logger.info(f"AnnData shape: {adata.shape}")
 
     adata = integrate_scanorama(adata, key=key, adjusted_basis=adjusted_basis)
 
     adata.write_h5ad(output_h5ad)
-    print(f"Written integrated AnnData to: {output_h5ad}")
+    logger.info(f"Written integrated AnnData to: {output_h5ad}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()

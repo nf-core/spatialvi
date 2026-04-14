@@ -12,12 +12,15 @@ import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
+import logging
 import platform
 
 import anndata as ad
 import scanpy as sc
 import yaml
 
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def perform_pca(adata, n_comps, use_highly_variable):
     """
@@ -37,9 +40,9 @@ def perform_pca(adata, n_comps, use_highly_variable):
     AnnData
         AnnData with PCA results in obsm["X_pca"].
     """
-    print(f"AnnData shape: {adata.shape}")
-    print(f"Number of components: {n_comps}")
-    print(f"Use highly variable genes: {use_highly_variable}")
+    logger.info(f"AnnData shape: {adata.shape}")
+    logger.info(f"Number of components: {n_comps}")
+    logger.info(f"Use highly variable genes: {use_highly_variable}")
 
     has_hvg = "highly_variable" in adata.var.columns
 
@@ -48,7 +51,7 @@ def perform_pca(adata, n_comps, use_highly_variable):
 
     if use_highly_variable and has_hvg:
         n_hvgs = adata.var["highly_variable"].sum()
-        print(f"Using {n_hvgs} highly variable genes for PCA")
+        logger.info(f"Using {n_hvgs} highly variable genes for PCA")
 
     sc.pp.pca(
         adata,
@@ -56,23 +59,21 @@ def perform_pca(adata, n_comps, use_highly_variable):
         use_highly_variable=use_highly_variable and has_hvg,
     )
 
-    print_variance_summary(adata, n_comps)
+    log_variance_summary(adata, n_comps)
 
     return adata
 
-
-def print_variance_summary(adata, n_comps):
+def log_variance_summary(adata, n_comps):
     """Print summary of variance explained by principal components."""
     variance_ratio = adata.uns["pca"]["variance_ratio"]
     cumulative_variance = variance_ratio.cumsum()
 
-    print("Variance explained:")
+    logger.info("Variance explained:")
     for n in [10, 20, 50]:
         if n <= n_comps:
-            print(f"  First {n} PCs: {cumulative_variance[n - 1]:.2%}")
+            logger.info(f"  First {n} PCs: {cumulative_variance[n - 1]:.2%}")
 
-    print(f"  All {n_comps} PCs: {cumulative_variance[-1]:.2%}")
-
+    logger.info(f"  All {n_comps} PCs: {cumulative_variance[-1]:.2%}")
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -86,9 +87,9 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Perform PCA on an AnnData object."""
+
     # Template variables
     h5ad = "${adata}"
     n_comps = int("${n_pcs}")
@@ -97,7 +98,7 @@ def main():
     process_name = "${task.process}"
 
     adata = ad.read_h5ad(h5ad)
-    print(f"Performing PCA on: {h5ad}")
+    logger.info(f"Performing PCA on: {h5ad}")
 
     adata = perform_pca(
         adata,
@@ -106,10 +107,9 @@ def main():
     )
 
     adata.write_h5ad(output_h5ad)
-    print(f"Written AnnData with PCA to: {output_h5ad}")
+    logger.info(f"Written AnnData with PCA to: {output_h5ad}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()

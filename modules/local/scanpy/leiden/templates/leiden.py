@@ -8,12 +8,15 @@ in adata.obs.
 """
 
 import importlib.metadata
+import logging
 import platform
 
 import anndata as ad
 import scanpy as sc
 import yaml
 
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def perform_leiden(adata, resolution, key_added):
     """
@@ -36,9 +39,9 @@ def perform_leiden(adata, resolution, key_added):
     if "neighbors" not in adata.uns:
         raise ValueError("Neighbor graph not found; run sc.pp.neighbors first.")
 
-    print(f"AnnData shape: {adata.shape}")
-    print(f"Resolution: {resolution}")
-    print(f"Key added: {key_added}")
+    logger.info(f"AnnData shape: {adata.shape}")
+    logger.info(f"Resolution: {resolution}")
+    logger.info(f"Key added: {key_added}")
 
     sc.tl.leiden(adata, resolution=resolution, key_added=key_added)
 
@@ -49,13 +52,12 @@ def perform_leiden(adata, resolution, key_added):
     }
 
     cluster_sizes = adata.obs[key_added].value_counts().sort_index()
-    print(f"Found {n_clusters} clusters:")
+    logger.info(f"Found {n_clusters} clusters:")
     for cluster, size in cluster_sizes.items():
         pct = size / adata.shape[0] * 100
-        print(f"  Cluster {cluster}: {size} obs ({pct:.1f}%)")
+        logger.info(f"  Cluster {cluster}: {size} obs ({pct:.1f}%)")
 
     return adata
-
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -70,9 +72,9 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Perform Leiden clustering on an AnnData object."""
+
     # Template variables
     h5ad = "${h5ad}"
     resolution = float("${resolution}")
@@ -81,15 +83,14 @@ def main():
     process_name = "${task.process}"
 
     adata = ad.read_h5ad(h5ad)
-    print(f"Performing Leiden clustering on: {h5ad}")
+    logger.info(f"Performing Leiden clustering on: {h5ad}")
 
     adata = perform_leiden(adata, resolution=resolution, key_added=key_added)
 
     adata.write_h5ad(output_h5ad)
-    print(f"Written AnnData with clusters to: {output_h5ad}")
+    logger.info(f"Written AnnData with clusters to: {output_h5ad}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()

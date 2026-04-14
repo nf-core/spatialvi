@@ -12,12 +12,15 @@ import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
+import logging
 import platform
 
 import anndata as ad
 import scanpy as sc
 import yaml
 
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
     """
@@ -40,10 +43,10 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
     AnnData
         AnnData with neighbor graph in obsp.
     """
-    print(f"AnnData shape: {adata.shape}")
-    print(f"Number of neighbors: {n_neighbors}")
-    print(f"Number of PCs: {n_pcs}")
-    print(f"Representation: {use_rep}")
+    logger.info(f"AnnData shape: {adata.shape}")
+    logger.info(f"Number of neighbors: {n_neighbors}")
+    logger.info(f"Number of PCs: {n_pcs}")
+    logger.info(f"Representation: {use_rep}")
 
     sc.pp.neighbors(
         adata,
@@ -52,12 +55,11 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
         use_rep=use_rep
     )
 
-    print("Computed neighbor graph:")
-    print(f"  Connectivities shape: {adata.obsp['connectivities'].shape}")
-    print(f"  Distances shape: {adata.obsp['distances'].shape}")
+    logger.info("Computed neighbor graph:")
+    logger.info(f"  Connectivities shape: {adata.obsp['connectivities'].shape}")
+    logger.info(f"  Distances shape: {adata.obsp['distances'].shape}")
 
     return adata
-
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -71,9 +73,9 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Compute neighborhood graph for an AnnData object."""
+
     # Template variables
     h5ad = "${adata}"
     n_neighbors = int("${n_neighbors}")
@@ -82,7 +84,7 @@ def main():
     output_h5ad = "${prefix}.h5ad"
     process_name = "${task.process}"
 
-    print(f"Computing neighbors for: {h5ad}")
+    logger.info(f"Computing neighbors for: {h5ad}")
     adata = ad.read_h5ad(h5ad)
 
     adata = compute_neighbors(
@@ -93,10 +95,9 @@ def main():
     )
 
     adata.write_h5ad(output_h5ad)
-    print(f"Written AnnData with neighbors to: {output_h5ad}")
+    logger.info(f"Written AnnData with neighbors to: {output_h5ad}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()

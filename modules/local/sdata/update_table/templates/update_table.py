@@ -18,6 +18,7 @@ os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
 os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
 
 import importlib.metadata
+import logging
 import platform
 import re
 import shutil
@@ -28,10 +29,8 @@ import spatialdata
 import yaml
 from spatialdata.models import TableModel
 
-# -----------------------------------------------------------------------------
-# Single-sample operations
-# -----------------------------------------------------------------------------
-
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 def find_table_name(sdata, adata, sample_id):
     """
@@ -60,7 +59,6 @@ def find_table_name(sdata, adata, sample_id):
     else:
         raise ValueError("No tables found in SpatialData object")
 
-
 def replace_table(sdata, adata, table_name):
     """
     Replace a table entirely, preserving SpatialData metadata.
@@ -74,18 +72,18 @@ def replace_table(sdata, adata, table_name):
     table_name : str
         Name of table to replace.
     """
-    print(f"Replacing table '{table_name}'")
-    print(f"Original table shape: {sdata.tables[table_name].shape}")
-    print(f"New AnnData shape: {adata.shape}")
+    logger.info(f"Replacing table '{table_name}'")
+    logger.info(f"Original table shape: {sdata.tables[table_name].shape}")
+    logger.info(f"New AnnData shape: {adata.shape}")
 
     original_table = sdata.tables[table_name]
     spatialdata_attrs = original_table.uns.get("spatialdata_attrs", {})
     region = spatialdata_attrs.get("region")
     region_key = spatialdata_attrs.get("region_key")
     instance_key = spatialdata_attrs.get("instance_key")
-    print(f"Original region: {region}")
-    print(f"Original region_key: {region_key}")
-    print(f"Original instance_key: {instance_key}")
+    logger.info(f"Original region: {region}")
+    logger.info(f"Original region_key: {region_key}")
+    logger.info(f"Original instance_key: {instance_key}")
 
     # Handle region being a numpy array (convert to list/string)
     if isinstance(region, np.ndarray):
@@ -100,9 +98,9 @@ def replace_table(sdata, adata, table_name):
             if len(common_idx) == len(adata.obs.index):
                 adata.obs[instance_key] = original_table.obs.loc[adata.obs.index, instance_key]
         else:
-            print(f"WARNING: Could not match all indices for {instance_key}")
+            logger.warning(f"Could not match all indices for {instance_key}")
     else:
-        print(f"WARNING: instance_key '{instance_key}' not found in original table")
+        logger.warning(f"instance_key '{instance_key}' not found in original table")
 
     # Restore region_key column if missing
     if region_key and region_key not in adata.obs.columns:
@@ -123,14 +121,14 @@ def replace_table(sdata, adata, table_name):
                 region_key=region_key,
                 instance_key=instance_key
             )
-            print("Created new table using TableModel.parse()")
+            logger.info("Created new table using TableModel.parse()")
         else:
             # Fallback: copy uns from original
-            print("WARNING: Missing region/instance_key metadata, copying from original")
+            logger.warning("Missing region/instance_key metadata, copying from original")
             adata.uns["spatialdata_attrs"] = spatialdata_attrs.copy()
             new_table = adata
     except Exception as e:
-        print(f"WARNING: TableModel.parse failed ({e}), copying from original")
+        logger.warning(f"TableModel.parse failed ({e}), copying from original")
         adata.uns["spatialdata_attrs"] = spatialdata_attrs.copy()
         new_table = adata
 
@@ -138,14 +136,14 @@ def replace_table(sdata, adata, table_name):
     del sdata.tables[table_name]
     try:
         sdata.tables[table_name] = new_table
-        print(f"Successfully updated table '{table_name}'")
+        logger.info(f"Successfully updated table '{table_name}'")
     except Exception as e:
-        print(f"WARNING: Failed to set table via sdata.tables: {e}")
-        print("Attempting to set table using internal method...")
+        logger.warning(f"Failed to set table via sdata.tables: {e}")
+        logger.info("Attempting to set table using internal method...")
 
     # Update spatial elements if observations were filtered
     if region and adata.shape[0] < original_table.shape[0]:
-        print(f"Observations were filtered: {original_table.shape[0]} -> {adata.shape[0]}")
+        logger.info(f"Observations were filtered: {original_table.shape[0]} -> {adata.shape[0]}")
         region_name = region if isinstance(region, str) else region[0]
         if region_name in sdata.shapes:
             try:
@@ -155,17 +153,15 @@ def replace_table(sdata, adata, table_name):
                     table_name=table_name
                 )
                 sdata.shapes[region_name] = matched[region_name]
-                print(f"Updated shapes '{region_name}' to match filtered table")
+                logger.info(f"Updated shapes '{region_name}' to match filtered table")
             except Exception as e:
-                print(f"  WARNING: Could not update shapes: {e}")
+                logger.info(f"  WARNING: Could not update shapes: {e}")
     else:
-        print("No filtering detected or no region to update")
-
+        logger.info("No filtering detected or no region to update")
 
 # -----------------------------------------------------------------------------
 # Multi-sample operations
 # -----------------------------------------------------------------------------
-
 
 def find_table_for_library(sdata, library_id):
     """
@@ -178,7 +174,6 @@ def find_table_for_library(sdata, library_id):
         return f"{library_id}_table"
     return None
 
-
 def build_library_to_table_dict(sdata, library_ids):
     """Build library-to-table dictionary."""
     library_to_table_dict = {}
@@ -187,10 +182,9 @@ def build_library_to_table_dict(sdata, library_ids):
         if table_name:
             library_to_table_dict[library_id] = table_name
         else:
-            print(f"WARNING: No matching table found for library '{library_id}'")
-    print(f"Library-to-table mapping: {library_to_table_dict}")
+            logger.warning(f"No matching table found for library '{library_id}'")
+    logger.info(f"Library-to-table mapping: {library_to_table_dict}")
     return library_to_table_dict
-
 
 def update_tables_from_concat(sdata, adata_concat, library_key):
     """
@@ -209,20 +203,20 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
         raise ValueError(f"Column '{library_key}' not found in AnnData")
 
     library_ids = adata_concat.obs[library_key].unique()
-    print(f"Found {len(library_ids)} libraries: {library_ids.tolist()}")
-    print(f"Available tables: {list(sdata.tables.keys())}")
+    logger.info(f"Found {len(library_ids)} libraries: {library_ids.tolist()}")
+    logger.info(f"Available tables: {list(sdata.tables.keys())}")
 
     library_to_table_dict = build_library_to_table_dict(sdata, library_ids)
 
     for library_id, table_name in library_to_table_dict.items():
         mask = adata_concat.obs[library_key] == library_id
         if not mask.any():
-            print(f"WARNING: No observations for library '{library_id}'")
+            logger.warning(f"No observations for library '{library_id}'")
             continue
 
         adata_subset = adata_concat[mask].copy()
         table = sdata.tables[table_name]
-        print(
+        logger.info(
             f"Updating table '{table_name}' from library '{library_id}' "
             f"({adata_subset.shape[0]} obs)"
         )
@@ -244,7 +238,7 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
                     pos = table.obs_names.get_loc(orig_idx)
                     table.obsm[key][pos] = adata_subset.obsm[key][i]
 
-            print(f"  Added obsm['{key}']")
+            logger.info(f"  Added obsm['{key}']")
 
         # Add obs columns
         skip = {library_key}
@@ -257,13 +251,11 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
                 if orig_idx in table.obs_names:
                     table.obs.loc[orig_idx, col] = adata_subset.obs.iloc[i][col]
 
-            print(f"  Added obs['{col}']")
-
+            logger.info(f"  Added obs['{col}']")
 
 # -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
-
 
 def write_versions(process_name):
     """Write software versions to YAML."""
@@ -277,9 +269,9 @@ def write_versions(process_name):
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
 
-
 def main():
     """Synchronize AnnData back to SpatialData."""
+
     # Template variables
     zarr = "${sdata}"
     h5ad = "${adata}"
@@ -291,23 +283,23 @@ def main():
     # Sample ID must only contain alphanumerics, underscores and dashes
     sample_id = re.sub(r"[^a-zA-Z0-9_-]", "", sample_id)
 
-    print(f"Input SpatialData: {zarr}")
-    print(f"Input AnnData: {h5ad}")
-    print(f"Output: {output_sdata} SpatialData")
-    print(f"Mode: {'multi-sample' if library_key else 'single-sample'}")
+    logger.info(f"Input SpatialData: {zarr}")
+    logger.info(f"Input AnnData: {h5ad}")
+    logger.info(f"Output: {output_sdata} SpatialData")
+    logger.info(f"Mode: {'multi-sample' if library_key else 'single-sample'}")
 
     if os.path.abspath(zarr) == os.path.abspath(output_sdata):
         raise ValueError("Input and output paths are the same!")
 
     if os.path.exists(output_sdata):
-        print(f"Removing existing output directory: {output_sdata}")
+        logger.info(f"Removing existing output directory: {output_sdata}")
         shutil.rmtree(output_sdata)
 
     # Read data
     sdata = spatialdata.read_zarr(zarr)
     adata = ad.read_h5ad(h5ad)
-    print(f"Available tables: {list(sdata.tables.keys())}")
-    print(f"Available shapes: {list(sdata.shapes.keys())}")
+    logger.info(f"Available tables: {list(sdata.tables.keys())}")
+    logger.info(f"Available shapes: {list(sdata.shapes.keys())}")
 
     # Process based on mode
     if library_key:
@@ -318,10 +310,9 @@ def main():
 
     # Write output
     sdata.write(output_sdata)
-    print(f"Written: {output_sdata}")
+    logger.info(f"Written: {output_sdata}")
 
     write_versions(process_name)
-
 
 if __name__ == "__main__":
     main()
