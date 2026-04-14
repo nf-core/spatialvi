@@ -22,6 +22,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def perform_pca(adata, n_comps, use_highly_variable):
     """
     Perform PCA on AnnData object.
@@ -63,6 +64,7 @@ def perform_pca(adata, n_comps, use_highly_variable):
 
     return adata
 
+
 def log_variance_summary(adata, n_comps):
     """Print summary of variance explained by principal components."""
     variance_ratio = adata.uns["pca"]["variance_ratio"]
@@ -75,6 +77,7 @@ def log_variance_summary(adata, n_comps):
 
     logger.info(f"  All {n_comps} PCs: {cumulative_variance[-1]:.2%}")
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -86,6 +89,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Perform PCA on an AnnData object."""

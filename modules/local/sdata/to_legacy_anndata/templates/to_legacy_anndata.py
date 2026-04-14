@@ -21,6 +21,7 @@ from spatialdata_io.experimental import to_legacy_anndata
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def find_table_name(sdata, sample_id):
     """Find the appropriate table name in a SpatialData object."""
     expected_name = f"{sample_id}_table"
@@ -32,6 +33,7 @@ def find_table_name(sdata, sample_id):
         f"Available tables: {available_tables}"
     )
 
+
 def find_coordinate_system(sdata, sample_id):
     """Find the appropriate coordinate system in a SpatialData object."""
     expected_name = f"{sample_id}_downscaled_hires"
@@ -42,6 +44,7 @@ def find_coordinate_system(sdata, sample_id):
         f"Expected coordinate system '{expected_name}' not found in SpatialData. "
         f"Available coordinate systems: {available_systems}"
     )
+
 
 def extract_to_legacy_anndata(sdata, table_name, coord_system):
     """Convert SpatialData to the legacy AnnData format."""
@@ -55,6 +58,7 @@ def extract_to_legacy_anndata(sdata, table_name, coord_system):
     )
     return adata
 
+
 def ensure_sparse_csc(adata):
     """Convert `.X` matrix to CSC sparse format for compatibility."""
     if not scipy.sparse.issparse(adata.X):
@@ -62,6 +66,7 @@ def ensure_sparse_csc(adata):
     elif not scipy.sparse.isspmatrix_csc(adata.X):
         adata.X = scipy.sparse.csc_matrix(adata.X)
     return adata
+
 
 def add_metadata(adata, sample_id, table_name, coord_system):
     """Add raw counts layer and metadata to an AnnData object."""
@@ -72,6 +77,7 @@ def add_metadata(adata, sample_id, table_name, coord_system):
     adata.uns["table_name"] = table_name
     adata.uns["coordinate_system"] = coord_system
     return adata
+
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -85,6 +91,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Extract legacy AnnData from SpatialData."""

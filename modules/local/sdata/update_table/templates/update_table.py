@@ -32,6 +32,7 @@ from spatialdata.models import TableModel
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def find_table_name(sdata, adata, sample_id):
     """
     Determine which table to update for single-sample mode.
@@ -58,6 +59,7 @@ def find_table_name(sdata, adata, sample_id):
         return list(sdata.tables.keys())[0]
     else:
         raise ValueError("No tables found in SpatialData object")
+
 
 def replace_table(sdata, adata, table_name):
     """
@@ -163,6 +165,7 @@ def replace_table(sdata, adata, table_name):
 # Multi-sample operations
 # -----------------------------------------------------------------------------
 
+
 def find_table_for_library(sdata, library_id):
     """
     Find matching table name for a library ID. First tries matching exactly,
@@ -173,6 +176,7 @@ def find_table_for_library(sdata, library_id):
     if f"{library_id}_table" in sdata.tables:
         return f"{library_id}_table"
     return None
+
 
 def build_library_to_table_dict(sdata, library_ids):
     """Build library-to-table dictionary."""
@@ -185,6 +189,7 @@ def build_library_to_table_dict(sdata, library_ids):
             logger.warning(f"No matching table found for library '{library_id}'")
     logger.info(f"Library-to-table mapping: {library_to_table_dict}")
     return library_to_table_dict
+
 
 def update_tables_from_concat(sdata, adata_concat, library_key):
     """
@@ -257,6 +262,7 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
 # Main
 # -----------------------------------------------------------------------------
 
+
 def write_versions(process_name):
     """Write software versions to YAML."""
     versions = {
@@ -268,6 +274,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Synchronize AnnData back to SpatialData."""

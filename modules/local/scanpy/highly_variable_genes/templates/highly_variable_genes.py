@@ -25,6 +25,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def validate_adata(adata):
     """
     Validate that AnnData has sufficient data for HVG selection.
@@ -53,6 +54,7 @@ def validate_adata(adata):
         raise ValueError("AnnData has 0 genes.")
 
     return n_obs, n_genes
+
 
 def mark_all_genes_hvg(adata, flavor):
     """
@@ -89,6 +91,7 @@ def mark_all_genes_hvg(adata, flavor):
     }
 
     return adata
+
 
 def find_highly_variable_genes(adata, n_top_genes, flavor):
     """
@@ -147,6 +150,7 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
 
     return adata
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -158,6 +162,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Identify highly variable genes in an AnnData object."""

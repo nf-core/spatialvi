@@ -17,6 +17,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def normalize_adata(adata, target_sum):
     """
     Normalize total counts per observation.
@@ -59,6 +60,7 @@ def normalize_adata(adata, target_sum):
 
     return adata
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -70,6 +72,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Normalize total counts in an AnnData object."""

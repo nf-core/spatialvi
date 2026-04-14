@@ -14,6 +14,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def log_transform(adata):
     """
     Apply log1p transformation to AnnData object.
@@ -40,6 +41,7 @@ def log_transform(adata):
 
     return adata
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -51,6 +53,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Apply log1p transformation to an AnnData object."""

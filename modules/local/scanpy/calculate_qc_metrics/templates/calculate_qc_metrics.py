@@ -26,6 +26,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def validate_adata(adata):
     """Validate that AnnData has sufficient data for QC calculation."""
     n_obs, n_genes = adata.shape
@@ -35,6 +36,7 @@ def validate_adata(adata):
         raise ValueError("AnnData has 0 genes; cannot calculate QC metrics.")
     if n_genes < 10:
         logger.warning(f"AnnData has only {n_genes} genes. This may indicate a problem with the input data.")
+
 
 def annotate_gene_types(adata):
     """Annotate gene types (mitochondrial, ribosomal, haemoglobin) in var."""
@@ -57,6 +59,7 @@ def annotate_gene_types(adata):
 
     return gene_counts
 
+
 def determine_qc_vars(gene_counts):
     """Determine which qc_vars to use based on gene counts."""
     qc_vars = []
@@ -67,12 +70,14 @@ def determine_qc_vars(gene_counts):
             logger.warning(f"No {var_name} genes found in the dataset.")
     return qc_vars
 
+
 def determine_percent_top(n_genes):
     """Determine percent_top parameter based on number of genes."""
     percent_top = [t for t in [500, 200, 100, 50] if n_genes >= t]
     if not percent_top and n_genes >= 10:
         percent_top = [n_genes]
     return percent_top
+
 
 def ensure_qc_columns_exist(adata):
     """Ensure all expected QC columns exist, adding zeros if missing."""
@@ -88,6 +93,7 @@ def ensure_qc_columns_exist(adata):
         adata.obs["n_genes_by_counts"] = np.array((adata.X > 0).sum(axis=1)).flatten()
 
     return adata
+
 
 def calculate_qc_metrics(adata):
     """Calculate QC metrics for AnnData object."""
@@ -120,6 +126,7 @@ def calculate_qc_metrics(adata):
 
     return adata
 
+
 def log_qc_summary(adata):
     """Print summary of QC metrics."""
     obs = adata.obs
@@ -140,6 +147,7 @@ def log_qc_summary(adata):
         f"{obs['n_genes_by_counts'].max():.0f}]"
     )
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -151,6 +159,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Calculate QC metrics for an AnnData object."""

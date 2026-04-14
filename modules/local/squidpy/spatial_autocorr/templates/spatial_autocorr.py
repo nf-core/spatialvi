@@ -23,8 +23,10 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def get_results_key(mode):
     """Get the uns key for results based on mode."""
+
 
 def compute_spatial_autocorr(adata, mode):
     """Compute spatial autocorrelation statistics."""
@@ -49,6 +51,7 @@ def compute_spatial_autocorr(adata, mode):
 
     return adata
 
+
 def write_svg_to_csv(adata, mode, output_csv):
     """Export spatially variable genes results to CSV."""
     if mode == "moran":
@@ -62,6 +65,7 @@ def write_svg_to_csv(adata, mode, output_csv):
     svg_df.to_csv(output_csv)
     logger.info(f"Exported SVG results to: {output_csv}")
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -73,6 +77,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Compute spatial autocorrelation for an AnnData object."""

@@ -23,6 +23,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def validate_adata(adata, cluster_key):
     """Check that required data exists in the AnnData object."""
     if cluster_key not in adata.obs.columns:
@@ -32,6 +33,7 @@ def validate_adata(adata, cluster_key):
             "Spatial connectivities not found; "
             "run squidpy.gr.spatial_neighbors first."
         )
+
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -44,6 +46,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Compute neighborhood enrichment by permutation test."""

@@ -18,6 +18,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def perform_leiden(adata, resolution, key_added):
     """
     Perform Leiden clustering on AnnData object.
@@ -59,6 +60,7 @@ def perform_leiden(adata, resolution, key_added):
 
     return adata
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -71,6 +73,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Perform Leiden clustering on an AnnData object."""

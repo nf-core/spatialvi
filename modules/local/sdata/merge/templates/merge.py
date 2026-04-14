@@ -16,6 +16,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def read_sdatas(file_paths):
     """Read multiple SpatialData objects from Zarr directories."""
     sdata_list = []
@@ -24,6 +25,7 @@ def read_sdatas(file_paths):
         sdata = spatialdata.read_zarr(file)
         sdata_list.append(sdata)
     return sdata_list
+
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -35,6 +37,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Merge multiple SpatialData objects into one."""

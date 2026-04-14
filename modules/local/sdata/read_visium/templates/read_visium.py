@@ -19,6 +19,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size):
     """Read Visium HD data."""
     logger.info(f"Reading Visium HD data with bin size: {hd_bin_size}")
@@ -44,6 +45,7 @@ def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size):
 
     return sdata, table_name
 
+
 def read_visium_standard(spaceranger_dir, sample_id_clean):
     """Read standard Visium data."""
     logger.info("Reading standard Visium data")
@@ -54,6 +56,7 @@ def read_visium_standard(spaceranger_dir, sample_id_clean):
     )
     table_name = "table"
     return sdata, table_name
+
 
 def read_visium_data(spaceranger_dir, sample_id_clean, hd_bin_size):
     """Read Visium or Visium HD data from Space Ranger output."""
@@ -81,6 +84,7 @@ def read_visium_data(spaceranger_dir, sample_id_clean, hd_bin_size):
     logger.info(f"  Images: {list(sdata.images.keys())}")
 
     return sdata, table_name
+
 
 def validate_table(sdata, table_name, sample_id_clean):
     """Validate table exists and process it."""
@@ -116,6 +120,7 @@ def validate_table(sdata, table_name, sample_id_clean):
 
     return sdata
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -127,6 +132,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Read Visium data into SpatialData format."""

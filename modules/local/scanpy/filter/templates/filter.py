@@ -25,6 +25,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def filter_by_obs_column(adata, col, threshold, filter_below, stat_key, stats):
     """
     Filter observations based on a threshold for a given column.
@@ -68,6 +69,7 @@ def filter_by_obs_column(adata, col, threshold, filter_below, stat_key, stats):
     stats[stat_key] = n_filtered
     return adata, stats
 
+
 def filter_outside_tissue(adata, stats):
     """Filter observations outside tissue based on 'in_tissue' column."""
     in_tissue_col = "in_tissue"
@@ -83,6 +85,7 @@ def filter_outside_tissue(adata, stats):
     stats["obs_filtered_outside_tissue"] = n_filtered
     return adata, stats
 
+
 def filter_min_counts(adata, min_counts, stats):
     """Filter observations with fewer than min_counts total counts."""
     n_before = adata.shape[0]
@@ -91,6 +94,7 @@ def filter_min_counts(adata, min_counts, stats):
     logger.info(f"Removed {n_filtered} obs with < {min_counts} counts")
     stats["obs_filtered_min_counts"] = n_filtered
     return adata, stats
+
 
 def filter_min_genes(adata, min_genes, stats):
     """Filter observations with fewer than min_genes expressed genes."""
@@ -101,6 +105,7 @@ def filter_min_genes(adata, min_genes, stats):
     stats["obs_filtered_min_genes"] = n_filtered
     return adata, stats
 
+
 def filter_genes_min_obs(adata, min_obs, stats):
     """Filter genes expressed in fewer than min_obs observations."""
     n_before = adata.shape[1]
@@ -109,6 +114,7 @@ def filter_genes_min_obs(adata, min_obs, stats):
     logger.info(f"Removed {n_filtered} genes expressed in < {min_obs} obs")
     stats["genes_filtered_min_obs"] = n_filtered
     return adata, stats
+
 
 def filter_adata(
     adata,
@@ -216,11 +222,13 @@ def filter_adata(
 
     return adata, stats
 
+
 def write_stats(stats, output_path):
     """Write filtering statistics to a JSON file."""
     with open(output_path, "w") as f:
         json.dump(stats, f, indent=2)
     logger.info(f"Written filtering statistics to: {output_path}")
+
 
 def write_versions(process_name):
     """Write software versions to a YAML file."""
@@ -233,6 +241,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Filter observations and genes from an AnnData object."""

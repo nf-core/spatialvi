@@ -19,6 +19,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def add_var(adata, adata_list, join):
     """
     Adds `.var` back into a merged AnnData object from the original list of
@@ -29,6 +30,7 @@ def add_var(adata, adata_list, join):
     adata.var = merged_var.loc[adata.var_names]
     logger.info("Preserved `.var` data")
     return adata
+
 
 def add_spatial(adata, adata_list):
     """
@@ -43,6 +45,7 @@ def add_spatial(adata, adata_list):
         adata.uns["spatial"] = merged_spatial
         logger.info("Preserved `.uns['spatial']` data")
     return adata
+
 
 def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
     """
@@ -76,6 +79,7 @@ def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
 
     return adata
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -86,6 +90,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Merge multiple AnnData objects into one."""

@@ -18,6 +18,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def compute_umap(adata, min_dist, spread, key_added):
     """Compute UMAP embedding for AnnData object."""
     logger.info(f"AnnData shape: {adata.shape}")
@@ -45,6 +46,7 @@ def compute_umap(adata, min_dist, spread, key_added):
 
     return adata
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -56,6 +58,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Compute UMAP embedding for an AnnData object."""

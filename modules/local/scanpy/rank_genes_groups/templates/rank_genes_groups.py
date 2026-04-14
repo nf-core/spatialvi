@@ -21,6 +21,7 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def rank_genes(adata, groupby, method):
     """Rank genes by groups for differential expression analysis."""
     logger.info(f"Adata shape: {adata.shape}")
@@ -47,6 +48,7 @@ def rank_genes(adata, groupby, method):
 
     return adata
 
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -58,6 +60,7 @@ def write_versions(process_name):
     }
     with open("versions.yml", "w") as f:
         yaml.dump(versions, f)
+
 
 def main():
     """Rank genes for characterizing groups in an AnnData object."""
