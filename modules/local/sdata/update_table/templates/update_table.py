@@ -157,7 +157,7 @@ def replace_table(sdata, adata, table_name):
                 sdata.shapes[region_name] = matched[region_name]
                 logger.info(f"Updated shapes '{region_name}' to match filtered table")
             except Exception as e:
-                logger.info(f"  WARNING: Could not update shapes: {e}")
+                logger.warning(f"Could not update shapes: {e}")
     else:
         logger.info("No filtering detected or no region to update")
 
