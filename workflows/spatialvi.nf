@@ -4,25 +4,25 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SDATA_READ_VISIUM        } from '../modules/local/sdata/read_visium/main'
-include { FASTQC                   } from '../modules/nf-core/fastqc/main'
-include { SCANPY_RANK_GENES_GROUPS } from '../modules/local/scanpy/rank_genes_groups/main'
+include { SDATA_READ_VISIUM        } from "../modules/local/sdata/read_visium"
+include { FASTQC                   } from "../modules/nf-core/fastqc"
+include { SCANPY_RANK_GENES_GROUPS } from "../modules/local/scanpy/rank_genes_groups"
 include { SDATA_MERGE              } from "../modules/local/sdata/merge"
-include { SDATA_TO_LEGACY_ANNDATA  } from '../modules/local/sdata/to_legacy_anndata/main'
-include { MULTIQC                  } from '../modules/nf-core/multiqc/main'
-include { QUARTONOTEBOOK as REPORT } from '../modules/nf-core/quartonotebook/main'
-include { SDATA_UPDATE_TABLE       } from '../modules/local/sdata/update_table/main'
+include { SDATA_TO_LEGACY_ANNDATA  } from "../modules/local/sdata/to_legacy_anndata"
+include { MULTIQC                  } from "../modules/nf-core/multiqc"
+include { QUARTONOTEBOOK as REPORT } from "../modules/nf-core/quartonotebook"
+include { SDATA_UPDATE_TABLE       } from "../modules/local/sdata/update_table"
 
-include { INPUT_CHECK              } from '../subworkflows/local/input_check'
-include { SPACERANGER              } from '../subworkflows/local/spaceranger'
-include { PREPROCESSING            } from '../subworkflows/local/preprocessing'
-include { CLUSTERING               } from '../subworkflows/local/clustering'
-include { SPATIAL                  } from '../subworkflows/local/spatial'
-include { INTEGRATION              } from '../subworkflows/local/integration'
-include { paramsSummaryMultiqc     } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { paramsSummaryMap         } from 'plugin/nf-schema'
-include { softwareVersionsToYAML   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText   } from '../subworkflows/local/utils_nfcore_spatialvi_pipeline'
+include { INPUT_CHECK              } from "../subworkflows/local/input_check"
+include { SPACERANGER              } from "../subworkflows/local/spaceranger"
+include { PREPROCESSING            } from "../subworkflows/local/preprocessing"
+include { CLUSTERING               } from "../subworkflows/local/clustering"
+include { SPATIAL                  } from "../subworkflows/local/spatial"
+include { INTEGRATION              } from "../subworkflows/local/integration"
+include { paramsSummaryMultiqc     } from "../subworkflows/nf-core/utils_nfcore_pipeline"
+include { paramsSummaryMap         } from "plugin/nf-schema"
+include { softwareVersionsToYAML   } from "../subworkflows/nf-core/utils_nfcore_pipeline"
+include { methodsDescriptionText   } from "../subworkflows/local/utils_nfcore_spatialvi_pipeline"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

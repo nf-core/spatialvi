@@ -3,12 +3,12 @@
 //
 
 include { ADATA_MERGE                                          } from "../../../modules/local/adata/merge"
-include { QUARTONOTEBOOK as REPORT_INTEGRATED                  } from "../../../modules/nf-core/quartonotebook/main"
+include { QUARTONOTEBOOK as REPORT_INTEGRATED                  } from "../../../modules/nf-core/quartonotebook"
 include { SCANPY_HARMONY                                       } from "../../../modules/local/scanpy/harmony"
 include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
-include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from '../../../modules/local/sdata/update_table/main'
+include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from "../../../modules/local/sdata/update_table"
 
-include { CLUSTERING                                           } from '../../../subworkflows/local/clustering'
+include { CLUSTERING                                           } from "../../../subworkflows/local/clustering"
 
 workflow INTEGRATION {
 

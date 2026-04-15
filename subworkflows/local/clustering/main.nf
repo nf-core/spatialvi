@@ -1,6 +1,6 @@
-include { SCANPY_LEIDEN                } from '../../../modules/local/scanpy/leiden/main'
-include { SCANPY_NEIGHBORS             } from '../../../modules/local/scanpy/neighbors/main'
-include { SCANPY_UMAP                  } from '../../../modules/local/scanpy/umap/main'
+include { SCANPY_LEIDEN                } from "../../../modules/local/scanpy/leiden"
+include { SCANPY_NEIGHBORS             } from "../../../modules/local/scanpy/neighbors"
+include { SCANPY_UMAP                  } from "../../../modules/local/scanpy/umap"
 
 workflow CLUSTERING {
 

@@ -1,9 +1,9 @@
-include { SCANPY_CALCULATE_QC_METRICS  } from '../../../modules/local/scanpy/calculate_qc_metrics/main'
-include { SCANPY_FILTER                } from '../../../modules/local/scanpy/filter/main'
-include { SCANPY_HIGHLY_VARIABLE_GENES } from '../../../modules/local/scanpy/highly_variable_genes/main'
-include { SCANPY_LOG1P                 } from '../../../modules/local/scanpy/log1p/main'
-include { SCANPY_NORMALIZE_TOTAL       } from '../../../modules/local/scanpy/normalize_total/main'
-include { SCANPY_PCA                   } from '../../../modules/local/scanpy/pca/main'
+include { SCANPY_CALCULATE_QC_METRICS  } from "../../../modules/local/scanpy/calculate_qc_metrics"
+include { SCANPY_FILTER                } from "../../../modules/local/scanpy/filter"
+include { SCANPY_HIGHLY_VARIABLE_GENES } from "../../../modules/local/scanpy/highly_variable_genes"
+include { SCANPY_LOG1P                 } from "../../../modules/local/scanpy/log1p"
+include { SCANPY_NORMALIZE_TOTAL       } from "../../../modules/local/scanpy/normalize_total"
+include { SCANPY_PCA                   } from "../../../modules/local/scanpy/pca"
 
 workflow PREPROCESSING {
 
@@ -24,7 +24,7 @@ workflow PREPROCESSING {
     main:
 
     //
-    // MODULE: Calculate cuality control metrics
+    // MODULE: Calculate quality control metrics
     //
     SCANPY_CALCULATE_QC_METRICS (
         ch_adata_input

@@ -32,9 +32,9 @@ def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size):
         spaceranger_dir, f"{sample_id_clean}_feature_slice.h5"
     )
     if (os.path.exists(feature_slice_src)
-        and not os.path.exists(feature_slice_dst)):
-            logger.info(f"Copying {feature_slice_src} to {feature_slice_dst}")
-            shutil.copyfile(feature_slice_src, feature_slice_dst)
+    and not os.path.exists(feature_slice_dst)):
+        logger.info(f"Copying {feature_slice_src} to {feature_slice_dst}")
+        shutil.copyfile(feature_slice_src, feature_slice_dst)
 
     sdata = spatialdata_io.visium_hd(
         spaceranger_dir,
