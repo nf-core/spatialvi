@@ -41,7 +41,7 @@ data using the following steps:
     and features.
   - `outs/web_summary.html`: Interactive summary report from Space Ranger.
   - `outs/cloupe.cloupe`: File for visualization in 10X Loupe Browser.
-</details>
+  </details>
 
 All files produced by Space Ranger are currently published as output of this
 pipeline, regardless if they're being used downstream or not; you can find more
