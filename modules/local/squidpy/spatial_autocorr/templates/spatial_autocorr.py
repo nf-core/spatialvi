@@ -24,10 +24,6 @@ logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(mess
 logger = logging.getLogger(__name__)
 
 
-def get_results_key(mode):
-    """Get the uns key for results based on mode."""
-
-
 def compute_spatial_autocorr(adata, mode):
     """Compute spatial autocorrelation statistics."""
     logger.info(f"Shape: {adata.shape}")
