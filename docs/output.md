@@ -31,7 +31,7 @@ data using the following steps:
 
 - `<SAMPLE>/spaceranger/`
   - `outs/spatial/tissue_[hi/low]res_image.png`: High and low resolution images.
-  - `outs/spatial/tissue_positions_list.csv`: Spot barcodes and their array
+  - `outs/spatial/tissue_positions.csv`: Spot barcodes and their array
     positions.
   - `outs/spatial/scalefactors_json.json`: Scale conversion factors for the
     spots.
@@ -39,7 +39,8 @@ data using the following steps:
   - `outs/filtered_feature_bc_matrix/features.tsv.gz`: List of feature IDs.
   - `outs/filtered_feature_bc_matrix/matrix.mtx.gz`: Matrix of UMIs, barcodes
     and features.
-
+  - `outs/web_summary.html`: Interactive summary report from Space Ranger.
+  - `outs/cloupe.cloupe`: File for visualization in 10X Loupe Browser.
 </details>
 
 All files produced by Space Ranger are currently published as output of this
@@ -76,7 +77,7 @@ content among other metrics.
 
 </details>
 
-Data in `.zarr` and `.h5ad` formats as processed by the pipeline, which can be
+Data in `.h5ad` formats as processed by the pipeline, which can be
 used for further downstream analyses if desired; unprocessed data is also
 present in these files. It can also be used by the [TissUUmaps](https://tissuumaps.github.io/)
 browser-based tool for visualisation and exploration, allowing you to delve into
@@ -91,7 +92,7 @@ as a convenience if you want to explore them in _e.g._ Excel.
 - `<SAMPLE>/reports/`
   - `report-<SAMPLE>.html`: Analysis report including quality controls, clustering,
     differential expression, and spatial analysis results.
-  - `report-<SAMPLE>.qmd`: Quarto source notebook of the report.
+  - `report.qmd`: Quarto source notebook of the report.
   - `report.yml`: Parameters used by the report.
   - `_extensions/`: Quarto nf-core extension, common to all reports.
 - `<SAMPLE>/plots/`
