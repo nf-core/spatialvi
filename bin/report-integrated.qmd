@@ -30,17 +30,20 @@ artifact_dir = "artifacts" # Parameter: artifact directory
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
-import anndata as an
+import importlib.metadata
+
+import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-import scanorama
 import scanpy as sc
-import scipy.sparse as sp
-import seaborn as sns
 import spatialdata
 from IPython.display import display, Markdown
 
 # Create artefact directory
 os.makedirs(artifact_dir, exist_ok=True)
+
+# Suppress scanpy verbosity
+sc.settings.verbosity = 0
 ```
 
 ```{python common-functions}
@@ -112,6 +115,39 @@ def display_table(table, hide_index=True, format_dict=None):
 ```{python load-data}
 sdata = spatialdata.read_zarr(input_sdata)
 adata = sc.read_h5ad(input_adata)
+
+# Determine integration method from input file name
+integration_method = os.path.splitext(os.path.basename(input_adata))[0]
+```
+
+# Integration overview
+
+```{python overview-table}
+n_samples = adata.obs[sample_col].nunique()
+n_spots = adata.n_obs
+n_genes = adata.n_vars
+n_clusters = adata.obs[cluster_col].nunique() if cluster_col in adata.obs else "N/A"
+sample_names = ", ".join(sorted(adata.obs[sample_col].unique()))
+
+overview = pd.DataFrame({
+    'Property': [
+        'Integration method',
+        'Number of samples',
+        'Total spots',
+        'Total genes',
+        'Number of clusters',
+        'Samples',
+    ],
+    'Value': [
+        integration_method.capitalize(),
+        n_samples,
+        f"{n_spots:,}",
+        f"{n_genes:,}",
+        n_clusters,
+        sample_names,
+    ]
+})
+display_table(overview)
 ```
 
 # UMAP
@@ -143,6 +179,88 @@ for col, label in umap_metrics:
 create_tabset(umap_plots)
 ```
 
+# Clustering
+
+## Cluster assignments
+
+```{python cluster-assignments}
+if cluster_col in adata.obs:
+    cluster_counts = adata.obs[cluster_col].value_counts().sort_index()
+    n_clusters_val = len(cluster_counts)
+
+    display(Markdown(f"Number of clusters: `{n_clusters_val}`"))
+
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3.5), constrained_layout=True)
+
+    # Bar plot of cluster sizes
+    cluster_counts.plot(kind='bar', ax=axes[0], color='steelblue',
+        edgecolor='black')
+    axes[0].set_xlabel('Cluster')
+    axes[0].set_ylabel('Number of spots')
+    axes[0].set_title('Spots per Cluster')
+    axes[0].tick_params(axis='x', rotation=45, labelsize=8)
+
+    # Pie chart of cluster proportions
+    axes[1].pie(cluster_counts.values, labels=cluster_counts.index,
+        autopct='%1.1f%%', startangle=90, textprops={'fontsize': 7})
+    axes[1].set_title('Cluster Proportions')
+
+    save_figure(fig, 'cluster-sizes.png')
+    plt.show()
+```
+
+## Cluster statistics
+
+```{python cluster-stats}
+if cluster_col in adata.obs:
+    agg_dict = {cluster_col: (cluster_col, 'size')}
+
+    if 'total_counts' in adata.obs:
+        agg_dict['Mean counts'] = ('total_counts', 'mean')
+    if 'n_genes_by_counts' in adata.obs:
+        agg_dict['Mean genes'] = ('n_genes_by_counts', 'mean')
+
+    cluster_stats = adata.obs.groupby(cluster_col).agg(**agg_dict)
+    cluster_stats.columns = ['Spots'] + [c for c in cluster_stats.columns[1:]]
+    cluster_stats['Percentage'] = (cluster_stats['Spots'] / len(adata) * 100)
+
+    column_order = ['Spots', 'Percentage'] + [c for c in cluster_stats.columns
+        if c not in ['Spots', 'Percentage']]
+    cluster_stats = cluster_stats[column_order]
+    cluster_stats = cluster_stats.sort_index().reset_index()
+    cluster_stats.columns = ['Cluster'] + list(cluster_stats.columns[1:])
+
+    format_dict = {
+        'Percentage': '{:.1f} %',
+        'Mean counts': '{:.1f}',
+        'Mean genes': '{:.1f}'
+    }
+    display_table(cluster_stats, format_dict=format_dict)
+```
+
+## Sample composition per cluster
+
+```{python sample-composition}
+if cluster_col in adata.obs:
+    # Cross-tabulation of clusters and samples
+    ct = pd.crosstab(
+        adata.obs[cluster_col],
+        adata.obs[sample_col],
+        normalize='index'
+    ) * 100
+
+    fig, ax = plt.subplots(figsize=(8, 5), constrained_layout=True)
+    ct.plot(kind='bar', stacked=True, ax=ax, edgecolor='black', linewidth=0.5)
+    ax.set_xlabel('Cluster')
+    ax.set_ylabel('Sample proportion (%)')
+    ax.set_title('Sample Composition per Cluster')
+    ax.legend(title='Sample', bbox_to_anchor=(1.05, 1), loc='upper left',
+        fontsize=7)
+    ax.tick_params(axis='x', rotation=45, labelsize=8)
+    save_figure(fig, 'sample-composition.png')
+    plt.show()
+```
+
 # Spatial Visualization
 
 ```{python spatial-distribution}
@@ -171,4 +289,57 @@ for sample_id in adata.obs[sample_col].unique():
 ```{python spatial-distribution-tabset}
 #| output: asis
 create_tabset(spatial_plots)
+```
+
+# Summary
+
+```{python summary}
+summary_sections = []
+
+# Data overview
+summary_sections.append(
+    f"## Data overview\n"
+    f"- **Integration method**: `{integration_method.capitalize()}`\n"
+    f"- **Number of samples**: `{n_samples}`\n"
+    f"- **Total spots**: `{n_spots:,}`\n"
+    f"- **Total genes**: `{n_genes:,}`\n"
+)
+
+# QC summary
+if 'total_counts' in adata.obs:
+    median_counts = adata.obs['total_counts'].median()
+    median_genes = adata.obs['n_genes_by_counts'].median() if \
+        'n_genes_by_counts' in adata.obs else 'N/A'
+    summary_sections.append(
+        f"## Quality controls\n"
+        f"- **Median counts per spot**: `{median_counts:,.0f}`\n"
+        f"- **Median genes per spot**: `{median_genes:,.0f}`\n"
+    )
+
+# Clustering summary
+if cluster_col in adata.obs:
+    n_clusters_final = adata.obs[cluster_col].nunique()
+    summary_sections.append(
+        f"## Clustering\n"
+        f"- **Number of clusters**: `{n_clusters_final}`\n"
+        f"- **Algorithm**: `Leiden`\n"
+    )
+
+display(Markdown("\n".join(summary_sections)))
+```
+
+# Session info
+
+```{python session-info}
+packages = ['scanpy', 'squidpy', 'spatialdata', 'anndata', 'numpy', 'pandas',
+    'matplotlib']
+versions = {}
+for pkg in packages:
+    try:
+        versions[pkg] = importlib.metadata.version(pkg)
+    except Exception:
+        pass
+
+session_info = pd.DataFrame(versions.items(), columns=['Package', 'Version'])
+display_table(session_info)
 ```
