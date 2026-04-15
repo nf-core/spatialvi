@@ -234,6 +234,8 @@
                 "integration/data/harmony.zarr",
                 "integration/data/merged.zarr",
                 "integration/plots",
+                "integration/plots/cluster-sizes.png",
+                "integration/plots/sample-composition.png",
                 "integration/plots/spatial-CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.png",
                 "integration/plots/spatial-CytAssist_11mm_FFPE_Human_Glioblastoma_2.png",
                 "integration/plots/umap-clusters_harmony.png",
@@ -260,8 +262,16 @@
                 "multiqc/multiqc_data/multiqc.log",
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_quality_controls.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/pdf",
+                "multiqc/multiqc_plots/pdf/quality_controls.pdf",
+                "multiqc/multiqc_plots/png",
+                "multiqc/multiqc_plots/png/quality_controls.png",
+                "multiqc/multiqc_plots/svg",
+                "multiqc/multiqc_plots/svg/quality_controls.svg",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"
@@ -3597,9 +3607,10 @@
                 "report.yml:md5,f745b1f1839789850479c6be4f689e0b",
                 "report.qmd:md5,03555321961957d8d645b446350921e0",
                 "report.yml:md5,4c78e7a9ab49caa73dd63450d27c030d",
-                "report-integrated.qmd:md5,a669fd7ba5e9658198c220b37bd66818",
+                "report-integrated.qmd:md5,04a2503ba3e82a3c448da53ca201f6d9",
                 "report-integrated.yml:md5,a4d0e2a88b83c3c5035ab9570430991e",
-                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "multiqc_quality_controls.txt:md5,7d0a51fc23fbc8dfc09aa01f9ac7bbb3"
             ],
             [
                 {
@@ -3969,10 +3980,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-04-05T16:40:07.455504149",
+        "timestamp": "2026-04-15T17:13:01.922466952",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.0"
         }
     }
 }

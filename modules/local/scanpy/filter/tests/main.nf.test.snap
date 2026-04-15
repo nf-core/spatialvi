@@ -66,14 +66,14 @@
                     {
                         "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                     },
-                    "CytAssist_11mm_FFPE_Human_Glioblastoma_2_stats.json:md5,eb913c148e5702844d1ade7ab4d10c5c"
+                    "mqc_quality_controls_CytAssist_11mm_FFPE_Human_Glioblastoma_2.csv:md5,bfb1346184bd4b7abc9cd83061775a04"
                 ]
             ]
         ],
-        "timestamp": "2026-04-02T15:23:54.342574",
+        "timestamp": "2026-04-15T16:41:51.154400544",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.0"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -92,7 +92,7 @@
                         {
                             "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                         },
-                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2_stats.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                        "mqc_quality_controls_CytAssist_11mm_FFPE_Human_Glioblastoma_2.csv:md5,c9aa8a5ac6841ffb3a6cc2de45b44797"
                     ]
                 ],
                 "2": [
@@ -111,7 +111,7 @@
                         {
                             "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                         },
-                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2_stats.json:md5,8a80554c91d9fca8acb82f023de02f11"
+                        "mqc_quality_controls_CytAssist_11mm_FFPE_Human_Glioblastoma_2.csv:md5,c9aa8a5ac6841ffb3a6cc2de45b44797"
                     ]
                 ],
                 "versions": [
@@ -119,10 +119,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-04-01T20:56:34.653938",
+        "timestamp": "2026-04-15T16:43:09.140054187",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.0"
         }
     },
     "homo_sapiens - h5ad - with spatial data": {
@@ -202,14 +202,14 @@
                     {
                         "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
                     },
-                    "CytAssist_11mm_FFPE_Human_Glioblastoma_2_stats.json:md5,4ac0700b95fcc2412bf56f61fcaec22d"
+                    "mqc_quality_controls_CytAssist_11mm_FFPE_Human_Glioblastoma_2.csv:md5,52209205e41f9d5db36f6142791cecd6"
                 ]
             ]
         ],
-        "timestamp": "2026-04-02T20:17:25.845947",
+        "timestamp": "2026-04-15T16:43:01.013917172",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.0"
         }
     }
 }
