@@ -153,6 +153,8 @@ workflow SPATIALVI {
             n_principal_components,
             pca_use_highly_variable
         )
+        ch_multiqc_files = ch_multiqc_files
+            .mix(PREPROCESSING.out.filter_stats.collect { it -> it[1] })
 
         //
         // SUBWORKFLOW: Clustering

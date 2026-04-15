@@ -15,7 +15,7 @@ process SCANPY_FILTER {
 
     output:
     tuple val(meta), path("${prefix}.h5ad")      , emit: adata
-    tuple val(meta), path("${prefix}_stats.json"), emit: stats
+    tuple val(meta), path("mqc_quality_controls_${prefix}.csv"), emit: stats
     path "versions.yml"                          , emit: versions, topic: versions
 
     when:
@@ -29,7 +29,7 @@ process SCANPY_FILTER {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    echo '{}' > ${prefix}_stats.json
+    echo 'Sample' > mqc_quality_controls_${prefix}.csv
     touch versions.yml
     """
 }

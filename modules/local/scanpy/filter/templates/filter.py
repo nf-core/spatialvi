@@ -13,8 +13,8 @@ Filtering steps (in order):
  7. Filter observations by maximum haemoglobin content
 """
 
+import csv
 import importlib.metadata
-import json
 import logging
 import platform
 
@@ -224,9 +224,41 @@ def filter_adata(
 
 
 def write_stats(stats, output_path):
-    """Write filtering statistics to a JSON file."""
-    with open(output_path, "w") as f:
-        json.dump(stats, f, indent=2)
+    """Write filtering statistics to a MultiQC-compatible CSV file."""
+    header = [
+        "Sample",
+        "Total spots",
+        "Spots filtered",
+        "Spots remaining",
+        "Spots filtered (outside tissue)",
+        "Spots filtered (total counts)",
+        "Spots filtered (genes expressed)",
+        "Spots filtered (mito content)",
+        "Spots filtered (ribo content)",
+        "Spots filtered (hb content)",
+        "Total genes",
+        "Genes filtered",
+        "Genes remaining",
+    ]
+    row = [
+        stats.get("sample_id", ""),
+        stats.get("total_obs_before", 0),
+        stats.get("total_obs_filtered", 0),
+        stats.get("total_obs_after", 0),
+        stats.get("obs_filtered_outside_tissue", 0),
+        stats.get("obs_filtered_min_counts", 0),
+        stats.get("obs_filtered_min_genes", 0),
+        stats.get("obs_filtered_mito", 0),
+        stats.get("obs_filtered_ribo", 0),
+        stats.get("obs_filtered_hb", 0),
+        stats.get("total_genes_before", 0),
+        stats.get("total_genes_filtered", 0),
+        stats.get("total_genes_after", 0),
+    ]
+    with open(output_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        writer.writerow(row)
     logger.info(f"Written filtering statistics to: {output_path}")
 
 
@@ -256,7 +288,7 @@ def main():
     ribo_threshold = float("${ribo_threshold}")
     hb_threshold = float("${hb_threshold}")
     output_adata = "${prefix}.h5ad"
-    output_stats = "${prefix}_stats.json"
+    output_stats = "mqc_quality_controls_${prefix}.csv"
     process_name = "${task.process}"
 
     logger.info(f"Filtering AnnData from: {h5ad}")
