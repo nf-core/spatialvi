@@ -119,8 +119,9 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
 
     # Adjust n_top_genes if necessary
     if n_top_genes >= n_genes:
-        logger.warning(f"Requested {n_top_genes} HVGs "
-               "but only {n_genes} genes available.")
+        logger.warning(
+            f"Requested {n_top_genes} HVGs but only {n_genes} genes available."
+        )
         return mark_all_genes_hvg(adata, flavor)
 
     try:

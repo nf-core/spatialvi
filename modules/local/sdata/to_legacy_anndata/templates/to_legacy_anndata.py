@@ -120,7 +120,7 @@ def main():
     adata = add_metadata(adata, sample_id, table_name, coord_system)
 
     logger.info(f"AnnData shape: {adata.shape}")
-    logger.info(f"Spatial keys: {list(adata.uns.get("spatial", {}).keys())}")
+    logger.info(f"Spatial keys: {list(adata.uns.get('spatial', {}).keys())}")
 
     adata.write_h5ad(output_adata)
     logger.info(f"Written legacy AnnData to: {output_adata}")

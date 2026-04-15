@@ -99,10 +99,10 @@ def replace_table(sdata, adata, table_name):
             common_idx = adata.obs.index.intersection(original_table.obs.index)
             if len(common_idx) == len(adata.obs.index):
                 adata.obs[instance_key] = original_table.obs.loc[adata.obs.index, instance_key]
+            else:
+                logger.warning(f"Could not match all indices for {instance_key}")
         else:
-            logger.warning(f"Could not match all indices for {instance_key}")
-    else:
-        logger.warning(f"instance_key '{instance_key}' not found in original table")
+            logger.warning(f"instance_key '{instance_key}' not found in original table")
 
     # Restore region_key column if missing
     if region_key and region_key not in adata.obs.columns:
