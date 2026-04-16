@@ -2205,7 +2205,7 @@
                 "integration/data/merged.zarr/zmetadata"
             ],
             [
-                "report.qmd:md5,03555321961957d8d645b446350921e0",
+                "report.qmd:md5,145ac483ab102366e61b6a800e0613b1",
                 "report.yml:md5,88f09c9369b88a4c3ebb22a71d2ad6fa",
                 "filtered_feature_bc_matrix.h5:md5,57a1c2bc46bec9317074675c73f08939",
                 "matrix.mtx.gz:md5,556b60f31ceaf14028dd757c0ddd98bc",
@@ -2311,7 +2311,7 @@
                 "aligned_tissue_image.jpg:md5,bc12089729d5cdfb06ae0591eefc8417",
                 "cytassist_image.tiff:md5,1328dd8ea02922375719f38e3de516ca",
                 "detected_tissue_image.jpg:md5,a29e4dbf4b39d7cda3e381050d81b92e",
-                "report-integrated.qmd:md5,04a2503ba3e82a3c448da53ca201f6d9",
+                "report-integrated.qmd:md5,ed552882c8c911cfbea7db91c92ed524",
                 "report-integrated.yml:md5,a4d0e2a88b83c3c5035ab9570430991e",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_quality_controls.txt:md5,72960d41fd085dd74bc30201db3fef65"
@@ -2543,10 +2543,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-04-15T18:25:03.612027416",
+        "timestamp": "2026-04-16T17:13:06.714512768",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.4"
         }
     }
 }
