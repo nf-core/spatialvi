@@ -132,6 +132,7 @@ nextflow_process {
                 process {
                     """
                     input[0] = ADATA_MERGE.out.adata
+                        .map { h5ad -> [[id: "harmony"], h5ad] }
                     input[1] = 'library_id' // key
                     input[2] = 'X_harmony'  // embedding_added
                     """
@@ -143,10 +144,8 @@ nextflow_process {
             process {
                 """
                 input[0] = SDATA_MERGE.out.sdata
-                    .map { zarr -> [[id: 'merged'], zarr] }
-                    .join(SCANPY_HARMONY.out.adata
-                        .map { h5ad -> [[id: 'merged'], h5ad]}
-                    )
+                    .map { zarr -> [[id: "harmony"], zarr] }
+                    .join(SCANPY_HARMONY.out.adata)
                 input[1] = 'library_id' // library_key
                 """
             }

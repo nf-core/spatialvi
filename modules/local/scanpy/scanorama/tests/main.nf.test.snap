@@ -51,20 +51,30 @@
         "content": [
             {
                 "0": [
-                    "merged.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    [
+                        {
+                            "id": "scanorama"
+                        },
+                        "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "1": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
-                    "merged.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    [
+                        {
+                            "id": "scanorama"
+                        },
+                        "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-03-25T16:14:49.176187",
+        "timestamp": "2026-04-16T13:31:20.87126",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

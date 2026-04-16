@@ -40,6 +40,7 @@ workflow INTEGRATION {
         'true'        // preserve_spatial
     )
     ch_adata_merged = ADATA_MERGE.out.adata
+        .map { h5ad -> [[id: integration_method], h5ad] }
 
     //
     // MODULE: Integration
@@ -50,19 +51,15 @@ workflow INTEGRATION {
             'library_id', // key
             'X_harmony'   // adjusted_basis
         )
-        ch_integrated = SCANPY_HARMONY.out.adata
+        ch_adata_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
         SCANPY_SCANORAMA (
             ch_adata_merged,
             'library_id', // key
             'X_scanorama' // embedding_added
         )
-        ch_integrated = SCANPY_SCANORAMA.out.adata
+        ch_adata_integrated = SCANPY_SCANORAMA.out.adata
     }
-
-    // Add `meta` to integrated AnnData channel
-    ch_adata_integrated = ch_integrated
-        .map { h5ad -> [[id: integration_method], h5ad] }
 
     //
     // SUBWORKFLOW: Clustering
