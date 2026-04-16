@@ -16,8 +16,8 @@ nextflow_process {
                 process {
                     """
                     input[0] = channel.fromList([
-                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/fasterius/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)),
-                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file("https://raw.githubusercontent.com/fasterius/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.zarr.tar.gz", checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.zarr.tar.gz", checkIfExists: true)),
                     ])
                     """
                 }
@@ -65,8 +65,8 @@ nextflow_process {
                 process {
                     """
                     input[0] = channel.fromList([
-                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/fasterius/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)),
-                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file("https://raw.githubusercontent.com/fasterius/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.zarr.tar.gz", checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.zarr.tar.gz", checkIfExists: true)),
                     ])
                     """
                 }
