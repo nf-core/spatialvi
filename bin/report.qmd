@@ -11,6 +11,18 @@ execute:
 jupyter: python3
 ---
 
+# Introduction
+
+This report contains the per-sample analyses performed during the pipeline
+execution, which include quality controls, filtering, dimensionality reduction,
+clustering, differential expression and spatial analyses. If you ran the
+pipeline with the `--integrate_data` parameter (which is the default), you can
+find the report for the integrated data in the `integration/reports/` directory.
+
+In several cases throughout the report, figures are shown in _tabsets_, where
+you can click on different tabs to show _e.g._ different quality metrics or
+genes. You can also click each individual figure to see it in full screen.
+
 ```{python parameters}
 #| tags: [parameters]
 input_sdata = "sdata.zarr"
@@ -203,6 +215,8 @@ if has_qc:
 
 ## QC metrics summary
 
+The following table summarises the quality control metrics for the sample.
+
 ```{python}
 qc_cols = [col for col, _ in qc_metrics]
 qc_labels = [label for _, label in qc_metrics]
@@ -224,6 +238,9 @@ if len(qc_cols) > 0:
 ```
 
 ## Spatial QC visualization
+
+The following shows the quality control metrics plotted on top of the spatial
+image, showing the values of each metric for each spot in the dataset.
 
 ```{python spatial-qc}
 #| output: false
@@ -250,14 +267,15 @@ if has_spatial:
     create_tabset(spatial_qc_plots)
 ```
 
-# Gene expression
+# Highly variable genes
 
-## Highly variable genes
+The following plot shows the dispersion and mean expression of all genes present
+in the dataset, as well as which of the genes are considered highly variable.
 
 ```{python hvgs}
 if 'highly_variable' in adata.var.columns:
     n_hvg = adata.var['highly_variable'].sum()
-    display(Markdown(f"Number of highly variable genes: `{n_hvg:,}`"))
+    display(Markdown(f"Number of highly variable genes: `{n_hvg}`"))
 
     if 'means' in adata.var.columns and 'dispersions_norm' in adata.var.columns:
         fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
@@ -289,14 +307,18 @@ else:
 
 ## PCA
 
+The following plots show the results of the _Principal Component Analysis_ (PCA)
+and its first two principal components, as well as the variance explained for
+all of the components.
+
 ```{python pca}
 if 'X_pca' in adata.obsm:
     fig, axes = plt.subplots(1, 2, figsize=(7, 3.5), constrained_layout=True)
 
-    # PCA scatter plot colored by clusters if available
+    # PCA scatter plot coloured by clusters if available
     if 'clusters' in adata.obs:
         sc.pl.pca(adata, color='clusters', ax=axes[0], show=False,
-            title='PCA (colored by clusters)')
+            title='PCA')
     else:
         sc.pl.pca(adata, ax=axes[0], show=False, title='PCA')
 
@@ -329,6 +351,9 @@ else:
 
 ## UMAP
 
+The following plots show the final UMAP coloured by the various quality control
+metrics present in the dataset, as well as the final clustering of the dataset.
+
 ```{python}
 #| output: false
 has_umap = 'X_umap' in adata.obsm
@@ -353,6 +378,9 @@ if has_umap:
 # Clustering
 
 ## Cluster assignments
+
+The following plots show the number and proportion of spots for each individual
+cluster in the dataset.
 
 ```{python cluster-assignments}
 if 'clusters' in adata.obs:
@@ -383,9 +411,12 @@ if 'clusters' in adata.obs:
 
 ## Spatial cluster distribution
 
+The following plot shows the spatial distribution of each cluster in the
+dataset, _i.e._ which cluster each spot belongs to.
+
 ```{python cluster-distribution}
 if 'clusters' in adata.obs and has_spatial:
-    fig, ax = plt.subplots(figsize=(8, 8), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7, 7), constrained_layout=True)
     sc.pl.spatial(
         adata,
         color='clusters',
@@ -400,6 +431,11 @@ if 'clusters' in adata.obs and has_spatial:
 ```
 
 ## Cluster statistics
+
+The following table shows a summary of each cluster in the dataset, including
+the number of spots, the proportion of spots in each cluster compared to the
+dataset as a whole, as well as the mean counts and the mean number of genes for
+each cluster.
 
 ```{python}
 if 'clusters' in adata.obs:
@@ -435,6 +471,9 @@ if 'clusters' in adata.obs:
 
 ## Top marker genes per cluster
 
+The following plot shows a heatmap of the top 5 differentially expressed genes
+per cluster, including a dendrogram indicating similarity between clusters.
+
 ```{python degs-heatmap}
 if 'rank_genes_groups' in adata.uns:
     # Get number of clusters
@@ -449,7 +488,7 @@ if 'rank_genes_groups' in adata.uns:
             adata,
             n_genes=5,
             groupby='clusters',
-            figsize=(8, 6),
+            figsize=(7.5, 6),
             show=False
         )
         fig = plt.gcf()
@@ -458,6 +497,12 @@ if 'rank_genes_groups' in adata.uns:
     except Exception as e:
         print(f"Could not generate heatmap: {e}")
 ```
+
+The following plot shows the mean expression of each of the top 5 genes (for
+each cluster) across all clusters, as well as the fraction of cells expressing
+that gene in each cluster. Depending on the number of clusters, it is likely
+that not all of the figure is visible without having to horizontally scroll, but
+you can also click the figure itself to see it in full screen.
 
 ```{python degs-dotplot}
 if 'rank_genes_groups' in adata.uns:
@@ -476,6 +521,9 @@ if 'rank_genes_groups' in adata.uns:
 ```
 
 ## Top genes per cluster
+
+The following table lists the top 5 differentially expressed genes for each
+cluster in the dataset.
 
 ```{python degs-table}
 if 'rank_genes_groups' in adata.uns:
@@ -500,9 +548,8 @@ if 'rank_genes_groups' in adata.uns:
 
 ## Neighborhood enrichment
 
-Neighborhood enrichment analysis shows which cluster pairs are spatially
-enriched (positive, red) or depleted (negative, blue) compared to random
-expectation.
+The following plot shows which cluster pairs are spatially enriched (positive,
+yellow) or depleted (negative, blue) compared to random expectation.
 
 ```{python neighborhood-enrichment}
 if 'clusters_nhood_enrichment' in adata.uns:
@@ -528,8 +575,8 @@ else:
 
 ## Cluster interaction matrix
 
-The interaction matrix shows the number of edges between each pair of clusters
-in the spatial neighbor graph.
+The following plot shows the number of edges between each pair of clusters in
+the spatial neighborhood graph.
 
 ```{python cluster-interactions}
 if 'clusters_interactions' in adata.uns:
@@ -568,13 +615,16 @@ if svg_key:
     svg_df = adata.uns[svg_key]
     n_svg = len(svg_df)
     display(Markdown(f"Spatial autocorrelation method: `{svg_method}`"))
-    display(Markdown(f"Number of genes analyzed: `{n_svg:,}`"))
+    display(Markdown(f"Number of genes analyzed: `{n_svg}`"))
 
     # Save top SVGs to CSV
     svg_df.head(100).to_csv(os.path.join(artifact_dir, 'top_spatially_variable_genes.csv'))
 ```
 
 ## Top spatially variable genes
+
+The following table shows the top 15 spatially variable genes, along with their
+respective Moran's I and adjusted p-value.
 
 ```{python}
 if svg_key:
@@ -592,6 +642,9 @@ if svg_key:
 ```
 
 ## Spatial expression of top SVGs
+
+The following figures show the spatial expression of the top 15 spatially
+variable genes.
 
 ```{python svg-plots}
 #| output: false
@@ -633,10 +686,10 @@ summary_sections = []
 
 # Data overview
 summary_sections.append(
-    f"## Data overview\n"
+    f"#### Data overview\n"
     f"- **Sample**: `{sample_id}`\n"
-    f"- **Spots**: `{n_spots:,}`\n"
-    f"- **Genes**: `{n_genes:,}`\n"
+    f"- **Spots**: `{n_spots}`\n"
+    f"- **Genes**: `{n_genes}`\n"
 )
 
 # QC summary
@@ -645,7 +698,7 @@ if 'total_counts' in adata.obs:
     median_genes = adata.obs['n_genes_by_counts'].median() if \
         'n_genes_by_counts' in adata.obs else 'N/A'
     summary_sections.append(
-        f"## Quality controls\n"
+        f"#### Quality controls\n"
         f"- **Median counts per spot**: `{median_counts:,.0f}`\n"
         f"- **Median genes per spot**: `{median_genes:,.0f}`\n"
     )
@@ -654,7 +707,7 @@ if 'total_counts' in adata.obs:
 if 'clusters' in adata.obs:
     n_clusters = adata.obs['clusters'].nunique()
     summary_sections.append(
-        f"## Clustering\n"
+        f"#### Clustering\n"
         f"- **Number of clusters**: `{n_clusters}`\n"
         f"- **Algorithm**: `Leiden`\n"
     )
@@ -665,7 +718,7 @@ if svg_key:
         'pval_norm_fdr_bh' in svg_df.columns else 'N/A'
     top_gene = svg_df.index[0]
     summary_sections.append(
-        f"## Spatially variable genes\n"
+        f"#### Spatially variable genes\n"
         f"- **Method**: `{svg_method}`\n"
         f"- **Significant genes (FDR < 0.05)**: `{n_sig}`\n"
         f"- **Top gene**: `{top_gene}`"

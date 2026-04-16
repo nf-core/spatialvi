@@ -12,9 +12,13 @@ jupyter: python3
 
 # Introduction
 
-This report shows the results of the integration across all samples; you can
+This report contains the results of the integration across all samples; you can
 find the reports for each individual sample in their respective directory under
 `<outdir>/<sample>`.
+
+In several cases throughout the report, figures are shown in _tabsets_, where
+you can click on different tabs to show _e.g._ different quality metrics or
+samples. You can also click each individual figure to see it in full screen.
 
 ```{python parameters}
 #| tags: [parameters]
@@ -141,8 +145,8 @@ overview = pd.DataFrame({
     'Value': [
         integration_method.capitalize(),
         n_samples,
-        f"{n_spots:,}",
-        f"{n_genes:,}",
+        f"{n_spots}",
+        f"{n_genes}",
         n_clusters,
         sample_names,
     ]
@@ -151,6 +155,10 @@ display_table(overview)
 ```
 
 # UMAP
+
+The following shows the integrated UMAP coloured the clusters, samples and
+the various QC metrics used in the pipeline. Ideally, each cluster should have
+spots from all samples for a successful integration.
 
 ```{python umap}
 #| output: false
@@ -183,6 +191,9 @@ create_tabset(umap_plots)
 
 ## Cluster assignments
 
+The following plots show the number and proportion of spots for each individual
+cluster in the dataset.
+
 ```{python cluster-assignments}
 if cluster_col in adata.obs:
     cluster_counts = adata.obs[cluster_col].value_counts().sort_index()
@@ -210,6 +221,11 @@ if cluster_col in adata.obs:
 ```
 
 ## Cluster statistics
+
+The following table shows a summary of each cluster in the dataset, including
+the number of spots, the proportion of spots in each cluster compared to the
+dataset as a whole, as well as the mean counts and the mean number of genes for
+each cluster.
 
 ```{python cluster-stats}
 if cluster_col in adata.obs:
@@ -240,6 +256,9 @@ if cluster_col in adata.obs:
 
 ## Sample composition per cluster
 
+The following shows the composition of each cluster in terms of the proportion
+of spots belonging to each sample within it.
+
 ```{python sample-composition}
 if cluster_col in adata.obs:
     # Cross-tabulation of clusters and samples
@@ -262,6 +281,9 @@ if cluster_col in adata.obs:
 ```
 
 # Spatial Visualization
+
+The following plot shows the spatial distribution of each cluster in the
+dataset, i.e. which cluster each spot belongs to, for each individual sample.
 
 ```{python spatial-distribution}
 #| output: false
@@ -298,7 +320,7 @@ summary_sections = []
 
 # Data overview
 summary_sections.append(
-    f"## Data overview\n"
+    f"#### Data overview\n"
     f"- **Integration method**: `{integration_method.capitalize()}`\n"
     f"- **Number of samples**: `{n_samples}`\n"
     f"- **Total spots**: `{n_spots:,}`\n"
@@ -311,7 +333,7 @@ if 'total_counts' in adata.obs:
     median_genes = adata.obs['n_genes_by_counts'].median() if \
         'n_genes_by_counts' in adata.obs else 'N/A'
     summary_sections.append(
-        f"## Quality controls\n"
+        f"#### Quality controls\n"
         f"- **Median counts per spot**: `{median_counts:,.0f}`\n"
         f"- **Median genes per spot**: `{median_genes:,.0f}`\n"
     )
@@ -320,7 +342,7 @@ if 'total_counts' in adata.obs:
 if cluster_col in adata.obs:
     n_clusters_final = adata.obs[cluster_col].nunique()
     summary_sections.append(
-        f"## Clustering\n"
+        f"#### Clustering\n"
         f"- **Number of clusters**: `{n_clusters_final}`\n"
         f"- **Algorithm**: `Leiden`\n"
     )
