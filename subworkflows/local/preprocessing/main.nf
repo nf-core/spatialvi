@@ -78,6 +78,6 @@ workflow PREPROCESSING {
 
 
     emit:
-    adata          = SCANPY_PCA.out.adata          // channel: [ meta, h5ad ]
-    filter_stats   = SCANPY_FILTER.out.stats       // channel: [ meta, csv ]
+    adata          = SCANPY_PCA.out.adata    // channel: [ meta, h5ad ]
+    filter_stats   = SCANPY_FILTER.out.stats // channel: [ meta, csv ]
 }

@@ -249,7 +249,7 @@ if cluster_col in adata.obs:
         normalize='index'
     ) * 100
 
-    fig, ax = plt.subplots(figsize=(8, 5), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7.5, 5), constrained_layout=True)
     ct.plot(kind='bar', stacked=True, ax=ax, edgecolor='black', linewidth=0.5)
     ax.set_xlabel('Cluster')
     ax.set_ylabel('Sample proportion (%)')

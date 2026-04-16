@@ -1,7 +1,7 @@
-include { SQUIDPY_INTERACTION_MATRIX   } from "../../../modules/local/squidpy/interaction_matrix"
-include { SQUIDPY_NHOOD_ENRICHMENT     } from "../../../modules/local/squidpy/nhood_enrichment"
-include { SQUIDPY_SPATIAL_AUTOCORR     } from "../../../modules/local/squidpy/spatial_autocorr"
-include { SQUIDPY_SPATIAL_NEIGHBORS    } from "../../../modules/local/squidpy/spatial_neighbors"
+include { SQUIDPY_INTERACTION_MATRIX } from "../../../modules/local/squidpy/interaction_matrix"
+include { SQUIDPY_NHOOD_ENRICHMENT   } from "../../../modules/local/squidpy/nhood_enrichment"
+include { SQUIDPY_SPATIAL_AUTOCORR   } from "../../../modules/local/squidpy/spatial_autocorr"
+include { SQUIDPY_SPATIAL_NEIGHBORS  } from "../../../modules/local/squidpy/spatial_neighbors"
 
 workflow SPATIAL {
 

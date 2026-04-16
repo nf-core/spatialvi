@@ -14,9 +14,9 @@ process SCANPY_FILTER {
     val hb_threshold
 
     output:
-    tuple val(meta), path("${prefix}.h5ad")      , emit: adata
+    tuple val(meta), path("${prefix}.h5ad")                    , emit: adata
     tuple val(meta), path("mqc_quality_controls_${prefix}.csv"), emit: stats
-    path "versions.yml"                          , emit: versions, topic: versions
+    path "versions.yml"                                        , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
