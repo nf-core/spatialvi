@@ -107,9 +107,10 @@ matrices, and spatially variable gene analysis.
 
 ## Integration
 
-Integration outputs are only produced when `--integrate_data` is enabled (default)
-and `--skip_downstream` is not set. This merges all per-sample data and applies
-batch correction using the selected integration method (Harmony or Scanorama).
+Integration outputs are only produced when both `--skip_integration` and
+`--skip_downstream` are unset (which is the default). This merges all per-sample
+data and applies batch correction using the selected integration method (Harmony
+or Scanorama).
 
 <details markdown="1">
 <summary>Output files</summary>

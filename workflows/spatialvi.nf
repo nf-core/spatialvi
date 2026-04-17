@@ -59,7 +59,7 @@ workflow SPATIALVI {
     spatial_n_neighbors            // integer: Number of spatial neighborhoods
     svg_autocorr_method            //  string: Autocorrelation method
     n_top_svgs                     // integer: Number of variable genes to plot
-    integrate_data                 // boolean: Whether to integrate sdata or not
+    skip_integration               // boolean: Whether to integrate sdata or not
     integration_method             //  string: Integration method to use
     integration_cluster_resolution //   float: Integration cluster resolution
     multiqc_config                 //    file: /path/to/multiqc/config
@@ -266,7 +266,7 @@ workflow SPATIALVI {
     //
     // SUBWORKFLOW: Sample aggregation (optional)
     //
-    if (!skip_downstream && integrate_data) {
+    if (!skip_downstream && !skip_integration) {
         INTEGRATION (
             ch_sdata_merged,
             ch_adata,

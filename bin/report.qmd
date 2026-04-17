@@ -16,8 +16,9 @@ jupyter: python3
 This report contains the per-sample analyses performed during the pipeline
 execution, which include quality controls, filtering, dimensionality reduction,
 clustering, differential expression and spatial analyses. If you ran the
-pipeline with the `--integrate_data` parameter (which is the default), you can
-find the report for the integrated data in the `integration/reports/` directory.
+pipeline without the `--skip_integration` parameter (which is the default), you
+can find the report for the integrated data in the `integration/reports/`
+directory.
 
 In several cases throughout the report, figures are shown in _tabsets_, where
 you can click on different tabs to show _e.g._ different quality metrics or
