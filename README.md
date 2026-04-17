@@ -31,12 +31,6 @@ the following steps:
     <img title="Spatialvi Workflow" src="docs/images/spatialvi_subway.png" width=100%>
 </p>
 
-0. Raw data processing with Space Ranger (optional)
-1. Quality controls and filtering
-2. Normalization
-3. Dimensionality reduction and clustering
-4. Differential gene expression testing
-
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 to run tasks across multiple compute infrastructures in a very portable manner.
 It uses Docker/Singularity containers making installation trivial and results
