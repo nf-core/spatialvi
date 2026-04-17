@@ -3603,11 +3603,8 @@
                 "integration/data/merged.zarr/zmetadata"
             ],
             [
-                "report.qmd:md5,145ac483ab102366e61b6a800e0613b1",
                 "report.yml:md5,f745b1f1839789850479c6be4f689e0b",
-                "report.qmd:md5,145ac483ab102366e61b6a800e0613b1",
                 "report.yml:md5,4c78e7a9ab49caa73dd63450d27c030d",
-                "report-integrated.qmd:md5,ed552882c8c911cfbea7db91c92ed524",
                 "report-integrated.yml:md5,a4d0e2a88b83c3c5035ab9570430991e",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_quality_controls.txt:md5,7d0a51fc23fbc8dfc09aa01f9ac7bbb3"
@@ -3980,7 +3977,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-04-16T15:28:58.936761421",
+        "timestamp": "2026-04-17T09:14:24.963453666",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
