@@ -11,13 +11,14 @@ pipeline development was moved to nf-core and NBIS. The pipeline has undergone
 several iterations regarding its functionality and content; there are a
 significant number of changes, of which not all are listed here. In summary, the
 pipeline contains best-practice processing and analyses of pre- and post-Space
-Ranger-processed data, including quality controls, normalisation, dimensionality
+Ranger-processed data, including quality controls, normalization, dimensionality
 reduction, clustering, differential expression testing as well as output files
 compatible with further downstream analyses and/or exploration in _e.g._
 [TissUUmaps](https://tissuumaps.github.io/) or bespoke user code.
 
 ### `Added`
 
+- Separate reports into separate scripts [[#137](https://github.com/nf-core/spatialvi/pull/137)]
 - Use topic channels for software versions [[#133](https://github.com/nf-core/spatialvi/pull/133)]
 - Make the main spatial Docker image work with Seqera Containers [[#127](https://github.com/nf-core/spatialvi/pull/127)]
 - Fix 'dir' handling for cloud file systems [[#122](https://github.com/nf-core/spatialvi/pull/122)]

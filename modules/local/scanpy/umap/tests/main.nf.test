@@ -1,0 +1,147 @@
+nextflow_process {
+
+    name "Test Process SCANPY_UMAP"
+    script "../main.nf"
+    process "SCANPY_UMAP"
+
+    tag "modules"
+    tag "modules_local"
+    tag "scanpy_umap"
+
+    test("homo_sapiens - h5ad") {
+
+	// Including multiple updstream modules greatly reduces computation
+	// time, even though it's technically not needed
+        setup {
+            run("SCANPY_LOG1P") {
+                script "../../log1p/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SCANPY_HIGHLY_VARIABLE_GENES") {
+                script "../../highly_variable_genes/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_LOG1P.out.adata
+                    input[1] = 2000     // n_hvgs
+                    input[2] = 'seurat' // flavor
+                    """
+                }
+            }
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_HIGHLY_VARIABLE_GENES.out.adata
+                    input[1] = 50   // n_pcs
+                    input[2] = true // use_highly_variable
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_NEIGHBORS.out.adata
+                input[1] = 0.5      // min_dist
+                input[2] = 1.0      // spread
+                input[3] = 'X_umap' // key_added
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        setup {
+            run("SCANPY_LOG1P") {
+                script "../../log1p/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SCANPY_HIGHLY_VARIABLE_GENES") {
+                script "../../highly_variable_genes/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_LOG1P.out.adata
+                    input[1] = 2000     // n_hvgs
+                    input[2] = 'seurat' // flavor
+                    """
+                }
+            }
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_HIGHLY_VARIABLE_GENES.out.adata
+                    input[1] = 50   // n_pcs
+                    input[2] = true // use_highly_variable
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_NEIGHBORS.out.adata
+                input[1] = 0.5      // min_dist
+                input[2] = 1.0      // spread
+                input[3] = 'X_umap' // key_added
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

@@ -50,23 +50,23 @@ SAMPLE_1,fastqs_1/,cytassist_1.tif,V11J26,B1
 SAMPLE_2,fastqs_2/,cytassist_2.tif,V11J26,B1
 ```
 
-Depending on the experimental setup, (additional) colour composite fluorescence images or dark background
+Depending on the experimental setup, (additional) color composite fluorescence images or dark background
 fluorescence images can be supplied using the `colorizedimage` or `darkimage` columns, respectively.
 
 Please refer to the following table for an overview of all supported columns:
 
-| Column             | Description                                                                                                           |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| `sample`           | Unique sample identifier. MUST match the prefix of the fastq files                                                    |
-| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar` or `.tar.gz` file instead of a directory.  |
-| `image`            | Brightfield microscopy image                                                                                          |
-| `cytaimage`        | Brightfield tissue image captured with Cytassist device                                                               |
-| `colorizedimage`   | A colour composite of one or more fluorescence image channels saved as a single-page, single-file colour TIFF or JPEG |
-| `darkimage`        | Dark background fluorescence microscopy image                                                                         |
-| `slide`            | The Visium slide ID used for the sequencing.                                                                          |
-| `area`             | Which slide area contains the tissue sample.                                                                          |
-| `manual_alignment` | Path to the manual alignment file (optional)                                                                          |
-| `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. (optional)                                    |
+| Column             | Description                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `sample`           | Unique sample identifier. MUST match the prefix of the fastq files                                                   |
+| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar` or `.tar.gz` file instead of a directory. |
+| `image`            | Brightfield microscopy image                                                                                         |
+| `cytaimage`        | Brightfield tissue image captured with Cytassist device                                                              |
+| `colorizedimage`   | A color composite of one or more fluorescence image channels saved as a single-page, single-file color TIFF or JPEG  |
+| `darkimage`        | Dark background fluorescence microscopy image                                                                        |
+| `slide`            | The Visium slide ID used for the sequencing.                                                                         |
+| `area`             | Which slide area contains the tissue sample.                                                                         |
+| `manual_alignment` | Path to the manual alignment file (optional)                                                                         |
+| `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. (optional)                                   |
 
 > [!NOTE]
 >

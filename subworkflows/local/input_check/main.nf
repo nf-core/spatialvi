@@ -37,7 +37,8 @@ workflow INPUT_CHECK {
     ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
         .mix ( ch_spaceranger.dir.map { meta, dir -> [meta, file(dir)] } )
     // Create final meta map and check input existance
-    ch_spaceranger_input = ch_spaceranger_combined.map { meta, dir -> create_channel_spaceranger(meta, dir) }
+    ch_spaceranger_input = ch_spaceranger_combined
+        .map { meta, dir -> create_channel_spaceranger(meta, dir) }
 
     // Downstream analysis: ----------------------------------------------------
 
@@ -58,7 +59,8 @@ workflow INPUT_CHECK {
         .map { meta, dir -> [meta, dir] }
 
     // Create final meta map and check input file existence
-    ch_downstream_input = ch_downstream_combined.map { it -> check_downstream_dir(it, hd_bin_size) }
+    ch_downstream_input = ch_downstream_combined
+        .map { it -> check_downstream_dir(it, hd_bin_size) }
 
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
@@ -85,7 +87,8 @@ def check_downstream_dir(input, hd_bin_size) {
         "tissue_lowres_image.png"
     ]
     def dir_file_objs = file("${spaceranger_dir}/**")
-    def classic_files_present = classic_required_files.every { f -> dir_file_objs*.name.contains(f) }
+    def classic_files_present = classic_required_files
+        .every { f -> dir_file_objs*.name.contains(f) }
 
     // Visium HD required files (for specified bin size)
     def hd_bin_str = "square_${String.format('%03d', hd_bin_size)}um"
@@ -114,7 +117,7 @@ def get_file_from_meta(meta, k) {
     return v ? file(v) : []
 }
 
-// Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
+// Function to get [ meta, [fastq_dir, tissue_hires_image, slide, area] ] list
 def create_channel_spaceranger(meta, fastq_dir) {
     meta["id"] = meta.get("sample")
     def slide = meta.get("slide")
@@ -123,7 +126,7 @@ def create_channel_spaceranger(meta, fastq_dir) {
     // Resolve symlinks for local filesystem paths only
     def scheme = fastq_dir.toUri().getScheme()
     if (scheme == null || scheme == 'file') {
-        fastq_dir = fastq_dir.toRealPath() // resolve symlink (if applicable)
+        fastq_dir = fastq_dir.toRealPath()
     }
 
     def fastq_files = fastq_dir.listFiles().findAll { file ->

@@ -63,7 +63,7 @@
                     "type": "string",
                     "format": "path",
                     "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
-                    "help_text": "Please see the [10x website](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest) to download either of the supported human or mouse references. If not specified the GRCh38 human reference is automatically downladed and used.",
+                    "help_text": "Please see the [10x website](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest) to download either of the supported human or mouse references. If not specified the GRCh38 human reference is automatically downloaded and used.",
                     "fa_icon": "fas fa-folder-open",
                     "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz",
                     "exists": true
@@ -71,40 +71,28 @@
             }
         },
 
-        "optional_outputs": {
-            "title": "Optional outputs",
+        "visium_hd_options": {
+            "title": "Visium HD options",
             "type": "object",
-            "fa_icon": "fas fa-floppy-disk",
-            "description": "Additional intermediate output files that can be optionally saved.",
+            "fa_icon": "fas fa-table-cells",
+            "description": "Options specific to the analysis of Visium HD data.",
             "properties": {
-                "spaceranger_save_reference": {
-                    "type": "boolean",
-                    "description": "Save the extracted tar archive of the Space Ranger reference.",
-                    "help_text": "By default, extracted versions of archived Space Ranger reference data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-floppy-disk"
-                },
-                "save_untar_output": {
-                    "type": "boolean",
-                    "description": "Save extracted tar archives of input data.",
-                    "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-floppy-disk"
+                "hd_bin_size": {
+                    "type": "integer",
+                    "default": 8,
+                    "enum": [2, 8, 16],
+                    "description": "Bin size for Visium HD data. Allowed values: 2, 8, 16.",
+                    "fa_icon": "fas fa-expand"
                 }
             }
         },
 
-        "analysis_options": {
-            "title": "Analysis options",
+        "filtering_options": {
+            "title": "Filtering options",
             "type": "object",
-            "fa_icon": "fas fa-magnifying-glass-chart",
-            "description": "Options related to the downstream analyses performed by the pipeline.",
+            "fa_icon": "fas fa-filter",
+            "description": "Filtering settings and thresholds used by the pipeline",
             "properties": {
-                "hd_bin_size": {
-                    "type": "integer",
-                    "description": "Bin size for Visium HD data. Only used for Visium HD. Allowed values: 2, 8, 16.",
-                    "enum": [2, 8, 16],
-                    "default": 8,
-                    "fa_icon": "fas fa-expand"
-                },
                 "qc_min_counts": {
                     "type": "integer",
                     "default": 500,
@@ -133,7 +121,7 @@
                 "qc_ribo_threshold": {
                     "type": "number",
                     "default": 0,
-                    "description": "The minimum proportion of ribosomal content that a spot is needs to have to pass the filtering (no filtering is done by default).",
+                    "description": "The minimum percentage of ribosomal content that a spot needs to have to pass the filtering (no filtering is done by default).",
                     "fa_icon": "fas fa-hashtag"
                 },
                 "qc_hb_threshold": {
@@ -141,51 +129,194 @@
                     "default": 100,
                     "description": "The maximum proportion of haemoglobin content that a spot is allowed to have to pass the filtering (no filtering is done by default).",
                     "fa_icon": "fas fa-hashtag"
-                },
-                "cluster_n_hvgs": {
+                }
+            }
+        },
+
+        "normalization_options": {
+            "title": "Normalization options",
+            "type": "object",
+            "fa_icon": "fas fa-filter",
+            "description": "Normalization options used by the pipeline.",
+            "properties": {
+                "normalize_target_sum": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Target sum for normalization of counts per cell.",
+                    "help_text": "By default (with value 0), normalizes so that each cell has a total count equal to the median cell total before normalization. By specifying `1000000` the normalization become CPM normalization; `10000` is another common option for scRNA-seq data.",
+                    "fa_icon": "fas fa-crosshairs"
+                }
+            }
+        },
+
+        "hvg_options": {
+            "title": "Highly variable genes options",
+            "type": "object",
+            "fa_icon": "fas fa-arrow-trend-up",
+            "description": "Options for calculating highly variable genes.",
+            "properties": {
+                "n_highly_variable_genes": {
                     "type": "integer",
                     "default": 2000,
                     "description": "The number of top highly variable genes to use for the analyses.",
                     "fa_icon": "fas fa-hashtag"
                 },
+                "hvg_flavor": {
+                    "type": "string",
+                    "default": "seurat",
+                    "enum": ["seurat", "cell_ranger"],
+                    "description": "The method for identifying highly variable genes",
+                    "fa_icon": "fas fa-cookie-bite"
+                }
+            }
+        },
+
+        "pca_options": {
+            "title": "Principal component analysis options",
+            "type": "object",
+            "fa_icon": "fas fa-uncharted",
+            "description": "Options for principal component analyses used in the pipeline.",
+            "properties": {
+                "n_principal_components": {
+                    "type": "integer",
+                    "default": 50,
+                    "description": "The number of principal components to use for downstream analyses.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "pca_use_highly_variable": {
+                    "type": "boolean",
+                    "description": "Whether to use highly variable genes only for principal component analyses.",
+                    "fa_icon": "fas fa-arrow-trend-up"
+                }
+            }
+        },
+
+        "nearest_neighbors_options": {
+            "title": "Nearest neighbors options",
+            "type": "object",
+            "fa_icon": "fas fa-square-share-nodes",
+            "description": "Options for nearest neighbors calculations.",
+            "properties": {
+                "n_neighbors": {
+                    "type": "integer",
+                    "default": 15,
+                    "description": "The number of nearest neighbors to use for the neighborhood graph calculation.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "neighbors_n_pcs": {
+                    "type": "integer",
+                    "default": 50,
+                    "description": "The number of principal components to use for the nearest neighbors calculation.",
+                    "fa_icon": "fas fa-hashtag"
+                }
+            }
+        },
+
+        "dimensionality_reduction_options": {
+            "title": "Dimensionality reduction options",
+            "type": "object",
+            "fa_icon": "fas fa-down-left-and-up-right-to-center",
+            "description": "Options for the dimensionality reductions performed by the pipeline.",
+            "properties": {
+                "umap_min_dist": {
+                    "type": "number",
+                    "default": 0.5,
+                    "description": "Minimium distance between points in the UMAP embedding, where lower values produces tigher clusters.",
+                    "fa_icon": "fas fa-hashtag"
+                },
+                "umap_spread": {
+                    "type": "number",
+                    "default": 1.0,
+                    "description": "Scale of the UMAP embedding, where larger values spread points further away from each other.",
+                    "fa_icon": "fas fa-hashtag"
+                }
+            }
+        },
+
+        "clustering_options": {
+            "title": "Clustering options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-nodes",
+            "description": "Options for the clustering performed by the pipeline.",
+            "properties": {
                 "cluster_resolution": {
                     "type": "number",
                     "default": 1,
                     "description": "The resolution for the clustering of the spots.",
                     "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
-                    "fa_icon": "fas fa-circle-nodes"
+                    "fa_icon": "fas fa-hashtag"
+                }
+            }
+        },
+
+        "rank_genes_groups_options": {
+            "title": "Rank genes groups options",
+            "type": "object",
+            "fa_icon": "fas fa-chart-gantt",
+            "description": "Options for determinig spatially variable genes.",
+            "properties": {
+                "rank_genes_method": {
+                    "type": "string",
+                    "default": "wilcoxon",
+                    "description": "Statistical method to use for differential expression testing.",
+                    "enum": ["logreg", "t-test", "t-test_overestim_var", "wilcoxon"],
+                    "fa_icon": "fas fa-tag"
+                }
+            }
+        },
+
+        "spatial_analysis_options": {
+            "title": "Spatial analysis options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-nodes",
+            "description": "Options for the various spatial analyses performed by the pipeline.",
+            "properties": {
+                "spatial_coord_type": {
+                    "type": "string",
+                    "default": "grid",
+                    "enum": ["generic", "grid"],
+                    "description": "The coordinate type to use for spatial neighborhood enrichment.",
+                    "fa_icon": "fas fa-tag"
+                },
+                "spatial_n_neighbors": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Number of neighborhoods to use for spatial neighborhood enrichment.",
+                    "fa_icon": "fas fa-hashtag"
                 },
                 "svg_autocorr_method": {
                     "type": "string",
                     "default": "moran",
-                    "description": "The method to use for spatially variable gene autocorrelation.",
                     "enum": ["moran", "geary"],
-                    "fa_icon": "fas fa-circle-nodes"
+                    "description": "The method to use for spatially variable gene autocorrelation.",
+                    "fa_icon": "fas fa-tag"
                 },
                 "n_top_svgs": {
                     "type": "integer",
-                    "default": 14,
+                    "default": 15,
                     "description": "The number of top spatially variable genes to plot.",
                     "fa_icon": "fas fa-hashtag"
                 }
             }
         },
 
-        "aggregation_options": {
-            "title": "Data aggregation options",
+        "integration_options": {
+            "title": "Integration options",
             "type": "object",
             "fa_icon": "fas fa-rocket",
             "description": "Options related to aggregation of final data objects",
             "properties": {
-                "merge_sdata": {
+                "skip_integration": {
                     "type": "boolean",
-                    "description": "Merge per-sample SpatialData objects into one.",
+                    "description": "Skip integration of per-sample objects into one and the associated report.",
                     "fa_icon": "fas fa-arrows-to-dot"
                 },
-                "integrate_sdata": {
-                    "type": "boolean",
-                    "description": "Integrate per-sample SpatialData objects into one and output a integration report.",
-                    "fa_icon": "fas fa-arrows-to-dot"
+                "integration_method": {
+                    "type": "string",
+                    "default": "harmony",
+                    "enum": ["harmony", "scanorama"],
+                    "description": "The integration method to use",
+                    "fa_icon": "fas fa-tag"
                 },
                 "integration_cluster_resolution": {
                     "type": "number",
@@ -193,12 +324,33 @@
                     "description": "The resolution for the clustering of the spots after integration of samples.",
                     "help_text": "The resolution controls the coarseness of the clustering, where a higher resolution leads to more clusters.",
                     "fa_icon": "fas fa-circle-nodes"
+                }
+            }
+        },
+
+        "optional_outputs": {
+            "title": "Optional outputs",
+            "type": "object",
+            "fa_icon": "fas fa-floppy-disk",
+            "description": "Additional intermediate output files that can be optionally saved.",
+            "properties": {
+                "spaceranger_save_reference": {
+                    "type": "boolean",
+                    "description": "Save the extracted tar archive of the Space Ranger reference.",
+                    "help_text": "By default, extracted versions of archived Space Ranger reference data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-floppy-disk"
                 },
-                "integration_n_hvgs": {
-                    "type": "integer",
-                    "default": 2000,
-                    "description": "Number of highly variable genes to use for integration of samples.",
-                    "fa_icon": "fas fa-hashtag"
+                "save_untar_output": {
+                    "type": "boolean",
+                    "description": "Save extracted tar archives of input data.",
+                    "help_text": "By default, extracted versions of archived input data will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-floppy-disk"
+                },
+                "skip_downstream": {
+                    "type": "boolean",
+                    "description": "Skip downstream analyses.",
+                    "help_text": "This option will only give Space Ranger outputs, a MultiQC report and a merged SpatialData object.",
+                    "fa_icon": "fas fa-ban"
                 }
             }
         },
@@ -251,6 +403,7 @@
                 }
             }
         },
+
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -297,7 +450,7 @@
                 },
                 "monochrome_logs": {
                     "type": "boolean",
-                    "description": "Do not use coloured log outputs.",
+                    "description": "Do not use colored log outputs.",
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
@@ -369,13 +522,40 @@
             "$ref": "#/$defs/spaceranger_options"
         },
         {
+            "$ref": "#/$defs/visium_hd_options"
+        },
+        {
+            "$ref": "#/$defs/filtering_options"
+        },
+        {
+            "$ref": "#/$defs/normalization_options"
+        },
+        {
+            "$ref": "#/$defs/hvg_options"
+        },
+        {
+            "$ref": "#/$defs/pca_options"
+        },
+        {
+            "$ref": "#/$defs/nearest_neighbors_options"
+        },
+        {
+            "$ref": "#/$defs/dimensionality_reduction_options"
+        },
+        {
+            "$ref": "#/$defs/clustering_options"
+        },
+        {
+            "$ref": "#/$defs/rank_genes_groups_options"
+        },
+        {
+            "$ref": "#/$defs/spatial_analysis_options"
+        },
+        {
+            "$ref": "#/$defs/integration_options"
+        },
+        {
             "$ref": "#/$defs/optional_outputs"
-        },
-        {
-            "$ref": "#/$defs/analysis_options"
-        },
-        {
-            "$ref": "#/$defs/aggregation_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

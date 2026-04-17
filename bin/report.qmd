@@ -1,0 +1,745 @@
+---
+title: "Spatial Transcriptomics Analysis Report"
+subtitle: "nf-core/spatialvi"
+format:
+    nf-core-html:
+        echo: false
+        warning: false
+lightbox: true
+execute:
+    keep-ipynb: true
+jupyter: python3
+---
+
+# Introduction
+
+This report contains the per-sample analyses performed during the pipeline
+execution, which include quality controls, filtering, dimensionality reduction,
+clustering, differential expression and spatial analyses. If you ran the
+pipeline without the `--skip_integration` parameter (which is the default), you
+can find the report for the integrated data in the `integration/reports/`
+directory.
+
+In several cases throughout the report, figures are shown in _tabsets_, where
+you can click on different tabs to show _e.g._ different quality metrics or
+genes. You can also click each individual figure to see it in full screen.
+
+```{python parameters}
+#| tags: [parameters]
+input_sdata = "sdata.zarr"
+n_top_svgs = 20
+artifact_dir = "artifacts"
+```
+
+```{python imports}
+# Disable OpenMP CPU topology detection for macOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+import sys
+import importlib.metadata
+
+import numpy as np
+import pandas as pd
+import scanpy as sc
+import squidpy as sq
+import spatialdata
+import matplotlib.pyplot as plt
+from IPython.display import display, Markdown
+
+# Create artefact directory
+os.makedirs(artifact_dir, exist_ok=True)
+
+# Suppress scanpy verbosity
+sc.settings.verbosity = 0
+```
+
+```{python common-functions}
+def create_tabset(content):
+    """
+    Programmatically create tabsets with headers and plots.
+
+    Arguments:
+        content (list): A list of (str, Figure) tuples
+    """
+    display(Markdown('::: {.panel-tabset}'))
+    for name, fig in content:
+        display(Markdown(f"#### {name}"))
+        display(fig)
+        plt.close()
+        display(Markdown(f" "))
+    display(Markdown(':::'))
+
+def save_figure(fig, filename, dpi=150):
+    """
+    Save figure to artefact directory.
+
+    Arguments:
+        fig (Figure): The figure object to be saved
+        filename (str): The file name to be used
+        dpi (int): The DPI to use
+    """
+    fig.savefig(
+        os.path.join(artifact_dir, filename),
+        dpi=dpi,
+        bbox_inches='tight'
+    )
+
+def display_table(table, hide_index=True, format_dict=None):
+    """
+    Display a data frame as a table with default styling with optional removal
+    of the axis and the functionality to supply formatting dictionary.
+
+    Arguments:
+        table (DataFrame): The data frame to be displayed
+        hide_index (boolean): Whether to hide the data frame index or not
+        format_dict (dict): A dictionary with column-specific formatting
+    """
+
+    # Default style with nf-core green hover and right alignment for all columns
+    # except the first one
+    styles = [
+        {'selector': 'tbody tr:hover', 'props': [('background-color', '#D5F6E4')]},
+        {'selector': 'td, th', 'props': [
+            ('text-align', 'right')
+        ]},
+        {'selector': 'td:first-child, th:first-child', 'props': [
+            ('text-align', 'left')
+        ]}
+    ]
+    styled = table.style.set_table_styles(styles)
+
+    if hide_index:
+        styled = styled.hide(axis='index')
+
+    if format_dict:
+        styled = styled.format(format_dict)
+
+    display(styled)
+```
+
+```{python load-data}
+# Load SpatialData
+sdata = spatialdata.read_zarr(input_sdata)
+
+# Get the table (assuming single sample, take first table)
+table_names = list(sdata.tables.keys())
+table_name = table_names[0]
+adata = sdata.tables[table_name]
+
+# Extract sample ID from table name
+sample_id = table_name.replace("_table", "")
+```
+
+# Sample overview
+
+```{python overview-table}
+# Generate sample overview
+n_spots = adata.n_obs
+n_genes = adata.n_vars
+
+# Check for cluster information
+n_clusters = adata.obs['clusters'].nunique() if 'clusters' in adata.obs else "N/A"
+
+# Check for spatial coordinates
+has_spatial = 'spatial' in adata.obsm
+
+# Get available elements
+n_images = len(sdata.images) if hasattr(sdata, 'images') else 0
+n_shapes = len(sdata.shapes) if hasattr(sdata, 'shapes') else 0
+
+sample_overview = pd.DataFrame({
+    'Property': [
+        'Sample ID',
+        'Number of spots',
+        'Number of genes',
+        'Number of clusters',
+        'Has spatial coordinates',
+        'Number of images',
+        'Number of shapes'
+    ],
+    'Value': [
+        sample_id,
+        n_spots,
+        n_genes,
+        n_clusters,
+        has_spatial,
+        n_images,
+        n_shapes
+    ]
+})
+display_table(sample_overview)
+```
+
+# Quality controls
+
+## QC metrics distribution
+
+The following plots show the distribution of quality control metrics across all
+spots.
+
+```{python qc-metrics}
+#| output: false
+# Check which QC columns are available
+qc_metrics_map = [
+    ('total_counts', 'Total counts'),
+    ('n_genes_by_counts', 'Genes per spot'),
+    ('pct_counts_mt', 'Mito %'),
+    ('pct_counts_ribo', 'Ribo %'),
+    ('pct_counts_hb', 'Hb %'),
+]
+qc_metrics = [(col, label) for col, label in qc_metrics_map if col in adata.obs]
+
+# Loop over metrics and store plots in list
+qc_metrics_plots = []
+has_qc = len(qc_metrics) > 0
+if has_qc:
+    for col, label in qc_metrics:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        ax.hist(adata.obs[col].values, bins=50, edgecolor='black', alpha=0.7)
+        ax.set_xlabel(label)
+        ax.set_ylabel('Frequency')
+        ax.axvline(adata.obs[col].median(), color='red', linestyle='--',
+            label=f'Median: {adata.obs[col].median():.1f}')
+        ax.legend(fontsize=8)
+        save_figure(fig, f'qc-distribution-{col}.png')
+        qc_metrics_plots.append((label, fig))
+else:
+    print("No QC metrics found in the data.")
+```
+
+```{python qc-metrics-tabset}
+#| output: asis
+if has_qc:
+    create_tabset(qc_metrics_plots)
+```
+
+## QC metrics summary
+
+The following table summarises the quality control metrics for the sample.
+
+```{python}
+qc_cols = [col for col, _ in qc_metrics]
+qc_labels = [label for _, label in qc_metrics]
+if len(qc_cols) > 0:
+    qc_summary = pd.DataFrame({
+        'Metric': qc_labels,
+        'Mean': [adata.obs[col].mean() for col in qc_cols],
+        'Median': [adata.obs[col].median() for col in qc_cols],
+        'Min': [adata.obs[col].min() for col in qc_cols],
+        'Max': [adata.obs[col].max() for col in qc_cols]
+    })
+    format_dict={
+        'Mean': '{:.2f}',
+        'Median': '{:.2f}',
+        'Min': '{:.2f}',
+        'Max': '{:.2f}'
+    }
+    display_table(qc_summary, format_dict=format_dict)
+```
+
+## Spatial QC visualization
+
+The following shows the quality control metrics plotted on top of the spatial
+image, showing the values of each metric for each spot in the dataset.
+
+```{python spatial-qc}
+#| output: false
+if has_spatial:
+    spatial_qc_plots = []
+    for col, label in qc_metrics:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        sc.pl.spatial(
+            adata,
+            color=col,
+            ax=ax,
+            show=False,
+            title=label,
+            frameon=False,
+            library_id=f"{sample_id}_hires_image"
+        )
+        spatial_qc_plots.append((label, fig))
+        save_figure(fig, f'qc-spatial-{col}.png')
+```
+
+```{python spatial-qc-tabset}
+#| output: asis
+if has_spatial:
+    create_tabset(spatial_qc_plots)
+```
+
+# Highly variable genes
+
+The following plot shows the dispersion and mean expression of all genes present
+in the dataset, as well as which of the genes are considered highly variable.
+
+```{python hvgs}
+if 'highly_variable' in adata.var.columns:
+    n_hvg = adata.var['highly_variable'].sum()
+    display(Markdown(f"Number of highly variable genes: `{n_hvg}`"))
+
+    if 'means' in adata.var.columns and 'dispersions_norm' in adata.var.columns:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+
+        hvg_mask = adata.var['highly_variable']
+
+        ax.scatter(
+            adata.var.loc[~hvg_mask, 'means'],
+            adata.var.loc[~hvg_mask, 'dispersions_norm'],
+            s=3, alpha=0.3, c='grey', label='Other genes'
+        )
+        ax.scatter(
+            adata.var.loc[hvg_mask, 'means'],
+            adata.var.loc[hvg_mask, 'dispersions_norm'],
+            s=3, alpha=0.5, c='red', label='Highly variable'
+        )
+
+        ax.set_xlabel('Mean expression')
+        ax.set_ylabel('Normalized dispersion')
+        ax.set_title('Highly Variable Genes')
+        ax.legend()
+        save_figure(fig, 'highly-variable-genes.png')
+        plt.show()
+else:
+    print("Highly variable gene information not found.")
+```
+
+# Dimensionality reduction
+
+## PCA
+
+The following plots show the results of the _Principal Component Analysis_ (PCA)
+and its first two principal components, as well as the variance explained for
+all of the components.
+
+```{python pca}
+if 'X_pca' in adata.obsm:
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3.5), constrained_layout=True)
+
+    # PCA scatter plot coloured by clusters if available
+    if 'clusters' in adata.obs:
+        sc.pl.pca(adata, color='clusters', ax=axes[0], show=False,
+            title='PCA')
+    else:
+        sc.pl.pca(adata, ax=axes[0], show=False, title='PCA')
+
+    # Variance explained
+    if 'pca' in adata.uns and 'variance_ratio' in adata.uns['pca']:
+        variance_ratio = adata.uns['pca']['variance_ratio']
+        cumulative_var = np.cumsum(variance_ratio)
+        n_pcs = len(variance_ratio)
+
+        axes[1].bar(range(1, n_pcs + 1), variance_ratio, alpha=0.7,
+            label='Individual')
+        axes[1].plot(range(1, n_pcs + 1), cumulative_var, 'r-', marker='o',
+            markersize=3, label='Cumulative')
+        axes[1].set_xlabel('Principal Component')
+        axes[1].set_ylabel('Variance Explained')
+        axes[1].set_title('PCA Variance Explained')
+        axes[1].legend()
+        axes[1].set_xlim(0, min(n_pcs + 1, 51))
+    save_figure(fig, 'pca.png')
+    plt.show()
+
+    if 'pca' in adata.uns and 'variance_ratio' in adata.uns['pca']:
+        display(Markdown(f"Variance explained by PC1: `{variance_ratio[0]:.2%}`"))
+        display(Markdown(f"Variance explained by PC1-10: `{cumulative_var[9]:.2%}`"))
+        if len(cumulative_var) >= 20:
+            display(Markdown(f"Variance explained by PC1-20: `{cumulative_var[19]:.2%}`"))
+else:
+    print("PCA results not found.")
+```
+
+## UMAP
+
+The following plots show the final UMAP coloured by the various quality control
+metrics present in the dataset, as well as the final clustering of the dataset.
+
+```{python}
+#| output: false
+has_umap = 'X_umap' in adata.obsm
+if has_umap:
+    umap_plots = []
+    umap_metrics = [('clusters', 'Clusters')] + qc_metrics
+    for col, label in umap_metrics:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        sc.pl.umap(adata, color=col, ax=ax, show=False)
+        umap_plots.append((label, fig))
+        save_figure(fig, f'umap-{col}.png')
+else:
+    print("UMAP results not found.")
+```
+
+```{python umap-tabset}
+#| output: asis
+if has_umap:
+    create_tabset(umap_plots)
+```
+
+# Clustering
+
+## Cluster assignments
+
+The following plots show the number and proportion of spots for each individual
+cluster in the dataset.
+
+```{python cluster-assignments}
+if 'clusters' in adata.obs:
+    # Cluster counts
+    cluster_counts = adata.obs['clusters'].value_counts().sort_index()
+    n_clusters = len(cluster_counts)
+
+    display(Markdown(f"Number of clusters: `{n_clusters}`"))
+
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3.5), constrained_layout=True)
+
+    # Bar plot of cluster sizes
+    cluster_counts.plot(kind='bar', ax=axes[0], color='steelblue',
+        edgecolor='black')
+    axes[0].set_xlabel('Cluster')
+    axes[0].set_ylabel('Number of spots')
+    axes[0].set_title('Spots per Cluster')
+    axes[0].tick_params(axis='x', rotation=45, labelsize=8)
+
+    # Pie chart of cluster proportions
+    axes[1].pie(cluster_counts.values, labels=cluster_counts.index,
+        autopct='%1.1f%%', startangle=90, textprops={'fontsize': 7})
+    axes[1].set_title('Cluster Proportions')
+
+    save_figure(fig, 'cluster_sizes.png')
+    plt.show()
+```
+
+## Spatial cluster distribution
+
+The following plot shows the spatial distribution of each cluster in the
+dataset, _i.e._ which cluster each spot belongs to.
+
+```{python cluster-distribution}
+if 'clusters' in adata.obs and has_spatial:
+    fig, ax = plt.subplots(figsize=(7, 7), constrained_layout=True)
+    sc.pl.spatial(
+        adata,
+        color='clusters',
+        ax=ax,
+        show=False,
+        title='Spatial Cluster Distribution',
+        frameon=False,
+        library_id=f"{sample_id}_hires_image"
+    )
+    save_figure(fig, 'clusters-spatial.png')
+    plt.show()
+```
+
+## Cluster statistics
+
+The following table shows a summary of each cluster in the dataset, including
+the number of spots, the proportion of spots in each cluster compared to the
+dataset as a whole, as well as the mean counts and the mean number of genes for
+each cluster.
+
+```{python}
+if 'clusters' in adata.obs:
+    agg_dict = {'clusters': ('clusters', 'size')}
+
+    if 'total_counts' in adata.obs:
+        agg_dict['Mean counts'] = ('total_counts', 'mean')
+    if 'n_genes_by_counts' in adata.obs:
+        agg_dict['Mean genes'] = ('n_genes_by_counts', 'mean')
+
+    cluster_stats = adata.obs.groupby('clusters').agg(**agg_dict)
+    cluster_stats.columns = ['Spots', 'Mean counts', 'Mean genes']
+    cluster_stats['Percentage'] = (cluster_stats['Spots'] / len(adata) * 100)
+
+    # Reorder columns
+    column_order = ['Spots', 'Percentage', 'Mean counts', 'Mean genes']
+    cluster_stats = cluster_stats[column_order]
+
+    # Create `Cluster` column from index
+    cluster_stats = cluster_stats.sort_index().reset_index()
+    cluster_stats.columns = ['Cluster'] + column_order
+
+    # Apply table styling and display
+    format_dict = {
+        'Percentage': '{:.1f} %',
+        'Mean counts': '{:.1f}',
+        'Mean genes': '{:.1f}'
+    }
+    display_table(cluster_stats, format_dict=format_dict)
+```
+
+# Differential expression
+
+## Top marker genes per cluster
+
+The following plot shows a heatmap of the top 5 differentially expressed genes
+per cluster, including a dendrogram indicating similarity between clusters.
+
+```{python degs-heatmap}
+if 'rank_genes_groups' in adata.uns:
+    # Get number of clusters
+    groups = adata.uns['rank_genes_groups']['names'].dtype.names
+    n_groups = len(groups)
+
+    display(Markdown(f"Differential expression computed for `{n_groups}` clusters"))
+
+    # Heatmap of top genes
+    try:
+        sc.pl.rank_genes_groups_heatmap(
+            adata,
+            n_genes=5,
+            groupby='clusters',
+            figsize=(7.5, 6),
+            show=False
+        )
+        fig = plt.gcf()
+        save_figure(fig, 'deg-heatmap.png')
+        plt.show()
+    except Exception as e:
+        print(f"Could not generate heatmap: {e}")
+```
+
+The following plot shows the mean expression of each of the top 5 genes (for
+each cluster) across all clusters, as well as the fraction of cells expressing
+that gene in each cluster. Depending on the number of clusters, it is likely
+that not all of the figure is visible without having to horizontally scroll, but
+you can also click the figure itself to see it in full screen.
+
+```{python degs-dotplot}
+if 'rank_genes_groups' in adata.uns:
+    try:
+        sc.pl.rank_genes_groups_dotplot(
+            adata,
+            n_genes=5,
+            groupby='clusters',
+            show=False
+        )
+        fig = plt.gcf()
+        save_figure(fig, 'deg-dotplot.png')
+        plt.show()
+    except Exception as e:
+        print(f"Could not generate dotplot: {e}")
+```
+
+## Top genes per cluster
+
+The following table lists the top 5 differentially expressed genes for each
+cluster in the dataset.
+
+```{python degs-table}
+if 'rank_genes_groups' in adata.uns:
+    n_top = 5
+    clusters = adata.uns['rank_genes_groups']['names'].dtype.names
+
+    # Build dictionary of `{cluster: [genes]}`
+    data = {}
+    for cluster in clusters:
+        data[f"Cluster {cluster}"] = [
+            adata.uns['rank_genes_groups']['names'][cluster][i]
+            for i in range(n_top)
+        ]
+
+    # Convert to data frame and print
+    degs_table = pd.DataFrame(data, index=range(1, n_top + 1))
+    degs_table.insert(loc=0, column='Rank', value=degs_table.index)
+    display_table(degs_table)
+```
+
+# Spatial analysis
+
+## Neighborhood enrichment
+
+The following plot shows which cluster pairs are spatially enriched (positive,
+yellow) or depleted (negative, blue) compared to random expectation.
+
+```{python neighborhood-enrichment}
+if 'clusters_nhood_enrichment' in adata.uns:
+    try:
+        sq.pl.nhood_enrichment(
+            adata,
+            cluster_key='clusters',
+            method='ward',
+            vmin=-100,
+            vmax=100,
+            figsize=(9, 7)
+        )
+        fig = plt.gcf()
+        save_figure(fig, 'neighborhood-enrichment.png')
+        plt.show()
+
+        print("")
+    except Exception as e:
+        print(f"Could not generate neighborhood enrichment plot: {e}")
+else:
+    print("Neighborhood enrichment results not found.")
+```
+
+## Cluster interaction matrix
+
+The following plot shows the number of edges between each pair of clusters in
+the spatial neighborhood graph.
+
+```{python cluster-interactions}
+if 'clusters_interactions' in adata.uns:
+    try:
+        sq.pl.interaction_matrix(
+            adata,
+            cluster_key='clusters',
+            method='ward',
+            figsize=(9, 7)
+        )
+        fig = plt.gcf()
+        save_figure(fig, 'interaction-matrix.png')
+        plt.show()
+    except Exception as e:
+        print(f"Could not generate interaction matrix plot: {e}")
+else:
+    print("Interaction matrix results not found.")
+```
+
+# Spatially variable genes
+
+## Spatial autocorrelation
+
+```{python spatial-autocorrelation}
+# Check for spatial autocorrelation results
+svg_key = None
+svg_method = None
+if 'moranI' in adata.uns:
+    svg_key = 'moranI'
+    svg_method = "Moran's I"
+elif 'gearyC' in adata.uns:
+    svg_key = 'gearyC'
+    svg_method = "Geary's C"
+
+if svg_key:
+    svg_df = adata.uns[svg_key]
+    n_svg = len(svg_df)
+    display(Markdown(f"Spatial autocorrelation method: `{svg_method}`"))
+    display(Markdown(f"Number of genes analyzed: `{n_svg}`"))
+
+    # Save top SVGs to CSV
+    svg_df.head(100).to_csv(os.path.join(artifact_dir, 'top_spatially_variable_genes.csv'))
+```
+
+## Top spatially variable genes
+
+The following table shows the top 15 spatially variable genes, along with their
+respective Moran's I and adjusted p-value.
+
+```{python}
+if svg_key:
+    n_display = n_top_svgs
+    top_svg = svg_df.head(n_display)
+    top_svg['Gene'] = top_svg.index
+    top_svg['Rank'] = range(1, len(top_svg) + 1)
+    top_svg = top_svg[['Rank', 'Gene', 'I', 'pval_norm_fdr_bh']]
+    top_svg.columns = ['Rank', 'Gene', "Moran's I", 'Adj. p-value']
+    format_dict = {
+        "Moran's I": '{:.3f}',
+        'Adj. p-value': '{:.3g}'
+    }
+    display_table(top_svg, format_dict=format_dict)
+```
+
+## Spatial expression of top SVGs
+
+The following figures show the spatial expression of the top 15 spatially
+variable genes.
+
+```{python svg-plots}
+#| output: false
+has_spatial_svg = svg_key and has_spatial
+if has_spatial_svg:
+    top_genes = svg_df.head(9).index.tolist()
+
+    # Filter to genes that exist in the data
+    top_genes = [gene for gene in top_genes if gene in adata.var_names]
+
+    svg_plots = []
+    for gene in top_genes:
+        fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+        sc.pl.spatial(
+            adata,
+            color=gene,
+            ax=ax,
+            show=False,
+            title=gene,
+            frameon=False,
+            library_id=f"{sample_id}_hires_image"
+        )
+        svg_plots.append((gene, fig))
+        save_figure(fig, f'spatial-{gene}.png')
+    else:
+        print("No valid genes found for spatial plotting.")
+```
+
+```{python svg-plots-tabset}
+#| output: asis
+if has_spatial_svg:
+    create_tabset(svg_plots)
+```
+
+# Summary
+
+```{python}
+summary_sections = []
+
+# Data overview
+summary_sections.append(
+    f"#### Data overview\n"
+    f"- **Sample**: `{sample_id}`\n"
+    f"- **Spots**: `{n_spots}`\n"
+    f"- **Genes**: `{n_genes}`\n"
+)
+
+# QC summary
+if 'total_counts' in adata.obs:
+    median_counts = adata.obs['total_counts'].median()
+    median_genes = adata.obs['n_genes_by_counts'].median() if \
+        'n_genes_by_counts' in adata.obs else 'N/A'
+    summary_sections.append(
+        f"#### Quality controls\n"
+        f"- **Median counts per spot**: `{median_counts:,.0f}`\n"
+        f"- **Median genes per spot**: `{median_genes:,.0f}`\n"
+    )
+
+# Clustering summary
+if 'clusters' in adata.obs:
+    n_clusters = adata.obs['clusters'].nunique()
+    summary_sections.append(
+        f"#### Clustering\n"
+        f"- **Number of clusters**: `{n_clusters}`\n"
+        f"- **Algorithm**: `Leiden`\n"
+    )
+
+# SVG summary
+if svg_key:
+    n_sig = (svg_df['pval_norm_fdr_bh'] < 0.05).sum() if \
+        'pval_norm_fdr_bh' in svg_df.columns else 'N/A'
+    top_gene = svg_df.index[0]
+    summary_sections.append(
+        f"#### Spatially variable genes\n"
+        f"- **Method**: `{svg_method}`\n"
+        f"- **Significant genes (FDR < 0.05)**: `{n_sig}`\n"
+        f"- **Top gene**: `{top_gene}`"
+    )
+
+display(Markdown("\n".join(summary_sections)))
+```
+
+# Session info
+
+```{python}
+packages = ['scanpy', 'squidpy', 'spatialdata', 'anndata', 'numpy', 'pandas',
+    'matplotlib']
+versions = {}
+for pkg in packages:
+    try:
+        versions[pkg] = importlib.metadata.version(pkg)
+    except:
+        pass
+
+session_info = pd.DataFrame(versions.items(), columns=['Package', 'Version'])
+display_table(session_info)
+```

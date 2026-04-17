@@ -12,35 +12,55 @@ nextflow_pipeline {
         }
 
         then {
+
+            // Names of all output files and directories (unstable contents)
+            def stable_name = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                ignore: ['pipeline_info/*.{html,json,txt}', '**/*.zarr/**']
+            )
+
+            // Names of all SpatialData (.zarr) files and directories (unstable contents)
+            def stable_name_zarr = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                include: ['**/*.zarr/**']
+            )
+
+            // Paths of all output files (stable contents)
+            def stable_path = getAllFilesFromDir(
+                params.outdir,
+                ignoreFile: 'tests/.nftignore'
+            )
+
+            // JSON-formatted AnnData information (unstable contents)
+            def adata_files = getAllFilesFromDir(
+                params.outdir,
+                include: ['**/*.h5ad']
+            ).sort { it.name }
+            .collect { file ->
+                [
+                    file: file.name,
+                    contents: anndata(file.toPath()).yaml
+                ]
+            }
+
             assertAll(
 
-                // Workflow
-                { assert workflow.success },
-                { assert snapshot(removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml")).match() },
-
-                // Data
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/data/adata_processed.h5ad").exists() },
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/data/sdata_processed.zarr").exists() },
-
-                // Reports
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/reports/quality_controls.html").text.contains("final results of all the filtering") },
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/reports/clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
-
-                // Spatially variable genes
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/data/spatially_variable_genes.csv").exists() },
-
-                // Space Ranger
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/web_summary.html").exists() },
+                { assert workflow.success},
                 { assert snapshot(
-                    path("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/binned_outputs/square_002um/raw_feature_bc_matrix.h5"),
-                    path("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/binned_outputs/square_002um/filtered_feature_bc_matrix.h5"),
-                )},
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/binned_outputs/square_002um/raw_feature_bc_matrix.h5").exists() },
-                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2/spaceranger/outs/binned_outputs/square_002um/spatial/tissue_positions.parquet").exists() },
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // Pipeline versions.yml file for multiqc from which Nextflow version is removed because we tests pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"),
+                    stable_name,
+                    stable_name_zarr,
+                    stable_path,
+                    adata_files
+                ).match() }
 
-                // MultiQC
-                { assert file("$outputDir/multiqc/multiqc_report.html").text.contains("Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2")}
             )
         }
     }

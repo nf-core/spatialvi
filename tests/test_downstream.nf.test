@@ -14,39 +14,55 @@ nextflow_pipeline {
         }
 
         then {
+
+            // Names of all output files and directories (unstable contents)
+            def stable_name = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                ignore: ['pipeline_info/*.{html,json,txt}', '**/*.zarr/**']
+            )
+
+            // Names of all SpatialData (.zarr) files and directories (unstable contents)
+            def stable_name_zarr = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                include: ['**/*.zarr/**']
+            )
+
+            // Paths of all output files (stable contents)
+            def stable_path = getAllFilesFromDir(
+                params.outdir,
+                ignoreFile: 'tests/.nftignore'
+            )
+
+            // JSON-formatted AnnData information (unstable contents)
+            def adata_files = getAllFilesFromDir(
+                params.outdir,
+                include: ['**/*.h5ad']
+            ).sort { it.name }
+            .collect { file ->
+                [
+                    file: file.name,
+                    contents: anndata(file.toPath()).yaml
+                ]
+            }
+
             assertAll(
 
-                // Workflow
-                { assert workflow.success },
-                { assert snapshot(removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml")).match() },
+                { assert workflow.success},
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // Pipeline versions.yml file for multiqc from which Nextflow version is removed because we tests pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"),
+                    stable_name,
+                    stable_name_zarr,
+                    stable_path,
+                    adata_files
+                ).match() }
 
-                // Data
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/adata_processed.h5ad").exists() },
-                { assert path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/sdata_processed.zarr").exists() },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/adata_processed.h5ad").exists() },
-                { assert path("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/sdata_processed.zarr").exists() },
-
-                // Reports
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/quality_controls.html").text.contains("final results of all the filtering") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/quality_controls.html").text.contains("final results of all the filtering") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/clustering.html").text.contains("spatial distribution of clusters") },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/reports/spatially_variable_genes.html").text.contains("Spatial transcriptomics data can give insight") },
-
-                // Spatially variable genes
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2/data/spatially_variable_genes.csv").exists() },
-                { assert file("$outputDir/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2/data/spatially_variable_genes.csv").exists() },
-
-                // Aggregation
-                { assert path("$outputDir/aggregation/data/merged_sdata.zarr").exists() },
-                { assert path("$outputDir/aggregation/data/integrated_sdata.zarr").exists() },
-                { assert path("$outputDir/aggregation/data/integrated_adata.h5ad").exists() },
-                { assert file("$outputDir/aggregation/reports/integration.html").text.contains("we save the integrated data to a") },
-                { assert file("$outputDir/aggregation/reports/integration.html").text.contains("we save the integrated data to a") },
-
-                // MultiQC
-                { assert file("$outputDir/multiqc/multiqc_report.html").exists() }
             )
         }
     }

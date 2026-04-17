@@ -1,0 +1,273 @@
+nextflow_process {
+
+    name "Test Process SCANPY_RANK_GENES_GROUPS"
+    script "../main.nf"
+    process "SCANPY_RANK_GENES_GROUPS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "scanpy_rank_genes_groups"
+
+    test("homo_sapiens - h5ad - wilcoxon") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.adata
+                input[1] = 'clusters' // groupby
+                input[2] = 'wilcoxon' // method
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - t-test") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.adata
+                input[1] = 'clusters' // groupby
+                input[2] = 't-test'   // method
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - t-test_overstim_var") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.adata
+                input[1] = 'clusters'             // groupby
+                input[2] = 't-test_overestim_var' // method
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - logreg") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.adata
+                input[1] = 'clusters' // groupby
+                input[2] = 'logreg'   // method
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail with missing groupby column") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 'missing_column' // groupby
+                input[2] = 'wilcoxon'       // method
+                """
+            }
+        }
+
+        then {
+            { assert process.failed }
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0      // resolution
+                    input[2] = 'leiden' // key_added
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.adata
+                input[1] = 'leiden'    // groupby
+                input[2] = 'wilcoxon'  // method
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
