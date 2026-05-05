@@ -346,15 +346,6 @@ workflow SPATIALVI {
         }
     )
 
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList(),
-        [],
-        []
-    )
-
     emit:
     // SpatialData outputs
     sdata_raw               = ch_sdata_raw               // channel: [ meta, zarr ]
