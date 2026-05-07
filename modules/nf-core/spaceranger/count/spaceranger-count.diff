@@ -3,36 +3,17 @@ Changes in component 'nf-core/spaceranger/count'
 Changes in 'spaceranger/count/main.nf':
 --- modules/nf-core/spaceranger/count/main.nf
 +++ modules/nf-core/spaceranger/count/main.nf
-@@ -1,6 +1,6 @@
- process SPACERANGER_COUNT {
-     tag "$meta.id"
--    label 'process_high'
-+    label 'process_spaceranger'
- 
-     container "nf-core/spaceranger:9c5e7dc93c32448e"
- 
 @@ -10,7 +10,7 @@
      path(probeset)
  
      output:
 -    tuple val(meta), path("outs/**"), emit: outs
 +    tuple val(meta), path("outs"), emit: outs
-     path "versions.yml", emit: versions
+     tuple val("${task.process}"), val('spaceranger'), eval('spaceranger -V | sed "s/spaceranger spaceranger-//"'), emit: versions_spaceranger, topic: versions
  
      when:
 
 'modules/nf-core/spaceranger/count/tests/main.nf.test.snap' is unchanged
-Changes in 'spaceranger/count/tests/nextflow.config':
---- modules/nf-core/spaceranger/count/tests/nextflow.config
-+++ modules/nf-core/spaceranger/count/tests/nextflow.config
-@@ -4,6 +4,6 @@
- }
- process {
-     withName: SPACERANGER_COUNT {
--        ext.args = '--create-bam false'
-+        ext.args = '--create-bam="false"'
-     }
- }
-
+'modules/nf-core/spaceranger/count/tests/nextflow.config' is unchanged
 'modules/nf-core/spaceranger/count/tests/main.nf.test' is unchanged
 ************************************************************
