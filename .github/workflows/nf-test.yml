@@ -66,6 +66,7 @@ jobs:
       - runner=4cpu-linux-x64
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         shard: ${{ fromJson(needs.nf-test-changes.outputs.shard) }}
         profile: [conda, docker, singularity]
