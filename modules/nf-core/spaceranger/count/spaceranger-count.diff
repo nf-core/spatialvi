@@ -1,0 +1,19 @@
+Changes in component 'nf-core/spaceranger/count'
+'modules/nf-core/spaceranger/count/meta.yml' is unchanged
+Changes in 'spaceranger/count/main.nf':
+--- modules/nf-core/spaceranger/count/main.nf
++++ modules/nf-core/spaceranger/count/main.nf
+@@ -10,7 +10,7 @@
+     path(probeset)
+ 
+     output:
+-    tuple val(meta), path("outs/**"), emit: outs
++    tuple val(meta), path("outs"), emit: outs
+     tuple val("${task.process}"), val('spaceranger'), eval('spaceranger -V | sed "s/spaceranger spaceranger-//"'), emit: versions_spaceranger, topic: versions
+ 
+     when:
+
+'modules/nf-core/spaceranger/count/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/spaceranger/count/tests/nextflow.config' is unchanged
+'modules/nf-core/spaceranger/count/tests/main.nf.test' is unchanged
+************************************************************

@@ -1,0 +1,91 @@
+{
+    "homo_sapiens - zarr": {
+        "content": [
+            [
+                "versions.yml:md5,f06afd6f97a6444b6f887d36e397792b"
+            ],
+            {
+                "n_obs": 11397,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "in_tissue",
+                        "region",
+                        "spot_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "spatial"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "coordinate_system",
+                    "sample_id",
+                    "spatial",
+                    "spatialdata_attrs",
+                    "table_name"
+                ]
+            }
+        ],
+        "timestamp": "2026-03-30T16:33:30.157422",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - zarr - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T20:53:13.597475",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

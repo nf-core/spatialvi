@@ -1,0 +1,223 @@
+nextflow_process {
+
+    name "Test Process SDATA_UPDATE_TABLE"
+    script "../main.nf"
+    process "SDATA_UPDATE_TABLE"
+
+    tag "modules"
+    tag "modules_local"
+    tag "sdata_update_table"
+
+    test("homo_sapiens - zarr - single sample") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    """
+                }
+            }
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = UNTAR.out.untar.join(SCANPY_PCA.out.adata)
+                input[1] = '' // library_key
+                """
+            }
+        }
+
+        then {
+
+            // Names of all SpatialData (.zarr) files and directories (unstable contents)
+            def stable_name_zarr = getAllFilesFromDir(
+                process.out.sdata[0][1],
+                relative: true,
+                includeDir: true
+            )
+
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    stable_name_zarr
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - zarr - multiple samples") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = channel.fromList([
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.zarr.tar.gz", checkIfExists: true)),
+                    ])
+                    """
+                }
+            }
+            run("SDATA_MERGE") {
+                script "../../merge/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                        .toSortedList { a, b -> a[0].id <=> b[0].id }
+                        .flatMap { it }
+                        .map { _meta, zarr -> zarr }
+                        .collect()
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    """
+                }
+            }
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    """
+                }
+            }
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                        .map { _meta, zarr -> zarr }
+                        .collect()
+                    input[1] = 'inner'      // join
+                    input[2] = 'library_id' // label
+                    input[3] = false        // preserve_var
+                    input[4] = false        // preserve_spatial
+                    """
+                }
+            }
+            run("SCANPY_HARMONY") {
+                script "../../../scanpy/harmony/main.nf"
+                process {
+                    """
+                    input[0] = ADATA_MERGE.out.adata
+                        .map { h5ad -> [[id: "harmony"], h5ad] }
+                    input[1] = 'library_id' // key
+                    input[2] = 'X_harmony'  // embedding_added
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SDATA_MERGE.out.sdata
+                    .map { zarr -> [[id: "harmony"], zarr] }
+                    .join(SCANPY_HARMONY.out.adata)
+                input[1] = 'library_id' // library_key
+                """
+            }
+        }
+
+        then {
+
+            def stable_name_zarr = getAllFilesFromDir(
+                process.out.sdata[0][1],
+                relative: true,
+                includeDir: true
+            )
+
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    stable_name_zarr
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - zarr - stub") {
+
+        options "-stub"
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    """
+                }
+            }
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = UNTAR.out.untar.join(SCANPY_PCA.out.adata)
+                input[1] = '' // library_key
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

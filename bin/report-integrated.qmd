@@ -1,0 +1,367 @@
+---
+title: "Data integration"
+format:
+    nf-core-html:
+        echo: false
+        warning: false
+lightbox: true
+execute:
+    keep-ipynb: true
+jupyter: python3
+---
+
+# Introduction
+
+This report contains the results of the integration across all samples; you can
+find the reports for each individual sample in their respective directory under
+`<outdir>/<sample>`.
+
+In several cases throughout the report, figures are shown in _tabsets_, where
+you can click on different tabs to show _e.g._ different quality metrics or
+samples. You can also click each individual figure to see it in full screen.
+
+```{python parameters}
+#| tags: [parameters]
+input_adata = "integrated.h5ad"  # Input: H5AD file
+input_sdata = "integrated.zarr"  # Input: Zarr file
+sample_col = "library_id" # Parameter: obs column with sample names
+cluster_col = "clusters_integrated" # Parameter: obs column with cluster names
+artifact_dir = "artifacts" # Parameter: artifact directory
+```
+
+```{python imports}
+# Disable OpenMP CPU topology detection for macOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+import importlib.metadata
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import scanpy as sc
+import spatialdata
+from IPython.display import display, Markdown
+
+# Create artefact directory
+os.makedirs(artifact_dir, exist_ok=True)
+
+# Suppress scanpy verbosity
+sc.settings.verbosity = 0
+```
+
+```{python common-functions}
+def create_tabset(content):
+    """
+    Programmatically create tabsets with headers and plots.
+
+    Arguments:
+        content (list): A list of (str, Figure) tuples
+    """
+    display(Markdown('::: {.panel-tabset}'))
+    for name, fig in content:
+        display(Markdown(f"#### {name}"))
+        display(fig)
+        plt.close()
+        display(Markdown(f" "))
+    display(Markdown(':::'))
+
+
+def save_figure(fig, filename, dpi=150):
+    """
+    Save figure to artefact directory.
+
+    Arguments:
+        fig (Figure): The figure object to be saved
+        filename (str): The file name to be used
+        dpi (int): The DPI to use
+    """
+    fig.savefig(
+        os.path.join(artifact_dir, filename),
+        dpi=dpi,
+        bbox_inches='tight'
+    )
+
+
+def display_table(table, hide_index=True, format_dict=None):
+    """
+    Display a data frame as a table with default styling with optional removal
+    of the axis and the functionality to supply formatting dictionary.
+
+    Arguments:
+        table (DataFrame): The data frame to be displayed
+        hide_index (boolean): Whether to hide the data frame index or not
+        format_dict (dict): A dictionary with column-specific formatting
+    """
+
+    # Default style with nf-core green hover and right alignment for all columns
+    # except the first one
+    styles = [
+        {'selector': 'tbody tr:hover', 'props': [('background-color', '#D5F6E4')]},
+        {'selector': 'td, th', 'props': [
+            ('text-align', 'right')
+        ]},
+        {'selector': 'td:first-child, th:first-child', 'props': [
+            ('text-align', 'left')
+        ]}
+    ]
+    styled = table.style.set_table_styles(styles)
+
+    if hide_index:
+        styled = styled.hide(axis='index')
+
+    if format_dict:
+        styled = styled.format(format_dict)
+
+    display(styled)
+```
+
+```{python load-data}
+sdata = spatialdata.read_zarr(input_sdata)
+adata = sc.read_h5ad(input_adata)
+
+# Determine integration method from input file name
+integration_method = os.path.splitext(os.path.basename(input_adata))[0]
+```
+
+# Integration overview
+
+```{python overview-table}
+n_samples = adata.obs[sample_col].nunique()
+n_spots = adata.n_obs
+n_genes = adata.n_vars
+n_clusters = adata.obs[cluster_col].nunique() if cluster_col in adata.obs else "N/A"
+sample_names = ", ".join(sorted(adata.obs[sample_col].unique()))
+
+overview = pd.DataFrame({
+    'Property': [
+        'Integration method',
+        'Number of samples',
+        'Total spots',
+        'Total genes',
+        'Number of clusters',
+        'Samples',
+    ],
+    'Value': [
+        integration_method.capitalize(),
+        n_samples,
+        f"{n_spots}",
+        f"{n_genes}",
+        n_clusters,
+        sample_names,
+    ]
+})
+display_table(overview)
+```
+
+# UMAP
+
+The following shows the integrated UMAP coloured the clusters, samples and
+the various QC metrics used in the pipeline. Ideally, each cluster should have
+spots from all samples for a successful integration.
+
+```{python umap}
+#| output: false
+# Check which QC columns are available
+qc_metrics_map = [
+    ('total_counts', 'Total counts'),
+    ('n_genes_by_counts', 'Genes per spot'),
+    ('pct_counts_mt', 'Mito %'),
+    ('pct_counts_ribo', 'Ribo %'),
+    ('pct_counts_hb', 'Hb %'),
+]
+qc_metrics = [(col, label) for col, label in qc_metrics_map if col in adata.obs]
+
+# Plot and save to a list for later tabset display
+umap_plots = []
+umap_metrics = [(cluster_col, 'Clusters')] + [(sample_col, 'Sample')] + qc_metrics
+for col, label in umap_metrics:
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.umap(adata, color=col, ax=ax, show=False)
+    umap_plots.append((label, fig))
+    save_figure(fig, f'umap-{col}.png')
+```
+
+```{python umap-tabset}
+#| output: asis
+create_tabset(umap_plots)
+```
+
+# Clustering
+
+## Cluster assignments
+
+The following plots show the number and proportion of spots for each individual
+cluster in the dataset.
+
+```{python cluster-assignments}
+if cluster_col in adata.obs:
+    cluster_counts = adata.obs[cluster_col].value_counts().sort_index()
+    n_clusters_val = len(cluster_counts)
+
+    display(Markdown(f"Number of clusters: `{n_clusters_val}`"))
+
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3.5), constrained_layout=True)
+
+    # Bar plot of cluster sizes
+    cluster_counts.plot(kind='bar', ax=axes[0], color='steelblue',
+        edgecolor='black')
+    axes[0].set_xlabel('Cluster')
+    axes[0].set_ylabel('Number of spots')
+    axes[0].set_title('Spots per Cluster')
+    axes[0].tick_params(axis='x', rotation=45, labelsize=8)
+
+    # Pie chart of cluster proportions
+    axes[1].pie(cluster_counts.values, labels=cluster_counts.index,
+        autopct='%1.1f%%', startangle=90, textprops={'fontsize': 7})
+    axes[1].set_title('Cluster Proportions')
+
+    save_figure(fig, 'cluster-sizes.png')
+    plt.show()
+```
+
+## Cluster statistics
+
+The following table shows a summary of each cluster in the dataset, including
+the number of spots, the proportion of spots in each cluster compared to the
+dataset as a whole, as well as the mean counts and the mean number of genes for
+each cluster.
+
+```{python cluster-stats}
+if cluster_col in adata.obs:
+    agg_dict = {cluster_col: (cluster_col, 'size')}
+
+    if 'total_counts' in adata.obs:
+        agg_dict['Mean counts'] = ('total_counts', 'mean')
+    if 'n_genes_by_counts' in adata.obs:
+        agg_dict['Mean genes'] = ('n_genes_by_counts', 'mean')
+
+    cluster_stats = adata.obs.groupby(cluster_col).agg(**agg_dict)
+    cluster_stats.columns = ['Spots'] + [c for c in cluster_stats.columns[1:]]
+    cluster_stats['Percentage'] = (cluster_stats['Spots'] / len(adata) * 100)
+
+    column_order = ['Spots', 'Percentage'] + [c for c in cluster_stats.columns
+        if c not in ['Spots', 'Percentage']]
+    cluster_stats = cluster_stats[column_order]
+    cluster_stats = cluster_stats.sort_index().reset_index()
+    cluster_stats.columns = ['Cluster'] + list(cluster_stats.columns[1:])
+
+    format_dict = {
+        'Percentage': '{:.1f} %',
+        'Mean counts': '{:.1f}',
+        'Mean genes': '{:.1f}'
+    }
+    display_table(cluster_stats, format_dict=format_dict)
+```
+
+## Sample composition per cluster
+
+The following shows the composition of each cluster in terms of the proportion
+of spots belonging to each sample within it.
+
+```{python sample-composition}
+if cluster_col in adata.obs:
+    # Cross-tabulation of clusters and samples
+    ct = pd.crosstab(
+        adata.obs[cluster_col],
+        adata.obs[sample_col],
+        normalize='index'
+    ) * 100
+
+    fig, ax = plt.subplots(figsize=(7.5, 5), constrained_layout=True)
+    ct.plot(kind='bar', stacked=True, ax=ax, edgecolor='black', linewidth=0.5)
+    ax.set_xlabel('Cluster')
+    ax.set_ylabel('Sample proportion (%)')
+    ax.set_title('Sample Composition per Cluster')
+    ax.legend(title='Sample', bbox_to_anchor=(1.05, 1), loc='upper left',
+        fontsize=7)
+    ax.tick_params(axis='x', rotation=45, labelsize=8)
+    save_figure(fig, 'sample-composition.png')
+    plt.show()
+```
+
+# Spatial Visualization
+
+The following plot shows the spatial distribution of each cluster in the
+dataset, i.e. which cluster each spot belongs to, for each individual sample.
+
+```{python spatial-distribution}
+#| output: false
+spatial_plots = []
+for sample_id in adata.obs[sample_col].unique():
+    # Clean sample names for correct image referencing
+    sample_id_clean = "".join(
+        c for c in sample_id if c.isalnum() or c in ["_", "-"]
+    )
+    fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
+    sc.pl.spatial(
+        adata[adata.obs[sample_col] == sample_id],
+        img_key="hires",
+        library_id=f"{sample_id_clean}_hires_image",
+        color=cluster_col,
+        size=1.25,
+        ax=ax,
+        show=False
+    )
+    fig = plt.gcf()
+    spatial_plots.append((sample_id, fig))
+    save_figure(fig, f'spatial-{sample_id}.png')
+```
+
+```{python spatial-distribution-tabset}
+#| output: asis
+create_tabset(spatial_plots)
+```
+
+# Summary
+
+```{python summary}
+summary_sections = []
+
+# Data overview
+summary_sections.append(
+    f"#### Data overview\n"
+    f"- **Integration method**: `{integration_method.capitalize()}`\n"
+    f"- **Number of samples**: `{n_samples}`\n"
+    f"- **Total spots**: `{n_spots:,}`\n"
+    f"- **Total genes**: `{n_genes:,}`\n"
+)
+
+# QC summary
+if 'total_counts' in adata.obs:
+    median_counts = adata.obs['total_counts'].median()
+    median_genes = adata.obs['n_genes_by_counts'].median() if \
+        'n_genes_by_counts' in adata.obs else 'N/A'
+    summary_sections.append(
+        f"#### Quality controls\n"
+        f"- **Median counts per spot**: `{median_counts:,.0f}`\n"
+        f"- **Median genes per spot**: `{median_genes:,.0f}`\n"
+    )
+
+# Clustering summary
+if cluster_col in adata.obs:
+    n_clusters_final = adata.obs[cluster_col].nunique()
+    summary_sections.append(
+        f"#### Clustering\n"
+        f"- **Number of clusters**: `{n_clusters_final}`\n"
+        f"- **Algorithm**: `Leiden`\n"
+    )
+
+display(Markdown("\n".join(summary_sections)))
+```
+
+# Session info
+
+```{python session-info}
+packages = ['scanpy', 'squidpy', 'spatialdata', 'anndata', 'numpy', 'pandas',
+    'matplotlib']
+versions = {}
+for pkg in packages:
+    try:
+        versions[pkg] = importlib.metadata.version(pkg)
+    except Exception:
+        pass
+
+session_info = pd.DataFrame(versions.items(), columns=['Package', 'Version'])
+display_table(session_info)
+```

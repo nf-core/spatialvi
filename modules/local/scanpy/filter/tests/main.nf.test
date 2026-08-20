@@ -1,0 +1,227 @@
+nextflow_process {
+
+    name "Test Process SCANPY_FILTER"
+    script "../main.nf"
+    process "SCANPY_FILTER"
+
+    tag "modules"
+    tag "modules_local"
+    tag "scanpy_filter"
+
+    test("homo_sapiens - h5ad") {
+
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                input[1] = 500   // min_counts
+                input[2] = 250   // min_genes
+                input[3] = 1     // min_obs
+                input[4] = 20.0  // mito_threshold
+                input[5] = 0.0   // ribo_threshold
+                input[6] = 100.0 // hb_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.stats
+                ).match() }
+            )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                assert obs.get("n_counts").data.every { it >= 500 }
+                assert obs.get("n_genes").data.every { it >= 250 }
+                assert obs.get("pct_counts_mt").data.every { it <= 20.0 }
+            }
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail with 0 obs") {
+
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                input[1] = 99999 // min_counts
+                input[2] = 250   // min_genes
+                input[3] = 1     // min_obs
+                input[4] = 20.0  // mito_threshold
+                input[5] = 0.0   // ribo_threshold
+                input[6] = 100.0 // hb_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail with 0 genes") {
+
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                input[1] = 500   // min_counts
+                input[2] = 250   // min_genes
+                input[3] = 99999 // min_obs
+                input[4] = 20.0  // mito_threshold
+                input[5] = 0.0   // ribo_threshold
+                input[6] = 100.0 // hb_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - with spatial data") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    """
+                }
+            }
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                input[1] = 1     // min_counts
+                input[2] = 1     // min_genes
+                input[3] = 0     // min_obs
+                input[4] = 100.0 // mito_threshold
+                input[5] = 0.0   // ribo_threshold
+                input[6] = 100.0 // hb_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.stats
+                ).match() }
+            )
+            def adata = anndata(process.out.adata[0][1])
+            assert adata.obs.get("in_tissue").data.every { it == 1 }
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                input[1] = 500   // min_counts
+                input[2] = 250   // min_genes
+                input[3] = 1     // min_obs
+                input[4] = 20.0  // mito_threshold
+                input[5] = 0.0   // ribo_threshold
+                input[6] = 100.0 // hb_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

@@ -1,0 +1,56 @@
+nextflow_pipeline {
+
+    name "Test skipping of downstream workflow"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_skip_downstream"
+
+    test("Space Ranger FFPE v2 CytAssist - skip downstream") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+
+            // Names of all output files and directories (unstable contents)
+            def stable_name = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                ignore: ['pipeline_info/*.{html,json,txt}', '**/*.zarr/**']
+            )
+
+            // Names of all SpatialData (.zarr) files and directories (unstable contents)
+            def stable_name_zarr = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                include: ['**/*.zarr/**']
+            )
+
+            // Paths of all output files (stable contents)
+            def stable_path = getAllFilesFromDir(
+                params.outdir,
+                ignoreFile: 'tests/.nftignore'
+            )
+
+            assertAll(
+
+                { assert workflow.success},
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // Pipeline versions.yml file for multiqc from which Nextflow version is removed because we tests pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"),
+                    stable_name,
+                    stable_name_zarr,
+                    stable_path
+                ).match() }
+
+            )
+        }
+    }
+}

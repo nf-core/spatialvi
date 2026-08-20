@@ -1,0 +1,151 @@
+{
+    "homo_sapiens - h5ad - generic": {
+        "content": [
+            [
+                "versions.yml:md5,1af8ea16ef6f0a48c58bca6f26a978a0"
+            ],
+            {
+                "n_obs": 11397,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "in_tissue",
+                        "region",
+                        "spot_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "spatial"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    "spatial_connectivities",
+                    "spatial_distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "coordinate_system",
+                    "sample_id",
+                    "spatial",
+                    "spatial_neighbors",
+                    "spatialdata_attrs",
+                    "table_name"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T19:18:48.567672",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T21:19:20.858772",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - h5ad - grid": {
+        "content": [
+            [
+                "versions.yml:md5,1af8ea16ef6f0a48c58bca6f26a978a0"
+            ],
+            {
+                "n_obs": 11397,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "in_tissue",
+                        "region",
+                        "spot_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "spatial"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    "spatial_connectivities",
+                    "spatial_distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "coordinate_system",
+                    "sample_id",
+                    "spatial",
+                    "spatial_neighbors",
+                    "spatialdata_attrs",
+                    "table_name"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T19:18:02.601779",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

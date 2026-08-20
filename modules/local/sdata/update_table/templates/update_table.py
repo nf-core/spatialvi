@@ -1,0 +1,325 @@
+#!/usr/bin/env python3
+"""
+Update SpatialData tables with processed AnnData objects. Also updates
+associated spatial elements to match filtered observations.
+
+Supports:
+- Single-sample: replace table entirely.
+- Multi-sample: update tables from concatenated AnnData using library_key.
+"""
+
+# Disable OpenMP CPU topology detection for macOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+# Fix numba caching issue in read-only containers
+os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
+os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
+os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
+
+import importlib.metadata
+import logging
+import platform
+import re
+import shutil
+
+import anndata as ad
+import numpy as np
+import spatialdata
+import yaml
+from spatialdata.models import TableModel
+
+logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
+
+
+def find_table_name(sdata, adata, sample_id):
+    """
+    Determine which table to update for single-sample mode.
+
+    Parameters
+    ----------
+    sdata : SpatialData
+        SpatialData object.
+    adata : AnnData
+        AnnData object with potential table_name in uns.
+    sample_id : str
+        Sample identifier.
+
+    Returns
+    -------
+    str
+        Table name to update.
+    """
+    if "table_name" in adata.uns:
+        return adata.uns["table_name"]
+    elif f"{sample_id}_table" in sdata.tables:
+        return f"{sample_id}_table"
+    elif len(sdata.tables) > 0:
+        return list(sdata.tables.keys())[0]
+    else:
+        raise ValueError("No tables found in SpatialData object")
+
+
+def replace_table(sdata, adata, table_name):
+    """
+    Replace a table entirely, preserving SpatialData metadata.
+
+    Parameters
+    ----------
+    sdata : SpatialData
+        SpatialData object.
+    adata : AnnData
+        New AnnData to replace the table with.
+    table_name : str
+        Name of table to replace.
+    """
+    logger.info(f"Replacing table '{table_name}'")
+    logger.info(f"Original table shape: {sdata.tables[table_name].shape}")
+    logger.info(f"New AnnData shape: {adata.shape}")
+
+    original_table = sdata.tables[table_name]
+    spatialdata_attrs = original_table.uns.get("spatialdata_attrs", {})
+    region = spatialdata_attrs.get("region")
+    region_key = spatialdata_attrs.get("region_key")
+    instance_key = spatialdata_attrs.get("instance_key")
+    logger.info(f"Original region: {region}")
+    logger.info(f"Original region_key: {region_key}")
+    logger.info(f"Original instance_key: {instance_key}")
+
+    # Handle region being a numpy array (convert to list/string)
+    if isinstance(region, np.ndarray):
+        region = region.tolist()
+    if isinstance(region, list) and len(region) == 1:
+        region = region[0]
+
+    # Ensure instance_key column exists in the new AnnData
+    if instance_key and instance_key not in adata.obs.columns:
+        if instance_key in original_table.obs.columns:
+            common_idx = adata.obs.index.intersection(original_table.obs.index)
+            if len(common_idx) == len(adata.obs.index):
+                adata.obs[instance_key] = original_table.obs.loc[adata.obs.index, instance_key]
+            else:
+                logger.warning(f"Could not match all indices for {instance_key}")
+        else:
+            logger.warning(f"instance_key '{instance_key}' not found in original table")
+
+    # Restore region_key column if missing
+    if region_key and region_key not in adata.obs.columns:
+        if region_key in original_table.obs.columns:
+            common_idx = adata.obs.index.intersection(original_table.obs.index)
+            if len(common_idx) == len(adata.obs.index):
+                adata.obs[region_key] = original_table.obs.loc[adata.obs.index, region_key]
+        elif region:
+            region_value = region if isinstance(region, str) else region[0]
+            adata.obs[region_key] = region_value
+
+    # Create new table with proper metadata
+    try:
+        if region and instance_key:
+            new_table = TableModel.parse(
+                adata,
+                region=region,
+                region_key=region_key,
+                instance_key=instance_key
+            )
+            logger.info("Created new table using TableModel.parse()")
+        else:
+            # Fallback: copy uns from original
+            logger.warning("Missing region/instance_key metadata, copying from original")
+            adata.uns["spatialdata_attrs"] = spatialdata_attrs.copy()
+            new_table = adata
+    except Exception as e:
+        logger.warning(f"TableModel.parse failed ({e}), copying from original")
+        adata.uns["spatialdata_attrs"] = spatialdata_attrs.copy()
+        new_table = adata
+
+    # Replace table
+    del sdata.tables[table_name]
+    try:
+        sdata.tables[table_name] = new_table
+        logger.info(f"Successfully updated table '{table_name}'")
+    except Exception as e:
+        logger.warning(f"Failed to set table via sdata.tables: {e}")
+        logger.info("Attempting to set table using internal method...")
+
+    # Update spatial elements if observations were filtered
+    if region and adata.shape[0] < original_table.shape[0]:
+        logger.info(f"Observations were filtered: {original_table.shape[0]} -> {adata.shape[0]}")
+        region_name = region if isinstance(region, str) else region[0]
+        if region_name in sdata.shapes:
+            try:
+                matched, _ = spatialdata.match_element_to_table(
+                    sdata,
+                    element_name=region_name,
+                    table_name=table_name
+                )
+                sdata.shapes[region_name] = matched[region_name]
+                logger.info(f"Updated shapes '{region_name}' to match filtered table")
+            except Exception as e:
+                logger.warning(f"Could not update shapes: {e}")
+    else:
+        logger.info("No filtering detected or no region to update")
+
+# -----------------------------------------------------------------------------
+# Multi-sample operations
+# -----------------------------------------------------------------------------
+
+
+def find_table_for_library(sdata, library_id):
+    """
+    Find matching table name for a library ID. First tries matching exactly,
+    secondly with a `_table` suffix, with `None` as fallback.
+    """
+    if library_id in sdata.tables:
+        return library_id
+    if f"{library_id}_table" in sdata.tables:
+        return f"{library_id}_table"
+    return None
+
+
+def build_library_to_table_dict(sdata, library_ids):
+    """Build library-to-table dictionary."""
+    library_to_table_dict = {}
+    for library_id in library_ids:
+        table_name = find_table_for_library(sdata, library_id)
+        if table_name:
+            library_to_table_dict[library_id] = table_name
+        else:
+            logger.warning(f"No matching table found for library '{library_id}'")
+    logger.info(f"Library-to-table mapping: {library_to_table_dict}")
+    return library_to_table_dict
+
+
+def update_tables_from_concat(sdata, adata_concat, library_key):
+    """
+    Update multiple tables from concatenated AnnData.
+
+    Parameters
+    ----------
+    sdata : SpatialData
+        SpatialData object.
+    adata_concat : AnnData
+        Concatenated AnnData with library_key column.
+    library_key : str
+        Column in obs containing library identifiers.
+    """
+    if library_key not in adata_concat.obs.columns:
+        raise ValueError(f"Column '{library_key}' not found in AnnData")
+
+    library_ids = adata_concat.obs[library_key].unique()
+    logger.info(f"Found {len(library_ids)} libraries: {library_ids.tolist()}")
+    logger.info(f"Available tables: {list(sdata.tables.keys())}")
+
+    library_to_table_dict = build_library_to_table_dict(sdata, library_ids)
+
+    for library_id, table_name in library_to_table_dict.items():
+        mask = adata_concat.obs[library_key] == library_id
+        if not mask.any():
+            logger.warning(f"No observations for library '{library_id}'")
+            continue
+
+        adata_subset = adata_concat[mask].copy()
+        table = sdata.tables[table_name]
+        logger.info(
+            f"Updating table '{table_name}' from library '{library_id}' "
+            f"({adata_subset.shape[0]} obs)"
+        )
+
+        # Build index mapping (remove concatenation suffix)
+        index_map = {idx: idx.rsplit("-", 1)[0] for idx in adata_subset.obs_names}
+
+        # Add obsm fields
+        for key in adata_subset.obsm.keys():
+            n_features = adata_subset.obsm[key].shape[1]
+            if key not in table.obsm:
+                table.obsm[key] = np.full(
+                    (table.n_obs, n_features), np.nan, dtype=np.float32
+                )
+
+            for i, new_idx in enumerate(adata_subset.obs_names):
+                orig_idx = index_map[new_idx]
+                if orig_idx in table.obs_names:
+                    pos = table.obs_names.get_loc(orig_idx)
+                    table.obsm[key][pos] = adata_subset.obsm[key][i]
+
+            logger.info(f"  Added obsm['{key}']")
+
+        # Add obs columns
+        skip = {library_key}
+        new_cols = set(adata_subset.obs.columns) - set(table.obs.columns) - skip
+
+        for col in new_cols:
+            table.obs[col] = np.nan
+            for i, new_idx in enumerate(adata_subset.obs_names):
+                orig_idx = index_map[new_idx]
+                if orig_idx in table.obs_names:
+                    table.obs.loc[orig_idx, col] = adata_subset.obs.iloc[i][col]
+
+            logger.info(f"  Added obs['{col}']")
+
+# -----------------------------------------------------------------------------
+# Main
+# -----------------------------------------------------------------------------
+
+
+def write_versions(process_name):
+    """Write software versions to YAML."""
+    versions = {
+        process_name: {
+            "python": platform.python_version(),
+            "anndata": importlib.metadata.version("anndata"),
+            "spatialdata": importlib.metadata.version("spatialdata"),
+        }
+    }
+    with open("versions.yml", "w") as f:
+        yaml.dump(versions, f)
+
+
+def main():
+    """Synchronize AnnData back to SpatialData."""
+
+    # Template variables
+    zarr = "${sdata}"
+    h5ad = "${adata}"
+    sample_id = "${meta.id}"
+    library_key = "${library_key}"
+    output_sdata = "${prefix}.zarr"
+    process_name = "${task.process}"
+
+    # Sample ID must only contain alphanumerics, underscores and dashes
+    sample_id = re.sub(r"[^a-zA-Z0-9_-]", "", sample_id)
+
+    logger.info(f"Input SpatialData: {zarr}")
+    logger.info(f"Input AnnData: {h5ad}")
+    logger.info(f"Output: {output_sdata} SpatialData")
+    logger.info(f"Mode: {'multi-sample' if library_key else 'single-sample'}")
+
+    if os.path.abspath(zarr) == os.path.abspath(output_sdata):
+        raise ValueError("Input and output paths are the same!")
+
+    if os.path.exists(output_sdata):
+        logger.info(f"Removing existing output directory: {output_sdata}")
+        shutil.rmtree(output_sdata)
+
+    # Read data
+    sdata = spatialdata.read_zarr(zarr)
+    adata = ad.read_h5ad(h5ad)
+    logger.info(f"Available tables: {list(sdata.tables.keys())}")
+    logger.info(f"Available shapes: {list(sdata.shapes.keys())}")
+
+    # Process based on mode
+    if library_key:
+        update_tables_from_concat(sdata, adata, library_key)
+    else:
+        table_name = find_table_name(sdata, adata, sample_id)
+        replace_table(sdata, adata, table_name)
+
+    # Write output
+    sdata.write(output_sdata)
+    logger.info(f"Written: {output_sdata}")
+
+    write_versions(process_name)
+
+if __name__ == "__main__":
+    main()

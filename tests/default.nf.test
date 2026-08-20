@@ -1,10 +1,11 @@
 nextflow_pipeline {
 
-    name "Test pipeline"
+    name "Test full workflow (incl. Space Ranger v2)"
     script "../main.nf"
     tag "pipeline"
+    profile "test"
 
-    test("-profile test") {
+    test("Space Ranger FFPE v2 CytAssist") {
 
         when {
             params {
@@ -13,20 +14,56 @@ nextflow_pipeline {
         }
 
         then {
-            // stable_path: All files + folders in ${params.outdir}/ with a stable path (including file name)
-            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
-            // stable_content: All files in ${params.outdir}/ with stable content
-            def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
-            assert workflow.success
+
+            // Names of all output files and directories (unstable contents)
+            def stable_name = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                ignore: ['pipeline_info/*.{html,json,txt}', '**/*.zarr/**']
+            )
+
+            // Names of all SpatialData (.zarr) files and directories (unstable contents)
+            def stable_name_zarr = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                include: ['**/*.zarr/**'],
+                ignore: ['**/*.zarr/**/[0-9]*']
+            )
+
+            // Paths of all output files (stable contents)
+            def stable_path = getAllFilesFromDir(
+                params.outdir,
+                ignoreFile: 'tests/.nftignore'
+            )
+
+            // JSON-formatted AnnData information (unstable contents)
+            def adata_files = getAllFilesFromDir(
+                params.outdir,
+                include: ['**/*.h5ad']
+            ).sort { it.name }
+            .collect { file ->
+                [
+                    file: file.name,
+                    contents: anndata(file.toPath()).yaml
+                ]
+            }
+
             assertAll(
+
+                { assert workflow.success},
                 { assert snapshot(
-                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // Pipeline versions.yml file for multiqc from which Nextflow version is removed because we tests pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"),
-                    // All stable path name, with a relative path
+                    stable_name,
+                    stable_name_zarr,
                     stable_path,
-                    // All files with stable contents
-                    stable_content
+                    adata_files
                 ).match() }
+
             )
         }
     }

@@ -121,7 +121,11 @@
         },
         {
             "@id": "main.nf",
-            "@type": ["File", "SoftwareSourceCode", "ComputationalWorkflow"],
+            "@type": [
+                "File",
+                "SoftwareSourceCode",
+                "ComputationalWorkflow"
+            ],
             "contributor": [
                 {
                     "@id": "https://orcid.org/0000-0003-0492-9960"
@@ -157,16 +161,25 @@
                 "transcriptomics",
                 "visium"
             ],
-            "license": ["MIT"],
-            "name": ["nf-core/spatialvi"],
+            "license": [
+                "MIT"
+            ],
+            "name": [
+                "nf-core/spatialvi"
+            ],
             "programmingLanguage": {
                 "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow"
             },
             "sdPublisher": {
                 "@id": "https://nf-co.re/"
             },
-            "url": ["https://github.com/nf-core/spatialvi", "https://nf-co.re/spatialvi/dev/"],
-            "version": ["1.0dev"]
+            "url": [
+                "https://github.com/nf-core/spatialvi",
+                "https://nf-co.re/spatialvi/dev/"
+            ],
+            "version": [
+                "1.0dev"
+            ]
         },
         {
             "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow",
