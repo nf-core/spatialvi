@@ -107,12 +107,6 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
-### Test data
-
-The full-size test profile uses the publicly available **Human Brain Cancer, 11 mm Capture Area (FFPE)** dataset from 10x Genomics (Visium CytAssist Spatial Gene Expression, Space Ranger 2.0.1; slide V52Y10-317, capture area B1), published 2023-02-14 and licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-
-> 10x Genomics. _Human Brain Cancer, 11 mm Capture Area (FFPE)_ (Visium CytAssist Spatial Gene Expression, Space Ranger 2.0.1), 2023. https://www.10xgenomics.com/datasets/human-brain-cancer-11-mm-capture-area-ffpe-2-standard
-
 You can cite the `nf-core` publication as follows:
 
 > **The nf-core framework for community-curated bioinformatics pipelines.**
