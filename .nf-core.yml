@@ -10,7 +10,9 @@ lint:
     - assets/nf-core-spatialvi_logo_light.png
     - docs/images/nf-core-spatialvi_logo_light.png
     - docs/images/nf-core-spatialvi_logo_dark.png
-nf_core_version: 4.0.3
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Erik Fasterius, Christophe Avenel, Sergii Domanskyi, Jeffrey Chuang, Anuj Srivastava
