@@ -3,7 +3,7 @@
 //
 
 include { ADATA_MERGE                                          } from "../../../modules/local/adata/merge"
-include { QUARTONOTEBOOK as REPORT_INTEGRATED                  } from "../../../modules/nf-core/quartonotebook"
+include { QUARTO_NOTEBOOK as REPORT_INTEGRATED                 } from "../../../modules/nf-core/quarto/notebook"
 include { SCANPY_HARMONY                                       } from "../../../modules/local/scanpy/harmony"
 include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
 include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from "../../../modules/local/sdata/update_table"

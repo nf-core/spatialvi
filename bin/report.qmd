@@ -36,6 +36,7 @@ artifact_dir = "artifacts"
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+import platform
 import sys
 import importlib.metadata
 
@@ -730,7 +731,8 @@ display(Markdown("\n".join(summary_sections)))
 
 # Session info
 
-```{python}
+```{python package-versions}
+# Build list of package versions
 packages = ['scanpy', 'squidpy', 'spatialdata', 'anndata', 'numpy', 'pandas',
     'matplotlib']
 versions = {}
@@ -740,6 +742,14 @@ for pkg in packages:
     except:
         pass
 
-session_info = pd.DataFrame(versions.items(), columns=['Package', 'Version'])
+# Build and write session info table
+session_info = pd.DataFrame(
+    [('python', platform.python_version())],
+    list(versions.items()),
+    columns=['Package', 'Version']
+)
 display_table(session_info)
+
+# Write to CSV
+session_info.to_csv('versions.csv', index=False, header=False)
 ```

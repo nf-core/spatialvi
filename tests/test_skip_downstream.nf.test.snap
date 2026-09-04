@@ -408,10 +408,10 @@
                 "spaceranger-count-stats.txt:md5,e47ed2e4e151aef489950b02d0765e54"
             ]
         ],
-        "timestamp": "2026-03-30T14:02:06.186942135",
+        "timestamp": "2026-08-20T09:13:56.682390937",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.3"
         }
     }
 }
