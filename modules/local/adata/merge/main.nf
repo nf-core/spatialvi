@@ -4,7 +4,7 @@ process ADATA_MERGE {
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    path h5ad
+    path(h5ad, arity: '1..*')
     val join
     val label
     val preserve_var

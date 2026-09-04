@@ -4,7 +4,7 @@ process SDATA_MERGE {
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    path(sdata, stageAs: "?/*")
+    path(sdata, stageAs: "?/*", arity: '1..*')
 
     output:
     path("${prefix}.zarr"), emit: sdata

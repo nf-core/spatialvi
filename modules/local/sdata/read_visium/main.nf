@@ -5,7 +5,7 @@ process SDATA_READ_VISIUM {
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    tuple val(meta), path(spaceranger_dir)
+    tuple val(meta), path(spaceranger_dir, arity: '1')
     val(hd_bin_size)
 
     output:
