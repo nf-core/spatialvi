@@ -16,7 +16,6 @@ import platform
 
 import anndata as ad
 import scanpy.external as sce
-import scipy.sparse as sp
 import yaml
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
@@ -48,11 +47,6 @@ def integrate_scanorama(adata, key, adjusted_basis):
         raise ValueError(
             "PCA not found in adata.obsm; run PCA before integration."
         )
-
-    # Convert to CSR format (if applicable; required by Scanorama)
-    if sp.issparse(adata.X) and not isinstance(adata.X, sp.csr_matrix):
-        logger.info("Converting to CSR data format")
-        adata.X = adata.X.tocsr()
 
     n_batches = adata.obs[key].nunique()
     logger.info(f"Integrating {n_batches} batches using key: {key}")
