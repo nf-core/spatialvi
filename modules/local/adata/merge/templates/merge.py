@@ -15,9 +15,13 @@ from pathlib import Path
 import anndata as ad
 import pandas as pd
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def add_var(adata, adata_list, join):

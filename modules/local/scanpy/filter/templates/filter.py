@@ -13,6 +13,10 @@ Filtering steps (in order):
  7. Filter observations by maximum haemoglobin content
 """
 
+# Disable OpenMP CPU topology detection for macOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
 import csv
 import importlib.metadata
 import logging
@@ -21,9 +25,13 @@ import platform
 import anndata as ad
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def filter_by_obs_column(adata, col, threshold, filter_below, stat_key, stats):

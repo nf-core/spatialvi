@@ -15,9 +15,13 @@ import shutil
 
 import spatialdata_io
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size):

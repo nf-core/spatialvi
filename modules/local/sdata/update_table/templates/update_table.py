@@ -28,9 +28,13 @@ import numpy as np
 import spatialdata
 import yaml
 from spatialdata.models import TableModel
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def find_table_name(sdata, adata, sample_id):

@@ -7,8 +7,11 @@ observations, indicating they may be biologically relevant. These genes
 are typically used for downstream dimensionality reduction and clustering.
 """
 
-# Required for numba caching in read-only containers
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+# Required for numba caching in read-only containers
 os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
 os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
 os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
@@ -21,9 +24,13 @@ import anndata as ad
 import numpy as np
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def validate_adata(adata):

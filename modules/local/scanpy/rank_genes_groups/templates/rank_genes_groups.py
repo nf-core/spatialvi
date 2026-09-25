@@ -17,9 +17,13 @@ import platform
 import anndata as ad
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def rank_genes(adata, groupby, method):

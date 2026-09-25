@@ -7,8 +7,11 @@ Adds the following annotations:
 - obs: 'n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'
 """
 
-# Required before importing Numba-dependent packages in read-only containers
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+# Required before importing Numba-dependent packages in read-only containers
 os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
 os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
 os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
@@ -22,9 +25,13 @@ import numpy as np
 import scanpy as sc
 import scipy.sparse
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def validate_adata(adata):
