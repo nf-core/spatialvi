@@ -8,12 +8,10 @@
                     "python": "3.12.12"
                 },
                 "REPORT": {
-                    "papermill": "2.6.0",
-                    "quarto": "1.8.25"
+                    "python": "3.12.12"
                 },
                 "REPORT_INTEGRATED": {
-                    "papermill": "2.6.0",
-                    "quarto": "1.8.25"
+                    "python": "3.12.12"
                 },
                 "SCANPY_CALCULATE_QC_METRICS": {
                     "anndata": "0.12.4",

@@ -11,12 +11,10 @@
                     "fastqc": "0.12.1"
                 },
                 "REPORT": {
-                    "papermill": "2.6.0",
-                    "quarto": "1.8.25"
+                    "python": "3.12.12"
                 },
                 "REPORT_INTEGRATED": {
-                    "papermill": "2.6.0",
-                    "quarto": "1.8.25"
+                    "python": "3.12.12"
                 },
                 "SCANPY_CALCULATE_QC_METRICS": {
                     "anndata": "0.12.4",
@@ -2541,10 +2539,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-04-17T10:54:33.57999253",
+        "timestamp": "2026-08-20T10:53:00.597157526",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.3"
         }
     }
 }
