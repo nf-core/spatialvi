@@ -43,7 +43,8 @@ workflow CLUSTERING {
     SCANPY_LEIDEN (
         SCANPY_UMAP.out.adata,
         cluster_resolution,
-        leiden_key_added
+        leiden_key_added,
+        true // write_adata
     )
 
     emit:

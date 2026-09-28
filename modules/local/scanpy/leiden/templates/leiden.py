@@ -13,7 +13,9 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import scanpy as sc
@@ -55,11 +57,6 @@ def perform_leiden(adata, resolution, key_added):
     sc.tl.leiden(adata, resolution=resolution, key_added=key_added)
 
     n_clusters = adata.obs[key_added].nunique()
-    adata.uns["leiden"] = {
-        "resolution": resolution,
-        "n_clusters": n_clusters,
-    }
-
     cluster_sizes = adata.obs[key_added].value_counts().sort_index()
     logger.info(f"Found {n_clusters} clusters:")
     for cluster, size in cluster_sizes.items():
@@ -67,6 +64,13 @@ def perform_leiden(adata, resolution, key_added):
         logger.info(f"  Cluster {cluster}: {size} obs ({pct:.1f}%)")
 
     return adata
+
+
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
 
 
 def write_versions(process_name):
@@ -91,6 +95,7 @@ def main():
     resolution = float("${resolution}")
     key_added = "${key_added}"
     output_h5ad = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     adata = ad.read_h5ad(h5ad)
@@ -98,8 +103,12 @@ def main():
 
     adata = perform_leiden(adata, resolution=resolution, key_added=key_added)
 
-    adata.write_h5ad(output_h5ad)
-    logger.info(f"Written AnnData with clusters to: {output_h5ad}")
+    write_pickle(adata.obs[[key_added]], "obs", key_added)
+    write_pickle(adata.uns[key_added], "uns", key_added)
+
+    if write_adata:
+        adata.write_h5ad(output_h5ad)
+        logger.info(f"Written AnnData with clusters to: {output_h5ad}")
 
     write_versions(process_name)
 

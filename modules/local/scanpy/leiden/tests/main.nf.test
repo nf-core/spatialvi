@@ -32,6 +32,7 @@ nextflow_process {
                 input[0] = SCANPY_NEIGHBORS.out.adata
                 input[1] = 1.0        // resolution
                 input[2] = 'clusters' // key_added
+                input[3] = true       // write_adata
                 """
             }
         }
@@ -41,7 +42,51 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obs.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - no h5ad") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_NEIGHBORS.out.adata
+                input[1] = 1.0        // resolution
+                input[2] = 'clusters' // key_added
+                input[3] = false      // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.adata.isEmpty() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.obs.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
@@ -73,6 +118,7 @@ nextflow_process {
                 input[0] = SCANPY_NEIGHBORS.out.adata
                 input[1] = 1.0        // resolution
                 input[2] = 'clusters' // key_added
+                input[3] = true       // write_adata
                 """
             }
         }
