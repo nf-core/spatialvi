@@ -1,0 +1,324 @@
+nextflow_process {
+
+    name "Test Process ADATA_EXTEND"
+    script "../main.nf"
+    process "ADATA_EXTEND"
+
+    tag "modules"
+    tag "modules_local"
+    tag "adata_extend"
+
+    test("leiden - pickled obs and uns") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15 // n_neighbors
+                    input[2] = 50 // n_pcs
+                    input[3] = '' // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../../scanpy/leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    input[3] = false      // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_NEIGHBORS.out.adata
+                    .join(SCANPY_LEIDEN.out.obs)
+                    .join(SCANPY_LEIDEN.out.uns)
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
+                input[1] = false // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("should fail - key collision") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15   // n_neighbors
+                    input[2] = 50   // n_pcs
+                    input[3] = ''   // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../../scanpy/leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    input[3] = true       // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.adata
+                    .join(SCANPY_LEIDEN.out.obs)
+                    .join(SCANPY_LEIDEN.out.uns)
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
+                input[1] = false // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("column `clusters` already exists") }
+            )
+        }
+    }
+
+    test("overwrite - key collision allowed") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15   // n_neighbors
+                    input[2] = 50   // n_pcs
+                    input[3] = ''   // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../../scanpy/leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    input[3] = true       // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.adata
+                    .join(SCANPY_LEIDEN.out.obs)
+                    .join(SCANPY_LEIDEN.out.uns)
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
+                input[1] = false // allow_missing
+                input[2] = true  // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("should fail - index mismatch") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15   // n_neighbors
+                    input[2] = 50   // n_pcs
+                    input[3] = ''   // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../../scanpy/leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    input[3] = false      // write_adata
+                    """
+                }
+            }
+            run("SCANPY_FILTER") {
+                script "../../../scanpy/filter/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1000 // min_counts
+                    input[2] = 0    // min_genes
+                    input[3] = 0    // min_obs
+                    input[4] = 100  // mito_threshold
+                    input[5] = 0    // ribo_threshold
+                    input[6] = 100  // hb_threshold
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_FILTER.out.adata
+                    .join(SCANPY_LEIDEN.out.obs)
+                    .join(SCANPY_LEIDEN.out.uns)
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
+                input[1] = false // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Index for obs.clusters differs from adata.obs") }
+
+            )
+        }
+    }
+
+    test("allow_missing - index mismatch reindexed") {
+
+        setup {
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 15   // n_neighbors
+                    input[2] = 50   // n_pcs
+                    input[3] = ''   // use_rep
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../../scanpy/leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    input[3] = false      // write_adata
+                    """
+                }
+            }
+            run("SCANPY_FILTER") {
+                script "../../../scanpy/filter/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1000 // min_counts
+                    input[2] = 0    // min_genes
+                    input[3] = 0    // min_obs
+                    input[4] = 100  // mito_threshold
+                    input[5] = 0    // ribo_threshold
+                    input[6] = 100  // hb_threshold
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_FILTER.out.adata
+                    .join(SCANPY_LEIDEN.out.obs)
+                    .join(SCANPY_LEIDEN.out.uns)
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
+                input[1] = true  // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'SRR28679756' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                    [], [], [], [], [], []
+                ]
+                input[1] = false // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
