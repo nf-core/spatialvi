@@ -73,7 +73,8 @@ workflow PREPROCESSING {
     SCANPY_PCA (
         SCANPY_HIGHLY_VARIABLE_GENES.out.adata,
         n_principal_components,
-        pca_use_highly_variable
+        pca_use_highly_variable,
+        true // write_adata
     )
 
 

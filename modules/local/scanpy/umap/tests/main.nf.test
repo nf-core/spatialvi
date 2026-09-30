@@ -40,6 +40,7 @@ nextflow_process {
                     input[0] = SCANPY_HIGHLY_VARIABLE_GENES.out.adata
                     input[1] = 50   // n_pcs
                     input[2] = true // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }
@@ -110,6 +111,7 @@ nextflow_process {
                     input[0] = SCANPY_HIGHLY_VARIABLE_GENES.out.adata
                     input[1] = 50   // n_pcs
                     input[2] = true // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }

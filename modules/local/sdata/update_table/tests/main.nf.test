@@ -36,6 +36,7 @@ nextflow_process {
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
                     input[1] = 50    // n_pcs
                     input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }
@@ -110,6 +111,7 @@ nextflow_process {
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
                     input[1] = 50    // n_pcs
                     input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }
@@ -199,6 +201,7 @@ nextflow_process {
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
                     input[1] = 50    // n_pcs
                     input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }

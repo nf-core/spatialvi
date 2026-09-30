@@ -21,6 +21,7 @@ nextflow_process {
                     ])
                     input[1] = 50    // n_pcs
                     input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }
@@ -134,6 +135,7 @@ nextflow_process {
                     ])
                     input[1] = 50    // n_pcs
                     input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }
