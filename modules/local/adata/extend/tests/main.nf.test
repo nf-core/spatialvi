@@ -8,7 +8,7 @@ nextflow_process {
     tag "modules_local"
     tag "adata_extend"
 
-    test("leiden - pickled obs and uns") {
+    test("homo_sapiens - pkl - obs and uns") {
 
         setup {
             run("SCANPY_NEIGHBORS") {
@@ -61,7 +61,52 @@ nextflow_process {
         }
     }
 
-    test("should fail - key collision") {
+    test("homo_sapiens - pkl - obsm, varm and uns") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = false // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    .join(SCANPY_PCA.out.obsm)
+                    .join(SCANPY_PCA.out.varm)
+                    .join(SCANPY_PCA.out.uns)
+                    .map { meta, base, obsm, varm, uns -> [ meta, base, [], [], obsm, varm, [], uns ] }
+                input[1] = false // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - pkl - key collision") {
 
         setup {
             run("SCANPY_NEIGHBORS") {
@@ -106,12 +151,12 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("column `clusters` already exists") }
+                { assert process.errorReport.contains("`clusters` already exists") }
             )
         }
     }
 
-    test("overwrite - key collision allowed") {
+    test("homo_sapiens - pkl - key collision allowed") {
 
         setup {
             run("SCANPY_NEIGHBORS") {
@@ -164,7 +209,7 @@ nextflow_process {
         }
     }
 
-    test("should fail - index mismatch") {
+    test("homo_sapiens - pkl - index mismatch") {
 
         setup {
             run("SCANPY_NEIGHBORS") {
@@ -223,13 +268,13 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("Index for obs.clusters differs from adata.obs") }
+                { assert process.errorReport.contains("Index for obs.clusters differs from adata") }
 
             )
         }
     }
 
-    test("allow_missing - index mismatch reindexed") {
+    test("homo_sapiens - pkl - index mismatch reindexed") {
 
         setup {
             run("SCANPY_NEIGHBORS") {

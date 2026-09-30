@@ -1,4 +1,58 @@
 {
+    "homo_sapiens - pkl - index mismatch reindexed": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 1,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "n_counts",
+                        "n_genes",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "n_cells",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "filtering_stats",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-30T15:36:22.970485",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "leiden - picked obs and uns": {
         "content": [
             [
@@ -82,6 +136,56 @@
             "nextflow": "26.04.6"
         }
     },
+    "homo_sapiens - pkl - obs and uns": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-30T15:33:40.149671",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "allow_missing - index mismatch reindexed": {
         "content": [
             [
@@ -131,6 +235,56 @@
             }
         ],
         "timestamp": "2026-09-29T11:23:23.172316",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - key collision allowed": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-30T15:35:02.65551",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

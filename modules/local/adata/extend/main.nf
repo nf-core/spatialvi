@@ -7,7 +7,7 @@ process ADATA_EXTEND {
     input:
     tuple (
         val(meta),
-        path(base, stageAs: "base.h5ad", arity: '1'),
+        path(h5ad, stageAs: "base.h5ad", arity: '1'),
         path(obs,  stageAs: "obs/*"),
         path(var,  stageAs: "var/*"),
         path(obsm, stageAs: "obsm/*"),
