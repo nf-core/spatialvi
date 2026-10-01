@@ -57,7 +57,7 @@ def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
     and `.uns['spatial']` for the final merged object.
     """
 
-    logger.info(f"Merging {len(adata_list)} AnnData objects")
+    logger.info(f"Merging {len(adata_list)} AnnData objects using {join} join")
     adata = ad.concat(
         adata_list,
         join=join,
@@ -72,13 +72,6 @@ def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
     if preserve_spatial:
         adata = add_spatial(adata, adata_list)
 
-    adata.uns["merge"] = {
-        "n_samples": len(keys),
-        "join": join,
-        "label": label,
-        "preserve_var": preserve_var,
-        "preserve_spatial": preserve_spatial,
-    }
     logger.info(f"Final merged AnnData {adata}")
 
     return adata
