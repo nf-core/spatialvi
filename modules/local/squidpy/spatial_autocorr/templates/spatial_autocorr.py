@@ -42,8 +42,8 @@ def compute_spatial_autocorr(adata, mode):
             "run squidpy.gr.spatial_neighbors first."
         )
 
-    # Make var names unique
-    adata.var_names_make_unique()
+    if not adata.var_names.is_unique:
+        raise ValueError("Gene names in `adata.var_names` are not unique")
 
     # Compute spatial autocorrelation
     sq.gr.spatial_autocorr(

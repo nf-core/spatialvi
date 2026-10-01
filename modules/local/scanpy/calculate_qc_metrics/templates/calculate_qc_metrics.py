@@ -106,8 +106,6 @@ def ensure_qc_columns_exist(adata):
 
 def calculate_qc_metrics(adata):
     """Calculate QC metrics for AnnData object."""
-    adata.var_names_make_unique()
-
     gene_counts = annotate_gene_types(adata)
     qc_vars = determine_qc_vars(gene_counts)
     percent_top = determine_percent_top(adata.shape[1])

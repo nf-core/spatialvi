@@ -174,8 +174,6 @@ def filter_adata(
         "hb_threshold": hb_threshold,
     }
 
-    adata.var_names_make_unique()
-
     # Apply filtering steps
     adata, stats = filter_outside_tissue(adata, stats)
     adata, stats = filter_min_counts(adata, min_counts, stats)

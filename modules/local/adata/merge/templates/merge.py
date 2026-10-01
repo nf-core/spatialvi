@@ -51,11 +51,21 @@ def add_spatial(adata, adata_list):
     return adata
 
 
+def validate_var_names(adata_list, keys):
+    """Check that gene names are unique within each AnnData object."""
+    for adata, key in zip(adata_list, keys):
+        if not adata.var_names.is_unique:
+            raise ValueError(
+                f"Gene names in `adata.var_names` of '{key}' are not unique"
+            )
+
+
 def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
     """
     Merge multiple AnnData objects into one. Can optionally preserve both `.var`
     and `.uns['spatial']` for the final merged object.
     """
+    validate_var_names(adata_list, keys)
 
     logger.info(f"Merging {len(adata_list)} AnnData objects using {join} join")
     adata = ad.concat(

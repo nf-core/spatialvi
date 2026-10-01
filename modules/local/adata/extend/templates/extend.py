@@ -59,6 +59,12 @@ def handle_index_mismatches(adata, data, slot, name, allow_missing):
     slot_idx = getattr(adata, idx_name).index
     if not data.index.equals(slot_idx):
         if allow_missing:
+            # Re-indexing should fail with duplicated names
+            if not (slot_idx.is_unique and data.index.is_unique):
+                raise ValueError(
+                    f"Can't re-index {slot}.{name}: names in "
+                    f"adata.{idx_name} or the slot data are duplicated"
+                )
             data = data.reindex(slot_idx)
             logger.info(f"Re-indexed {name} with adata.{idx_name} index")
         else:
