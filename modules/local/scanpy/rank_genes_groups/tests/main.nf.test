@@ -32,6 +32,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -93,6 +94,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -154,6 +156,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -215,6 +218,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -297,6 +301,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }

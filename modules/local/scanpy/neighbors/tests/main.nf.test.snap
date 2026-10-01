@@ -1,4 +1,23 @@
 {
+    "homo_sapiens - h5ad - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,3ed02ce5d9eb07b2e974b8d7b80e7c8d"
+            ],
+            [
+                "connectivities.pkl",
+                "distances.pkl"
+            ],
+            [
+                "neighbors.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-01T13:58:01.71553",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "homo_sapiens - h5ad - stub": {
         "content": [
             {
@@ -11,6 +30,25 @@
                     ]
                 ],
                 "1": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        [
+                            "connectivities.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "distances.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "neighbors.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
@@ -21,15 +59,34 @@
                         "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "obsp": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        [
+                            "connectivities.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "distances.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "uns": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "neighbors.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T21:00:27.3532",
+        "timestamp": "2026-10-01T11:24:50.713975",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - with pca": {
@@ -72,12 +129,19 @@
                     "neighbors",
                     "pca"
                 ]
-            }
+            },
+            [
+                "connectivities.pkl",
+                "distances.pkl"
+            ],
+            [
+                "neighbors.pkl"
+            ]
         ],
-        "timestamp": "2026-03-30T07:13:37.845151",
+        "timestamp": "2026-10-01T13:57:24.349215",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

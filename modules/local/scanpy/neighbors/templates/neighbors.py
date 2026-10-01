@@ -13,7 +13,9 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import scanpy as sc
@@ -83,6 +85,13 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
     return adata
 
 
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -105,13 +114,15 @@ def main():
     n_pcs = int("${n_pcs}")
     use_rep = "${use_rep}"
     output_h5ad = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
-    logger.info(f"Computing neighbors for: {h5ad}")
+    logger.info(f"Reading: {h5ad}")
     adata = ad.read_h5ad(h5ad)
 
     validate_representation(adata, use_rep)
 
+    logger.info(f"Computing neighbors for: {h5ad}")
     adata = compute_neighbors(
         adata,
         n_neighbors=n_neighbors,
@@ -119,8 +130,15 @@ def main():
         use_rep=use_rep
     )
 
-    adata.write_h5ad(output_h5ad)
-    logger.info(f"Written AnnData with neighbors to: {output_h5ad}")
+    # Store `obsp` sparse matrices alongside an index in a dictionary
+    for name in ["connectivities", "distances"]:
+        obsp_dict = {"matrix": adata.obsp[name], "index": adata.obs_names}
+        write_pickle(obsp_dict, "obsp", name)
+    write_pickle(adata.uns["neighbors"], "uns", "neighbors")
+
+    if write_adata:
+        adata.write_h5ad(output_h5ad)
+        logger.info(f"Written AnnData with neighbors to: {output_h5ad}")
 
     write_versions(process_name)
 

@@ -32,6 +32,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -117,6 +118,125 @@ nextflow_process {
         }
     }
 
+    test("homo_sapiens - pkl - obsp and uns") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
+                    input[4] = false   // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_PCA.out.adata
+                    .join(SCANPY_NEIGHBORS.out.obsp)
+                    .join(SCANPY_NEIGHBORS.out.uns)
+                    .map { meta, base, obsp, uns -> [ meta, base, [], [], [], [], obsp, uns ] }
+                input[1] = false // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - pkl - obsp index mismatch") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
+                    input[4] = false   // write_adata
+                    """
+                }
+            }
+            run("SCANPY_FILTER") {
+                script "../../../scanpy/filter/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 1000 // min_counts
+                    input[2] = 0    // min_genes
+                    input[3] = 0    // min_obs
+                    input[4] = 100  // mito_threshold
+                    input[5] = 0    // ribo_threshold
+                    input[6] = 100  // hb_threshold
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_FILTER.out.adata
+                    .join(SCANPY_NEIGHBORS.out.obsp)
+                    .join(SCANPY_NEIGHBORS.out.uns)
+                    .map { meta, base, obsp, uns -> [ meta, base, [], [], [], [], obsp, uns ] }
+                input[1] = true  // allow_missing (value is not used; graph re-indexing is not allowed)
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("graphs can't be re-indexed") }
+            )
+        }
+    }
+
     test("homo_sapiens - pkl - key collision") {
 
         setup {
@@ -141,6 +261,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -202,6 +323,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -266,6 +388,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -342,6 +465,7 @@ nextflow_process {
                     input[1] = 15      // n_neighbors
                     input[2] = 50      // n_pcs
                     input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
                     """
                 }
             }

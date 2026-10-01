@@ -24,7 +24,8 @@ workflow CLUSTERING {
         ch_adata,
         n_neighbors,
         neighbors_n_pcs,
-        use_rep
+        use_rep,
+        true // write_adata
     )
 
     //

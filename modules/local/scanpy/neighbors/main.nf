@@ -9,10 +9,13 @@ process SCANPY_NEIGHBORS {
     val n_neighbors
     val n_pcs
     val use_rep
+    val write_adata
 
     output:
-    tuple val(meta), path("${prefix}.h5ad"), emit: adata
-    path "versions.yml",                     emit: versions, topic: versions
+    tuple val(meta), path("${prefix}.h5ad"), emit: adata, optional: true
+    tuple val(meta), path("obsp/*.pkl")    , emit: obsp
+    tuple val(meta), path("uns/*.pkl")     , emit: uns
+    path "versions.yml"                    , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,8 +26,13 @@ process SCANPY_NEIGHBORS {
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
+    def touch_adata = write_adata.toString() == 'true' ? "touch ${prefix}.h5ad" : ''
     """
-    touch ${prefix}.h5ad
+    ${touch_adata}
+    mkdir -p obsp uns
+    touch obsp/connectivities.pkl
+    touch obsp/distances.pkl
+    touch uns/neighbors.pkl
     touch versions.yml
     """
 }

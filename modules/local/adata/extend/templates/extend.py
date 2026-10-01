@@ -104,9 +104,7 @@ def extend_frame(adata, data, slot, name, allow_missing, overwrite):
 
 
 def extend_matrix(adata, data, slot, name, allow_missing, overwrite):
-    """
-    Add a matrix to `adata.obsm` or `adata.varm` under the key `name`.
-    """
+    """Add a matrix to `adata.obsm` or `adata.varm` under the key `name`."""
     data = handle_index_mismatches(adata, data, slot, name, allow_missing)
     names = getattr(adata, slot).keys()
     adata = handle_name_collisions(adata, slot, name, names, overwrite)
@@ -115,10 +113,28 @@ def extend_matrix(adata, data, slot, name, allow_missing, overwrite):
     return adata
 
 
+def extend_pairwise(adata, data, name, overwrite):
+    """
+    Add a pairwise observation annotation to `adata.obsp` with `name` key.
+
+    The `data` is required to be a dictionary with the "matrix" and "index"
+    keys, storing the sparse matrix and the corresponding `obs_names`.
+    Differences between the index and `adata.obs_names` are not allowed.
+    """
+    if not adata.obs_names.equals(data["index"]):
+        raise ValueError(
+            f"Index for obsp.{name} differs from adata; "
+            "graphs can't be re-indexed"
+        )
+    names = adata.obsp.keys()
+    adata = handle_name_collisions(adata, "obsp", name, names, overwrite)
+    adata.obsp[name] = data["matrix"]
+    logger.info(f"Extended `adata.obsp.{name}`")
+    return adata
+
+
 def extend_uns(adata, data, name, overwrite):
-    """
-    Add unstructured data to `adata.uns` under the key `name`.
-    """
+    """Add unstructured data to `adata.uns` under the key `name`."""
     adata = handle_name_collisions(adata, "uns", name, adata.uns, overwrite)
     adata.uns[name] = data
     logger.info(f"Extended `adata.uns.{name}`")
@@ -156,6 +172,7 @@ def main():
         "var": Path("var/"),
         "obsm": Path("obsm/"),
         "varm": Path("varm/"),
+        "obsp": Path("obsp/"),
         "uns": Path("uns/"),
     }
 
@@ -179,6 +196,13 @@ def main():
                     slot,
                     name,
                     allow_missing,
+                    overwrite
+                )
+            elif slot == "obsp":
+                adata = extend_pairwise(
+                    adata,
+                    data,
+                    name,
                     overwrite
                 )
             elif slot == "uns":
