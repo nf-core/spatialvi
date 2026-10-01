@@ -12,9 +12,12 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
+import pandas as pd
 import scanpy.external as sce
 import yaml
 from threadpoolctl import threadpool_limits
@@ -60,6 +63,13 @@ def integrate_scanorama(adata, key, adjusted_basis):
     return adata
 
 
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -82,6 +92,7 @@ def main():
     key = "${key}"
     adjusted_basis = "${embedding_added}"
     output_h5ad = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     adata = ad.read_h5ad(h5ad)
@@ -90,8 +101,14 @@ def main():
 
     adata = integrate_scanorama(adata, key=key, adjusted_basis=adjusted_basis)
 
-    adata.write_h5ad(output_h5ad)
-    logger.info(f"Written integrated AnnData to: {output_h5ad}")
+    # `obsm` needs an added index before writing to pickle
+    df_obsm = pd.DataFrame(adata.obsm[adjusted_basis])
+    df_obsm.index = adata.obs_names
+    write_pickle(df_obsm, "obsm", adjusted_basis)
+
+    if write_adata:
+        adata.write_h5ad(output_h5ad)
+        logger.info(f"Written integrated AnnData to: {output_h5ad}")
 
     write_versions(process_name)
 

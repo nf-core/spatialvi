@@ -1,4 +1,19 @@
 {
+    "homo_sapiens - h5ad - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,e38ec89768de8bf84a68a506577d0e4e"
+            ],
+            [
+                "X_scanorama.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-01T14:34:09.345792",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "homo_sapiens - h5ad": {
         "content": [
             [
@@ -39,12 +54,15 @@
                 "uns": [
                     "merge"
                 ]
-            }
+            },
+            [
+                "X_scanorama.pkl"
+            ]
         ],
-        "timestamp": "2026-04-02T19:49:00.438807",
+        "timestamp": "2026-10-01T14:33:46.213044",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -59,6 +77,14 @@
                     ]
                 ],
                 "1": [
+                    [
+                        {
+                            "id": "scanorama"
+                        },
+                        "X_scanorama.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
@@ -69,15 +95,23 @@
                         "scanorama.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "obsm": [
+                    [
+                        {
+                            "id": "scanorama"
+                        },
+                        "X_scanorama.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-16T13:31:20.87126",
+        "timestamp": "2026-10-01T14:34:42.005774",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

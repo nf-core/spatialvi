@@ -8,9 +8,11 @@ process SCANPY_SCANORAMA {
     tuple val(meta), path(h5ad, stageAs: "input.h5ad", arity: '1')
     val key
     val embedding_added
+    val write_adata
 
     output:
-    tuple val(meta), path("${prefix}.h5ad"), emit: adata
+    tuple val(meta), path("${prefix}.h5ad"), emit: adata, optional: true
+    tuple val(meta), path("obsm/*.pkl")    , emit: obsm
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -22,8 +24,11 @@ process SCANPY_SCANORAMA {
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
+    def touch_adata = write_adata.toString() == 'true' ? "touch ${prefix}.h5ad" : ''
     """
-    touch ${prefix}.h5ad
+    ${touch_adata}
+    mkdir -p obsm
+    touch obsm/${embedding_added}.pkl
     touch versions.yml
     """
 }
