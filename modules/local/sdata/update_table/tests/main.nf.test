@@ -137,6 +137,7 @@ nextflow_process {
                         .map { h5ad -> [[id: "harmony"], h5ad] }
                     input[1] = 'library_id' // key
                     input[2] = 'X_harmony'  // embedding_added
+                    input[3] = true         // write_adata
                     """
                 }
             }
