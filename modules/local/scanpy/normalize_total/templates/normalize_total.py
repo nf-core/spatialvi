@@ -15,6 +15,7 @@ import logging
 import platform
 
 import anndata as ad
+import numpy as np
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
@@ -54,17 +55,9 @@ def normalize_adata(adata, target_sum):
 
     # Calculate post-normalization statistics
     if "total_counts" in adata.obs:
-        if hasattr(adata.X, 'A1'):
-            adata.obs["total_counts_normalized"] = adata.X.sum(axis=1).A1
-        else:
-            adata.obs["total_counts_normalized"] = adata.X.sum(axis=1)
-        median_counts_after = adata.obs["total_counts_normalized"].median()
+        counts_after = np.asarray(adata.X.sum(axis=1)).ravel()
+        median_counts_after = np.median(counts_after)
         logger.info(f"Median total counts after normalization: {median_counts_after:.2f}")
-
-    adata.uns["normalization"] = {
-        "method": "normalize_total",
-        "target_sum": target_sum if target_sum else "median",
-    }
 
     return adata
 

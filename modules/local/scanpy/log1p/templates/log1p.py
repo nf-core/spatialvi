@@ -41,10 +41,6 @@ def log_transform(adata):
 
     sc.pp.log1p(adata)
 
-    if "normalization" not in adata.uns:
-        adata.uns["normalization"] = {}
-    adata.uns["normalization"]["log1p"] = True
-
     logger.info("Applied log(1+x) transformation")
 
     return adata
