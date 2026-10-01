@@ -9,9 +9,12 @@ process SCANPY_UMAP {
     val min_dist
     val spread
     val key_added
+    val write_adata
 
     output:
-    tuple val(meta), path("${prefix}.h5ad"), emit: adata
+    tuple val(meta), path("${prefix}.h5ad"), emit: adata, optional: true
+    tuple val(meta), path("obsm/*.pkl")    , emit: obsm
+    tuple val(meta), path("uns/*.pkl")     , emit: uns
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -23,8 +26,12 @@ process SCANPY_UMAP {
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
+    def touch_adata = write_adata.toString() == 'true' ? "touch ${prefix}.h5ad" : ''
     """
-    touch ${prefix}.h5ad
+    ${touch_adata}
+    mkdir -p obsm uns
+    touch obsm/${key_added}.pkl
+    touch uns/${key_added}.pkl
     touch versions.yml
     """
 }

@@ -9,9 +9,12 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
+import pandas as pd
 import scanpy as sc
 import yaml
 from threadpoolctl import threadpool_limits
@@ -51,6 +54,13 @@ def compute_umap(adata, min_dist, spread, key_added):
     return adata
 
 
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -73,6 +83,7 @@ def main():
     spread = float("${spread}")
     key_added = "${key_added}"
     output_adata = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     # Read AnnData
@@ -82,9 +93,16 @@ def main():
     # Compute UMAP
     adata = compute_umap(adata, min_dist, spread, key_added)
 
+    # `obsm` needs an added index before writing to pickle
+    df_obsm = pd.DataFrame(adata.obsm[key_added])
+    df_obsm.index = adata.obs_names
+    write_pickle(df_obsm, "obsm", key_added)
+    write_pickle(adata.uns[key_added], "uns", key_added)
+
     # Write output
-    adata.write_h5ad(output_adata)
-    logger.info(f"Written AnnData with UMAP to: {output_adata}")
+    if write_adata:
+        adata.write_h5ad(output_adata)
+        logger.info(f"Written AnnData with UMAP to: {output_adata}")
 
     # Write versions
     write_versions(process_name)

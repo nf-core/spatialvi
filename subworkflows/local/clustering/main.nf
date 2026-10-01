@@ -35,7 +35,8 @@ workflow CLUSTERING {
         SCANPY_NEIGHBORS.out.adata,
         umap_min_dist,
         umap_spread,
-        umap_key_added
+        umap_key_added,
+        true // write_adata
     )
 
     //
