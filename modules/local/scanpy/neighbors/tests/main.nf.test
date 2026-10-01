@@ -48,7 +48,7 @@ nextflow_process {
         }
     }
 
-    test("homo_sapiens - h5ad") {
+    test("homo_sapiens - h5ad - should fail - missing use_rep") {
 
         when {
             process {
@@ -65,11 +65,31 @@ nextflow_process {
 
         then {
             assertAll(
-                { assert process.success },
-                { assert snapshot(
-                    process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
-                ).match() }
+                { assert process.failed },
+                { assert process.errorReport.contains("`use_rep` is required") }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail - unknown use_rep") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 15      // n_neighbors
+                input[2] = 50      // n_pcs
+                input[3] = 'X_pca' // use_rep
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Representation 'X_pca' not found") }
             )
         }
     }
@@ -84,9 +104,9 @@ nextflow_process {
                 input[0] = [
                     [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ]
-                input[1] = 15 // n_neighbors
-                input[2] = 50 // n_pcs
-                input[3] = '' // use_rep
+                input[1] = 15      // n_neighbors
+                input[2] = 50      // n_pcs
+                input[3] = 'X_pca' // use_rep
                 """
             }
         }

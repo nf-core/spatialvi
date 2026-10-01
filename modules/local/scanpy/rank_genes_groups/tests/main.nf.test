@@ -11,16 +11,27 @@ nextflow_process {
     test("homo_sapiens - h5ad - wilcoxon") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15 // n_neighbors
-                    input[2] = 50 // n_pcs
-                    input[3] = '' // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -31,6 +42,7 @@ nextflow_process {
                     input[0] = SCANPY_NEIGHBORS.out.adata
                     input[1] = 1.0        // resolution
                     input[2] = 'clusters' // key_added
+                    input[3] = true       // write_adata
                     """
                 }
             }
@@ -60,16 +72,27 @@ nextflow_process {
     test("homo_sapiens - h5ad - t-test") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15 // n_neighbors
-                    input[2] = 50 // n_pcs
-                    input[3] = '' // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -80,6 +103,7 @@ nextflow_process {
                     input[0] = SCANPY_NEIGHBORS.out.adata
                     input[1] = 1.0        // resolution
                     input[2] = 'clusters' // key_added
+                    input[3] = true       // write_adata
                     """
                 }
             }
@@ -109,16 +133,27 @@ nextflow_process {
     test("homo_sapiens - h5ad - t-test_overstim_var") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15 // n_neighbors
-                    input[2] = 50 // n_pcs
-                    input[3] = '' // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -129,6 +164,7 @@ nextflow_process {
                     input[0] = SCANPY_NEIGHBORS.out.adata
                     input[1] = 1.0        // resolution
                     input[2] = 'clusters' // key_added
+                    input[3] = true       // write_adata
                     """
                 }
             }
@@ -158,16 +194,27 @@ nextflow_process {
     test("homo_sapiens - h5ad - logreg") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15 // n_neighbors
-                    input[2] = 50 // n_pcs
-                    input[3] = '' // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -178,6 +225,7 @@ nextflow_process {
                     input[0] = SCANPY_NEIGHBORS.out.adata
                     input[1] = 1.0        // resolution
                     input[2] = 'clusters' // key_added
+                    input[3] = true       // write_adata
                     """
                 }
             }
@@ -228,16 +276,27 @@ nextflow_process {
         options "-stub"
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15 // n_neighbors
-                    input[2] = 50 // n_pcs
-                    input[3] = '' // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -248,6 +307,7 @@ nextflow_process {
                     input[0] = SCANPY_NEIGHBORS.out.adata
                     input[1] = 1.0      // resolution
                     input[2] = 'leiden' // key_added
+                    input[3] = true       // write_adata
                     """
                 }
             }

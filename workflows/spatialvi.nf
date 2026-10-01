@@ -160,7 +160,7 @@ workflow SPATIALVI {
         //
         // SUBWORKFLOW: Clustering
         //
-        use_rep = ''
+        use_rep = 'X_pca'
         umap_key_added = 'X_umap'
         leiden_key_added = 'clusters'
         CLUSTERING (

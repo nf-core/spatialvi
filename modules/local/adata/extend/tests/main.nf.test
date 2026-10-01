@@ -11,16 +11,27 @@ nextflow_process {
     test("homo_sapiens - pkl - obs and uns") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../../scanpy/neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15 // n_neighbors
-                    input[2] = 50 // n_pcs
-                    input[3] = '' // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -109,16 +120,27 @@ nextflow_process {
     test("homo_sapiens - pkl - key collision") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../../scanpy/neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15   // n_neighbors
-                    input[2] = 50   // n_pcs
-                    input[3] = ''   // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -159,16 +181,27 @@ nextflow_process {
     test("homo_sapiens - pkl - key collision allowed") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../../scanpy/neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15   // n_neighbors
-                    input[2] = 50   // n_pcs
-                    input[3] = ''   // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -212,16 +245,27 @@ nextflow_process {
     test("homo_sapiens - pkl - index mismatch") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../../scanpy/neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15   // n_neighbors
-                    input[2] = 50   // n_pcs
-                    input[3] = ''   // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }
@@ -277,16 +321,27 @@ nextflow_process {
     test("homo_sapiens - pkl - index mismatch reindexed") {
 
         setup {
-            run("SCANPY_NEIGHBORS") {
-                script "../../../scanpy/neighbors/main.nf"
+            run("SCANPY_PCA") {
+                script "../../../scanpy/pca/main.nf"
                 process {
                     """
                     input[0] = [
                         [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
-                    input[1] = 15   // n_neighbors
-                    input[2] = 50   // n_pcs
-                    input[3] = ''   // use_rep
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../../scanpy/neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
                     """
                 }
             }

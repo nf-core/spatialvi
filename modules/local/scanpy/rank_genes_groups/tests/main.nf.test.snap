@@ -38,17 +38,16 @@
                 ],
                 "uns": [
                     "clusters",
-                    "leiden",
                     "neighbors",
                     "pca",
                     "rank_genes_groups"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T18:43:43.425106",
+        "timestamp": "2026-10-01T10:09:47.060828",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - logreg": {
@@ -90,17 +89,16 @@
                 ],
                 "uns": [
                     "clusters",
-                    "leiden",
                     "neighbors",
                     "pca",
                     "rank_genes_groups"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T19:05:22.628685",
+        "timestamp": "2026-10-01T10:12:09.675436",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -175,17 +173,16 @@
                 ],
                 "uns": [
                     "clusters",
-                    "leiden",
                     "neighbors",
                     "pca",
                     "rank_genes_groups"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T18:50:35.543846",
+        "timestamp": "2026-10-01T10:11:22.132817",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - t-test": {
@@ -227,17 +224,16 @@
                 ],
                 "uns": [
                     "clusters",
-                    "leiden",
                     "neighbors",
                     "pca",
                     "rank_genes_groups"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T18:44:25.651553",
+        "timestamp": "2026-10-01T10:10:34.863833",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

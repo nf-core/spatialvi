@@ -27,6 +27,21 @@ logger = logging.getLogger(__name__)
 threadpool_limits(int("${task.cpus}"))
 
 
+def validate_representation(adata, use_rep):
+    """Require an explicit, existing representation for the neighbor search."""
+    if use_rep.lower() in ["", "none"]:
+        raise ValueError(
+            "`use_rep` is required: use 'X' for the data matrix or a key in "
+            "`adata.obsm` (e.g. 'X_pca')"
+        )
+    if use_rep != "X" and use_rep not in adata.obsm:
+        available = ", ".join(adata.obsm.keys()) or "none"
+        raise ValueError(
+            f"Representation '{use_rep}' not found in `adata.obsm` "
+            f"(available: {available})"
+        )
+
+
 def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
     """
     Compute neighborhood graph for AnnData object.
@@ -38,10 +53,11 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
     n_neighbors : int
         Number of neighbors to use.
     n_pcs : int
-        Number of principal components to use.
-    use_rep : str or None
-        Representation to use. If None, uses either `.X` when `.n_vars < 50` or
-        `X_pca` otherwise.
+        Number of dimensions of the representation to use (the first `n_pcs`
+        columns); ignored when `use_rep` is 'X'.
+    use_rep : str
+        Representation to use: a key in `adata.obsm` (e.g. 'X_pca' or
+        'X_harmony'), or 'X' to use the data matrix directly.
 
     Returns
     -------
@@ -87,12 +103,14 @@ def main():
     h5ad = "${adata}"
     n_neighbors = int("${n_neighbors}")
     n_pcs = int("${n_pcs}")
-    use_rep = None if "${use_rep}".lower() in ["none", ""] else "${use_rep}"
+    use_rep = "${use_rep}"
     output_h5ad = "${prefix}.h5ad"
     process_name = "${task.process}"
 
     logger.info(f"Computing neighbors for: {h5ad}")
     adata = ad.read_h5ad(h5ad)
+
+    validate_representation(adata, use_rep)
 
     adata = compute_neighbors(
         adata,

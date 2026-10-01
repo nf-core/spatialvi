@@ -49,7 +49,6 @@
                     "clusters",
                     "clusters_nhood_enrichment",
                     "coordinate_system",
-                    "leiden",
                     "neighbors",
                     "pca",
                     "sample_id",
@@ -60,10 +59,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-04-01T19:14:30.789391",
+        "timestamp": "2026-10-01T10:18:27.527528",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
