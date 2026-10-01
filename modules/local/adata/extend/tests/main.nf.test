@@ -888,6 +888,100 @@ nextflow_process {
         }
     }
 
+    test("homo_sapiens - pkl - duplicate names reindexed") {
+
+        setup {
+            run("DUPLICATE_VAR_NAMES") {
+                script "../../../../../tests/helpers/duplicate_var_names.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../../scanpy/calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = false // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = DUPLICATE_VAR_NAMES.out.adata
+                    .join(SCANPY_CALCULATE_QC_METRICS.out.var)
+                    .map { meta, base, var -> [ meta, base, [], var, [], [], [], [] ] }
+                input[1] = true  // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Can't re-index var.qc_metrics") }
+            )
+        }
+    }
+
+    test("homo_sapiens - pkl - duplicate names strict") {
+
+        setup {
+            run("DUPLICATE_VAR_NAMES") {
+                script "../../../../../tests/helpers/duplicate_var_names.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../../scanpy/calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = DUPLICATE_VAR_NAMES.out.adata
+                    input[1] = false // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = DUPLICATE_VAR_NAMES.out.adata
+                    .join(SCANPY_CALCULATE_QC_METRICS.out.obs)
+                    .join(SCANPY_CALCULATE_QC_METRICS.out.var)
+                    .map { meta, base, obs, var -> [ meta, base, obs, var, [], [], [], [] ] }
+                input[1] = false // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
     test("stub") {
 
         options "-stub"
