@@ -65,8 +65,14 @@ def handle_index_mismatches(adata, data, slot, name, allow_missing):
                     f"Can't re-index slot data `{slot}/{name}.pkl`: names in "
                     f"`adata.{idx_name}_names` or the slot data are duplicated"
                 )
+            # Log number of missing entries
+            n_missing = (~slot_idx.isin(data.index)).sum()
             data = data.reindex(slot_idx)
-            logger.info(f"Re-indexed {name} with adata.{idx_name} index")
+            logger.warning(
+                f"Re-indexed slot data `{slot}/{name}.pkl` to "
+                f"`adata.{idx_name}_names`; {n_missing} of {len(slot_idx)} "
+                "entries have no slot data"
+            )
         else:
             raise ValueError(
                 f"Index of slot data `{slot}/{name}.pkl` differs from "
