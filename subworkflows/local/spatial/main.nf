@@ -29,7 +29,8 @@ workflow SPATIAL {
     cluster_key = 'clusters'
     SQUIDPY_NHOOD_ENRICHMENT (
         SQUIDPY_SPATIAL_NEIGHBORS.out.adata,
-        cluster_key
+        cluster_key,
+        true // write_adata
     )
 
     //

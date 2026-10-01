@@ -14,7 +14,9 @@ os.environ["KMP_INIT_AT_FORK"] = "FALSE"
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import squidpy as sq
@@ -39,6 +41,13 @@ def validate_adata(adata, cluster_key):
         )
 
 
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -59,6 +68,7 @@ def main():
     h5ad = "${adata}"
     cluster_key = "${cluster_key}"
     output_adata = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     logger.info(f"Reading: {h5ad}")
@@ -77,8 +87,12 @@ def main():
     logger.info(f"Computed neighborhood enrichment for {n_clusters} clusters")
     logger.info(f"Results stored in adata.uns['{cluster_key}_nhood_enrichment']")
 
-    adata.write_h5ad(output_adata)
-    logger.info(f"Written AnnData with neighborhood enrichment to: {output_adata}")
+    uns_key = f"{cluster_key}_nhood_enrichment"
+    write_pickle(adata.uns[uns_key], "uns", uns_key)
+
+    if write_adata:
+        adata.write_h5ad(output_adata)
+        logger.info(f"Written AnnData with neighborhood enrichment to: {output_adata}")
 
     write_versions(process_name)
 
