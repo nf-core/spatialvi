@@ -158,6 +158,7 @@ def write_pickle(data, slot, name):
     Path(slot).mkdir(exist_ok=True)
     with open(f"{slot}/{name}.pkl", "wb") as f:
         pickle.dump(data, f, protocol=5)
+    logger.info(f"Written slot data to: {slot}/{name}.pkl")
 
 
 def write_versions(process_name):
