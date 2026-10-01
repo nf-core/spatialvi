@@ -1,4 +1,22 @@
 {
+    "homo_sapiens - h5ad - seurat flavor - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+            ],
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-01T16:25:23.665644",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "homo_sapiens - h5ad - cell_ranger flavor": {
         "content": [
             [
@@ -44,12 +62,18 @@
                     "log1p",
                     "normalization"
                 ]
-            }
+            },
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
         ],
-        "timestamp": "2026-03-30T07:11:39.972877",
+        "timestamp": "2026-10-01T16:25:38.802595",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -64,6 +88,22 @@
                     ]
                 ],
                 "1": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "highly_variable_genes.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
@@ -74,15 +114,31 @@
                         "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "uns": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "var": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "highly_variable_genes.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T20:57:55.308878",
+        "timestamp": "2026-10-01T16:25:47.045368",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - seurat flavor": {
@@ -129,12 +185,18 @@
                     "log1p",
                     "normalization"
                 ]
-            }
+            },
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
         ],
-        "timestamp": "2026-03-30T07:11:23.210904",
+        "timestamp": "2026-10-01T16:25:08.781186",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

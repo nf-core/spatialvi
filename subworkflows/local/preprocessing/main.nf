@@ -65,7 +65,8 @@ workflow PREPROCESSING {
     SCANPY_HIGHLY_VARIABLE_GENES (
         SCANPY_LOG1P.out.adata,
         n_highly_variable_genes,
-        hvg_flavor
+        hvg_flavor,
+        true // write_adata
     )
 
     //
