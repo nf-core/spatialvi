@@ -183,8 +183,6 @@ def main():
     prefix = "${prefix}"
     process_name = "${task.process}"
 
-    adata = ad.read_h5ad(h5ad)
-
     slot_dirs = {
         "obs": Path("obs/"),
         "var": Path("var/"),
@@ -193,9 +191,20 @@ def main():
         "obsp": Path("obsp/"),
         "uns": Path("uns/"),
     }
+    slot_paths = {
+        slot: sorted(directory.glob("*"))
+        for slot, directory in slot_dirs.items()
+    }
 
-    for slot, directory in slot_dirs.items():
-        for path in sorted(directory.glob("*")):
+    # Abort if no slot data is given
+    if not any(slot_paths.values()):
+        raise ValueError("No slot data given; there is nothing to extend")
+
+    adata = ad.read_h5ad(h5ad)
+    logger.info(f"Read base AnnData with shape {adata.shape}: {h5ad}")
+
+    for slot, paths in slot_paths.items():
+        for path in paths:
             data = load_pickle(path)
             name = path.stem
             if slot in ("obs", "var"):

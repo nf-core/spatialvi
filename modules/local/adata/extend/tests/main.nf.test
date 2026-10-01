@@ -982,6 +982,30 @@ nextflow_process {
         }
     }
 
+    test("homo_sapiens - pkl - should fail without slot data") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'SRR28679756' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                    [], [], [], [], [], []
+                ]
+                input[1] = false // allow_missing
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("No slot data given") }
+            )
+        }
+    }
+
     test("stub") {
 
         options "-stub"
