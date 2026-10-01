@@ -601,7 +601,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("`clusters` already exists") }
+                { assert process.errorReport.contains('`adata.obs["clusters"]` already exists') }
             )
         }
     }
@@ -727,7 +727,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("`clusters` already exists in `adata.uns`") }
+                { assert process.errorReport.contains('`adata.uns["clusters"]` already exists') }
             )
         }
     }
@@ -803,7 +803,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("Index for obs.clusters differs from adata") }
+                { assert process.errorReport.contains("Index of slot data `obs/clusters.pkl` differs from `adata.obs_names`") }
 
             )
         }
@@ -929,7 +929,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("Can't re-index var.qc_metrics") }
+                { assert process.errorReport.contains("Can't re-index slot data `var/qc_metrics.pkl`") }
             )
         }
     }

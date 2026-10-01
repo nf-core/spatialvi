@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Extend an AnnData object with pickled `obs`, `var`, `obsm`, `varm`, and `uns`
-content produced by other modules; one directory per slot, with the file name as
-the key.
+Extend an AnnData object with pickled `obs`, `var`, `obsm`, `varm`, `obsp` and
+`uns` content produced by other modules; one directory per slot, with the file
+name as the key.
 
 Every slot index must match the input adata object exactly, and existing columns
 or keys are not replaced. `allow_missing` re-indexes the slot index to the input
@@ -62,13 +62,16 @@ def handle_index_mismatches(adata, data, slot, name, allow_missing):
             # Re-indexing should fail with duplicated names
             if not (slot_idx.is_unique and data.index.is_unique):
                 raise ValueError(
-                    f"Can't re-index {slot}.{name}: names in "
-                    f"adata.{idx_name} or the slot data are duplicated"
+                    f"Can't re-index slot data `{slot}/{name}.pkl`: names in "
+                    f"`adata.{idx_name}_names` or the slot data are duplicated"
                 )
             data = data.reindex(slot_idx)
             logger.info(f"Re-indexed {name} with adata.{idx_name} index")
         else:
-            raise ValueError(f"Index for {slot}.{name} differs from adata")
+            raise ValueError(
+                f"Index of slot data `{slot}/{name}.pkl` differs from "
+                f"`adata.{idx_name}_names`"
+            )
     return data
 
 
@@ -82,9 +85,9 @@ def handle_name_collisions(adata, slot, name, names, overwrite):
     if name in names:
         if overwrite:
             del getattr(adata, slot)[name]
-            logger.warning(f"Overwrote existing `adata.{slot}[{name}]`")
+            logger.warning(f'Overwrote existing `adata.{slot}["{name}"]`')
         else:
-            raise ValueError(f"`{name}` already exists in `adata.{slot}`")
+            raise ValueError(f'`adata.{slot}["{name}"]` already exists')
     return adata
 
 
@@ -105,7 +108,10 @@ def extend_frame(adata, data, slot, name, allow_missing, overwrite):
         )
 
     setattr(adata, slot, pd.concat([getattr(adata, slot), data], axis=1))
-    logger.info(f"Extended `adata.{slot}.{name}`")
+    logger.info(
+        f"Added columns {list(data.columns)} to `adata.{slot}` from slot data "
+        f"`{slot}/{name}.pkl`"
+    )
     return adata
 
 
@@ -115,7 +121,7 @@ def extend_matrix(adata, data, slot, name, allow_missing, overwrite):
     names = getattr(adata, slot).keys()
     adata = handle_name_collisions(adata, slot, name, names, overwrite)
     getattr(adata, slot)[name] = data.to_numpy()
-    logger.info(f"Extended `adata.{slot}.{name}`")
+    logger.info(f'Added `adata.{slot}["{name}"]`')
     return adata
 
 
@@ -129,13 +135,13 @@ def extend_pairwise(adata, data, name, overwrite):
     """
     if not adata.obs_names.equals(data["index"]):
         raise ValueError(
-            f"Index for obsp.{name} differs from adata; "
-            "graphs can't be re-indexed"
+            f"Index of slot data `obsp/{name}.pkl` differs from "
+            "`adata.obs_names`; graphs can't be re-indexed"
         )
     names = adata.obsp.keys()
     adata = handle_name_collisions(adata, "obsp", name, names, overwrite)
     adata.obsp[name] = data["matrix"]
-    logger.info(f"Extended `adata.obsp.{name}`")
+    logger.info(f'Added `adata.obsp["{name}"]`')
     return adata
 
 
@@ -143,7 +149,7 @@ def extend_uns(adata, data, name, overwrite):
     """Add unstructured data to `adata.uns` under the key `name`."""
     adata = handle_name_collisions(adata, "uns", name, adata.uns, overwrite)
     adata.uns[name] = data
-    logger.info(f"Extended `adata.uns.{name}`")
+    logger.info(f'Added `adata.uns["{name}"]`')
     return adata
 
 
@@ -220,6 +226,7 @@ def main():
                 )
 
     adata.write_h5ad(f"{prefix}.h5ad")
+    logger.info(f"Written extended AnnData to: {prefix}.h5ad")
 
     write_versions(process_name)
 
