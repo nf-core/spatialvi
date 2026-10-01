@@ -38,7 +38,8 @@ workflow SPATIAL {
     //
     SQUIDPY_INTERACTION_MATRIX (
         SQUIDPY_NHOOD_ENRICHMENT.out.adata,
-        cluster_key
+        cluster_key,
+        true // write_adata
     )
 
     //

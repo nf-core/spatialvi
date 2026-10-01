@@ -9,7 +9,9 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import squidpy as sq
@@ -29,6 +31,13 @@ def validate_adata(adata, cluster_key):
         raise ValueError(f"Column '{cluster_key}' not found in adata.obs")
     if "spatial_connectivities" not in adata.obsp:
         raise ValueError("Spatial connectivities not found; run squidpy.gr.spatial_neighbors first.")
+
+
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
 
 
 def write_versions(process_name):
@@ -51,6 +60,7 @@ def main():
     h5ad = "${adata}"
     cluster_key = "${cluster_key}"
     output_h5ad = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     logger.info(f"Reading: {h5ad}")
@@ -69,8 +79,12 @@ def main():
     logger.info(f"Computed interaction matrix for {n_clusters} clusters")
     logger.info(f"Results stored in adata.uns['{cluster_key}_interactions']")
 
-    adata.write_h5ad(output_h5ad)
-    logger.info(f"Written AnnData with interaction matrix to: {output_h5ad}")
+    uns_key = f"{cluster_key}_interactions"
+    write_pickle(adata.uns[uns_key], "uns", uns_key)
+
+    if write_adata:
+        adata.write_h5ad(output_h5ad)
+        logger.info(f"Written AnnData with interaction matrix to: {output_h5ad}")
 
     write_versions(process_name)
 

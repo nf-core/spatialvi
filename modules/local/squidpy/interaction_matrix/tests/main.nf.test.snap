@@ -1,4 +1,19 @@
 {
+    "homo_sapiens - h5ad - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,78677e1663cf16b9059e86c4765cfd1f"
+            ],
+            [
+                "clusters_interactions.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-01T15:38:47.838736",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "homo_sapiens - h5ad": {
         "content": [
             [
@@ -57,9 +72,12 @@
                     "spatialdata_attrs",
                     "table_name"
                 ]
-            }
+            },
+            [
+                "clusters_interactions.pkl"
+            ]
         ],
-        "timestamp": "2026-10-01T10:15:37.348558",
+        "timestamp": "2026-10-01T15:37:18.343213",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -77,6 +95,14 @@
                     ]
                 ],
                 "1": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "clusters_interactions.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
@@ -87,15 +113,23 @@
                         "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "uns": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "clusters_interactions.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T21:12:34.2875",
+        "timestamp": "2026-10-01T15:39:12.44344",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }
