@@ -49,12 +49,19 @@
                     "spatialdata_attrs",
                     "table_name"
                 ]
-            }
+            },
+            [
+                "spatial_connectivities.pkl",
+                "spatial_distances.pkl"
+            ],
+            [
+                "spatial_neighbors.pkl"
+            ]
         ],
-        "timestamp": "2026-04-01T19:18:48.567672",
+        "timestamp": "2026-10-01T15:21:58.476426",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -69,6 +76,25 @@
                     ]
                 ],
                 "1": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        [
+                            "spatial_connectivities.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "spatial_distances.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "spatial_neighbors.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
@@ -79,15 +105,53 @@
                         "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "obsp": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        [
+                            "spatial_connectivities.pkl:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "spatial_distances.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "uns": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "spatial_neighbors.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T21:19:20.858772",
+        "timestamp": "2026-10-01T15:22:16.814124",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - h5ad - grid - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,1af8ea16ef6f0a48c58bca6f26a978a0"
+            ],
+            [
+                "spatial_connectivities.pkl",
+                "spatial_distances.pkl"
+            ],
+            [
+                "spatial_neighbors.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-01T15:21:15.582661",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - grid": {
@@ -140,12 +204,19 @@
                     "spatialdata_attrs",
                     "table_name"
                 ]
-            }
+            },
+            [
+                "spatial_connectivities.pkl",
+                "spatial_distances.pkl"
+            ],
+            [
+                "spatial_neighbors.pkl"
+            ]
         ],
-        "timestamp": "2026-04-01T19:18:02.601779",
+        "timestamp": "2026-10-01T15:20:33.304953",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

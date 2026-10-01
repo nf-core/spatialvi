@@ -19,7 +19,8 @@ workflow SPATIAL {
     SQUIDPY_SPATIAL_NEIGHBORS (
         ch_adata,
         spatial_coord_type,
-        spatial_n_neighbors
+        spatial_n_neighbors,
+        true // write_adata
     )
 
     //
