@@ -216,7 +216,6 @@ def filter_adata(
     stats["total_genes_after"] = adata.shape[1]
     stats["total_obs_filtered"] = n_total_obs - adata.shape[0]
     stats["total_genes_filtered"] = n_total_genes - adata.shape[1]
-    adata.uns["filtering_stats"] = stats
 
     logger.info("Filtering summary:")
     logger.info(
