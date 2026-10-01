@@ -47,7 +47,8 @@ workflow SPATIAL {
     //
     SQUIDPY_SPATIAL_AUTOCORR (
         SQUIDPY_INTERACTION_MATRIX.out.adata,
-        svg_autocorr_method
+        svg_autocorr_method,
+        true // write_adata
     )
 
     emit:

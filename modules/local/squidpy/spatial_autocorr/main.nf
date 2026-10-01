@@ -7,11 +7,13 @@ process SQUIDPY_SPATIAL_AUTOCORR {
     input:
     tuple val(meta), path(adata, stageAs: "input.h5ad", arity: '1')
     val mode
+    val write_adata
 
     output:
-    tuple val(meta), path("${prefix}.h5ad"),    emit: adata
+    tuple val(meta), path("${prefix}.h5ad")   , emit: adata, optional: true
     tuple val(meta), path("${prefix}_svg.csv"), emit: csv
-    path "versions.yml",                        emit: versions, topic: versions
+    tuple val(meta), path("uns/*.pkl")        , emit: uns
+    path "versions.yml"                       , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,9 +24,13 @@ process SQUIDPY_SPATIAL_AUTOCORR {
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
+    def touch_adata = write_adata.toString() == 'true' ? "touch ${prefix}.h5ad" : ''
+    def uns_key = mode == 'moran' ? 'moranI' : 'gearyC'
     """
-    touch ${prefix}.h5ad
+    ${touch_adata}
     touch ${prefix}_svg.csv
+    mkdir -p uns
+    touch uns/${uns_key}.pkl
     touch versions.yml
     """
 }

@@ -14,7 +14,9 @@ os.environ["KMP_AFFINITY"] = "disabled"
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import squidpy as sq
@@ -52,18 +54,28 @@ def compute_spatial_autocorr(adata, mode):
     return adata
 
 
-def write_svg_to_csv(adata, mode, output_csv):
-    """Export spatially variable genes results to CSV."""
+def get_results_key(mode):
+    """Get the `uns` key that squidpy stores results under for a mode."""
     if mode == "moran":
-        results_key = "moranI"
+        return "moranI"
     elif mode == "geary":
-        results_key = "gearyC"
+        return "gearyC"
     else:
         raise ValueError(f"Unknown mode: {mode}. Use 'moran' or 'geary'.")
 
+
+def write_svg_to_csv(adata, results_key, output_csv):
+    """Export spatially variable genes results to CSV."""
     svg_df = adata.uns[results_key]
     svg_df.to_csv(output_csv)
     logger.info(f"Exported SVG results to: {output_csv}")
+
+
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
 
 
 def write_versions(process_name):
@@ -87,17 +99,21 @@ def main():
     mode = "${mode}"
     output_adata = "${prefix}.h5ad"
     output_csv = "${prefix}_svg.csv"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     adata = ad.read_h5ad(h5ad)
     logger.info(f"Computing spatial autocorrelation for: {h5ad}")
 
+    results_key = get_results_key(mode)
     adata = compute_spatial_autocorr(adata, mode)
 
-    write_svg_to_csv(adata, mode, output_csv)
+    write_svg_to_csv(adata, results_key, output_csv)
+    write_pickle(adata.uns[results_key], "uns", results_key)
 
-    adata.write_h5ad(output_adata)
-    logger.info(f"Written AnnData with spatial autocorrelation to: {output_adata}")
+    if write_adata:
+        adata.write_h5ad(output_adata)
+        logger.info(f"Written AnnData with spatial autocorrelation to: {output_adata}")
 
     write_versions(process_name)
 
