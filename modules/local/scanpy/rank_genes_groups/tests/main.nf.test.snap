@@ -42,9 +42,12 @@
                     "pca",
                     "rank_genes_groups"
                 ]
-            }
+            },
+            [
+                "rank_genes_groups.pkl"
+            ]
         ],
-        "timestamp": "2026-10-01T10:09:47.060828",
+        "timestamp": "2026-10-01T15:24:25.835022",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -93,9 +96,27 @@
                     "pca",
                     "rank_genes_groups"
                 ]
-            }
+            },
+            [
+                "rank_genes_groups.pkl"
+            ]
         ],
-        "timestamp": "2026-10-01T10:12:09.675436",
+        "timestamp": "2026-10-01T15:27:37.270096",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - h5ad - wilcoxon - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+            ],
+            [
+                "rank_genes_groups.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-01T15:25:16.709227",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -113,6 +134,14 @@
                     ]
                 ],
                 "1": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "rank_genes_groups.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
@@ -123,15 +152,23 @@
                         "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "uns": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "rank_genes_groups.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T21:05:02.8784",
+        "timestamp": "2026-10-01T15:27:57.038888",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - t-test_overstim_var": {
@@ -177,9 +214,12 @@
                     "pca",
                     "rank_genes_groups"
                 ]
-            }
+            },
+            [
+                "rank_genes_groups.pkl"
+            ]
         ],
-        "timestamp": "2026-10-01T10:11:22.132817",
+        "timestamp": "2026-10-01T15:26:50.539956",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -228,9 +268,12 @@
                     "pca",
                     "rank_genes_groups"
                 ]
-            }
+            },
+            [
+                "rank_genes_groups.pkl"
+            ]
         ],
-        "timestamp": "2026-10-01T10:10:34.863833",
+        "timestamp": "2026-10-01T15:26:03.572618",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

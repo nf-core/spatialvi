@@ -182,7 +182,8 @@ workflow SPATIALVI {
         SCANPY_RANK_GENES_GROUPS (
             CLUSTERING.out.adata,
             rank_genes_group_by,
-            rank_genes_method
+            rank_genes_method,
+            true // write_adata
         )
 
         //

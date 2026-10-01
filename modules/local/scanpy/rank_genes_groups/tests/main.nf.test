@@ -55,6 +55,7 @@ nextflow_process {
                 input[0] = SCANPY_LEIDEN.out.adata
                 input[1] = 'clusters' // groupby
                 input[2] = 'wilcoxon' // method
+                input[3] = true       // write_adata
                 """
             }
         }
@@ -64,7 +65,72 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - wilcoxon - no h5ad output") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
+                    """
+                }
+            }
+            run("SCANPY_LEIDEN") {
+                script "../../leiden/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NEIGHBORS.out.adata
+                    input[1] = 1.0        // resolution
+                    input[2] = 'clusters' // key_added
+                    input[3] = true       // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LEIDEN.out.adata
+                input[1] = 'clusters' // groupby
+                input[2] = 'wilcoxon' // method
+                input[3] = false      // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.adata.isEmpty() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
@@ -117,6 +183,7 @@ nextflow_process {
                 input[0] = SCANPY_LEIDEN.out.adata
                 input[1] = 'clusters' // groupby
                 input[2] = 't-test'   // method
+                input[3] = true       // write_adata
                 """
             }
         }
@@ -126,7 +193,8 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
@@ -179,6 +247,7 @@ nextflow_process {
                 input[0] = SCANPY_LEIDEN.out.adata
                 input[1] = 'clusters'             // groupby
                 input[2] = 't-test_overestim_var' // method
+                input[3] = true                   // write_adata
                 """
             }
         }
@@ -188,7 +257,8 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
@@ -241,6 +311,7 @@ nextflow_process {
                 input[0] = SCANPY_LEIDEN.out.adata
                 input[1] = 'clusters' // groupby
                 input[2] = 'logreg'   // method
+                input[3] = true       // write_adata
                 """
             }
         }
@@ -250,7 +321,8 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
@@ -266,6 +338,7 @@ nextflow_process {
                 ]
                 input[1] = 'missing_column' // groupby
                 input[2] = 'wilcoxon'       // method
+                input[3] = true             // write_adata
                 """
             }
         }
@@ -312,7 +385,7 @@ nextflow_process {
                     input[0] = SCANPY_NEIGHBORS.out.adata
                     input[1] = 1.0      // resolution
                     input[2] = 'leiden' // key_added
-                    input[3] = true       // write_adata
+                    input[3] = true   // write_adata
                     """
                 }
             }
@@ -322,8 +395,9 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_LEIDEN.out.adata
-                input[1] = 'leiden'    // groupby
-                input[2] = 'wilcoxon'  // method
+                input[1] = 'leiden'   // groupby
+                input[2] = 'wilcoxon' // method
+                input[3] = true       // write_adata
                 """
             }
         }
