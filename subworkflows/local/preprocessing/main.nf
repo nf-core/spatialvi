@@ -27,7 +27,8 @@ workflow PREPROCESSING {
     // MODULE: Calculate quality control metrics
     //
     SCANPY_CALCULATE_QC_METRICS (
-        ch_adata_input
+        ch_adata_input,
+        true // write_adata
     )
 
     //
