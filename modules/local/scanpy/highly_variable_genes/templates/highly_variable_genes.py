@@ -7,53 +7,36 @@ observations, indicating they may be biologically relevant. These genes
 are typically used for downstream dimensionality reduction and clustering.
 """
 
-# Required for numba caching in read-only containers
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
-os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
-os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
-os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
+os.environ["KMP_AFFINITY"] = "disabled"
+
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
-def validate_adata(adata):
-    """
-    Validate that AnnData has sufficient data for HVG selection.
-
-    Parameters
-    ----------
-    adata : AnnData
-        Annotated data matrix.
-
-    Raises
-    ------
-    ValueError
-        If AnnData has 0 observations or 0 genes.
-
-    Returns
-    -------
-    tuple
-        Number of observations and genes.
-    """
-    n_obs, n_genes = adata.shape
-
-    if n_obs == 0:
-        raise ValueError("AnnData has 0 observations.")
-
-    if n_genes == 0:
-        raise ValueError("AnnData has 0 genes.")
-
-    return n_obs, n_genes
+# The `var` columns that `sc.pp.highly_variable_genes` adds
+HVG_COLUMNS = ["highly_variable", "means", "dispersions", "dispersions_norm"]
 
 
 def mark_all_genes_hvg(adata, flavor):
@@ -77,18 +60,16 @@ def mark_all_genes_hvg(adata, flavor):
     logger.warning("Too few genes for meaningful HVG selection.")
     logger.info("Marking all genes as highly variable.")
 
-    adata.var["highly_variable"] = True
-    adata.var["highly_variable_rank"] = np.arange(n_genes)
-    adata.var["means"] = np.array(adata.X.mean(axis=0)).flatten()
-    adata.var["dispersions"] = np.zeros(n_genes)
-    adata.var["dispersions_norm"] = np.zeros(n_genes)
-
-    adata.uns["hvg"] = {
-        "flavor": flavor,
-        "n_hvgs_requested": n_genes,
-        "n_hvgs_found": n_genes,
-        "warning": f"Only {n_genes} genes available, all marked as HVG",
+    # Add the same columns and `uns` entry as scanpy does
+    values = {
+        "highly_variable": True,
+        "means": np.array(adata.X.mean(axis=0)).flatten(),
+        "dispersions": np.zeros(n_genes),
+        "dispersions_norm": np.zeros(n_genes),
     }
+    for col in HVG_COLUMNS:
+        adata.var[col] = values[col]
+    adata.uns["hvg"] = {"flavor": flavor}
 
     return adata
 
@@ -111,16 +92,29 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
     AnnData
         AnnData with HVG annotations in var.
     """
-    n_obs, n_genes = validate_adata(adata)
+
+    # Validate AnnData
+    n_obs, n_var = adata.shape
+    if n_obs == 0:
+        raise ValueError("AnnData has 0 observations.")
+    if n_var == 0:
+        raise ValueError("AnnData has 0 variables.")
+
+    allowed_flavors = ["seurat", "cell_ranger"]
+    if flavor not in allowed_flavors:
+        raise ValueError(
+            f"Unsupported flavor '{flavor}'; use one of: "
+            f"{', '.join(allowed_flavors)}"
+        )
 
     logger.info(f"AnnData shape: {adata.shape}")
     logger.info(f"HVGs requested: {n_top_genes}")
     logger.info(f"Flavor: {flavor}")
 
     # Adjust n_top_genes if necessary
-    if n_top_genes >= n_genes:
+    if n_top_genes >= n_var:
         logger.warning(
-            f"Requested {n_top_genes} HVGs but only {n_genes} genes available."
+            f"Requested {n_top_genes} HVGs but only {n_var} genes available."
         )
         return mark_all_genes_hvg(adata, flavor)
 
@@ -140,16 +134,18 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
     adata.var["highly_variable"] = adata.var["highly_variable"].astype(bool)
     n_hvgs_found = adata.var["highly_variable"].sum()
 
-    adata.uns["hvg"] = {
-        "flavor": flavor,
-        "n_hvgs_requested": n_top_genes,
-        "n_hvgs_found": int(n_hvgs_found),
-    }
-
     logger.info(f"Identified {n_hvgs_found} highly variable genes")
-    logger.info(f"Percentage of genes: {n_hvgs_found / n_genes * 100:.1f}%")
+    logger.info(f"Percentage of genes: {n_hvgs_found / n_var * 100:.1f}%")
 
     return adata
+
+
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+    logger.info(f"Written slot data to: {slot}/{name}.pkl")
 
 
 def write_versions(process_name):
@@ -173,15 +169,24 @@ def main():
     n_top_genes = int("${n_hvgs}")
     flavor = "${flavor}"
     output_h5ad = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     adata = ad.read_h5ad(h5ad)
     logger.info(f"Finding highly variable genes in: {h5ad}")
 
-    adata = find_highly_variable_genes(adata, n_top_genes=n_top_genes, flavor=flavor)
+    adata = find_highly_variable_genes(
+        adata,
+        n_top_genes=n_top_genes,
+        flavor=flavor
+    )
 
-    adata.write_h5ad(output_h5ad)
-    logger.info(f"Written AnnData with HVG annotations to: {output_h5ad}")
+    write_pickle(adata.var[HVG_COLUMNS], "var", "highly_variable_genes")
+    write_pickle(adata.uns["hvg"], "uns", "hvg")
+
+    if write_adata:
+        adata.write_h5ad(output_h5ad)
+        logger.info(f"Written AnnData with HVG annotations to: {output_h5ad}")
 
     write_versions(process_name)
 

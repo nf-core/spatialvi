@@ -19,7 +19,8 @@ workflow SPATIAL {
     SQUIDPY_SPATIAL_NEIGHBORS (
         ch_adata,
         spatial_coord_type,
-        spatial_n_neighbors
+        spatial_n_neighbors,
+        true // write_adata
     )
 
     //
@@ -28,7 +29,8 @@ workflow SPATIAL {
     cluster_key = 'clusters'
     SQUIDPY_NHOOD_ENRICHMENT (
         SQUIDPY_SPATIAL_NEIGHBORS.out.adata,
-        cluster_key
+        cluster_key,
+        true // write_adata
     )
 
     //
@@ -36,7 +38,8 @@ workflow SPATIAL {
     //
     SQUIDPY_INTERACTION_MATRIX (
         SQUIDPY_NHOOD_ENRICHMENT.out.adata,
-        cluster_key
+        cluster_key,
+        true // write_adata
     )
 
     //
@@ -44,7 +47,8 @@ workflow SPATIAL {
     //
     SQUIDPY_SPATIAL_AUTOCORR (
         SQUIDPY_INTERACTION_MATRIX.out.adata,
-        svg_autocorr_method
+        svg_autocorr_method,
+        true // write_adata
     )
 
     emit:

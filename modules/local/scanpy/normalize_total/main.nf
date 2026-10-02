@@ -5,7 +5,7 @@ process SCANPY_NORMALIZE_TOTAL {
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    tuple val(meta), path(adata, stageAs: "input.h5ad")
+    tuple val(meta), path(adata, stageAs: "input.h5ad", arity: '1')
     val target_sum
 
     output:

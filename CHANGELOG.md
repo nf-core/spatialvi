@@ -18,6 +18,7 @@ compatible with further downstream analyses and/or exploration in _e.g._
 
 ### `Added`
 
+- Add pickled slot data outputs and `adata/extend` [[#153](https://github.com/nf-core/spatialvi/pull/153/)]
 - Deprecate `quartonotebook` module in favour of `quarto/notebook` [[#148](https://github.com/nf-core/spatialvi/pull/148)]
 - Separate reports into separate scripts [[#137](https://github.com/nf-core/spatialvi/pull/137)]
 - Use topic channels for software versions [[#133](https://github.com/nf-core/spatialvi/pull/133)]

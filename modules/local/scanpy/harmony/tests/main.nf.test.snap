@@ -1,4 +1,19 @@
 {
+    "homo_sapiens - h5ad - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,03172681ef9c2e21eed9e9ed573cf597"
+            ],
+            [
+                "X_harmony.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-01T14:29:06.427218",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "homo_sapiens - h5ad": {
         "content": [
             [
@@ -37,14 +52,17 @@
                     
                 ],
                 "uns": [
-                    "merge"
+                    
                 ]
-            }
+            },
+            [
+                "X_harmony.pkl"
+            ]
         ],
-        "timestamp": "2026-04-05T07:49:22.583334",
+        "timestamp": "2026-10-01T23:01:44.415676",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -59,6 +77,14 @@
                     ]
                 ],
                 "1": [
+                    [
+                        {
+                            "id": "harmony"
+                        },
+                        "X_harmony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
@@ -69,15 +95,23 @@
                         "harmony.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "obsm": [
+                    [
+                        {
+                            "id": "harmony"
+                        },
+                        "X_harmony.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-16T13:29:56.755677",
+        "timestamp": "2026-10-01T14:29:38.504245",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

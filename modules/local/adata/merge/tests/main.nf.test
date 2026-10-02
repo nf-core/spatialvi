@@ -152,6 +152,46 @@ nextflow_process {
         }
     }
 
+    test("homo_sapiens - h5ad - should fail with duplicate gene names") {
+
+        setup {
+            run("DUPLICATE_VAR_NAMES") {
+                script "../../../../../tests/helpers/duplicate_var_names.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = DUPLICATE_VAR_NAMES.out.adata
+                    .mix(channel.of(
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                    ))
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_var
+                input[4] = false        // preserve_spatial
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("of 'CytAssist_11mm_FFPE_Human_Glioblastoma_2_duplicated' are not unique") }
+            )
+        }
+    }
+
     test("homo_sapiens - h5ad - stub") {
 
         options "-stub"

@@ -1,0 +1,590 @@
+{
+    "homo_sapiens - pkl - index mismatch reindexed": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 5756,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "n_counts",
+                        "n_genes",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "n_cells",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T20:34:17.527648",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - spatial obsp and uns": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 11397,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "in_tissue",
+                        "region",
+                        "spot_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "spatial"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    "spatial_connectivities",
+                    "spatial_distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "coordinate_system",
+                    "moranI",
+                    "sample_id",
+                    "spatial",
+                    "spatial_neighbors",
+                    "spatialdata_attrs",
+                    "table_name"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T20:27:34.216466",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - var and uns": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "means",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T20:26:29.110654",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - obs and var": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_100_genes",
+                        "pct_counts_in_top_200_genes",
+                        "pct_counts_in_top_500_genes",
+                        "pct_counts_in_top_50_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "hb",
+                        "mean_counts",
+                        "mt",
+                        "n_cells_by_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T20:26:10.99457",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "SRR28679756"
+                        },
+                        "SRR28679756.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-29T11:23:28.524847",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - obs and uns": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-30T15:33:40.149671",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - obsp and uns": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T20:25:47.736926",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - key collision allowed": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "clusters",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "neighbors",
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-30T15:35:02.65551",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - duplicate names strict": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_100_genes",
+                        "pct_counts_in_top_200_genes",
+                        "pct_counts_in_top_500_genes",
+                        "pct_counts_in_top_50_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "hb",
+                        "mean_counts",
+                        "mt",
+                        "n_cells_by_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T21:10:59.250684",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - obsm, varm and uns": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "pca"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T07:00:54.87345",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - pkl - uns from several modules": {
+        "content": [
+            [
+                "versions.yml:md5,849bbf640638ea746ca197fb83c193a8"
+            ],
+            {
+                "n_obs": 11397,
+                "n_vars": 19023,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "array_col",
+                        "array_row",
+                        "clusters",
+                        "in_tissue",
+                        "region",
+                        "spot_id"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
+                    ]
+                },
+                "layers": [
+                    "raw"
+                ],
+                "obsm": [
+                    "X_pca",
+                    "spatial"
+                ],
+                "varm": [
+                    "PCs"
+                ],
+                "obsp": [
+                    "connectivities",
+                    "distances",
+                    "spatial_connectivities",
+                    "spatial_distances"
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "clusters",
+                    "clusters_interactions",
+                    "clusters_nhood_enrichment",
+                    "coordinate_system",
+                    "neighbors",
+                    "pca",
+                    "rank_genes_groups",
+                    "sample_id",
+                    "spatial",
+                    "spatial_neighbors",
+                    "spatialdata_attrs",
+                    "table_name"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T20:29:59.242151",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

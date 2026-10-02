@@ -1,11 +1,22 @@
-process SCANPY_LOG1P {
+process ADATA_EXTEND {
     tag "${meta.id}"
     label 'process_single'
 
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    tuple val(meta), path(adata, stageAs: "input.h5ad", arity: '1')
+    tuple (
+        val(meta),
+        path(h5ad, stageAs: "base.h5ad", arity: '1'),
+        path(obs,  stageAs: "obs/*"),
+        path(var,  stageAs: "var/*"),
+        path(obsm, stageAs: "obsm/*"),
+        path(varm, stageAs: "varm/*"),
+        path(obsp, stageAs: "obsp/*"),
+        path(uns,  stageAs: "uns/*")
+    )
+    val allow_missing
+    val overwrite
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
@@ -16,7 +27,7 @@ process SCANPY_LOG1P {
 
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
-    template 'log1p.py'
+    template 'extend.py'
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"

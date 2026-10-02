@@ -1,5 +1,167 @@
 {
+    "homo_sapiens - h5ad - seurat flavor - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+            ],
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-02T11:54:27.144755",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "homo_sapiens - h5ad - cell_ranger flavor": {
+        "content": [
+            [
+                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 1960,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_100_genes",
+                        "pct_counts_in_top_200_genes",
+                        "pct_counts_in_top_500_genes",
+                        "pct_counts_in_top_50_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "hb",
+                        "highly_variable",
+                        "mean_counts",
+                        "means",
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p"
+                ]
+            },
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-02T11:37:06.12832",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - h5ad - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "highly_variable_genes.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "adata": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "uns": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "hvg.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "var": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "highly_variable_genes.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T16:25:47.045368",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - h5ad - fallback with too few genes": {
         "content": [
             [
                 "versions.yml:md5,e13181af4757604b85af5368250a94d7"
@@ -19,7 +181,6 @@
                         "dispersions",
                         "dispersions_norm",
                         "highly_variable",
-                        "highly_variable_rank",
                         "means",
                         "symbols"
                     ]
@@ -41,48 +202,20 @@
                 ],
                 "uns": [
                     "hvg",
-                    "log1p",
-                    "normalization"
+                    "log1p"
                 ]
-            }
+            },
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
         ],
-        "timestamp": "2026-03-30T07:11:39.972877",
+        "timestamp": "2026-10-02T11:18:06.439336",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
-        }
-    },
-    "homo_sapiens - h5ad - stub": {
-        "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
-                        },
-                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "adata": [
-                    [
-                        {
-                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
-                        },
-                        "CytAssist_11mm_FFPE_Human_Glioblastoma_2.h5ad:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ]
-            }
-        ],
-        "timestamp": "2026-04-01T20:57:55.308878",
-        "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - seurat flavor": {
@@ -126,15 +259,20 @@
                 ],
                 "uns": [
                     "hvg",
-                    "log1p",
-                    "normalization"
+                    "log1p"
                 ]
-            }
+            },
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
         ],
-        "timestamp": "2026-03-30T07:11:23.210904",
+        "timestamp": "2026-10-01T23:02:55.350186",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

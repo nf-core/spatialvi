@@ -20,6 +20,7 @@ nextflow_process {
                     ]
                     input[1] = 50    // n_pcs
                     input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }
@@ -32,6 +33,7 @@ nextflow_process {
                 input[1] = 15      // n_neighbors
                 input[2] = 50      // n_pcs
                 input[3] = 'X_pca' // use_rep
+                input[4] = true    // write_adata
                 """
             }
         }
@@ -41,13 +43,58 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obsp.collect { _, paths -> paths }.flatten().collect { path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
     }
 
-    test("homo_sapiens - h5ad") {
+    test("homo_sapiens - h5ad - no h5ad output") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_PCA.out.adata
+                input[1] = 15      // n_neighbors
+                input[2] = 50      // n_pcs
+                input[3] = 'X_pca' // use_rep
+                input[4] = false   // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.adata.isEmpty() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.obsp.collect { _, paths -> paths }.flatten().collect { path -> file(path.toString()).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail - missing use_rep") {
 
         when {
             process {
@@ -55,20 +102,42 @@ nextflow_process {
                 input[0] = [
                     [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ]
-                input[1] = 15 // n_neighbors
-                input[2] = 50 // n_pcs
-                input[3] = '' // use_rep
+                input[1] = 15   // n_neighbors
+                input[2] = 50   // n_pcs
+                input[3] = ''   // use_rep
+                input[4] = true // write_adata
                 """
             }
         }
 
         then {
             assertAll(
-                { assert process.success },
-                { assert snapshot(
-                    process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
-                ).match() }
+                { assert process.failed },
+                { assert process.errorReport.contains("`use_rep` is required") }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail - unknown use_rep") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 15      // n_neighbors
+                input[2] = 50      // n_pcs
+                input[3] = 'X_pca' // use_rep
+                input[4] = true    // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Representation 'X_pca' not found") }
             )
         }
     }
@@ -83,9 +152,10 @@ nextflow_process {
                 input[0] = [
                     [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ]
-                input[1] = 15 // n_neighbors
-                input[2] = 50 // n_pcs
-                input[3] = '' // use_rep
+                input[1] = 15      // n_neighbors
+                input[2] = 50      // n_pcs
+                input[3] = 'X_pca' // use_rep
+                input[4] = true    // write_adata
                 """
             }
         }

@@ -160,7 +160,7 @@ workflow SPATIALVI {
         //
         // SUBWORKFLOW: Clustering
         //
-        use_rep = ''
+        use_rep = 'X_pca'
         umap_key_added = 'X_umap'
         leiden_key_added = 'clusters'
         CLUSTERING (
@@ -182,7 +182,8 @@ workflow SPATIALVI {
         SCANPY_RANK_GENES_GROUPS (
             CLUSTERING.out.adata,
             rank_genes_group_by,
-            rank_genes_method
+            rank_genes_method,
+            true // write_adata
         )
 
         //

@@ -4,27 +4,37 @@ Calculate QC metrics for AnnData using scanpy.
 
 Adds the following annotations:
 - var: 'mt', 'ribo', 'hb' (boolean flags for gene types)
-- obs: 'n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo', 'pct_counts_hb'
+- obs: 'n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo',
+       'pct_counts_hb'
 """
 
-# Required before importing Numba-dependent packages in read-only containers
+# Disable OpenMP CPU topology detection for macOS compatibility
 import os
-os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
-os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
-os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
+os.environ["KMP_AFFINITY"] = "disabled"
+
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
 import scanpy as sc
-import scipy.sparse
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def validate_adata(adata):
@@ -97,16 +107,6 @@ def ensure_qc_columns_exist(adata):
 
 def calculate_qc_metrics(adata):
     """Calculate QC metrics for AnnData object."""
-    # Store raw counts layer if not already present
-    if "raw" not in adata.layers:
-        adata.layers["raw"] = adata.X.copy()
-
-    # Ensure X is in sparse format for compatibility
-    if not scipy.sparse.issparse(adata.X):
-        adata.X = scipy.sparse.csr_matrix(adata.X)
-
-    adata.var_names_make_unique()
-
     gene_counts = annotate_gene_types(adata)
     qc_vars = determine_qc_vars(gene_counts)
     percent_top = determine_percent_top(adata.shape[1])
@@ -125,6 +125,26 @@ def calculate_qc_metrics(adata):
     adata = ensure_qc_columns_exist(adata)
 
     return adata
+
+
+def get_qc_columns(n_genes):
+    """Get all of the `obs` and `var` columns added by this template."""
+    obs_cols = ["n_genes_by_counts", "total_counts"]
+    obs_cols += [
+        f"pct_counts_in_top_{n}_genes" for n in determine_percent_top(n_genes)
+    ]
+    for var_name in ["mt", "ribo", "hb"]:
+        obs_cols += [f"total_counts_{var_name}", f"pct_counts_{var_name}"]
+    var_cols = [
+        "mt",
+        "ribo",
+        "hb",
+        "n_cells_by_counts",
+        "mean_counts",
+        "pct_dropout_by_counts",
+        "total_counts",
+    ]
+    return obs_cols, var_cols
 
 
 def log_qc_summary(adata):
@@ -148,6 +168,14 @@ def log_qc_summary(adata):
     )
 
 
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+    logger.info(f"Written slot data to: {slot}/{name}.pkl")
+
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -167,6 +195,7 @@ def main():
     # Template variables
     input_adata = "${adata}"
     output_adata = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     logger.info(f"Calculating QC metrics for sample: {input_adata}")
@@ -177,8 +206,13 @@ def main():
     adata = calculate_qc_metrics(adata)
     log_qc_summary(adata)
 
-    adata.write_h5ad(output_adata)
-    logger.info(f"Written AnnData with QC metrics to: {output_adata}")
+    obs_cols, var_cols = get_qc_columns(adata.n_vars)
+    write_pickle(adata.obs[obs_cols], "obs", "qc_metrics")
+    write_pickle(adata.var[var_cols], "var", "qc_metrics")
+
+    if write_adata:
+        adata.write_h5ad(output_adata)
+        logger.info(f"Written AnnData with QC metrics to: {output_adata}")
 
     write_versions(process_name)
 

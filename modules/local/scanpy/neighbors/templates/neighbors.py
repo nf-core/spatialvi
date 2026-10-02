@@ -11,16 +11,43 @@ representation space (typically PCA).
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
+
+
+def validate_representation(adata, use_rep):
+    """Require an explicit, existing representation for the neighbor search."""
+    if use_rep.lower() in ["", "none"]:
+        raise ValueError(
+            "`use_rep` is required: use 'X' for the data matrix or a key in "
+            "`adata.obsm` (e.g. 'X_pca')"
+        )
+    if use_rep != "X" and use_rep not in adata.obsm:
+        available = ", ".join(adata.obsm.keys()) or "none"
+        raise ValueError(
+            f"Representation '{use_rep}' not found in `adata.obsm` "
+            f"(available: {available})"
+        )
 
 
 def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
@@ -34,10 +61,11 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
     n_neighbors : int
         Number of neighbors to use.
     n_pcs : int
-        Number of principal components to use.
-    use_rep : str or None
-        Representation to use. If None, uses either `.X` when `.n_vars < 50` or
-        `X_pca` otherwise.
+        Number of dimensions of the representation to use (the first `n_pcs`
+        columns); ignored when `use_rep` is 'X'.
+    use_rep : str
+        Representation to use: a key in `adata.obsm` (e.g. 'X_pca' or
+        'X_harmony'), or 'X' to use the data matrix directly.
 
     Returns
     -------
@@ -53,7 +81,8 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
         adata,
         n_neighbors=n_neighbors,
         n_pcs=n_pcs,
-        use_rep=use_rep
+        use_rep=use_rep,
+        random_state=0
     )
 
     logger.info("Computed neighbor graph:")
@@ -61,6 +90,14 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
     logger.info(f"  Distances shape: {adata.obsp['distances'].shape}")
 
     return adata
+
+
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+    logger.info(f"Written slot data to: {slot}/{name}.pkl")
 
 
 def write_versions(process_name):
@@ -83,13 +120,18 @@ def main():
     h5ad = "${adata}"
     n_neighbors = int("${n_neighbors}")
     n_pcs = int("${n_pcs}")
-    use_rep = None if "${use_rep}".lower() in ["none", ""] else "${use_rep}"
+    use_rep = "${use_rep}"
     output_h5ad = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
-    logger.info(f"Computing neighbors for: {h5ad}")
-    adata = ad.read_h5ad(h5ad)
+    logger.info(f"Reading: {h5ad}")
+    # `X` isn't used, so it stays on disk until the output is written
+    adata = ad.read_h5ad(h5ad, backed="r")
 
+    validate_representation(adata, use_rep)
+
+    logger.info(f"Computing neighbors for: {h5ad}")
     adata = compute_neighbors(
         adata,
         n_neighbors=n_neighbors,
@@ -97,8 +139,15 @@ def main():
         use_rep=use_rep
     )
 
-    adata.write_h5ad(output_h5ad)
-    logger.info(f"Written AnnData with neighbors to: {output_h5ad}")
+    # Store `obsp` sparse matrices alongside an index in a dictionary
+    for name in ["connectivities", "distances"]:
+        obsp_dict = {"matrix": adata.obsp[name], "index": adata.obs_names}
+        write_pickle(obsp_dict, "obsp", name)
+    write_pickle(adata.uns["neighbors"], "uns", "neighbors")
+
+    if write_adata:
+        adata.write_h5ad(output_h5ad)
+        logger.info(f"Written AnnData with neighbors to: {output_h5ad}")
 
     write_versions(process_name)
 

@@ -5,7 +5,7 @@ process SDATA_TO_LEGACY_ANNDATA {
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    tuple val(meta), path(sdata)
+    tuple val(meta), path(sdata, arity: '1')
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata

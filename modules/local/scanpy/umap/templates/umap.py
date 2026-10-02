@@ -7,16 +7,29 @@ Compute UMAP (Uniform Manifold Approximation and Projection) embedding.
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
+import pandas as pd
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def compute_umap(adata, min_dist, spread, key_added):
@@ -34,7 +47,8 @@ def compute_umap(adata, min_dist, spread, key_added):
         adata,
         min_dist=min_dist,
         spread=spread,
-        key_added=key_added
+        key_added=key_added,
+        random_state=0
     )
 
     # Print summary
@@ -45,6 +59,14 @@ def compute_umap(adata, min_dist, spread, key_added):
     logger.info(f"  UMAP2: [{embedding[:, 1].min():.2f}, {embedding[:, 1].max():.2f}]")
 
     return adata
+
+
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+    logger.info(f"Written slot data to: {slot}/{name}.pkl")
 
 
 def write_versions(process_name):
@@ -69,18 +91,27 @@ def main():
     spread = float("${spread}")
     key_added = "${key_added}"
     output_adata = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     # Read AnnData
     logger.info(f"Computing UMAP for: {h5ad}")
-    adata = ad.read_h5ad(h5ad)
+    # `X` isn't used, so it stays on disk until the output is written
+    adata = ad.read_h5ad(h5ad, backed="r")
 
     # Compute UMAP
     adata = compute_umap(adata, min_dist, spread, key_added)
 
+    # `obsm` needs an added index before writing to pickle
+    df_obsm = pd.DataFrame(adata.obsm[key_added])
+    df_obsm.index = adata.obs_names
+    write_pickle(df_obsm, "obsm", key_added)
+    write_pickle(adata.uns[key_added], "uns", key_added)
+
     # Write output
-    adata.write_h5ad(output_adata)
-    logger.info(f"Written AnnData with UMAP to: {output_adata}")
+    if write_adata:
+        adata.write_h5ad(output_adata)
+        logger.info(f"Written AnnData with UMAP to: {output_adata}")
 
     # Write versions
     write_versions(process_name)

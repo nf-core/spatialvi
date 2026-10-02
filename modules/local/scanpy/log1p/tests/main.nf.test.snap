@@ -35,15 +35,14 @@
                     
                 ],
                 "uns": [
-                    "log1p",
-                    "normalization"
+                    "log1p"
                 ]
             }
         ],
-        "timestamp": "2026-03-30T07:12:50.452516",
+        "timestamp": "2026-10-01T19:06:12.129025",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {

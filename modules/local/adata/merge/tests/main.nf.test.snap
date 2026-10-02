@@ -36,14 +36,14 @@
                     
                 ],
                 "uns": [
-                    "merge"
+                    
                 ]
             }
         ],
-        "timestamp": "2026-04-02T10:41:33.47426",
+        "timestamp": "2026-10-01T20:52:45.710987",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - preserve var data": {
@@ -83,14 +83,14 @@
                     
                 ],
                 "uns": [
-                    "merge"
+                    
                 ]
             }
         ],
-        "timestamp": "2026-04-02T10:41:55.731015",
+        "timestamp": "2026-10-01T20:53:04.19467",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -157,15 +157,14 @@
                     
                 ],
                 "uns": [
-                    "merge",
                     "spatial"
                 ]
             }
         ],
-        "timestamp": "2026-04-02T10:42:20.358236",
+        "timestamp": "2026-10-01T20:53:27.385713",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - outer": {
@@ -205,14 +204,14 @@
                     
                 ],
                 "uns": [
-                    "merge"
+                    
                 ]
             }
         ],
-        "timestamp": "2026-04-02T10:41:44.991457",
+        "timestamp": "2026-10-01T20:52:54.856983",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

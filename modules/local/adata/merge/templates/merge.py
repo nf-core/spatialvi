@@ -7,6 +7,12 @@ Merge multiple AnnData objects into one.
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import importlib.metadata
 import logging
 import platform
@@ -15,9 +21,13 @@ from pathlib import Path
 import anndata as ad
 import pandas as pd
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def add_var(adata, adata_list, join):
@@ -47,13 +57,23 @@ def add_spatial(adata, adata_list):
     return adata
 
 
+def validate_var_names(adata_list, keys):
+    """Check that gene names are unique within each AnnData object."""
+    for adata, key in zip(adata_list, keys):
+        if not adata.var_names.is_unique:
+            raise ValueError(
+                f"Gene names in `adata.var_names` of '{key}' are not unique"
+            )
+
+
 def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
     """
     Merge multiple AnnData objects into one. Can optionally preserve both `.var`
     and `.uns['spatial']` for the final merged object.
     """
+    validate_var_names(adata_list, keys)
 
-    logger.info(f"Merging {len(adata_list)} AnnData objects")
+    logger.info(f"Merging {len(adata_list)} AnnData objects using {join} join")
     adata = ad.concat(
         adata_list,
         join=join,
@@ -68,13 +88,6 @@ def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
     if preserve_spatial:
         adata = add_spatial(adata, adata_list)
 
-    adata.uns["merge"] = {
-        "n_samples": len(keys),
-        "join": join,
-        "label": label,
-        "preserve_var": preserve_var,
-        "preserve_spatial": preserve_spatial,
-    }
     logger.info(f"Final merged AnnData {adata}")
 
     return adata

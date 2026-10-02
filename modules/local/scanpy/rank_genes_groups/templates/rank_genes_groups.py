@@ -10,16 +10,28 @@ between groups. Results are stored in adata.uns["rank_genes_groups"].
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def rank_genes(adata, groupby, method):
@@ -49,6 +61,14 @@ def rank_genes(adata, groupby, method):
     return adata
 
 
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+    logger.info(f"Written slot data to: {slot}/{name}.pkl")
+
+
 def write_versions(process_name):
     """Write software versions to a YAML file."""
     versions = {
@@ -70,6 +90,7 @@ def main():
     groupby = "${groupby}"
     method = "${method}"
     output_adata = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     # Read AnnData
@@ -79,9 +100,11 @@ def main():
     # Rank genes
     adata = rank_genes(adata, groupby, method)
 
-    # Write output
-    adata.write_h5ad(output_adata)
-    logger.info(f"Written AnnData with DEGs to: {output_adata}")
+    # Write slot data and output
+    write_pickle(adata.uns["rank_genes_groups"], "uns", "rank_genes_groups")
+    if write_adata:
+        adata.write_h5ad(output_adata)
+        logger.info(f"Written AnnData with DEGs to: {output_adata}")
 
     # Write versions
     write_versions(process_name)

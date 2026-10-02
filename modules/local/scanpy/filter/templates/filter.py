@@ -13,6 +13,16 @@ Filtering steps (in order):
  7. Filter observations by maximum haemoglobin content
 """
 
+# Disable OpenMP CPU topology detection for macOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import csv
 import importlib.metadata
 import logging
@@ -21,9 +31,13 @@ import platform
 import anndata as ad
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def filter_by_obs_column(adata, col, threshold, filter_below, stat_key, stats):
@@ -166,8 +180,6 @@ def filter_adata(
         "hb_threshold": hb_threshold,
     }
 
-    adata.var_names_make_unique()
-
     # Apply filtering steps
     adata, stats = filter_outside_tissue(adata, stats)
     adata, stats = filter_min_counts(adata, min_counts, stats)
@@ -208,7 +220,6 @@ def filter_adata(
     stats["total_genes_after"] = adata.shape[1]
     stats["total_obs_filtered"] = n_total_obs - adata.shape[0]
     stats["total_genes_filtered"] = n_total_genes - adata.shape[1]
-    adata.uns["filtering_stats"] = stats
 
     logger.info("Filtering summary:")
     logger.info(
