@@ -152,7 +152,6 @@
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_data/multiqc_spaceranger_count.txt",
                 "multiqc/multiqc_data/spaceranger-count-stats.txt",
-                "multiqc/multiqc_plots",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"
@@ -358,10 +357,10 @@
                 "spaceranger-count-stats.txt:md5,e47ed2e4e151aef489950b02d0765e54"
             ]
         ],
-        "timestamp": "2026-10-01T22:49:23.220193385",
+        "timestamp": "2026-10-02T10:43:16.468981112",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

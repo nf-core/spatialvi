@@ -11,10 +11,24 @@
                     "fastqc": "0.12.1"
                 },
                 "REPORT": {
-                    "python": "3.12.12"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "squidpy": "1.6.5",
+                    "spatialdata": "0.5.0",
+                    "anndata": "0.12.4",
+                    "numpy": "2.3.4",
+                    "pandas": "2.3.3",
+                    "matplotlib": "3.10.7"
                 },
                 "REPORT_INTEGRATED": {
-                    "python": "3.12.12"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "squidpy": "1.6.5",
+                    "spatialdata": "0.5.0",
+                    "anndata": "0.12.4",
+                    "numpy": "2.3.4",
+                    "pandas": "2.3.3",
+                    "matplotlib": "3.10.7"
                 },
                 "SCANPY_CALCULATE_QC_METRICS": {
                     "anndata": "0.12.4",
@@ -323,7 +337,6 @@
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_data/multiqc_spaceranger_count.txt",
                 "multiqc/multiqc_data/spaceranger-count-stats.txt",
-                "multiqc/multiqc_plots",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_spatialvi_software_mqc_versions.yml"
@@ -2013,10 +2026,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-01T22:51:02.575246389",
+        "timestamp": "2026-10-02T10:41:02.191556251",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }
