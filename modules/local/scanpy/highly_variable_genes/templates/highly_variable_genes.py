@@ -11,10 +11,11 @@ are typically used for downstream dimensionality reduction and clustering.
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
-# Required for numba caching in read-only containers
-os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
-os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib"
-os.environ["XDG_CACHE_HOME"] = "/tmp/cache"
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
 
 import importlib.metadata
 import logging

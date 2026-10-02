@@ -7,6 +7,12 @@ Apply log(1+x) transformation to the data matrix.
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import importlib.metadata
 import logging
 import platform

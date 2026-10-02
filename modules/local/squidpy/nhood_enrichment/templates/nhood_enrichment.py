@@ -10,6 +10,15 @@ Results are stored in adata.uns.
 # Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
+
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
+# Apple ARM64 compatibility: don't re-initialise OpenMP in the worker processes
+# that squidpy forks for its permutations
 os.environ["KMP_INIT_AT_FORK"] = "FALSE"
 
 import importlib.metadata
