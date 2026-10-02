@@ -26,6 +26,7 @@ input_adata = "integrated.h5ad"  # Input: H5AD file
 input_sdata = "integrated.zarr"  # Input: Zarr file
 sample_col = "library_id" # Parameter: obs column with sample names
 cluster_col = "clusters_integrated" # Parameter: obs column with cluster names
+umap_key = "X_umap_integrated" # Parameter: obsm key of the integrated UMAP
 artifact_dir = "artifacts" # Parameter: artifact directory
 ```
 
@@ -177,7 +178,7 @@ umap_plots = []
 umap_metrics = [(cluster_col, 'Clusters')] + [(sample_col, 'Sample')] + qc_metrics
 for col, label in umap_metrics:
     fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
-    sc.pl.umap(adata, color=col, ax=ax, show=False)
+    sc.pl.embedding(adata, basis=umap_key, color=col, ax=ax, show=False)
     umap_plots.append((label, fig))
     save_figure(fig, f'umap-{col}.png')
 ```

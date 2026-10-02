@@ -104,6 +104,7 @@ workflow INTEGRATION {
         input_sdata: integration_method + ".zarr",
         sample_col: 'library_id',
         cluster_col: 'clusters_' + integration_method,
+        umap_key: umap_key_added,
         artifact_dir: "artifacts",
     ]
     integration_inputs = ch_sdata_integrated

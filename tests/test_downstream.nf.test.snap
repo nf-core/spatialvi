@@ -3605,7 +3605,7 @@
             [
                 "report.yml:md5,f745b1f1839789850479c6be4f689e0b",
                 "report.yml:md5,4c78e7a9ab49caa73dd63450d27c030d",
-                "report-integrated.yml:md5,a4d0e2a88b83c3c5035ab9570430991e",
+                "report-integrated.yml:md5,96895eaa314bc9cd64ad7772bd8e5219",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_quality_controls.txt:md5,7d0a51fc23fbc8dfc09aa01f9ac7bbb3"
             ],
@@ -3640,13 +3640,13 @@
                             "spatial"
                         ],
                         "varm": [
-                            
+
                         ],
                         "obsp": [
-                            
+
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "coordinate_system",
@@ -3687,13 +3687,13 @@
                             "spatial"
                         ],
                         "varm": [
-                            
+
                         ],
                         "obsp": [
-                            
+
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "coordinate_system",
@@ -3773,7 +3773,7 @@
                             "spatial_distances"
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "X_umap",
@@ -3867,7 +3867,7 @@
                             "spatial_distances"
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "X_umap",
@@ -3956,14 +3956,14 @@
                             "spatial"
                         ],
                         "varm": [
-                            
+
                         ],
                         "obsp": [
                             "connectivities",
                             "distances"
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "X_umap_harmony",
