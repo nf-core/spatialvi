@@ -59,6 +59,10 @@ nextflow_process {
                     process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                assert obs.get("clusters").n_unique() > 1
+            }
         }
     }
 

@@ -70,6 +70,10 @@ nextflow_process {
                     anndata(process.out.adata[0][1]).yaml
                 ).match() }
             )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                assert obs.get("clusters").data.every { it != null }
+            }
         }
     }
 
@@ -211,6 +215,11 @@ nextflow_process {
                     anndata(process.out.adata[0][1]).yaml
                 ).match() }
             )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                assert obs.get("total_counts").data.every { !Double.isNaN(it as double) }
+                assert var.get("mean_counts").data.every { !Double.isNaN(it as double) }
+            }
         }
     }
 
@@ -261,6 +270,11 @@ nextflow_process {
                     anndata(process.out.adata[0][1]).yaml
                 ).match() }
             )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                assert var.get("highly_variable").data.every { it != null }
+                assert var.get("highly_variable").data.count { it.toString().toUpperCase() == "TRUE" } in 1800..2200
+            }
         }
     }
 
@@ -885,6 +899,12 @@ nextflow_process {
                     anndata(process.out.adata[0][1]).yaml
                 ).match() }
             )
+            // The filtered base is a subset of the slot data's spots, so
+            // re-indexing leaves no entries missing
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                assert obs.get("clusters").data.every { it != null }
+            }
         }
     }
 

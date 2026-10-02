@@ -34,22 +34,8 @@ logger = logging.getLogger(__name__)
 # Limit BLAS/OpenMP threads to the allocated CPUs
 threadpool_limits(int("${task.cpus}"))
 
-# The `var` columns that `sc.pp.highly_variable_genes` adds for each flavor
-HVG_COLUMNS = {
-    "seurat": [
-        "highly_variable",
-        "means",
-        "dispersions",
-        "dispersions_norm",
-    ],
-    "cell_ranger": [
-        "highly_variable",
-        "highly_variable_rank",
-        "means",
-        "dispersions",
-        "dispersions_norm",
-    ],
-}
+# The `var` columns that `sc.pp.highly_variable_genes` adds
+HVG_COLUMNS = ["highly_variable", "means", "dispersions", "dispersions_norm"]
 
 
 def mark_all_genes_hvg(adata, flavor):
@@ -73,15 +59,14 @@ def mark_all_genes_hvg(adata, flavor):
     logger.warning("Too few genes for meaningful HVG selection.")
     logger.info("Marking all genes as highly variable.")
 
-    # Add the same columns and `uns` entry as scanpy does for this flavor
+    # Add the same columns and `uns` entry as scanpy does
     values = {
         "highly_variable": True,
-        "highly_variable_rank": np.arange(n_genes),
         "means": np.array(adata.X.mean(axis=0)).flatten(),
         "dispersions": np.zeros(n_genes),
         "dispersions_norm": np.zeros(n_genes),
     }
-    for col in HVG_COLUMNS[flavor]:
+    for col in HVG_COLUMNS:
         adata.var[col] = values[col]
     adata.uns["hvg"] = {"flavor": flavor}
 
@@ -114,10 +99,11 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
     if n_var == 0:
         raise ValueError("AnnData has 0 variables.")
 
-    if flavor not in HVG_COLUMNS:
+    allowed_flavors = ["seurat", "cell_ranger"]
+    if flavor not in allowed_flavors:
         raise ValueError(
             f"Unsupported flavor '{flavor}'; use one of: "
-            f"{', '.join(HVG_COLUMNS)}"
+            f"{', '.join(allowed_flavors)}"
         )
 
     logger.info(f"AnnData shape: {adata.shape}")
@@ -194,7 +180,7 @@ def main():
         flavor=flavor
     )
 
-    write_pickle(adata.var[HVG_COLUMNS[flavor]], "var", "highly_variable_genes")
+    write_pickle(adata.var[HVG_COLUMNS], "var", "highly_variable_genes")
     write_pickle(adata.uns["hvg"], "uns", "hvg")
 
     if write_adata:

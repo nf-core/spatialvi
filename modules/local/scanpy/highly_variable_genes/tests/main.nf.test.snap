@@ -11,7 +11,7 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T16:25:23.665644",
+        "timestamp": "2026-10-02T11:54:27.144755",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -24,11 +24,25 @@
             ],
             {
                 "n_obs": 12940,
-                "n_vars": 9887,
+                "n_vars": 1960,
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "sample"
+                        "n_counts",
+                        "n_genes",
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_100_genes",
+                        "pct_counts_in_top_200_genes",
+                        "pct_counts_in_top_500_genes",
+                        "pct_counts_in_top_50_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
                     ]
                 },
                 "var": {
@@ -36,10 +50,17 @@
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
+                        "hb",
                         "highly_variable",
-                        "highly_variable_rank",
+                        "mean_counts",
                         "means",
-                        "symbols"
+                        "mt",
+                        "n_cells",
+                        "n_cells_by_counts",
+                        "pct_dropout_by_counts",
+                        "ribo",
+                        "symbols",
+                        "total_counts"
                     ]
                 },
                 "layers": [
@@ -69,7 +90,7 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T23:03:25.310228",
+        "timestamp": "2026-10-02T11:37:06.12832",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -135,6 +156,63 @@
             }
         ],
         "timestamp": "2026-10-01T16:25:47.045368",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - h5ad - fallback with too few genes": {
+        "content": [
+            [
+                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "means",
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p"
+                ]
+            },
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-02T11:18:06.439336",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
