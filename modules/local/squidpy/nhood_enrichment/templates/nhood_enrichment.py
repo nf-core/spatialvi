@@ -82,6 +82,7 @@ def main():
     sq.gr.nhood_enrichment(
         adata,
         cluster_key=cluster_key,
+        seed=0,
     )
 
     n_clusters = adata.obs[cluster_key].nunique()

@@ -54,7 +54,12 @@ def perform_leiden(adata, resolution, key_added):
     logger.info(f"Resolution: {resolution}")
     logger.info(f"Key added: {key_added}")
 
-    sc.tl.leiden(adata, resolution=resolution, key_added=key_added)
+    sc.tl.leiden(
+        adata,
+        resolution=resolution,
+        key_added=key_added,
+        random_state=0
+    )
 
     n_clusters = adata.obs[key_added].nunique()
     cluster_sizes = adata.obs[key_added].value_counts().sort_index()

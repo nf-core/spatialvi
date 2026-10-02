@@ -78,6 +78,7 @@ def perform_pca(adata, n_comps, use_highly_variable):
         adata,
         n_comps=n_comps,
         use_highly_variable=use_highly_variable and has_hvg,
+        random_state=0,
     )
 
     log_variance_summary(adata, n_comps)

@@ -75,7 +75,8 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
         adata,
         n_neighbors=n_neighbors,
         n_pcs=n_pcs,
-        use_rep=use_rep
+        use_rep=use_rep,
+        random_state=0
     )
 
     logger.info("Computed neighbor graph:")

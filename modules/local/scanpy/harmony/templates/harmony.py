@@ -57,7 +57,12 @@ def integrate_harmony(adata, key, adjusted_basis):
     n_batches = adata.obs[key].nunique()
     logger.info(f"Integrating {n_batches} batches using key: {key}")
 
-    sce.pp.harmony_integrate(adata, key=key, adjusted_basis=adjusted_basis)
+    sce.pp.harmony_integrate(
+        adata,
+        key=key,
+        adjusted_basis=adjusted_basis,
+        random_state=0
+    )
 
     return adata
 

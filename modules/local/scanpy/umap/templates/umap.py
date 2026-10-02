@@ -41,7 +41,8 @@ def compute_umap(adata, min_dist, spread, key_added):
         adata,
         min_dist=min_dist,
         spread=spread,
-        key_added=key_added
+        key_added=key_added,
+        random_state=0
     )
 
     # Print summary
