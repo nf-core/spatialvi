@@ -60,7 +60,7 @@ def main():
         region_key=None,
         instance_key=None,
         concatenate_tables=False,
-        obs_names_make_unique=True,
+        obs_names_make_unique=False,
         modify_tables_inplace=False,
     )
 
