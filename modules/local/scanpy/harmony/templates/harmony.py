@@ -100,7 +100,8 @@ def main():
     write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
-    adata = ad.read_h5ad(h5ad)
+    # `X` isn't used, so it stays on disk until the output is written
+    adata = ad.read_h5ad(h5ad, backed="r")
     logger.info(f"AnnData shape: {adata.shape}")
 
     adata = integrate_harmony(adata, key=key, adjusted_basis=adjusted_basis)

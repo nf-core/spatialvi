@@ -90,7 +90,8 @@ def main():
 
     # Read AnnData
     logger.info(f"Computing UMAP for: {h5ad}")
-    adata = ad.read_h5ad(h5ad)
+    # `X` isn't used, so it stays on disk until the output is written
+    adata = ad.read_h5ad(h5ad, backed="r")
 
     # Compute UMAP
     adata = compute_umap(adata, min_dist, spread, key_added)

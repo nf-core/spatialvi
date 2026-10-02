@@ -104,7 +104,8 @@ def main():
     write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
-    adata = ad.read_h5ad(h5ad)
+    # `X` isn't used, so it stays on disk until the output is written
+    adata = ad.read_h5ad(h5ad, backed="r")
     logger.info(f"Performing Leiden clustering on: {h5ad}")
 
     adata = perform_leiden(adata, resolution=resolution, key_added=key_added)

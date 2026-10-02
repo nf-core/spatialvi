@@ -200,7 +200,8 @@ def main():
     if not any(slot_paths.values()):
         raise ValueError("No slot data given; there is nothing to extend")
 
-    adata = ad.read_h5ad(h5ad)
+    # `X` isn't used, so it stays on disk until the output is written
+    adata = ad.read_h5ad(h5ad, backed="r")
     logger.info(f"Read base AnnData with shape {adata.shape}: {h5ad}")
 
     for slot, paths in slot_paths.items():
