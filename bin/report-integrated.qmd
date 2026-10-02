@@ -366,8 +366,7 @@ for pkg in packages:
 
 # Build and write session info table
 session_info = pd.DataFrame(
-    [('python', platform.python_version())],
-    list(versions.items()),
+    [('python', platform.python_version())] + list(versions.items()),
     columns=['Package', 'Version']
 )
 display_table(session_info)
