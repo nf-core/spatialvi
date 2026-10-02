@@ -606,12 +606,15 @@ else:
 # Check for spatial autocorrelation results
 svg_key = None
 svg_method = None
+svg_stat = None
 if 'moranI' in adata.uns:
     svg_key = 'moranI'
     svg_method = "Moran's I"
+    svg_stat = 'I'
 elif 'gearyC' in adata.uns:
     svg_key = 'gearyC'
     svg_method = "Geary's C"
+    svg_stat = 'C'
 
 if svg_key:
     svg_df = adata.uns[svg_key]
@@ -625,19 +628,20 @@ if svg_key:
 
 ## Top spatially variable genes
 
-The following table shows the top 15 spatially variable genes, along with their
-respective Moran's I and adjusted p-value.
+The following table shows the top spatially variable genes, along with their
+respective spatial autocorrelation statistic (Moran's I or Geary's C) and
+adjusted p-value.
 
 ```{python}
 if svg_key:
     n_display = n_top_svgs
-    top_svg = svg_df.head(n_display)
+    top_svg = svg_df.head(n_display).copy()
     top_svg['Gene'] = top_svg.index
     top_svg['Rank'] = range(1, len(top_svg) + 1)
-    top_svg = top_svg[['Rank', 'Gene', 'I', 'pval_norm_fdr_bh']]
-    top_svg.columns = ['Rank', 'Gene', "Moran's I", 'Adj. p-value']
+    top_svg = top_svg[['Rank', 'Gene', svg_stat, 'pval_norm_fdr_bh']]
+    top_svg.columns = ['Rank', 'Gene', svg_method, 'Adj. p-value']
     format_dict = {
-        "Moran's I": '{:.3f}',
+        svg_method: '{:.3f}',
         'Adj. p-value': '{:.3g}'
     }
     display_table(top_svg, format_dict=format_dict)
