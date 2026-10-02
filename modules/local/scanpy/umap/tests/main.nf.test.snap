@@ -63,7 +63,6 @@
                     "hvg",
                     "log1p",
                     "neighbors",
-                    "normalization",
                     "pca"
                 ]
             },
@@ -74,7 +73,7 @@
                 "X_umap.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T14:25:43.987843",
+        "timestamp": "2026-10-01T23:14:55.987667",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

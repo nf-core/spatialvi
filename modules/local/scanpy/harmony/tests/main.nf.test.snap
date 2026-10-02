@@ -52,14 +52,14 @@
                     
                 ],
                 "uns": [
-                    "merge"
+                    
                 ]
             },
             [
                 "X_harmony.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T14:28:42.656042",
+        "timestamp": "2026-10-01T23:01:44.415676",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

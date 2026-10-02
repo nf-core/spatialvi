@@ -41,7 +41,6 @@
                 "uns": [
                     "hvg",
                     "log1p",
-                    "normalization",
                     "pca"
                 ]
             },
@@ -55,7 +54,7 @@
                 "pca.pkl"
             ]
         ],
-        "timestamp": "2026-09-30T14:58:06.454152",
+        "timestamp": "2026-10-01T23:07:35.4818",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

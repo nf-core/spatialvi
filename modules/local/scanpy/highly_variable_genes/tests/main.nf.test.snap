@@ -59,8 +59,7 @@
                 ],
                 "uns": [
                     "hvg",
-                    "log1p",
-                    "normalization"
+                    "log1p"
                 ]
             },
             [
@@ -70,7 +69,7 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T16:25:38.802595",
+        "timestamp": "2026-10-01T23:03:25.310228",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -182,8 +181,7 @@
                 ],
                 "uns": [
                     "hvg",
-                    "log1p",
-                    "normalization"
+                    "log1p"
                 ]
             },
             [
@@ -193,7 +191,7 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T16:25:08.781186",
+        "timestamp": "2026-10-01T23:02:55.350186",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
