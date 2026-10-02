@@ -20,7 +20,7 @@ nextflow_pipeline {
                 params.outdir,
                 relative: true,
                 includeDir: true,
-                ignore: ['pipeline_info/*.{html,json,txt}', '**/*.zarr/**', 'multiqc/multiqc_plots/**']
+                ignore: ['pipeline_info/*.{html,json,txt}', '**/*.zarr/**', 'multiqc/multiqc_plots', 'multiqc/multiqc_plots/**']
             )
 
             // Names of all SpatialData (.zarr) files and directories (unstable contents)
