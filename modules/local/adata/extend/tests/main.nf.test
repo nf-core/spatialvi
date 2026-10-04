@@ -55,8 +55,8 @@ nextflow_process {
                 input[0] = SCANPY_NEIGHBORS.out.adata
                     .join(SCANPY_LEIDEN.out.obs)
                     .join(SCANPY_LEIDEN.out.uns)
-                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns, [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -104,8 +104,8 @@ nextflow_process {
                     .join(SCANPY_PCA.out.obsm)
                     .join(SCANPY_PCA.out.varm)
                     .join(SCANPY_PCA.out.uns)
-                    .map { meta, base, obsm, varm, uns -> [ meta, base, [], [], obsm, varm, [], uns ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, obsm, varm, uns -> [ meta, base, [], [], obsm, varm, [], uns, [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -158,8 +158,8 @@ nextflow_process {
                 input[0] = SCANPY_PCA.out.adata
                     .join(SCANPY_NEIGHBORS.out.obsp)
                     .join(SCANPY_NEIGHBORS.out.uns)
-                    .map { meta, base, obsp, uns -> [ meta, base, [], [], [], [], obsp, uns ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, obsp, uns -> [ meta, base, [], [], [], [], obsp, uns, [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -200,8 +200,8 @@ nextflow_process {
                     ])
                     .join(SCANPY_CALCULATE_QC_METRICS.out.obs)
                     .join(SCANPY_CALCULATE_QC_METRICS.out.var)
-                    .map { meta, base, obs, var -> [ meta, base, obs, var, [], [], [], [] ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, obs, var -> [ meta, base, obs, var, [], [], [], [], [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -255,8 +255,8 @@ nextflow_process {
                 input[0] = SCANPY_LOG1P.out.adata
                     .join(SCANPY_HIGHLY_VARIABLE_GENES.out.var)
                     .join(SCANPY_HIGHLY_VARIABLE_GENES.out.uns)
-                    .map { meta, base, var, uns -> [ meta, base, [], var, [], [], [], uns ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, var, uns -> [ meta, base, [], var, [], [], [], uns, [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -339,9 +339,9 @@ nextflow_process {
                     .join(SQUIDPY_SPATIAL_NEIGHBORS.out.uns)
                     .join(SQUIDPY_SPATIAL_AUTOCORR.out.uns)
                     .map { meta, base, obsp, neighbors_uns, autocorr_uns ->
-                        [ meta, base, [], [], [], [], obsp, [ neighbors_uns, autocorr_uns ].flatten() ]
+                        [ meta, base, [], [], [], [], obsp, [ neighbors_uns, autocorr_uns ].flatten(), [] ]
                     }
-                input[1] = false // allow_missing
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -474,9 +474,9 @@ nextflow_process {
                     .join(SQUIDPY_NHOOD_ENRICHMENT.out.uns)
                     .join(SQUIDPY_INTERACTION_MATRIX.out.uns)
                     .map { meta, base, rank_uns, nhood_uns, interaction_uns ->
-                        [ meta, base, [], [], [], [], [], [ rank_uns, nhood_uns, interaction_uns ].flatten() ]
+                        [ meta, base, [], [], [], [], [], [ rank_uns, nhood_uns, interaction_uns ].flatten(), [] ]
                     }
-                input[1] = false // allow_missing
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -543,8 +543,8 @@ nextflow_process {
                 input[0] = SCANPY_FILTER.out.adata
                     .join(SCANPY_NEIGHBORS.out.obsp)
                     .join(SCANPY_NEIGHBORS.out.uns)
-                    .map { meta, base, obsp, uns -> [ meta, base, [], [], [], [], obsp, uns ] }
-                input[1] = true  // allow_missing (value is not used; graph re-indexing is not allowed)
+                    .map { meta, base, obsp, uns -> [ meta, base, [], [], [], [], obsp, uns, [] ] }
+                input[1] = true  // align (value is not used; graphs are never aligned)
                 input[2] = false // overwrite
                 """
             }
@@ -605,8 +605,8 @@ nextflow_process {
                 input[0] = SCANPY_LEIDEN.out.adata
                     .join(SCANPY_LEIDEN.out.obs)
                     .join(SCANPY_LEIDEN.out.uns)
-                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns, [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -667,8 +667,8 @@ nextflow_process {
                 input[0] = SCANPY_LEIDEN.out.adata
                     .join(SCANPY_LEIDEN.out.obs)
                     .join(SCANPY_LEIDEN.out.uns)
-                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns, [] ] }
+                input[1] = false // align
                 input[2] = true  // overwrite
                 """
             }
@@ -731,8 +731,8 @@ nextflow_process {
                 """
                 input[0] = SCANPY_LEIDEN.out.adata
                     .join(SCANPY_LEIDEN.out.uns)
-                    .map { meta, base, uns -> [ meta, base, [], [], [], [], [], uns ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, uns -> [ meta, base, [], [], [], [], [], uns, [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -807,8 +807,8 @@ nextflow_process {
                 input[0] = SCANPY_FILTER.out.adata
                     .join(SCANPY_LEIDEN.out.obs)
                     .join(SCANPY_LEIDEN.out.uns)
-                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns, [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -884,8 +884,8 @@ nextflow_process {
                 input[0] = SCANPY_FILTER.out.adata
                     .join(SCANPY_LEIDEN.out.obs)
                     .join(SCANPY_LEIDEN.out.uns)
-                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns ] }
-                input[1] = true  // allow_missing
+                    .map { meta, base, obs, uns -> [ meta, base, obs, [], [], [], [], uns, [] ] }
+                input[1] = true  // align
                 input[2] = false // overwrite
                 """
             }
@@ -939,8 +939,8 @@ nextflow_process {
                 """
                 input[0] = DUPLICATE_VAR_NAMES.out.adata
                     .join(SCANPY_CALCULATE_QC_METRICS.out.var)
-                    .map { meta, base, var -> [ meta, base, [], var, [], [], [], [] ] }
-                input[1] = true  // allow_missing
+                    .map { meta, base, var -> [ meta, base, [], var, [], [], [], [], [] ] }
+                input[1] = true  // align
                 input[2] = false // overwrite
                 """
             }
@@ -984,8 +984,8 @@ nextflow_process {
                 input[0] = DUPLICATE_VAR_NAMES.out.adata
                     .join(SCANPY_CALCULATE_QC_METRICS.out.obs)
                     .join(SCANPY_CALCULATE_QC_METRICS.out.var)
-                    .map { meta, base, obs, var -> [ meta, base, obs, var, [], [], [], [] ] }
-                input[1] = false // allow_missing
+                    .map { meta, base, obs, var -> [ meta, base, obs, var, [], [], [], [], [] ] }
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -1010,9 +1010,9 @@ nextflow_process {
                 input[0] = [
                     [ id: 'SRR28679756' ],
                     file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                    [], [], [], [], [], []
+                    [], [], [], [], [], [], []
                 ]
-                input[1] = false // allow_missing
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
@@ -1036,9 +1036,9 @@ nextflow_process {
                 input[0] = [
                     [ id: 'SRR28679756' ],
                     file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
-                    [], [], [], [], [], []
+                    [], [], [], [], [], [], []
                 ]
-                input[1] = false // allow_missing
+                input[1] = false // align
                 input[2] = false // overwrite
                 """
             }
