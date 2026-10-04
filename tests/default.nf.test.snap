@@ -1606,7 +1606,7 @@
                 "detected_tissue_image.jpg:md5,10f944385c91d134528bcabc71bb0686",
                 "spatial_enrichment.csv:md5,0cedfe65b4a8c3dc7c8cc15862f01e07",
                 "tissue_positions.csv:md5,930aeb2b790032337d91dd27cc70f135",
-                "report-integrated.yml:md5,a4d0e2a88b83c3c5035ab9570430991e",
+                "report-integrated.yml:md5,96895eaa314bc9cd64ad7772bd8e5219",
                 "mqc_spaceranger_count_genesXspot.txt:md5,e7f109f701cb692dd8dc1cd45498e08f",
                 "mqc_spaceranger_count_genomic_dna.txt:md5,5148a48bf99ec61b648188caf0558e26",
                 "mqc_spaceranger_count_saturation.txt:md5,8a81c8b9831588776559c3e3a3d42aef",
@@ -1842,10 +1842,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-04-17T09:20:44.96517505",
+        "timestamp": "2026-10-02T14:05:10.228772204",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

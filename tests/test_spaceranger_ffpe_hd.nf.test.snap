@@ -2310,7 +2310,7 @@
                 "aligned_tissue_image.jpg:md5,bc12089729d5cdfb06ae0591eefc8417",
                 "cytassist_image.tiff:md5,1328dd8ea02922375719f38e3de516ca",
                 "detected_tissue_image.jpg:md5,a29e4dbf4b39d7cda3e381050d81b92e",
-                "report-integrated.yml:md5,a4d0e2a88b83c3c5035ab9570430991e",
+                "report-integrated.yml:md5,96895eaa314bc9cd64ad7772bd8e5219",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_quality_controls.txt:md5,72960d41fd085dd74bc30201db3fef65"
             ],
@@ -2541,10 +2541,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-04-17T10:54:33.57999253",
+        "timestamp": "2026-10-02T15:37:12.723575392",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

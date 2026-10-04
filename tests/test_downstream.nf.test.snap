@@ -3640,13 +3640,13 @@
                             "spatial"
                         ],
                         "varm": [
-
+                            
                         ],
                         "obsp": [
-
+                            
                         ],
                         "varp": [
-
+                            
                         ],
                         "uns": [
                             "coordinate_system",
@@ -3687,13 +3687,13 @@
                             "spatial"
                         ],
                         "varm": [
-
+                            
                         ],
                         "obsp": [
-
+                            
                         ],
                         "varp": [
-
+                            
                         ],
                         "uns": [
                             "coordinate_system",
@@ -3773,7 +3773,7 @@
                             "spatial_distances"
                         ],
                         "varp": [
-
+                            
                         ],
                         "uns": [
                             "X_umap",
@@ -3867,7 +3867,7 @@
                             "spatial_distances"
                         ],
                         "varp": [
-
+                            
                         ],
                         "uns": [
                             "X_umap",
@@ -3956,14 +3956,14 @@
                             "spatial"
                         ],
                         "varm": [
-
+                            
                         ],
                         "obsp": [
                             "connectivities",
                             "distances"
                         ],
                         "varp": [
-
+                            
                         ],
                         "uns": [
                             "X_umap_harmony",
