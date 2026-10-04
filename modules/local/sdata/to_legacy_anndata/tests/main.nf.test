@@ -36,7 +36,8 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    anndata(process.out.layers[0][1]).yaml
                 ).match() }
             )
         }

@@ -18,7 +18,9 @@ import importlib.metadata
 import logging
 import platform
 import re
+from pathlib import Path
 
+import anndata as ad
 import scipy.sparse
 import spatialdata
 import yaml
@@ -78,15 +80,19 @@ def ensure_sparse_csc(adata):
     return adata
 
 
-def add_metadata(adata, sample_id, table_name, coord_system):
-    """Add raw counts layer and metadata to an AnnData object."""
-    if "raw" not in adata.layers:
-        adata.layers["raw"] = adata.X.copy()
-    # Store additional metadata in `.uns`
-    adata.uns["sample_id"] = sample_id
-    adata.uns["table_name"] = table_name
-    adata.uns["coordinate_system"] = coord_system
-    return adata
+def write_layer(adata, name):
+    """
+    Write `adata.X` as layer slot data to `layers/<name>.h5ad`: a minimal
+    AnnData with only the matrix and the `obs`/`var` names.
+    """
+    layer_adata = ad.AnnData(
+        X=adata.X,
+        obs=adata.obs[[]],
+        var=adata.var[[]]
+    )
+    Path("layers").mkdir(exist_ok=True)
+    layer_adata.write_h5ad(f"layers/{name}.h5ad")
+    logger.info(f"Written slot data to: layers/{name}.h5ad")
 
 
 def write_versions(process_name):
@@ -127,13 +133,17 @@ def main():
     adata = extract_to_legacy_anndata(sdata, table_name, coord_system)
 
     adata = ensure_sparse_csc(adata)
-    adata = add_metadata(adata, sample_id, table_name, coord_system)
+    adata.uns["sample_id"] = sample_id
+    adata.uns["table_name"] = table_name
+    adata.uns["coordinate_system"] = coord_system
 
     logger.info(f"AnnData shape: {adata.shape}")
     logger.info(f"Spatial keys: {list(adata.uns.get('spatial', {}).keys())}")
 
     adata.write_h5ad(output_adata)
-    logger.info(f"Written legacy AnnData to: {output_adata}")
+    logger.info(f"Written AnnData to: `{output_adata}`")
+
+    write_layer(adata, "raw")
 
     write_versions(process_name)
 

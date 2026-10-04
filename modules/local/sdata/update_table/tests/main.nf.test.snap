@@ -52,18 +52,6 @@
                 "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers",
                 "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/.zattrs",
                 "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/.zgroup",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/.zattrs",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/.zgroup",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/data",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/data/.zarray",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/data/0",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/indices",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/indices/.zarray",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/indices/0",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/indptr",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/indptr/.zarray",
-                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/raw/indptr/0",
                 "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs",
                 "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/.zattrs",
                 "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/.zgroup",
@@ -347,10 +335,10 @@
                 "zmetadata"
             ]
         ],
-        "timestamp": "2026-04-01T21:09:32.590136",
+        "timestamp": "2026-10-04T11:21:21.991321",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - zarr - multiple samples": {

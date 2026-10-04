@@ -9,6 +9,7 @@ process SDATA_TO_LEGACY_ANNDATA {
 
     output:
     tuple val(meta), path("${prefix}.h5ad"), emit: adata
+    tuple val(meta), path("layers/*.h5ad") , emit: layers
     path "versions.yml"                    , emit: versions, topic: versions
 
     when:
@@ -22,6 +23,8 @@ process SDATA_TO_LEGACY_ANNDATA {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
+    mkdir layers
+    touch layers/raw.h5ad
     touch versions.yml
     """
 }
