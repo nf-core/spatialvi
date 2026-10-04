@@ -16,8 +16,8 @@ workflow INTEGRATION {
     ch_sdata_merged                // channel: [ meta, zarr ]
     ch_adata                       // channel: [ meta, h5ad ]
     integration_method             //  string: Integration method to use
-    n_neighbors                   // integer: Number of nearest neighbors to compute
-    neighbors_n_pcs               // integer: Number of PCs to use for nearest neighbors
+    n_neighbors                    // integer: Number of nearest neighbors to compute
+    neighbors_n_pcs                // integer: Number of PCs to use for nearest neighbors
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
     integration_cluster_resolution //   float: Integration cluster resolution

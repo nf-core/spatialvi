@@ -41,7 +41,7 @@
                     ]
                 },
                 "layers": [
-                    "raw"
+                    
                 ],
                 "obsm": [
                     "spatial"
@@ -70,7 +70,7 @@
                 "moranI.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:42:24.623634",
+        "timestamp": "2026-10-04T22:21:47.131605",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -103,7 +103,7 @@
                     ]
                 },
                 "layers": [
-                    "raw"
+                    
                 ],
                 "obsm": [
                     "spatial"
@@ -132,7 +132,7 @@
                 "gearyC.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:44:22.093938",
+        "timestamp": "2026-10-04T22:23:44.606833",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

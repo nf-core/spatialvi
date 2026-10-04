@@ -42,7 +42,7 @@
                     ]
                 },
                 "layers": [
-                    "raw"
+                    
                 ],
                 "obsm": [
                     "X_pca",
@@ -77,7 +77,7 @@
                 "clusters_nhood_enrichment.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:31:34.330616",
+        "timestamp": "2026-10-04T22:18:20.210211",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

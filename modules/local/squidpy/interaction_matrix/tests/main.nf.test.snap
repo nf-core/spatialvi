@@ -42,7 +42,7 @@
                     ]
                 },
                 "layers": [
-                    "raw"
+                    
                 ],
                 "obsm": [
                     "X_pca",
@@ -77,7 +77,7 @@
                 "clusters_interactions.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:37:18.343213",
+        "timestamp": "2026-10-04T22:14:23.189904",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
