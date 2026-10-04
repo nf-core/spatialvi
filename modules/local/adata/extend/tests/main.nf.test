@@ -1026,6 +1026,370 @@ nextflow_process {
         }
     }
 
+    test("homo_sapiens - h5ad - layers aligned") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../../sdata/read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_READ_VISIUM.out.sdata
+                    """
+                }
+            }
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../../scanpy/calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    input[1] = true // write_adata
+                    """
+                }
+            }
+            run("SCANPY_FILTER") {
+                script "../../../scanpy/filter/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                    input[1] = 5   // min_counts
+                    input[2] = 3   // min_genes
+                    input[3] = 1   // min_obs
+                    input[4] = 100 // mito_threshold
+                    input[5] = 0   // ribo_threshold
+                    input[6] = 100 // hb_threshold
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_FILTER.out.adata
+                    .join(SDATA_TO_LEGACY_ANNDATA.out.layers)
+                    .map { meta, base, layers -> [ meta, base, [], [], [], [], [], [], layers ] }
+                input[1] = true  // align
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            // The filtered base has fewer spots and genes than the layer file,
+            // so the layer is selected; AnnData only accepts a layer with the
+            // base's shape, so `layers["raw"]` in the snapshot shows that
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - layers index mismatch") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../../sdata/read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_READ_VISIUM.out.sdata
+                    """
+                }
+            }
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../../scanpy/calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    input[1] = true // write_adata
+                    """
+                }
+            }
+            run("SCANPY_FILTER") {
+                script "../../../scanpy/filter/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                    input[1] = 5   // min_counts
+                    input[2] = 3   // min_genes
+                    input[3] = 1   // min_obs
+                    input[4] = 100 // mito_threshold
+                    input[5] = 0   // ribo_threshold
+                    input[6] = 100 // hb_threshold
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_FILTER.out.adata
+                    .join(SDATA_TO_LEGACY_ANNDATA.out.layers)
+                    .map { meta, base, layers -> [ meta, base, [], [], [], [], [], [], layers ] }
+                input[1] = false // align
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Index of layer data `layers/raw.h5ad` differs from `adata.obs_names`") }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - layers strict") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../../sdata/read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_READ_VISIUM.out.sdata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    .join(SDATA_TO_LEGACY_ANNDATA.out.layers)
+                    .map { meta, base, layers -> [ meta, base, [], [], [], [], [], [], layers ] }
+                input[1] = false // align
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - layers duplicate names") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../../sdata/read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_READ_VISIUM.out.sdata
+                    """
+                }
+            }
+            run("DUPLICATE_VAR_NAMES") {
+                script "../../../../../tests/helpers/duplicate_var_names.nf"
+                process {
+                    """
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = DUPLICATE_VAR_NAMES.out.adata
+                    .join(SDATA_TO_LEGACY_ANNDATA.out.layers)
+                    .map { meta, base, layers -> [ meta, base, [], [], [], [], [], [], layers ] }
+                input[1] = false // align
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            // Layers require unique names even without `align`
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("names in `adata.var_names` are duplicated") }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - layers should fail with full object") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'SRR28679756' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                    [], [], [], [], [], [],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = false // align
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("only `X`, `obs_names` and `var_names` are allowed") }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - layers should fail with pickle") {
+
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../../scanpy/calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = false // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.obs
+                    .map { meta, obs ->
+                        [
+                            meta,
+                            file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                            [], [], [], [], [], [],
+                            obs
+                        ]
+                    }
+                input[1] = false // align
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Slot data `layers/qc_metrics.pkl` must be a `.h5ad` file") }
+            )
+        }
+    }
+
+    test("homo_sapiens - pkl - should fail with h5ad") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'SRR28679756' ],
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                    [], [], [], [], [], []
+                ]
+                input[1] = false // align
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Slot data `obs/SRR28679756_filtered_matrix.h5ad` must be a `.pkl` file") }
+            )
+        }
+    }
+
     test("stub") {
 
         options "-stub"
