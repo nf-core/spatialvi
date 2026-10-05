@@ -47,6 +47,7 @@ compatible with further downstream analyses and/or exploration in _e.g._
 
 ### `Fixed`
 
+- [#155](https://github.com/nf-core/spatialvi/pull/155): Fix missing merged normalisation, HVGs and PCAs.
 - [#51](https://github.com/nf-core/spatialvi/issues/51): Fix version export of `leidenalg` and `SpatialDE` Python modules
 - [#38](https://github.com/nf-core/spatialvi/issues/38): Specify manual alignment files in samplesheet
 - [#20](https://github.com/nf-core/spatialvi/issues/20) and [#22](https://github.com/nf-core/spatialvi/issues/22): Add missing Groovy module
