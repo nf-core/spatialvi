@@ -5,6 +5,10 @@
 include { ADATA_MERGE                                          } from "../../../modules/local/adata/merge"
 include { QUARTO_NOTEBOOK as REPORT_INTEGRATED                 } from "../../../modules/nf-core/quarto/notebook"
 include { SCANPY_HARMONY                                       } from "../../../modules/local/scanpy/harmony"
+include { SCANPY_HIGHLY_VARIABLE_GENES                         } from "../../../modules/local/scanpy/highly_variable_genes"
+include { SCANPY_LOG1P                                         } from "../../../modules/local/scanpy/log1p"
+include { SCANPY_NORMALIZE_TOTAL                               } from "../../../modules/local/scanpy/normalize_total"
+include { SCANPY_PCA                                           } from "../../../modules/local/scanpy/pca"
 include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
 include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from "../../../modules/local/sdata/update_table"
 
@@ -16,6 +20,11 @@ workflow INTEGRATION {
     ch_sdata_merged                // channel: [ meta, zarr ]
     ch_adata                       // channel: [ meta, h5ad ]
     integration_method             //  string: Integration method to use
+    normalize_target_sum           //  string: Target sum of total count normalization
+    n_highly_variable_genes        // integer: Number of HVGs to use
+    hvg_flavor                     //  string: Flavor for HVG calculations
+    n_principal_components         // integer: Number of principal components to compute
+    pca_use_highly_variable        // boolean: Whether to only use highly variable genes for PCA
     n_neighbors                    // integer: Number of nearest neighbors to compute
     neighbors_n_pcs                // integer: Number of PCs to use for nearest neighbors
     umap_min_dist                  //   float: Minimum distance between embedded points
@@ -25,7 +34,7 @@ workflow INTEGRATION {
     main:
 
     //
-    // MODULE: Merge AnnData objects
+    // MODULE: Merge AnnData objects; raw counts in `X`
     //
     ch_adata_collected = ch_adata
         .toSortedList { a, b -> a[0].id <=> b[0].id }
@@ -37,17 +46,54 @@ workflow INTEGRATION {
         'inner',      // join
         'library_id', // label
         'true',       // preserve_spatial
-        ''            // layer
+        'raw'         // layer
     )
     ch_adata_merged = ADATA_MERGE.out.adata
         .map { h5ad -> [[id: integration_method], h5ad] }
+
+    //
+    // MODULE: Normalisation of the merged counts
+    //
+    SCANPY_NORMALIZE_TOTAL (
+        ch_adata_merged,
+        normalize_target_sum
+    )
+
+    //
+    // MODULE: Log-transformation
+    //
+    SCANPY_LOG1P (
+        SCANPY_NORMALIZE_TOTAL.out.adata
+    )
+
+    //
+    // MODULE: Highly variable gene selection, per sample
+    //
+    SCANPY_HIGHLY_VARIABLE_GENES (
+        SCANPY_LOG1P.out.adata,
+        n_highly_variable_genes,
+        hvg_flavor,
+        'library_id', // batch_key
+        true          // write_adata
+    )
+
+    //
+    // MODULE: Principal Component Analysis
+    //
+    SCANPY_PCA (
+        SCANPY_HIGHLY_VARIABLE_GENES.out.adata,
+        n_principal_components,
+        pca_use_highly_variable,
+        true // write_adata
+    )
+    ch_adata_pca = SCANPY_PCA.out.adata
 
     //
     // MODULE: Integration
     //
     if (integration_method == 'harmony') {
         SCANPY_HARMONY (
-            ch_adata_merged,
+            ch_adata_pca,
             'library_id', // key
             'X_harmony',  // adjusted_basis
             true          // write_adata
@@ -55,7 +101,7 @@ workflow INTEGRATION {
         ch_adata_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
         SCANPY_SCANORAMA (
-            ch_adata_merged,
+            ch_adata_pca,
             'library_id',  // key
             'X_scanorama', // embedding_added
             true           // write_adata
