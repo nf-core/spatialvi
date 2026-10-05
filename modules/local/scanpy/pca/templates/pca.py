@@ -36,9 +36,19 @@ logger = logging.getLogger(__name__)
 threadpool_limits(int("${task.cpus}"))
 
 
-def log_variance_summary(adata, n_comps):
+def pca_keys(key_added):
+    """
+    Return the `obsm`, `varm` and `uns` keys that `sc.pp.pca` writes to: the
+    defaults for `X_pca`, otherwise `key_added` for all three.
+    """
+    if key_added == "X_pca":
+        return "X_pca", "PCs", "pca"
+    return key_added, key_added, key_added
+
+
+def log_variance_summary(adata, n_comps, uns_key):
     """Print summary of variance explained by principal components."""
-    variance_ratio = adata.uns["pca"]["variance_ratio"]
+    variance_ratio = adata.uns[uns_key]["variance_ratio"]
     cumulative_variance = variance_ratio.cumsum()
 
     logger.info("Variance explained:")
@@ -49,7 +59,7 @@ def log_variance_summary(adata, n_comps):
     logger.info(f"  All {n_comps} PCs: {cumulative_variance[-1]:.2%}")
 
 
-def perform_pca(adata, n_comps, use_highly_variable):
+def perform_pca(adata, n_comps, use_highly_variable, key_added):
     """
     Perform PCA on AnnData object.
 
@@ -61,11 +71,13 @@ def perform_pca(adata, n_comps, use_highly_variable):
         Number of principal components to compute.
     use_highly_variable : bool
         Whether to use only highly variable genes.
+    key_added : str
+        Key for the results; `X_pca` keeps scanpy's default keys.
 
     Returns
     -------
     AnnData
-        AnnData with PCA results in obsm["X_pca"].
+        AnnData with PCA results in obsm[key_added].
     """
     logger.info(f"AnnData shape: {adata.shape}")
     logger.info(f"Number of components: {n_comps}")
@@ -80,14 +92,18 @@ def perform_pca(adata, n_comps, use_highly_variable):
         n_hvgs = adata.var["highly_variable"].sum()
         logger.info(f"Using {n_hvgs} highly variable genes for PCA")
 
+    # Without `key_added`, scanpy uses its default keys (see `pca_keys`)
+    key_args = {} if key_added == "X_pca" else {"key_added": key_added}
     sc.pp.pca(
         adata,
         n_comps=n_comps,
         use_highly_variable=use_highly_variable and has_hvg,
         random_state=0,
+        **key_args,
     )
 
-    log_variance_summary(adata, n_comps)
+    _, _, uns_key = pca_keys(key_added)
+    log_variance_summary(adata, n_comps, uns_key)
 
     return adata
 
@@ -120,6 +136,7 @@ def main():
     h5ad = "${adata}"
     n_comps = int("${n_pcs}")
     use_highly_variable = "${use_highly_variable}".lower() == "true"
+    key_added = "${key_added}"
     output_h5ad = "${prefix}.h5ad"
     write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
@@ -130,17 +147,19 @@ def main():
     adata = perform_pca(
         adata,
         n_comps=n_comps,
-        use_highly_variable=use_highly_variable
+        use_highly_variable=use_highly_variable,
+        key_added=key_added
     )
 
     # `obsm` and `varm` need an added index before writing to pickle
-    df_obsm = pd.DataFrame(adata.obsm["X_pca"])
+    obsm_key, varm_key, uns_key = pca_keys(key_added)
+    df_obsm = pd.DataFrame(adata.obsm[obsm_key])
     df_obsm.index = adata.obs_names
-    df_varm = pd.DataFrame(adata.varm["PCs"])
+    df_varm = pd.DataFrame(adata.varm[varm_key])
     df_varm.index = adata.var_names
-    write_pickle(df_obsm, "obsm", "X_pca")
-    write_pickle(df_varm, "varm", "PCs")
-    write_pickle(adata.uns["pca"], "uns", "pca")
+    write_pickle(df_obsm, "obsm", obsm_key)
+    write_pickle(df_varm, "varm", varm_key)
+    write_pickle(adata.uns[uns_key], "uns", uns_key)
 
     if write_adata:
         adata.write_h5ad(output_h5ad)

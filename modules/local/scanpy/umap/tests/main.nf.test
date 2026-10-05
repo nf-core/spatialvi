@@ -40,9 +40,10 @@ nextflow_process {
                 process {
                     """
                     input[0] = SCANPY_HIGHLY_VARIABLE_GENES.out.adata
-                    input[1] = 50   // n_pcs
-                    input[2] = true // use_highly_variable
-                    input[3] = true // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = true    // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -115,9 +116,10 @@ nextflow_process {
                 process {
                     """
                     input[0] = SCANPY_HIGHLY_VARIABLE_GENES.out.adata
-                    input[1] = 50   // n_pcs
-                    input[2] = true // use_highly_variable
-                    input[3] = true // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = true    // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -192,9 +194,10 @@ nextflow_process {
                 process {
                     """
                     input[0] = SCANPY_HIGHLY_VARIABLE_GENES.out.adata
-                    input[1] = 50   // n_pcs
-                    input[2] = true // use_highly_variable
-                    input[3] = true // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = true    // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }

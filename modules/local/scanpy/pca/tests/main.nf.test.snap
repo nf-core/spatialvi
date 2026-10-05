@@ -216,5 +216,60 @@
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
         }
+    },
+    "homo_sapiens - h5ad - custom key": {
+        "content": [
+            [
+                "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
+            ],
+            {
+                "n_obs": 12940,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "symbols"
+                    ]
+                },
+                "layers": [
+                    "counts"
+                ],
+                "obsm": [
+                    "X_pca_merged"
+                ],
+                "varm": [
+                    "X_pca_merged"
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "X_pca_merged"
+                ]
+            },
+            [
+                "X_pca_merged.pkl"
+            ],
+            [
+                "X_pca_merged.pkl"
+            ],
+            [
+                "X_pca_merged.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-05T14:24:15.770266",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }
