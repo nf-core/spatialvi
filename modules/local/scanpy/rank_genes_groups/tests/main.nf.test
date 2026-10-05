@@ -349,7 +349,10 @@ nextflow_process {
         }
 
         then {
-            { assert process.failed }
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Column 'missing_column' not found in adata.obs") }
+            )
         }
     }
 

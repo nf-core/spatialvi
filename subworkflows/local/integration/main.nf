@@ -96,7 +96,8 @@ workflow INTEGRATION {
         SCANPY_HARMONY (
             ch_adata_pca,
             'library_id', // key
-            'X_harmony',  // adjusted_basis
+            'X_pca',      // basis
+            'X_harmony',  // embedding_added
             true          // write_adata
         )
         ch_adata_integrated = SCANPY_HARMONY.out.adata
@@ -104,6 +105,7 @@ workflow INTEGRATION {
         SCANPY_SCANORAMA (
             ch_adata_pca,
             'library_id',  // key
+            'X_pca',       // basis
             'X_scanorama', // embedding_added
             true           // write_adata
         )

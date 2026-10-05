@@ -138,8 +138,9 @@ nextflow_process {
                     input[0] = ADATA_MERGE.out.adata
                         .map { h5ad -> [[id: "harmony"], h5ad] }
                     input[1] = 'library_id' // key
-                    input[2] = 'X_harmony'  // embedding_added
-                    input[3] = true         // write_adata
+                    input[2] = 'X_pca'      // basis
+                    input[3] = 'X_harmony'  // embedding_added
+                    input[4] = true         // write_adata
                     """
                 }
             }

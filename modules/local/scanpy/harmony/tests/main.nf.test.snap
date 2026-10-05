@@ -113,5 +113,56 @@
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
         }
+    },
+    "homo_sapiens - h5ad - custom basis": {
+        "content": [
+            [
+                "versions.yml:md5,03172681ef9c2e21eed9e9ed573cf597"
+            ],
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "library_id",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    "X_harmony",
+                    "X_pca_merged"
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    
+                ]
+            },
+            [
+                "X_harmony.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-05T14:29:32.331045",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }

@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 threadpool_limits(int("${task.cpus}"))
 
 
-def integrate_harmony(adata, key, adjusted_basis):
+def integrate_harmony(adata, key, basis, adjusted_basis):
     """
     Integrate observations using Harmony.
 
@@ -46,6 +46,8 @@ def integrate_harmony(adata, key, adjusted_basis):
         Annotated data matrix with PCA computed.
     key : str
         Column in adata.obs containing batch/sample labels.
+    basis : str
+        Key in adata.obsm of the embedding to integrate, _e.g._ a PCA.
 
     Returns
     -------
@@ -55,9 +57,10 @@ def integrate_harmony(adata, key, adjusted_basis):
     if key not in adata.obs.columns:
         raise ValueError(f"Integration key '{key}' not found in adata.obs.")
 
-    if "X_pca" not in adata.obsm:
+    if basis not in adata.obsm:
         raise ValueError(
-            "PCA not found in adata.obsm; run PCA before integration."
+            f"Embedding '{basis}' not found in adata.obsm; run PCA before "
+            "integration."
         )
 
     n_batches = adata.obs[key].nunique()
@@ -66,6 +69,7 @@ def integrate_harmony(adata, key, adjusted_basis):
     sce.pp.harmony_integrate(
         adata,
         key=key,
+        basis=basis,
         adjusted_basis=adjusted_basis,
         random_state=0
     )
@@ -101,6 +105,7 @@ def main():
     # Template variables
     h5ad = "${h5ad}"
     key = "${key}"
+    basis = "${basis}"
     adjusted_basis = "${embedding_added}"
     output_h5ad = "${prefix}.h5ad"
     write_adata = "${write_adata}" == "true"
@@ -110,7 +115,12 @@ def main():
     adata = ad.read_h5ad(h5ad, backed="r")
     logger.info(f"AnnData shape: {adata.shape}")
 
-    adata = integrate_harmony(adata, key=key, adjusted_basis=adjusted_basis)
+    adata = integrate_harmony(
+        adata,
+        key=key,
+        basis=basis,
+        adjusted_basis=adjusted_basis
+    )
 
     # `obsm` needs an added index before writing to pickle
     df_obsm = pd.DataFrame(adata.obsm[adjusted_basis])
