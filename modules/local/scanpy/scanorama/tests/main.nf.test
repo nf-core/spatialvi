@@ -34,8 +34,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }
@@ -91,8 +91,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }
@@ -137,8 +137,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }
@@ -209,8 +209,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }

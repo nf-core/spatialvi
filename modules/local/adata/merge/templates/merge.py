@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
 Merge multiple AnnData objects into one.
+
+Gene annotations (`var` columns) are kept only if they are the same in every
+object, so per-sample statistics are dropped. `preserve_spatial` keeps the
+spatial data in `uns["spatial"]` of every object, and `layer` puts the merged
+content of that layer into `X` (e.g. raw counts, to be normalised again),
+keeping the layer itself.
 """
 
 # Disable OpenMP CPU topology detection for macOS compatibility
@@ -19,7 +25,6 @@ import platform
 from pathlib import Path
 
 import anndata as ad
-import pandas as pd
 import yaml
 from threadpoolctl import threadpool_limits
 
@@ -28,18 +33,6 @@ logger = logging.getLogger(__name__)
 
 # Limit BLAS/OpenMP threads to the allocated CPUs
 threadpool_limits(int("${task.cpus}"))
-
-
-def add_var(adata, adata_list, join):
-    """
-    Adds `.var` back into a merged AnnData object from the original list of
-    multiple AnnData objects.
-    """
-    merged_var = pd.concat([adata.var for adata in adata_list], join=join)
-    merged_var = merged_var[~merged_var.index.duplicated()]
-    adata.var = merged_var.loc[adata.var_names]
-    logger.info("Preserved `.var` data")
-    return adata
 
 
 def add_spatial(adata, adata_list):
@@ -66,27 +59,41 @@ def validate_var_names(adata_list, keys):
             )
 
 
-def merge_adata(adata_list, keys, join, label, preserve_var, preserve_spatial):
+def validate_layer(adata_list, keys, layer):
+    """Check that every AnnData object has `layer`."""
+    for adata, key in zip(adata_list, keys):
+        if layer not in adata.layers:
+            raise ValueError(
+                f'`adata.layers["{layer}"]` not found in `{key}`'
+            )
+
+
+def merge_adata(adata_list, keys, join, label, preserve_spatial, layer):
     """
-    Merge multiple AnnData objects into one. Can optionally preserve both `.var`
-    and `.uns['spatial']` for the final merged object.
+    Merge multiple AnnData objects into one, keeping the `var` columns that are
+    the same in every object. Can optionally preserve `.uns['spatial']` and put
+    a layer into `X` for the final merged object.
     """
     validate_var_names(adata_list, keys)
+    if layer:
+        validate_layer(adata_list, keys, layer)
 
     logger.info(f"Merging {len(adata_list)} AnnData objects using {join} join")
     adata = ad.concat(
         adata_list,
         join=join,
+        merge="same",
         label=label,
         keys=keys,
         index_unique="-"
     )
 
-    if preserve_var:
-        adata = add_var(adata, adata_list, join)
-
     if preserve_spatial:
         adata = add_spatial(adata, adata_list)
+
+    if layer:
+        adata.X = adata.layers[layer]
+        logger.info(f'Set `adata.X` to the merged `adata.layers["{layer}"]`')
 
     logger.info(f"Final merged AnnData {adata}")
 
@@ -112,8 +119,8 @@ def main():
     h5ads = "${h5ad}".split()
     join = "${join}"
     label = "${label}"
-    preserve_var = "${preserve_var}" == "true"
     preserve_spatial = "${preserve_spatial}" == "true"
+    layer = "${layer}"
     output_file = "${prefix}.h5ad"
     process_name = "${task.process}"
 
@@ -129,8 +136,8 @@ def main():
         sample_names,
         join=join,
         label=label,
-        preserve_var=preserve_var,
-        preserve_spatial=preserve_spatial
+        preserve_spatial=preserve_spatial,
+        layer=layer
     )
 
     adata_integrated.write_h5ad(output_file)

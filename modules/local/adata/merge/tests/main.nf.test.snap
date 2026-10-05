@@ -46,7 +46,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "homo_sapiens - h5ad - preserve var data": {
+    "homo_sapiens - h5ad - per-sample var columns": {
         "content": [
             [
                 "versions.yml:md5,000ad1cdc4326c1b33c0fbd3557056f5"
@@ -58,13 +58,27 @@
                     "index": "_index",
                     "columns": [
                         "library_id",
-                        "sample"
+                        "n_genes_by_counts",
+                        "pct_counts_hb",
+                        "pct_counts_in_top_100_genes",
+                        "pct_counts_in_top_200_genes",
+                        "pct_counts_in_top_500_genes",
+                        "pct_counts_in_top_50_genes",
+                        "pct_counts_mt",
+                        "pct_counts_ribo",
+                        "sample",
+                        "total_counts",
+                        "total_counts_hb",
+                        "total_counts_mt",
+                        "total_counts_ribo"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "hb",
+                        "mt",
+                        "ribo"
                     ]
                 },
                 "layers": [
@@ -87,7 +101,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-01T20:53:04.19467",
+        "timestamp": "2026-10-05T12:43:34.384823",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -138,7 +152,9 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        
+                        "feature_types",
+                        "gene_ids",
+                        "genome"
                     ]
                 },
                 "layers": [
@@ -161,7 +177,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-04T11:16:34.046434",
+        "timestamp": "2026-10-05T12:43:57.018024",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

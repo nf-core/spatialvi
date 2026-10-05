@@ -36,8 +36,8 @@ workflow INTEGRATION {
         ch_adata_collected,
         'inner',      // join
         'library_id', // label
-        'true',       // preserve_var
-        'true'        // preserve_spatial
+        'true',       // preserve_spatial
+        ''            // layer
     )
     ch_adata_merged = ADATA_MERGE.out.adata
         .map { h5ad -> [[id: integration_method], h5ad] }
