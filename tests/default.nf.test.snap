@@ -1,8 +1,14 @@
 {
     "Space Ranger FFPE v2 CytAssist": {
         "content": [
-            31,
+            32,
             {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.4",
+                    "numpy": "2.3.4",
+                    "pandas": "2.3.3",
+                    "python": "3.12.12"
+                },
                 "ADATA_MERGE": {
                     "anndata": "0.12.4",
                     "python": "3.12.12"
@@ -1418,7 +1424,7 @@
                             ]
                         },
                         "layers": [
-                            "raw"
+                            
                         ],
                         "obsm": [
                             "spatial"
@@ -1613,7 +1619,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-02T10:47:32.797047998",
+        "timestamp": "2026-10-04T20:52:07.832945057",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

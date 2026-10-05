@@ -1,8 +1,14 @@
 {
     "Downstream FFPE v2 CytAssist": {
         "content": [
-            48,
+            50,
             {
+                "ADATA_EXTEND": {
+                    "anndata": "0.12.4",
+                    "numpy": "2.3.4",
+                    "pandas": "2.3.3",
+                    "python": "3.12.12"
+                },
                 "ADATA_MERGE": {
                     "anndata": "0.12.4",
                     "python": "3.12.12"
@@ -3172,7 +3178,7 @@
                             ]
                         },
                         "layers": [
-                            "raw"
+                            
                         ],
                         "obsm": [
                             "spatial"
@@ -3219,7 +3225,7 @@
                             ]
                         },
                         "layers": [
-                            "raw"
+                            
                         ],
                         "obsm": [
                             "spatial"
@@ -3504,7 +3510,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-02T10:37:16.730241195",
+        "timestamp": "2026-10-04T20:43:51.358155252",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
