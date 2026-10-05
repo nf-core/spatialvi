@@ -1,7 +1,7 @@
 {
     "Downstream FFPE v2 CytAssist": {
         "content": [
-            50,
+            54,
             {
                 "ADATA_EXTEND": {
                     "anndata": "0.12.4",
@@ -1171,6 +1171,11 @@
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca/.zattrs",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca/0/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca_merged",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca_merged/.zarray",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca_merged/.zattrs",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca_merged/0",
+                "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_pca_merged/0/0",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap/.zarray",
                 "integration/data/harmony.zarr/tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/X_umap/.zattrs",
@@ -3470,6 +3475,8 @@
                                 "genome",
                                 "hb",
                                 "highly_variable",
+                                "highly_variable_intersection",
+                                "highly_variable_nbatches",
                                 "mean_counts",
                                 "means",
                                 "mt",
@@ -3486,12 +3493,14 @@
                         "obsm": [
                             "X_harmony",
                             "X_pca",
+                            "X_pca_merged",
                             "X_umap",
                             "X_umap_harmony",
                             "spatial"
                         ],
                         "varm": [
-                            
+                            "PCs",
+                            "X_pca_merged"
                         ],
                         "obsp": [
                             "connectivities",
@@ -3501,8 +3510,11 @@
                             
                         ],
                         "uns": [
+                            "X_pca_merged",
                             "X_umap_harmony",
                             "clusters_harmony",
+                            "hvg",
+                            "log1p",
                             "neighbors",
                             "spatial"
                         ]
@@ -3510,7 +3522,7 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-04T20:43:51.358155252",
+        "timestamp": "2026-10-05T15:24:16.102537258",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
