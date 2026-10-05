@@ -4,26 +4,28 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SDATA_READ_VISIUM         } from "../modules/local/sdata/read_visium"
-include { FASTQC                    } from "../modules/nf-core/fastqc"
-include { ADATA_EXTEND              } from "../modules/local/adata/extend"
-include { SCANPY_RANK_GENES_GROUPS  } from "../modules/local/scanpy/rank_genes_groups"
-include { SDATA_MERGE               } from "../modules/local/sdata/merge"
-include { SDATA_TO_LEGACY_ANNDATA   } from "../modules/local/sdata/to_legacy_anndata"
-include { MULTIQC                   } from "../modules/nf-core/multiqc"
-include { QUARTO_NOTEBOOK as REPORT } from "../modules/nf-core/quarto/notebook"
-include { SDATA_UPDATE_TABLE        } from "../modules/local/sdata/update_table"
+include { SDATA_READ_VISIUM           } from "../modules/local/sdata/read_visium"
+include { FASTQC                      } from "../modules/nf-core/fastqc"
+include { ADATA_EXTEND                } from "../modules/local/adata/extend"
+include { SCANPY_CALCULATE_QC_METRICS } from "../modules/local/scanpy/calculate_qc_metrics"
+include { SCANPY_FILTER               } from "../modules/local/scanpy/filter"
+include { SCANPY_RANK_GENES_GROUPS    } from "../modules/local/scanpy/rank_genes_groups"
+include { SDATA_MERGE                 } from "../modules/local/sdata/merge"
+include { SDATA_TO_LEGACY_ANNDATA     } from "../modules/local/sdata/to_legacy_anndata"
+include { MULTIQC                     } from "../modules/nf-core/multiqc"
+include { QUARTO_NOTEBOOK as REPORT   } from "../modules/nf-core/quarto/notebook"
+include { SDATA_UPDATE_TABLE          } from "../modules/local/sdata/update_table"
 
-include { INPUT_CHECK               } from "../subworkflows/local/input_check"
-include { SPACERANGER               } from "../subworkflows/local/spaceranger"
-include { PREPROCESSING             } from "../subworkflows/local/preprocessing"
-include { CLUSTERING                } from "../subworkflows/local/clustering"
-include { SPATIAL                   } from "../subworkflows/local/spatial"
-include { INTEGRATION               } from "../subworkflows/local/integration"
-include { paramsSummaryMultiqc      } from "../subworkflows/nf-core/utils_nfcore_pipeline"
-include { paramsSummaryMap          } from "plugin/nf-schema"
-include { softwareVersionsToYAML    } from "../subworkflows/nf-core/utils_nfcore_pipeline"
-include { methodsDescriptionText    } from "../subworkflows/local/utils_nfcore_spatialvi_pipeline"
+include { INPUT_CHECK                 } from "../subworkflows/local/input_check"
+include { SPACERANGER                 } from "../subworkflows/local/spaceranger"
+include { PREPROCESSING               } from "../subworkflows/local/preprocessing"
+include { CLUSTERING                  } from "../subworkflows/local/clustering"
+include { SPATIAL                     } from "../subworkflows/local/spatial"
+include { INTEGRATION                 } from "../subworkflows/local/integration"
+include { paramsSummaryMultiqc        } from "../subworkflows/nf-core/utils_nfcore_pipeline"
+include { paramsSummaryMap            } from "plugin/nf-schema"
+include { softwareVersionsToYAML      } from "../subworkflows/nf-core/utils_nfcore_pipeline"
+include { methodsDescriptionText      } from "../subworkflows/local/utils_nfcore_spatialvi_pipeline"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,24 +141,41 @@ workflow SPATIALVI {
         )
 
         //
-        // SUBWORKFLOW: Pre-processing
+        // MODULE: Calculate quality control metrics
         //
-        PREPROCESSING (
+        SCANPY_CALCULATE_QC_METRICS (
             SDATA_TO_LEGACY_ANNDATA.out.adata,
+            true // write_adata
+        )
+
+        //
+        // MODULE: Filtering
+        //
+        SCANPY_FILTER (
+            SCANPY_CALCULATE_QC_METRICS.out.adata,
             qc_min_counts,
             qc_min_genes,
             qc_min_spots,
             qc_mito_threshold,
             qc_ribo_threshold,
-            qc_hb_threshold,
+            qc_hb_threshold
+        )
+        ch_multiqc_files = ch_multiqc_files
+            .mix(SCANPY_FILTER.out.stats.collect { it -> it[1] })
+
+        //
+        // SUBWORKFLOW: Pre-processing
+        //
+        PREPROCESSING (
+            SCANPY_FILTER.out.adata,
             normalize_target_sum,
             n_highly_variable_genes,
             hvg_flavor,
+            '',     // hvg_batch_key
             n_principal_components,
-            pca_use_highly_variable
+            pca_use_highly_variable,
+            'X_pca' // pca_key_added
         )
-        ch_multiqc_files = ch_multiqc_files
-            .mix(PREPROCESSING.out.filter_stats.collect { it -> it[1] })
 
         //
         // SUBWORKFLOW: Clustering

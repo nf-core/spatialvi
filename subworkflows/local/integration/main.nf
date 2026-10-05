@@ -5,14 +5,11 @@
 include { ADATA_MERGE                                          } from "../../../modules/local/adata/merge"
 include { QUARTO_NOTEBOOK as REPORT_INTEGRATED                 } from "../../../modules/nf-core/quarto/notebook"
 include { SCANPY_HARMONY                                       } from "../../../modules/local/scanpy/harmony"
-include { SCANPY_HIGHLY_VARIABLE_GENES                         } from "../../../modules/local/scanpy/highly_variable_genes"
-include { SCANPY_LOG1P                                         } from "../../../modules/local/scanpy/log1p"
-include { SCANPY_NORMALIZE_TOTAL                               } from "../../../modules/local/scanpy/normalize_total"
-include { SCANPY_PCA                                           } from "../../../modules/local/scanpy/pca"
 include { SCANPY_SCANORAMA                                     } from "../../../modules/local/scanpy/scanorama"
 include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from "../../../modules/local/sdata/update_table"
 
 include { CLUSTERING                                           } from "../../../subworkflows/local/clustering"
+include { PREPROCESSING                                        } from "../../../subworkflows/local/preprocessing"
 
 workflow INTEGRATION {
 
@@ -52,42 +49,20 @@ workflow INTEGRATION {
         .map { h5ad -> [[id: integration_method], h5ad] }
 
     //
-    // MODULE: Normalisation of the merged counts
+    // SUBWORKFLOW: Pre-processing of the merged counts, with HVGs selected per
+    // sample
     //
-    SCANPY_NORMALIZE_TOTAL (
+    PREPROCESSING (
         ch_adata_merged,
-        normalize_target_sum
-    )
-
-    //
-    // MODULE: Log-transformation
-    //
-    SCANPY_LOG1P (
-        SCANPY_NORMALIZE_TOTAL.out.adata
-    )
-
-    //
-    // MODULE: Highly variable gene selection, per sample
-    //
-    SCANPY_HIGHLY_VARIABLE_GENES (
-        SCANPY_LOG1P.out.adata,
+        normalize_target_sum,
         n_highly_variable_genes,
         hvg_flavor,
-        'library_id', // batch_key
-        true          // write_adata
-    )
-
-    //
-    // MODULE: Principal Component Analysis
-    //
-    SCANPY_PCA (
-        SCANPY_HIGHLY_VARIABLE_GENES.out.adata,
+        'library_id',  // hvg_batch_key
         n_principal_components,
         pca_use_highly_variable,
-        'X_pca', // key_added
-        true     // write_adata
+        'X_pca_merged' // pca_key_added
     )
-    ch_adata_pca = SCANPY_PCA.out.adata
+    ch_adata_pca = PREPROCESSING.out.adata
 
     //
     // MODULE: Integration
@@ -95,19 +70,19 @@ workflow INTEGRATION {
     if (integration_method == 'harmony') {
         SCANPY_HARMONY (
             ch_adata_pca,
-            'library_id', // key
-            'X_pca',      // basis
-            'X_harmony',  // embedding_added
-            true          // write_adata
+            'library_id',   // key
+            'X_pca_merged', // basis
+            'X_harmony',    // embedding_added
+            true            // write_adata
         )
         ch_adata_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
         SCANPY_SCANORAMA (
             ch_adata_pca,
-            'library_id',  // key
-            'X_pca',       // basis
-            'X_scanorama', // embedding_added
-            true           // write_adata
+            'library_id',   // key
+            'X_pca_merged', // basis
+            'X_scanorama',  // embedding_added
+            true            // write_adata
         )
         ch_adata_integrated = SCANPY_SCANORAMA.out.adata
     }

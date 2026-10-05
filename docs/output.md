@@ -111,7 +111,10 @@ matrices, and spatially variable gene analysis.
 Integration outputs are only produced when both `--skip_integration` and
 `--skip_downstream` are unset (which is the default). This merges all per-sample
 data and applies batch correction using the selected integration method (Harmony
-or Scanorama).
+or Scanorama). The merged raw counts are normalised again, with the same
+parameters as the per-sample data, and highly variable genes and a PCA are
+computed on the merged data before integration; the highly variable genes are
+selected per sample and ranked by in how many samples they are highly variable.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -121,7 +124,11 @@ or Scanorama).
     integration).
   - `<METHOD>.zarr`: Integrated SpatialData object with batch-corrected results.
   - `<METHOD>.h5ad`: Integrated AnnData object with batch-corrected embeddings
-    and clustering.
+    and clustering. The PCA of the merged data is in `obsm["X_pca_merged"]`,
+    while `obsm["X_pca"]` holds each spot's coordinates in the PCA of its own
+    sample. Only gene annotations that are the same in every sample are kept
+    in `var`; per-sample gene statistics are available in the per-sample
+    output.
 - `integration/reports/`
   - `report-integrated.html`: Integration report with cross-sample comparisons,
     batch mixing assessment, and integrated clustering results.
