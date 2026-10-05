@@ -66,6 +66,7 @@ workflow PREPROCESSING {
         SCANPY_LOG1P.out.adata,
         n_highly_variable_genes,
         hvg_flavor,
+        '',  // batch_key
         true // write_adata
     )
 

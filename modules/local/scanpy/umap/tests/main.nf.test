@@ -30,7 +30,8 @@ nextflow_process {
                     input[0] = SCANPY_LOG1P.out.adata
                     input[1] = 2000     // n_hvgs
                     input[2] = 'seurat' // flavor
-                    input[3] = true     // write_adata
+                    input[3] = ''       // batch_key
+                    input[4] = true     // write_adata
                     """
                 }
             }
@@ -104,7 +105,8 @@ nextflow_process {
                     input[0] = SCANPY_LOG1P.out.adata
                     input[1] = 2000     // n_hvgs
                     input[2] = 'seurat' // flavor
-                    input[3] = true     // write_adata
+                    input[3] = ''       // batch_key
+                    input[4] = true     // write_adata
                     """
                 }
             }
@@ -180,7 +182,8 @@ nextflow_process {
                     input[0] = SCANPY_LOG1P.out.adata
                     input[1] = 2000     // n_hvgs
                     input[2] = 'seurat' // flavor
-                    input[3] = true     // write_adata
+                    input[3] = ''       // batch_key
+                    input[4] = true     // write_adata
                     """
                 }
             }

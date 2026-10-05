@@ -29,7 +29,8 @@ nextflow_process {
                 input[0] = SCANPY_LOG1P.out.adata
                 input[1] = 2000     // n_hvgs
                 input[2] = 'seurat' // flavor
-                input[3] = true     // write_adata
+                input[3] = ''       // batch_key
+                input[4] = true     // write_adata
                 """
             }
         }
@@ -75,7 +76,8 @@ nextflow_process {
                 input[0] = SCANPY_LOG1P.out.adata
                 input[1] = 2000     // n_hvgs
                 input[2] = 'seurat' // flavor
-                input[3] = false    // write_adata
+                input[3] = ''       // batch_key
+                input[4] = false    // write_adata
                 """
             }
         }
@@ -150,7 +152,8 @@ nextflow_process {
                 input[0] = SCANPY_LOG1P.out.adata
                 input[1] = 500           // n_hvgs
                 input[2] = 'cell_ranger' // flavor
-                input[3] = true          // write_adata
+                input[3] = ''            // batch_key
+                input[4] = true          // write_adata
                 """
             }
         }
@@ -194,7 +197,8 @@ nextflow_process {
                 input[0] = SCANPY_LOG1P.out.adata
                 input[1] = 99999    // n_hvgs
                 input[2] = 'seurat' // flavor
-                input[3] = true     // write_adata
+                input[3] = ''       // batch_key
+                input[4] = true     // write_adata
                 """
             }
         }
@@ -215,6 +219,171 @@ nextflow_process {
                 def n_hvgs = var.get("highly_variable").data.count { it.toString().toUpperCase() == "TRUE" }
                 assert n_hvgs == n_vars
             }
+        }
+    }
+
+    test("homo_sapiens - h5ad - seurat flavor - batch key") {
+
+        setup {
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = channel.of(
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ).collect()
+                    input[1] = 'inner'      // join
+                    input[2] = 'library_id' // label
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
+                    """
+                }
+            }
+            run("SCANPY_NORMALIZE_TOTAL") {
+                script "../../normalize_total/main.nf"
+                process {
+                    """
+                    input[0] = ADATA_MERGE.out.adata.map { h5ad -> [ [ id: 'merged' ], h5ad ] }
+                    input[1] = 0 // target_sum
+                    """
+                }
+            }
+            run("SCANPY_LOG1P") {
+                script "../../log1p/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NORMALIZE_TOTAL.out.adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LOG1P.out.adata
+                input[1] = 2000         // n_hvgs
+                input[2] = 'seurat'     // flavor
+                input[3] = 'library_id' // batch_key
+                input[4] = true         // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.var.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                def n_hvgs = var.get("highly_variable").data.count { it.toString().toUpperCase() == "TRUE" }
+                assert n_hvgs >= 1800 && n_hvgs <= 2200 && n_hvgs < n_vars
+                // Each gene is selected in none, one or both of the two samples
+                assert var.get("highly_variable_nbatches").data.every { it >= 0 && it <= 2 }
+            }
+        }
+    }
+
+    test("homo_sapiens - h5ad - fallback with too few genes - batch key") {
+
+        setup {
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = channel.of(
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true),
+                        file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true)
+                    ).collect()
+                    input[1] = 'inner'      // join
+                    input[2] = 'library_id' // label
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
+                    """
+                }
+            }
+            run("SCANPY_LOG1P") {
+                script "../../log1p/main.nf"
+                process {
+                    """
+                    input[0] = ADATA_MERGE.out.adata.map { h5ad -> [ [ id: 'merged' ], h5ad ] }
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LOG1P.out.adata
+                input[1] = 99999        // n_hvgs
+                input[2] = 'seurat'     // flavor
+                input[3] = 'library_id' // batch_key
+                input[4] = true         // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.var.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+            // Every gene is marked as highly variable, and counts as selected
+            // in both samples
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                def n_hvgs = var.get("highly_variable").data.count { it.toString().toUpperCase() == "TRUE" }
+                assert n_hvgs == n_vars
+                assert var.get("highly_variable_nbatches").data.every { it == 2 }
+            }
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail with missing batch key") {
+
+        setup {
+            run("SCANPY_LOG1P") {
+                script "../../log1p/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LOG1P.out.adata
+                input[1] = 2000         // n_hvgs
+                input[2] = 'seurat'     // flavor
+                input[3] = 'library_id' // batch_key
+                input[4] = true         // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Batch key 'library_id' not found in `adata.obs`") }
+            )
         }
     }
 
@@ -241,7 +410,8 @@ nextflow_process {
                 input[0] = SCANPY_LOG1P.out.adata
                 input[1] = 2000     // n_hvgs
                 input[2] = 'seurat' // flavor
-                input[3] = true     // write_adata
+                input[3] = ''       // batch_key
+                input[4] = true     // write_adata
                 """
             }
         }

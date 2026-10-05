@@ -37,9 +37,15 @@ threadpool_limits(int("${task.cpus}"))
 
 # The `var` columns that `sc.pp.highly_variable_genes` adds
 HVG_COLUMNS = ["highly_variable", "means", "dispersions", "dispersions_norm"]
+HVG_BATCH_COLUMNS = ["highly_variable_nbatches", "highly_variable_intersection"]
 
 
-def mark_all_genes_hvg(adata, flavor):
+def hvg_columns(batch_key):
+    """Return the `var` columns that HVG selection adds."""
+    return HVG_COLUMNS + (HVG_BATCH_COLUMNS if batch_key else [])
+
+
+def mark_all_genes_hvg(adata, flavor, batch_key):
     """
     Mark all genes as highly variable when too few genes exist.
 
@@ -49,6 +55,8 @@ def mark_all_genes_hvg(adata, flavor):
         Annotated data matrix.
     flavor : str
         HVG selection flavor used.
+    batch_key : str
+        Column in `adata.obs` with the batches, or an empty string.
 
     Returns
     -------
@@ -60,21 +68,38 @@ def mark_all_genes_hvg(adata, flavor):
     logger.warning("Too few genes for meaningful HVG selection.")
     logger.info("Marking all genes as highly variable.")
 
-    # Add the same columns and `uns` entry as scanpy does
+    # Add the same columns and `uns` entry as scanpy does; every gene counts as
+    # selected in every batch
     values = {
         "highly_variable": True,
         "means": np.array(adata.X.mean(axis=0)).flatten(),
         "dispersions": np.zeros(n_genes),
         "dispersions_norm": np.zeros(n_genes),
     }
-    for col in HVG_COLUMNS:
+    if batch_key:
+        values["highly_variable_nbatches"] = adata.obs[batch_key].nunique()
+        values["highly_variable_intersection"] = True
+    for col in hvg_columns(batch_key):
         adata.var[col] = values[col]
     adata.uns["hvg"] = {"flavor": flavor}
 
     return adata
 
 
-def find_highly_variable_genes(adata, n_top_genes, flavor):
+def log_batches(adata, batch_key):
+    """Check that the batch column exists, and log the size of each batch."""
+    if batch_key not in adata.obs.columns:
+        raise ValueError(
+            f"Batch key '{batch_key}' not found in `adata.obs`; available "
+            f"columns: {', '.join(adata.obs.columns)}"
+        )
+    batch_sizes = adata.obs[batch_key].value_counts()
+    logger.info(f'Batches in `adata.obs["{batch_key}"]`: {len(batch_sizes)}')
+    for batch, n_obs in batch_sizes.items():
+        logger.info(f"  {batch}: {n_obs} observations")
+
+
+def find_highly_variable_genes(adata, n_top_genes, flavor, batch_key):
     """
     Identify highly variable genes in the dataset.
 
@@ -86,6 +111,8 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
         Number of highly variable genes to select.
     flavor : str
         Method for HVG selection (e.g., "seurat", "cell_ranger").
+    batch_key : str
+        Column in `adata.obs` to select HVGs per batch, or an empty string.
 
     Returns
     -------
@@ -110,25 +137,28 @@ def find_highly_variable_genes(adata, n_top_genes, flavor):
     logger.info(f"AnnData shape: {adata.shape}")
     logger.info(f"HVGs requested: {n_top_genes}")
     logger.info(f"Flavor: {flavor}")
+    if batch_key:
+        log_batches(adata, batch_key)
 
     # Adjust n_top_genes if necessary
     if n_top_genes >= n_var:
         logger.warning(
             f"Requested {n_top_genes} HVGs but only {n_var} genes available."
         )
-        return mark_all_genes_hvg(adata, flavor)
+        return mark_all_genes_hvg(adata, flavor, batch_key)
 
     try:
         sc.pp.highly_variable_genes(
             adata,
             flavor=flavor,
             n_top_genes=n_top_genes,
+            batch_key=batch_key or None,
             inplace=True,
         )
     except ValueError as e:
         if "Bin edges must be unique" in str(e):
             logger.warning("Binning failed due to low gene variance.")
-            return mark_all_genes_hvg(adata, flavor)
+            return mark_all_genes_hvg(adata, flavor, batch_key)
         raise
 
     adata.var["highly_variable"] = adata.var["highly_variable"].astype(bool)
@@ -168,6 +198,7 @@ def main():
     h5ad = "${h5ad}"
     n_top_genes = int("${n_hvgs}")
     flavor = "${flavor}"
+    batch_key = "${batch_key}"
     output_h5ad = "${prefix}.h5ad"
     write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
@@ -178,10 +209,15 @@ def main():
     adata = find_highly_variable_genes(
         adata,
         n_top_genes=n_top_genes,
-        flavor=flavor
+        flavor=flavor,
+        batch_key=batch_key
     )
 
-    write_pickle(adata.var[HVG_COLUMNS], "var", "highly_variable_genes")
+    write_pickle(
+        adata.var[hvg_columns(batch_key)],
+        "var",
+        "highly_variable_genes"
+    )
     write_pickle(adata.uns["hvg"], "uns", "hvg")
 
     if write_adata:
