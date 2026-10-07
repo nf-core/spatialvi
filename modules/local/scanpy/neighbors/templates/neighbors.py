@@ -37,12 +37,11 @@ threadpool_limits(int("${task.cpus}"))
 
 def validate_representation(adata, use_rep):
     """Require an explicit, existing representation for the neighbor search."""
-    if use_rep.lower() in ["", "none"]:
+    if use_rep.lower() in ["", "none", "null"]:
         raise ValueError(
-            "`use_rep` is required: use 'X' for the data matrix or a key in "
-            "`adata.obsm` (e.g. 'X_pca')"
+            "`use_rep` is required: use a key in `adata.obsm` (e.g. 'X_pca')"
         )
-    if use_rep != "X" and use_rep not in adata.obsm:
+    if use_rep not in adata.obsm:
         available = ", ".join(adata.obsm.keys()) or "none"
         raise ValueError(
             f"Representation '{use_rep}' not found in `adata.obsm` "
