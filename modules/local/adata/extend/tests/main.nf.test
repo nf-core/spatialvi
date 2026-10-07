@@ -908,6 +908,69 @@ nextflow_process {
         }
     }
 
+    test("homo_sapiens - pkl - index mismatch reindexed with missing entries") {
+
+        setup {
+            run("SCANPY_FILTER") {
+                script "../../../scanpy/filter/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 0   // min_counts
+                    input[2] = 0   // min_genes
+                    input[3] = 10  // min_obs
+                    input[4] = 100 // mito_threshold
+                    input[5] = 0   // ribo_threshold
+                    input[6] = 100 // hb_threshold
+                    """
+                }
+            }
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../../scanpy/calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_FILTER.out.adata
+                    input[1] = false // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                        [ id: 'SRR28679756' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ])
+                    .join(SCANPY_CALCULATE_QC_METRICS.out.var)
+                    .map { meta, base, var -> [ meta, base, [], var, [], [], [], [], [] ] }
+                input[1] = true  // align
+                input[2] = false // overwrite
+                """
+            }
+        }
+
+        then {
+            // Genes removed by filtering have no slot data; their values are
+            // missing, which needs nullable dtypes for the `bool` and `int`
+            // columns (_e.g._ `mt`, `n_cells_by_counts`) to be written
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml
+                ).match() }
+            )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                def n_missing = var.get("mean_counts").data.count { Double.isNaN(it as double) }
+                assert n_missing > 0 && n_missing < n_vars
+            }
+        }
+    }
+
     test("homo_sapiens - pkl - duplicate names reindexed") {
 
         setup {

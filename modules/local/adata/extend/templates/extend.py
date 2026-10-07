@@ -112,6 +112,12 @@ def handle_index_mismatches(adata, data, slot, name, align):
                 )
             # Log number of missing entries
             n_missing = (~slot_idx.isin(data.index)).sum()
+            # Missing values in `bool`/`int` columns need nullable dtypes
+            if n_missing and slot in ("obs", "var"):
+                data = data.convert_dtypes(
+                    convert_string=False,
+                    convert_floating=False
+                )
             data = data.reindex(slot_idx)
             logger.warning(
                 f"Re-indexed slot data `{slot}/{name}.pkl` to "
