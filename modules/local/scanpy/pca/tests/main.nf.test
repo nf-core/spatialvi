@@ -28,7 +28,8 @@ nextflow_process {
                     input[0] = SCANPY_LOG1P.out.adata
                     input[1] = 2000     // n_hvgs
                     input[2] = 'seurat' // flavor
-                    input[3] = true     // write_adata
+                    input[3] = ''       // batch_key
+                    input[4] = true     // write_adata
                     """
                 }
             }
@@ -38,9 +39,10 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_HIGHLY_VARIABLE_GENES.out.adata
-                input[1] = 50   // n_pcs
-                input[2] = true // use_highly_variable
-                input[3] = true // write_adata
+                input[1] = 50      // n_pcs
+                input[2] = true    // use_highly_variable
+                input[3] = 'X_pca' // key_added
+                input[4] = true    // write_adata
                 """
             }
         }
@@ -67,14 +69,47 @@ nextflow_process {
                 input[0] = [
                     [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ]
-                input[1] = 50    // n_pcs
-                input[2] = false // use_highly_variable
-                input[3] = true  // write_adata
+                input[1] = 50      // n_pcs
+                input[2] = false   // use_highly_variable
+                input[3] = 'X_pca' // key_added
+                input[4] = true    // write_adata
                 """
             }
         }
 
         then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obsm.collect { _, path -> file(path).name }.sort(),
+                    process.out.varm.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - custom key") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = 50             // n_pcs
+                input[2] = false          // use_highly_variable
+                input[3] = 'X_pca_merged' // key_added
+                input[4] = true           // write_adata
+                """
+            }
+        }
+
+        then {
+            // All results are stored under the custom key, in `obsm`, `varm`
+            // and `uns`, and so is the slot data
             assertAll(
                 { assert process.success },
                 { assert snapshot(
@@ -96,9 +131,10 @@ nextflow_process {
                 input[0] = [
                     [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ]
-                input[1] = 50    // n_pcs
-                input[2] = false // use_highly_variable
-                input[3] = false // write_adata
+                input[1] = 50      // n_pcs
+                input[2] = false   // use_highly_variable
+                input[3] = 'X_pca' // key_added
+                input[4] = false   // write_adata
                 """
             }
         }
@@ -124,9 +160,10 @@ nextflow_process {
                 input[0] = [
                     [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ]
-                input[1] = 50   // n_pcs
-                input[2] = true // use_highly_variable
-                input[3] = true // write_adata
+                input[1] = 50      // n_pcs
+                input[2] = true    // use_highly_variable
+                input[3] = 'X_pca' // key_added
+                input[4] = true    // write_adata
                 """
             }
         }
@@ -149,9 +186,10 @@ nextflow_process {
                 input[0] = [
                     [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ]
-                input[1] = 50    // n_pcs
-                input[2] = false // use_highly_variable
-                input[3] = true  // write_adata
+                input[1] = 50      // n_pcs
+                input[2] = false   // use_highly_variable
+                input[3] = 'X_pca' // key_added
+                input[4] = true    // write_adata
                 """
             }
         }

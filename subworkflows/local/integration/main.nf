@@ -9,6 +9,7 @@ include { SCANPY_SCANORAMA                                     } from "../../../
 include { SDATA_UPDATE_TABLE as SDATA_UPDATE_TABLE_INTEGRATION } from "../../../modules/local/sdata/update_table"
 
 include { CLUSTERING                                           } from "../../../subworkflows/local/clustering"
+include { PREPROCESSING                                        } from "../../../subworkflows/local/preprocessing"
 
 workflow INTEGRATION {
 
@@ -16,6 +17,11 @@ workflow INTEGRATION {
     ch_sdata_merged                // channel: [ meta, zarr ]
     ch_adata                       // channel: [ meta, h5ad ]
     integration_method             //  string: Integration method to use
+    normalize_target_sum           //  string: Target sum of total count normalization
+    n_highly_variable_genes        // integer: Number of HVGs to use
+    hvg_flavor                     //  string: Flavor for HVG calculations
+    n_principal_components         // integer: Number of principal components to compute
+    pca_use_highly_variable        // boolean: Whether to only use highly variable genes for PCA
     n_neighbors                    // integer: Number of nearest neighbors to compute
     neighbors_n_pcs                // integer: Number of PCs to use for nearest neighbors
     umap_min_dist                  //   float: Minimum distance between embedded points
@@ -25,7 +31,7 @@ workflow INTEGRATION {
     main:
 
     //
-    // MODULE: Merge AnnData objects
+    // MODULE: Merge AnnData objects; raw counts in `X`
     //
     ch_adata_collected = ch_adata
         .toSortedList { a, b -> a[0].id <=> b[0].id }
@@ -36,29 +42,47 @@ workflow INTEGRATION {
         ch_adata_collected,
         'inner',      // join
         'library_id', // label
-        'true',       // preserve_var
-        'true'        // preserve_spatial
+        'true',       // preserve_spatial
+        'raw'         // layer
     )
     ch_adata_merged = ADATA_MERGE.out.adata
         .map { h5ad -> [[id: integration_method], h5ad] }
+
+    //
+    // SUBWORKFLOW: Pre-processing of the merged counts, with HVGs selected per
+    // sample
+    //
+    PREPROCESSING (
+        ch_adata_merged,
+        normalize_target_sum,
+        n_highly_variable_genes,
+        hvg_flavor,
+        'library_id',  // hvg_batch_key
+        n_principal_components,
+        pca_use_highly_variable,
+        'X_pca_merged' // pca_key_added
+    )
+    ch_adata_pca = PREPROCESSING.out.adata
 
     //
     // MODULE: Integration
     //
     if (integration_method == 'harmony') {
         SCANPY_HARMONY (
-            ch_adata_merged,
-            'library_id', // key
-            'X_harmony',  // adjusted_basis
-            true          // write_adata
+            ch_adata_pca,
+            'library_id',   // key
+            'X_pca_merged', // basis
+            'X_harmony',    // embedding_added
+            true            // write_adata
         )
         ch_adata_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
         SCANPY_SCANORAMA (
-            ch_adata_merged,
-            'library_id',  // key
-            'X_scanorama', // embedding_added
-            true           // write_adata
+            ch_adata_pca,
+            'library_id',   // key
+            'X_pca_merged', // basis
+            'X_scanorama',  // embedding_added
+            true            // write_adata
         )
         ch_adata_integrated = SCANPY_SCANORAMA.out.adata
     }

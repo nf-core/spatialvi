@@ -7,8 +7,8 @@ process ADATA_MERGE {
     path(h5ad, arity: '1..*')
     val join
     val label
-    val preserve_var
     val preserve_spatial
+    val layer
 
     output:
     path "${prefix}.h5ad", emit: adata

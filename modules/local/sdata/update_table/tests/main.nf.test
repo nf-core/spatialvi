@@ -34,9 +34,10 @@ nextflow_process {
                 process {
                     """
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = 50    // n_pcs
-                    input[2] = false // use_highly_variable
-                    input[3] = true  // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -109,9 +110,10 @@ nextflow_process {
                 process {
                     """
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = 50    // n_pcs
-                    input[2] = false // use_highly_variable
-                    input[3] = true  // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -124,8 +126,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }
@@ -136,8 +138,9 @@ nextflow_process {
                     input[0] = ADATA_MERGE.out.adata
                         .map { h5ad -> [[id: "harmony"], h5ad] }
                     input[1] = 'library_id' // key
-                    input[2] = 'X_harmony'  // embedding_added
-                    input[3] = true         // write_adata
+                    input[2] = 'X_pca'      // basis
+                    input[3] = 'X_harmony'  // embedding_added
+                    input[4] = true         // write_adata
                     """
                 }
             }
@@ -200,9 +203,10 @@ nextflow_process {
                 process {
                     """
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = 50    // n_pcs
-                    input[2] = false // use_highly_variable
-                    input[3] = true  // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }

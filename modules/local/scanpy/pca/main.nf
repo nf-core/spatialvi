@@ -8,6 +8,7 @@ process SCANPY_PCA {
     tuple val(meta), path(adata, stageAs: "input.h5ad", arity: '1')
     val n_pcs
     val use_highly_variable
+    val key_added
     val write_adata
 
     output:
@@ -27,12 +28,14 @@ process SCANPY_PCA {
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     def touch_adata = write_adata.toString() == 'true' ? "touch ${prefix}.h5ad" : ''
+    def varm_key = key_added == 'X_pca' ? 'PCs'   : key_added
+    def uns_key  = key_added == 'X_pca' ? 'pca'   : key_added
     """
     ${touch_adata}
     mkdir -p obsm varm uns
-    touch obsm/X_pca.pkl
-    touch varm/PCs.pkl
-    touch uns/pca.pkl
+    touch obsm/${key_added}.pkl
+    touch varm/${varm_key}.pkl
+    touch uns/${uns_key}.pkl
     touch versions.yml
     """
 }

@@ -7,6 +7,7 @@ process SCANPY_SCANORAMA {
     input:
     tuple val(meta), path(h5ad, stageAs: "input.h5ad", arity: '1')
     val key
+    val basis
     val embedding_added
     val write_adata
 

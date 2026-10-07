@@ -19,9 +19,10 @@ nextflow_process {
                         tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
                         tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
                     ])
-                    input[1] = 50    // n_pcs
-                    input[2] = false // use_highly_variable
-                    input[3] = true  // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -34,8 +35,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }
@@ -47,8 +48,68 @@ nextflow_process {
                 input[0] = ADATA_MERGE.out.adata
                     .map { h5ad -> [[id: "scanorama"], h5ad] }
                 input[1] = 'library_id'  // key
-                input[2] = 'X_scanorama' // embedding_added
-                input[3] = true          // write_adata
+                input[2] = 'X_pca'       // basis
+                input[3] = 'X_scanorama' // embedding_added
+                input[4] = true          // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obsm.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - custom basis") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = channel.fromList([
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                    ])
+                    input[1] = 50             // n_pcs
+                    input[2] = false          // use_highly_variable
+                    input[3] = 'X_pca_merged' // key_added
+                    input[4] = true           // write_adata
+                    """
+                }
+            }
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                        .map { _meta, h5ad -> h5ad }
+                        .collect()
+                    input[1] = 'inner'      // join
+                    input[2] = 'library_id' // label
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = ADATA_MERGE.out.adata
+                    .map { h5ad -> [[id: "scanorama"], h5ad] }
+                input[1] = 'library_id'   // key
+                input[2] = 'X_pca_merged' // basis
+                input[3] = 'X_scanorama'  // embedding_added
+                input[4] = true           // write_adata
                 """
             }
         }
@@ -76,9 +137,10 @@ nextflow_process {
                         tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
                         tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
                     ])
-                    input[1] = 50    // n_pcs
-                    input[2] = false // use_highly_variable
-                    input[3] = true  // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -91,8 +153,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }
@@ -104,8 +166,9 @@ nextflow_process {
                 input[0] = ADATA_MERGE.out.adata
                     .map { h5ad -> [[id: "scanorama"], h5ad] }
                 input[1] = 'library_id'  // key
-                input[2] = 'X_scanorama' // embedding_added
-                input[3] = false         // write_adata
+                input[2] = 'X_pca'       // basis
+                input[3] = 'X_scanorama' // embedding_added
+                input[4] = false         // write_adata
                 """
             }
         }
@@ -137,8 +200,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }
@@ -150,14 +213,18 @@ nextflow_process {
                 input[0] = ADATA_MERGE.out.adata
                     .map { h5ad -> [[id: "scanorama"], h5ad] }
                 input[1] = 'library_id'  // key
-                input[2] = 'X_scanorama' // embedding_added
-                input[3] = true          // write_adata
+                input[2] = 'X_pca'       // basis
+                input[3] = 'X_scanorama' // embedding_added
+                input[4] = true          // write_adata
                 """
             }
         }
 
         then {
-            { assert process.failed }
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Embedding 'X_pca' not found in adata.obsm") }
+            )
         }
     }
 
@@ -170,14 +237,18 @@ nextflow_process {
                     [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                 ]
                 input[1] = 'missing_key' // key
-                input[2] = 'X_scanorama' // embedding_added
-                input[3] = true          // write_adata
+                input[2] = 'X_pca'       // basis
+                input[3] = 'X_scanorama' // embedding_added
+                input[4] = true          // write_adata
                 """
             }
         }
 
         then {
-            { assert process.failed }
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Integration key 'missing_key' not found in adata.obs") }
+            )
         }
     }
 
@@ -194,9 +265,10 @@ nextflow_process {
                         tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
                         tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
                     ])
-                    input[1] = 50    // n_pcs
-                    input[2] = false // use_highly_variable
-                    input[3] = true  // write_adata
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
                     """
                 }
             }
@@ -209,8 +281,8 @@ nextflow_process {
                         .collect()
                     input[1] = 'inner'      // join
                     input[2] = 'library_id' // label
-                    input[3] = false        // preserve_var
-                    input[4] = false        // preserve_spatial
+                    input[3] = false        // preserve_spatial
+                    input[4] = ''           // layer
                     """
                 }
             }
@@ -222,8 +294,9 @@ nextflow_process {
                 input[0] = ADATA_MERGE.out.adata
                     .map { h5ad -> [[id: "scanorama"], h5ad] }
                 input[1] = 'library_id'  // key
-                input[2] = 'X_scanorama' // embedding_added
-                input[3] = true          // write_adata
+                input[2] = 'X_pca'       // basis
+                input[3] = 'X_scanorama' // embedding_added
+                input[4] = true          // write_adata
                 """
             }
         }

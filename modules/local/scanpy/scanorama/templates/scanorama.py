@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 threadpool_limits(int("${task.cpus}"))
 
 
-def integrate_scanorama(adata, key, adjusted_basis):
+def integrate_scanorama(adata, key, basis, adjusted_basis):
     """
     Integrate observations using Scanorama.
 
@@ -45,6 +45,8 @@ def integrate_scanorama(adata, key, adjusted_basis):
         Annotated data matrix.
     key : str
         Column in adata.obs containing batch/sample labels.
+    basis : str
+        Key in adata.obsm of the embedding to integrate, _e.g._ a PCA.
     adjusted_basis : str
         Name of the obsm key to store the integrated embedding.
 
@@ -56,15 +58,21 @@ def integrate_scanorama(adata, key, adjusted_basis):
     if key not in adata.obs.columns:
         raise ValueError(f"Integration key '{key}' not found in adata.obs.")
 
-    if "X_pca" not in adata.obsm:
+    if basis not in adata.obsm:
         raise ValueError(
-            "PCA not found in adata.obsm; run PCA before integration."
+            f"Embedding '{basis}' not found in adata.obsm; run PCA before "
+            "integration."
         )
 
     n_batches = adata.obs[key].nunique()
     logger.info(f"Integrating {n_batches} batches using key: {key}")
 
-    sce.pp.scanorama_integrate(adata, key=key, adjusted_basis=adjusted_basis)
+    sce.pp.scanorama_integrate(
+        adata,
+        key=key,
+        basis=basis,
+        adjusted_basis=adjusted_basis
+    )
 
     return adata
 
@@ -97,6 +105,7 @@ def main():
     # Template variables
     h5ad = "${h5ad}"
     key = "${key}"
+    basis = "${basis}"
     adjusted_basis = "${embedding_added}"
     output_h5ad = "${prefix}.h5ad"
     write_adata = "${write_adata}" == "true"
@@ -107,7 +116,12 @@ def main():
     logger.info(f"Read AnnData object: {h5ad}")
     logger.info(f"AnnData shape: {adata.shape}")
 
-    adata = integrate_scanorama(adata, key=key, adjusted_basis=adjusted_basis)
+    adata = integrate_scanorama(
+        adata,
+        key=key,
+        basis=basis,
+        adjusted_basis=adjusted_basis
+    )
 
     # `obsm` needs an added index before writing to pickle
     df_obsm = pd.DataFrame(adata.obsm[adjusted_basis])

@@ -8,6 +8,7 @@ process SCANPY_HIGHLY_VARIABLE_GENES {
     tuple val(meta), path(h5ad, stageAs: "input.h5ad", arity: '1')
     val n_hvgs
     val flavor
+    val batch_key
     val write_adata
 
     output:

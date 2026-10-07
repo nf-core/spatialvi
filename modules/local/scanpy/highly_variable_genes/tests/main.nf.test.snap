@@ -96,6 +96,65 @@
             "nextflow": "26.04.6"
         }
     },
+    "homo_sapiens - h5ad - fallback with too few genes - batch key": {
+        "content": [
+            [
+                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+            ],
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "library_id",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "highly_variable_intersection",
+                        "highly_variable_nbatches",
+                        "means"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p"
+                ]
+            },
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-05T14:03:04.83762",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "homo_sapiens - h5ad - stub": {
         "content": [
             {
@@ -156,6 +215,65 @@
             }
         ],
         "timestamp": "2026-10-01T16:25:47.045368",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "homo_sapiens - h5ad - seurat flavor - batch key": {
+        "content": [
+            [
+                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+            ],
+            {
+                "n_obs": 20313,
+                "n_vars": 9887,
+                "obs": {
+                    "index": "_index",
+                    "columns": [
+                        "library_id",
+                        "sample"
+                    ]
+                },
+                "var": {
+                    "index": "_index",
+                    "columns": [
+                        "dispersions",
+                        "dispersions_norm",
+                        "highly_variable",
+                        "highly_variable_intersection",
+                        "highly_variable_nbatches",
+                        "means"
+                    ]
+                },
+                "layers": [
+                    
+                ],
+                "obsm": [
+                    
+                ],
+                "varm": [
+                    
+                ],
+                "obsp": [
+                    
+                ],
+                "varp": [
+                    
+                ],
+                "uns": [
+                    "hvg",
+                    "log1p"
+                ]
+            },
+            [
+                "highly_variable_genes.pkl"
+            ],
+            [
+                "hvg.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-05T14:02:48.191739",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
