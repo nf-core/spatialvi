@@ -2,7 +2,8 @@
 """
 Extend an AnnData object with pickled `obs`, `var`, `obsm`, `varm`, `obsp`,
 `uns` and H5AD layer content produced by other modules; one directory per slot,
-with the file name as the key.
+with the file name as the key, except for `obs` and `var`, which use the column
+names.
 
 Every slot index must match the input adata object exactly, and existing columns
 or keys are not replaced; `overwrite` allows existing columns and keys to be
