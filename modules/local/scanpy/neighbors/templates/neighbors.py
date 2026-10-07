@@ -61,10 +61,10 @@ def compute_neighbors(adata, n_neighbors, n_pcs, use_rep):
         Number of neighbors to use.
     n_pcs : int
         Number of dimensions of the representation to use (the first `n_pcs`
-        columns); ignored when `use_rep` is 'X'.
+        columns).
     use_rep : str
         Representation to use: a key in `adata.obsm` (e.g. 'X_pca' or
-        'X_harmony'), or 'X' to use the data matrix directly.
+        'X_harmony').
 
     Returns
     -------
