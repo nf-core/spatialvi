@@ -1,4 +1,19 @@
 {
+    "homo_sapiens - h5ad - moran - no h5ad output": {
+        "content": [
+            [
+                "versions.yml:md5,47a9ced7fad317df79a0be23f28c3642"
+            ],
+            [
+                "moranI.pkl"
+            ]
+        ],
+        "timestamp": "2026-10-01T15:43:23.496067",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "homo_sapiens - h5ad - moran": {
         "content": [
             [
@@ -26,7 +41,7 @@
                     ]
                 },
                 "layers": [
-                    "raw"
+                    
                 ],
                 "obsm": [
                     "spatial"
@@ -50,12 +65,15 @@
                     "spatialdata_attrs",
                     "table_name"
                 ]
-            }
+            },
+            [
+                "moranI.pkl"
+            ]
         ],
-        "timestamp": "2026-04-01T19:15:56.311204",
+        "timestamp": "2026-10-04T22:21:47.131605",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - geary": {
@@ -85,7 +103,7 @@
                     ]
                 },
                 "layers": [
-                    "raw"
+                    
                 ],
                 "obsm": [
                     "spatial"
@@ -109,12 +127,15 @@
                     "spatialdata_attrs",
                     "table_name"
                 ]
-            }
+            },
+            [
+                "gearyC.pkl"
+            ]
         ],
-        "timestamp": "2026-04-01T19:16:54.537333",
+        "timestamp": "2026-10-04T22:23:44.606833",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -137,6 +158,14 @@
                     ]
                 ],
                 "2": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "moranI.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "adata": [
@@ -155,15 +184,23 @@
                         "CytAssist_11mm_FFPE_Human_Glioblastoma_2_svg.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "uns": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        "moranI.pkl:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-04-01T21:17:27.392373",
+        "timestamp": "2026-10-01T15:44:42.284829",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.6"
         }
     }
 }

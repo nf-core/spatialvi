@@ -10,17 +10,29 @@ batches by identifying and merging shared cell types across datasets.
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
+import pandas as pd
 import scanpy.external as sce
-import scipy.sparse as sp
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def integrate_scanorama(adata, key, adjusted_basis):
@@ -49,17 +61,20 @@ def integrate_scanorama(adata, key, adjusted_basis):
             "PCA not found in adata.obsm; run PCA before integration."
         )
 
-    # Convert to CSR format (if applicable; required by Scanorama)
-    if sp.issparse(adata.X) and not isinstance(adata.X, sp.csr_matrix):
-        logger.info("Converting to CSR data format")
-        adata.X = adata.X.tocsr()
-
     n_batches = adata.obs[key].nunique()
     logger.info(f"Integrating {n_batches} batches using key: {key}")
 
     sce.pp.scanorama_integrate(adata, key=key, adjusted_basis=adjusted_basis)
 
     return adata
+
+
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+    logger.info(f"Written slot data to: {slot}/{name}.pkl")
 
 
 def write_versions(process_name):
@@ -84,16 +99,24 @@ def main():
     key = "${key}"
     adjusted_basis = "${embedding_added}"
     output_h5ad = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
-    adata = ad.read_h5ad(h5ad)
+    # `X` isn't used, so it stays on disk until the output is written
+    adata = ad.read_h5ad(h5ad, backed="r")
     logger.info(f"Read AnnData object: {h5ad}")
     logger.info(f"AnnData shape: {adata.shape}")
 
     adata = integrate_scanorama(adata, key=key, adjusted_basis=adjusted_basis)
 
-    adata.write_h5ad(output_h5ad)
-    logger.info(f"Written integrated AnnData to: {output_h5ad}")
+    # `obsm` needs an added index before writing to pickle
+    df_obsm = pd.DataFrame(adata.obsm[adjusted_basis])
+    df_obsm.index = adata.obs_names
+    write_pickle(df_obsm, "obsm", adjusted_basis)
+
+    if write_adata:
+        adata.write_h5ad(output_h5ad)
+        logger.info(f"Written integrated AnnData to: {output_h5ad}")
 
     write_versions(process_name)
 

@@ -6,16 +6,31 @@ Normalizes each observation to have the same total count after normalization.
 By default, uses median total counts as the target sum.
 """
 
+# Disable OpenMP CPU topology detection for macOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import importlib.metadata
 import logging
 import platform
 
 import anndata as ad
+import numpy as np
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def normalize_adata(adata, target_sum):
@@ -46,17 +61,9 @@ def normalize_adata(adata, target_sum):
 
     # Calculate post-normalization statistics
     if "total_counts" in adata.obs:
-        if hasattr(adata.X, 'A1'):
-            adata.obs["total_counts_normalized"] = adata.X.sum(axis=1).A1
-        else:
-            adata.obs["total_counts_normalized"] = adata.X.sum(axis=1)
-        median_counts_after = adata.obs["total_counts_normalized"].median()
+        counts_after = np.asarray(adata.X.sum(axis=1)).ravel()
+        median_counts_after = np.median(counts_after)
         logger.info(f"Median total counts after normalization: {median_counts_after:.2f}")
-
-    adata.uns["normalization"] = {
-        "method": "normalize_total",
-        "target_sum": target_sum if target_sum else "median",
-    }
 
     return adata
 

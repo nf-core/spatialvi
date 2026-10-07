@@ -42,8 +42,7 @@
                     ]
                 },
                 "layers": [
-                    "counts",
-                    "raw"
+                    "counts"
                 ],
                 "obsm": [
                     
@@ -58,7 +57,7 @@
                     
                 ],
                 "uns": [
-                    "filtering_stats"
+                    
                 ]
             },
             [
@@ -70,10 +69,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-04-15T16:41:51.154400544",
+        "timestamp": "2026-10-01T16:31:33.901613",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -174,7 +173,7 @@
                     ]
                 },
                 "layers": [
-                    "raw"
+                    
                 ],
                 "obsm": [
                     "spatial"
@@ -190,7 +189,6 @@
                 ],
                 "uns": [
                     "coordinate_system",
-                    "filtering_stats",
                     "sample_id",
                     "spatial",
                     "spatialdata_attrs",
@@ -206,10 +204,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-04-15T16:43:01.013917172",
+        "timestamp": "2026-10-04T11:18:50.742868",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "26.04.6"
         }
     }
 }

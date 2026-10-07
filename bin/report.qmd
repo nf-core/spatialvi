@@ -36,6 +36,12 @@ artifact_dir = "artifacts"
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
 
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import platform
 import sys
 import importlib.metadata
@@ -748,8 +754,7 @@ for pkg in packages:
 
 # Build and write session info table
 session_info = pd.DataFrame(
-    [('python', platform.python_version())],
-    list(versions.items()),
+    [('python', platform.python_version())] + list(versions.items()),
     columns=['Package', 'Version']
 )
 display_table(session_info)

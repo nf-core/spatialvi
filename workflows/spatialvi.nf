@@ -6,6 +6,7 @@
 
 include { SDATA_READ_VISIUM         } from "../modules/local/sdata/read_visium"
 include { FASTQC                    } from "../modules/nf-core/fastqc"
+include { ADATA_EXTEND              } from "../modules/local/adata/extend"
 include { SCANPY_RANK_GENES_GROUPS  } from "../modules/local/scanpy/rank_genes_groups"
 include { SDATA_MERGE               } from "../modules/local/sdata/merge"
 include { SDATA_TO_LEGACY_ANNDATA   } from "../modules/local/sdata/to_legacy_anndata"
@@ -160,7 +161,7 @@ workflow SPATIALVI {
         //
         // SUBWORKFLOW: Clustering
         //
-        use_rep = ''
+        use_rep = 'X_pca'
         umap_key_added = 'X_umap'
         leiden_key_added = 'clusters'
         CLUSTERING (
@@ -182,7 +183,8 @@ workflow SPATIALVI {
         SCANPY_RANK_GENES_GROUPS (
             CLUSTERING.out.adata,
             rank_genes_group_by,
-            rank_genes_method
+            rank_genes_method,
+            true // write_adata
         )
 
         //
@@ -198,11 +200,28 @@ workflow SPATIALVI {
         ch_svg_csv = SPATIAL.out.svg_csv
 
         //
+        // MODULE: Extend processed AnnData with raw counts as a layer
+        //
+        ch_extend = ch_adata
+            .join(SDATA_TO_LEGACY_ANNDATA.out.layers)
+            .map { meta, base, layers ->
+                [
+                    meta, base, [], [], [], [], [], [], layers
+                ]
+            }
+        ADATA_EXTEND (
+            ch_extend,
+            true, // align
+            false // overwrite
+        )
+        ch_adata = ADATA_EXTEND.out.adata
+
+        //
         // MODULE: Update SpatialData with AnnData results
         //
         SDATA_UPDATE_TABLE (
             ch_sdata_raw.join(ch_adata),
-            ''
+            '' // library_key
         )
         ch_sdata_output = SDATA_UPDATE_TABLE.out.sdata
 

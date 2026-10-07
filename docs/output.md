@@ -72,17 +72,18 @@ content among other metrics.
   - `<SAMPLE>-raw.h5ad`: Raw (unprocessed) data in AnnData format, as extracted
     from the SpatialData object before any downstream analysis.
   - `<SAMPLE>.h5ad`: Processed data in AnnData format, including QC metrics,
-    clustering, differential expression, and spatial analysis results.
+    clustering, differential expression, and spatial analysis results, as well
+    as the raw counts in `adata.layers["raw"]`.
   - `<SAMPLE>_svg.csv`: List of spatially variable genes.
 
 </details>
 
-Data in `.h5ad` formats as processed by the pipeline, which can be
-used for further downstream analyses if desired; unprocessed data is also
-present in these files. It can also be used by the [TissUUmaps](https://tissuumaps.github.io/)
-browser-based tool for visualisation and exploration, allowing you to delve into
-the data in an interactive way. The list of spatially variable genes are added
-as a convenience if you want to explore them in _e.g._ Excel.
+Data in `.h5ad` formats as processed by the pipeline, which can be used for
+further downstream analyses if desired. It can also be used by the
+[TissUUmaps](https://tissuumaps.github.io/) browser-based tool for visualisation
+and exploration, allowing you to delve into the data in an interactive way. The
+list of spatially variable genes are added as a convenience if you want to
+explore them in _e.g._ Excel.
 
 ## Per-sample reports
 

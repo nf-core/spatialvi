@@ -5,7 +5,7 @@ process SDATA_UPDATE_TABLE {
     container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
 
     input:
-    tuple val(meta), path(sdata, stageAs: "input.zarr"), path(adata)
+    tuple val(meta), path(sdata, stageAs: "input.zarr", arity: '1'), path(adata, arity: '1')
     val library_key
 
     output:

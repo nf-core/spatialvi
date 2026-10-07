@@ -18,6 +18,7 @@ nextflow_process {
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
+                    input[1] = true // write_adata
                     """
                 }
             }
@@ -65,6 +66,7 @@ nextflow_process {
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
+                    input[1] = true // write_adata
                     """
                 }
             }
@@ -101,6 +103,7 @@ nextflow_process {
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
+                    input[1] = true // write_adata
                     """
                 }
             }
@@ -153,6 +156,7 @@ nextflow_process {
                 process {
                     """
                     input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    input[1] = true // write_adata
                     """
                 }
             }
@@ -198,6 +202,7 @@ nextflow_process {
                     input[0] = [
                         [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
                     ]
+                    input[1] = true // write_adata
                     """
                 }
             }

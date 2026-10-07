@@ -24,7 +24,8 @@ workflow CLUSTERING {
         ch_adata,
         n_neighbors,
         neighbors_n_pcs,
-        use_rep
+        use_rep,
+        true // write_adata
     )
 
     //
@@ -34,7 +35,8 @@ workflow CLUSTERING {
         SCANPY_NEIGHBORS.out.adata,
         umap_min_dist,
         umap_spread,
-        umap_key_added
+        umap_key_added,
+        true // write_adata
     )
 
     //
@@ -43,7 +45,8 @@ workflow CLUSTERING {
     SCANPY_LEIDEN (
         SCANPY_UMAP.out.adata,
         cluster_resolution,
-        leiden_key_added
+        leiden_key_added,
+        true // write_adata
     )
 
     emit:

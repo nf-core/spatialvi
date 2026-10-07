@@ -3,6 +3,16 @@
 Apply log(1+x) transformation to the data matrix.
 """
 
+# Disable OpenMP CPU topology detection for macOS compatibility
+import os
+os.environ["KMP_AFFINITY"] = "disabled"
+
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
 import importlib.metadata
 import logging
 import platform
@@ -10,9 +20,13 @@ import platform
 import anndata as ad
 import scanpy as sc
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def log_transform(adata):
@@ -32,10 +46,6 @@ def log_transform(adata):
     logger.info(f"AnnData shape: {adata.shape}")
 
     sc.pp.log1p(adata)
-
-    if "normalization" not in adata.uns:
-        adata.uns["normalization"] = {}
-    adata.uns["normalization"]["log1p"] = True
 
     logger.info("Applied log(1+x) transformation")
 

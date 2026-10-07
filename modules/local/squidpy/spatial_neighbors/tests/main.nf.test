@@ -46,6 +46,7 @@ nextflow_process {
                 input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
                 input[1] = 'grid' // coord_type
                 input[2] = 6      // n_neighs
+                input[3] = true   // write_adata
                 """
             }
         }
@@ -55,7 +56,65 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obsp.collect { _, paths -> paths }.flatten().collect { path -> file(path.toString()).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - grid - no h5ad output") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/spatialvi/testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz", checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../../sdata/read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    input[1] = 8 // hd_bin_size
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = SDATA_READ_VISIUM.out.sdata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                input[1] = 'grid' // coord_type
+                input[2] = 6      // n_neighs
+                input[3] = false  // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.adata.isEmpty() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.obsp.collect { _, paths -> paths }.flatten().collect { path -> file(path.toString()).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
@@ -99,6 +158,7 @@ nextflow_process {
                 input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
                 input[1] = 'generic' // coord_type
                 input[2] = 6         // n_neighs
+                input[3] = true      // write_adata
                 """
             }
         }
@@ -108,7 +168,9 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obsp.collect { _, paths -> paths }.flatten().collect { path -> file(path.toString()).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
@@ -154,6 +216,7 @@ nextflow_process {
                 input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
                 input[1] = 'grid' // coord_type
                 input[2] = 6      // n_neighs
+                input[3] = true   // write_adata
                 """
             }
         }

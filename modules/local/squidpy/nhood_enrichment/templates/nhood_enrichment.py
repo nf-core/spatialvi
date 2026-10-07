@@ -10,18 +10,33 @@ Results are stored in adata.uns.
 # Disable OpenMP CPU topology detection for macOS compatibility
 import os
 os.environ["KMP_AFFINITY"] = "disabled"
+
+# Keep caches in the task's work directory, which is always writable and
+# private to the task
+os.environ["NUMBA_CACHE_DIR"] = os.path.join(os.getcwd(), ".cache", "numba")
+os.environ["MPLCONFIGDIR"] = os.path.join(os.getcwd(), ".cache", "matplotlib")
+os.environ["XDG_CACHE_HOME"] = os.path.join(os.getcwd(), ".cache")
+
+# Apple ARM64 compatibility: don't re-initialise OpenMP in the worker processes
+# that squidpy forks for its permutations
 os.environ["KMP_INIT_AT_FORK"] = "FALSE"
 
 import importlib.metadata
 import logging
+import pickle
 import platform
+from pathlib import Path
 
 import anndata as ad
 import squidpy as sq
 import yaml
+from threadpoolctl import threadpool_limits
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+# Limit BLAS/OpenMP threads to the allocated CPUs
+threadpool_limits(int("${task.cpus}"))
 
 
 def validate_adata(adata, cluster_key):
@@ -33,6 +48,14 @@ def validate_adata(adata, cluster_key):
             "Spatial connectivities not found; "
             "run squidpy.gr.spatial_neighbors first."
         )
+
+
+def write_pickle(data, slot, name):
+    """Write data to a `<slot>/<name>.pkl` pickle file."""
+    Path(slot).mkdir(exist_ok=True)
+    with open(f"{slot}/{name}.pkl", "wb") as f:
+        pickle.dump(data, f, protocol=5)
+    logger.info(f"Written slot data to: {slot}/{name}.pkl")
 
 
 def write_versions(process_name):
@@ -55,10 +78,12 @@ def main():
     h5ad = "${adata}"
     cluster_key = "${cluster_key}"
     output_adata = "${prefix}.h5ad"
+    write_adata = "${write_adata}" == "true"
     process_name = "${task.process}"
 
     logger.info(f"Reading: {h5ad}")
-    adata = ad.read_h5ad(h5ad)
+    # `X` isn't used, so it stays on disk until the output is written
+    adata = ad.read_h5ad(h5ad, backed="r")
     logger.info(f"AnnData shape: {adata.shape}")
     logger.info(f"Cluster key: {cluster_key}")
 
@@ -67,14 +92,19 @@ def main():
     sq.gr.nhood_enrichment(
         adata,
         cluster_key=cluster_key,
+        seed=0,
     )
 
     n_clusters = adata.obs[cluster_key].nunique()
     logger.info(f"Computed neighborhood enrichment for {n_clusters} clusters")
     logger.info(f"Results stored in adata.uns['{cluster_key}_nhood_enrichment']")
 
-    adata.write_h5ad(output_adata)
-    logger.info(f"Written AnnData with neighborhood enrichment to: {output_adata}")
+    uns_key = f"{cluster_key}_nhood_enrichment"
+    write_pickle(adata.uns[uns_key], "uns", uns_key)
+
+    if write_adata:
+        adata.write_h5ad(output_adata)
+        logger.info(f"Written AnnData with neighborhood enrichment to: {output_adata}")
 
     write_versions(process_name)
 

@@ -27,7 +27,8 @@ workflow PREPROCESSING {
     // MODULE: Calculate quality control metrics
     //
     SCANPY_CALCULATE_QC_METRICS (
-        ch_adata_input
+        ch_adata_input,
+        true // write_adata
     )
 
     //
@@ -64,7 +65,8 @@ workflow PREPROCESSING {
     SCANPY_HIGHLY_VARIABLE_GENES (
         SCANPY_LOG1P.out.adata,
         n_highly_variable_genes,
-        hvg_flavor
+        hvg_flavor,
+        true // write_adata
     )
 
     //
@@ -73,7 +75,8 @@ workflow PREPROCESSING {
     SCANPY_PCA (
         SCANPY_HIGHLY_VARIABLE_GENES.out.adata,
         n_principal_components,
-        pca_use_highly_variable
+        pca_use_highly_variable,
+        true // write_adata
     )
 
 

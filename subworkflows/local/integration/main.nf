@@ -16,8 +16,8 @@ workflow INTEGRATION {
     ch_sdata_merged                // channel: [ meta, zarr ]
     ch_adata                       // channel: [ meta, h5ad ]
     integration_method             //  string: Integration method to use
-    n_neighbors                   // integer: Number of nearest neighbors to compute
-    neighbors_n_pcs               // integer: Number of PCs to use for nearest neighbors
+    n_neighbors                    // integer: Number of nearest neighbors to compute
+    neighbors_n_pcs                // integer: Number of PCs to use for nearest neighbors
     umap_min_dist                  //   float: Minimum distance between embedded points
     umap_spread                    //   float: Scale of embedded points
     integration_cluster_resolution //   float: Integration cluster resolution
@@ -49,14 +49,16 @@ workflow INTEGRATION {
         SCANPY_HARMONY (
             ch_adata_merged,
             'library_id', // key
-            'X_harmony'   // adjusted_basis
+            'X_harmony',  // adjusted_basis
+            true          // write_adata
         )
         ch_adata_integrated = SCANPY_HARMONY.out.adata
     } else if (integration_method == 'scanorama') {
         SCANPY_SCANORAMA (
             ch_adata_merged,
-            'library_id', // key
-            'X_scanorama' // embedding_added
+            'library_id',  // key
+            'X_scanorama', // embedding_added
+            true           // write_adata
         )
         ch_adata_integrated = SCANPY_SCANORAMA.out.adata
     }

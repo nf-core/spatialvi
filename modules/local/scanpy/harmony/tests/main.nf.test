@@ -21,6 +21,7 @@ nextflow_process {
                     ])
                     input[1] = 50    // n_pcs
                     input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }
@@ -47,6 +48,7 @@ nextflow_process {
                     .map { h5ad -> [[id: "harmony"], h5ad] }
                 input[1] = 'library_id' // key
                 input[2] = 'X_harmony'  // embedding_added
+                input[3] = true         // write_adata
                 """
             }
         }
@@ -56,7 +58,65 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obsm.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - no h5ad output") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = channel.fromList([
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                    ])
+                    input[1] = 50    // n_pcs
+                    input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
+                    """
+                }
+            }
+            run("ADATA_MERGE") {
+                script "../../../adata/merge/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                        .map { _meta, h5ad -> h5ad }
+                        .collect()
+                    input[1] = 'inner'      // join
+                    input[2] = 'library_id' // label
+                    input[3] = false        // preserve_var
+                    input[4] = false        // preserve_spatial
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = ADATA_MERGE.out.adata
+                    .map { h5ad -> [[id: "harmony"], h5ad] }
+                input[1] = 'library_id' // key
+                input[2] = 'X_harmony'  // embedding_added
+                input[3] = false        // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.adata.isEmpty() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.obsm.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
         }
@@ -91,6 +151,7 @@ nextflow_process {
                     .map { h5ad -> [[id: "harmony"], h5ad] }
                 input[1] = 'library_id' // key
                 input[2] = 'X_harmony'  // embedding_added
+                input[3] = true         // write_adata
                 """
             }
         }
@@ -110,6 +171,7 @@ nextflow_process {
                 ]
                 input[1] = 'missing_key' // key
                 input[2] = 'X_harmony'   // embedding_added
+                input[3] = true          // write_adata
                 """
             }
         }
@@ -134,6 +196,7 @@ nextflow_process {
                     ])
                     input[1] = 50    // n_pcs
                     input[2] = false // use_highly_variable
+                    input[3] = true  // write_adata
                     """
                 }
             }
@@ -160,6 +223,7 @@ nextflow_process {
                     .map { h5ad -> [[id: "harmony"], h5ad] }
                 input[1] = 'library_id' // key
                 input[2] = 'X_harmony'  // embedding_added
+                input[3] = true         // write_adata
                 """
             }
         }

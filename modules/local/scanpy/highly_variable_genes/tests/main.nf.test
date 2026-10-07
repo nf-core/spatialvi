@@ -29,6 +29,7 @@ nextflow_process {
                 input[0] = SCANPY_LOG1P.out.adata
                 input[1] = 2000     // n_hvgs
                 input[2] = 'seurat' // flavor
+                input[3] = true     // write_adata
                 """
             }
         }
@@ -38,13 +39,22 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.var.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                def n_hvgs = var.get("highly_variable").data.count { it.toString().toUpperCase() == "TRUE" }
+                // Check that scanpy selects about `n_hvgs` genes (ties add
+                // some, genes without a normalised dispersion are left out)
+                assert n_hvgs >= 1800 && n_hvgs <= 2200 && n_hvgs < n_vars
+            }
         }
     }
 
-    test("homo_sapiens - h5ad - cell_ranger flavor") {
+    test("homo_sapiens - h5ad - seurat flavor - no h5ad output") {
 
         setup {
             run("SCANPY_LOG1P") {
@@ -63,19 +73,148 @@ nextflow_process {
             process {
                 """
                 input[0] = SCANPY_LOG1P.out.adata
-                input[1] = 2000          // n_hvgs
-                input[2] = 'cell_ranger' // flavor
+                input[1] = 2000     // n_hvgs
+                input[2] = 'seurat' // flavor
+                input[3] = false    // write_adata
                 """
             }
         }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.adata.isEmpty() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.var.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - cell_ranger flavor") {
+
+        // Genes expressed in few observations are filtered out before HVG
+        // selection, otherwise the Cell Ranger binning fail. Filtering leaves
+        // fewer than 2000 genes in this test dataset, so fewer HVGs are
+        // requested than in the other tests
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = true // write_adata
+                    """
+                }
+            }
+            run("SCANPY_FILTER") {
+                script "../../filter/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                    input[1] = 1     // min_counts
+                    input[2] = 1     // min_genes
+                    input[3] = 10    // min_obs
+                    input[4] = 100.0 // mito_threshold
+                    input[5] = 0.0   // ribo_threshold
+                    input[6] = 100.0 // hb_threshold
+                    """
+                }
+            }
+            run("SCANPY_NORMALIZE_TOTAL") {
+                script "../../normalize_total/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_FILTER.out.adata
+                    input[1] = 0 // target_sum
+                    """
+                }
+            }
+            run("SCANPY_LOG1P") {
+                script "../../log1p/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_NORMALIZE_TOTAL.out.adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LOG1P.out.adata
+                input[1] = 500           // n_hvgs
+                input[2] = 'cell_ranger' // flavor
+                input[3] = true          // write_adata
+                """
+            }
+        }
+
         then {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
                     process.out.versions,
-                    anndata(process.out.adata[0][1]).yaml
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.var.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
                 ).match() }
             )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                def n_hvgs = var.get("highly_variable").data.count { it.toString().toUpperCase() == "TRUE" }
+                assert n_hvgs >= 450 && n_hvgs <= 550 && n_hvgs < n_vars
+            }
+        }
+    }
+
+    test("homo_sapiens - h5ad - fallback with too few genes") {
+
+        setup {
+            run("SCANPY_LOG1P") {
+                script "../../log1p/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_LOG1P.out.adata
+                input[1] = 99999    // n_hvgs
+                input[2] = 'seurat' // flavor
+                input[3] = true     // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.var.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+            // Every gene is marked as highly variable
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                def n_hvgs = var.get("highly_variable").data.count { it.toString().toUpperCase() == "TRUE" }
+                assert n_hvgs == n_vars
+            }
         }
     }
 
@@ -102,6 +241,7 @@ nextflow_process {
                 input[0] = SCANPY_LOG1P.out.adata
                 input[1] = 2000     // n_hvgs
                 input[2] = 'seurat' // flavor
+                input[3] = true     // write_adata
                 """
             }
         }
