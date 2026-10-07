@@ -64,6 +64,7 @@ def perform_leiden(adata, resolution, key_added):
         adata,
         resolution=resolution,
         key_added=key_added,
+        flavor="leidenalg",
         random_state=0
     )
 
