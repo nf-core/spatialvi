@@ -19,6 +19,10 @@ compatible with further downstream analyses and/or exploration in _e.g._
 ### `Added`
 
 - Add pickled slot data outputs and `adata/extend`; don't output "raw" layer in raw data [[#153](https://github.com/nf-core/spatialvi/pull/153/)]
+- Add optional Visium HD cell segmentation with Space Ranger, Cellpose, StarDist or a samplesheet `segmentation_file`, using cells instead of bins for the analysis [[#145](https://github.com/nf-core/spatialvi/issues/145) and [#161](https://github.com/nf-core/spatialvi/pull/161)]
+- Turn off Space Ranger's nucleus segmentation for Visium HD unless cells are requested, so `segmented_outputs/` is no longer produced by default [[#161](https://github.com/nf-core/spatialvi/pull/161)]
+- Move local modules to the SpatialData 0.8 stack (spatialdata-io 0.7, anndata 0.13) and add bin2cell [[#161](https://github.com/nf-core/spatialvi/pull/161)]
+- Increase memory for per-sample steps on Visium HD data, and cap their time limit at 4 h per attempt [[#161](https://github.com/nf-core/spatialvi/pull/161)]
 - Deprecate `quartonotebook` module in favour of `quarto/notebook` [[#148](https://github.com/nf-core/spatialvi/pull/148)]
 - Separate reports into separate scripts [[#137](https://github.com/nf-core/spatialvi/pull/137)]
 - Use topic channels for software versions [[#133](https://github.com/nf-core/spatialvi/pull/133)]
