@@ -5,8 +5,7 @@ process SQUIDPY_SPATIAL_NEIGHBORS {
     container "community.wave.seqera.io/library/bin2cell_harmonypy_scanorama_imagecodecs_pruned:d457f4c6ebb7b325"
 
     input:
-    tuple val(meta), path(adata, stageAs: "input.h5ad", arity: '1')
-    val coord_type
+    tuple val(meta), path(adata, stageAs: "input.h5ad", arity: '1'), val(coord_type)
     val n_neighs
     val write_adata
 

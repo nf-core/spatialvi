@@ -5,6 +5,7 @@
 */
 
 include { SDATA_READ_VISIUM           } from "../modules/local/sdata/read_visium"
+include { SDATA_BIN_TO_CELL           } from "../modules/local/sdata/bin_to_cell"
 include { FASTQC                      } from "../modules/nf-core/fastqc"
 include { ADATA_EXTEND                } from "../modules/local/adata/extend"
 include { SCANPY_CALCULATE_QC_METRICS } from "../modules/local/scanpy/calculate_qc_metrics"
@@ -17,6 +18,7 @@ include { QUARTO_NOTEBOOK as REPORT   } from "../modules/nf-core/quarto/notebook
 include { SDATA_UPDATE_TABLE          } from "../modules/local/sdata/update_table"
 
 include { INPUT_CHECK                 } from "../subworkflows/local/input_check"
+include { SEGMENTATION                } from "../subworkflows/local/segmentation"
 include { SPACERANGER                 } from "../subworkflows/local/spaceranger"
 include { PREPROCESSING               } from "../subworkflows/local/preprocessing"
 include { CLUSTERING                  } from "../subworkflows/local/clustering"
@@ -40,6 +42,8 @@ workflow SPATIALVI {
     spaceranger_reference          //     dir: /path/to/reference
     spaceranger_probeset           //    file: /path/to/csv
     hd_bin_size                    // integer: Bin size for Visium HD
+    segmentation_method            //  string: Cell segmentation method (Visium HD)
+    segmentation_downscale         // integer: Downscale factor of the image for segmentation
     skip_downstream                // boolean: Whether to skip downstream steps or not
     qc_min_counts                  // integer: Minimum UMIs per spot
     qc_min_genes                   // integer: Minimum genes per spot
@@ -84,12 +88,36 @@ workflow SPATIALVI {
     //
     INPUT_CHECK (
         samplesheet,
-        hd_bin_size
+        hd_bin_size,
+        segmentation_method
     )
+    ch_spaceranger_input = INPUT_CHECK.out.ch_spaceranger_input
+    ch_downstream_input  = INPUT_CHECK.out.ch_downstream_input
+
+    //
+    // SUBWORKFLOW: Cell segmentation of the tissue image (Visium HD)
+    //
+    // Samplesheet and computed segmentations are both files in full-resolution pixels
+    ch_segmentation = INPUT_CHECK.out.ch_segmentation_file
+    if (segmentation_method in ['cellpose', 'stardist']) {
+        SEGMENTATION (
+            INPUT_CHECK.out.ch_image,
+            segmentation_method,
+            segmentation_downscale
+        )
+        ch_segmentation = ch_segmentation.mix ( SEGMENTATION.out.geojson )
+    }
+
+    // Attach the segmentation, or an empty list for samples without one
+    ch_spaceranger_input = ch_spaceranger_input
+        .join ( ch_segmentation, remainder: true )  // Space Ranger waits for the segmentation it is given
+        .filter { it -> it[1] != null }  // drop segmentation-only rows
+        .map { it -> it[0..-2] + [it[-1] ?: []] }
 
     //
     // MODULE: FastQC
     //
+    // Read from INPUT_CHECK so FastQC does not wait for segmentation
     FASTQC(
         INPUT_CHECK.out.ch_spaceranger_input
             .map { it -> [it[0], it[1]] } // [ meta, reads ]
@@ -101,7 +129,7 @@ workflow SPATIALVI {
     // SUBWORKFLOW: Space Ranger raw data processing
     //
     SPACERANGER (
-        INPUT_CHECK.out.ch_spaceranger_input,
+        ch_spaceranger_input,
         spaceranger_reference,
         spaceranger_probeset,
     )
@@ -111,13 +139,29 @@ workflow SPATIALVI {
     //
     // MODULE: Read ST data and save as SpatialData
     //
-    ch_spaceranger_dir = INPUT_CHECK.out.ch_downstream_input
+    ch_spaceranger_dir = ch_downstream_input
         .mix(SPACERANGER.out.sr_dir)
     SDATA_READ_VISIUM (
-        ch_spaceranger_dir,
+        ch_spaceranger_dir.map { meta, dir -> [meta, dir, meta.cells && !meta.bin_to_cell] },
         hd_bin_size
     )
-    ch_sdata_raw = SDATA_READ_VISIUM.out.sdata
+
+    //
+    // MODULE: Group Visium HD bins into cells for processed data with a
+    // segmentation from cellpose, stardist or the samplesheet
+    //
+    ch_sdata = SDATA_READ_VISIUM.out.sdata
+        .branch { meta, _zarr ->
+            bin_to_cell: meta.bin_to_cell
+            other: true
+        }
+    SDATA_BIN_TO_CELL (
+        ch_sdata.bin_to_cell
+            .join ( ch_downstream_input.filter { meta, _dir -> meta.bin_to_cell }, failOnMismatch: true )
+            .join ( ch_segmentation.filter { meta, _seg -> meta.bin_to_cell }, failOnMismatch: true ),
+        hd_bin_size
+    )
+    ch_sdata_raw = ch_sdata.other.mix(SDATA_BIN_TO_CELL.out.sdata)
 
     // =========================================================================
     // PER-SAMPLE ANALYSES

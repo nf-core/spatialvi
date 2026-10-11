@@ -5,7 +5,7 @@ process SPACERANGER_COUNT {
     container "quay.io/nf-core/spaceranger:9c5e7dc93c32448e"
 
     input:
-    tuple val(meta), path(reads), path(image), val(slide), val(area), path(cytaimage), path(darkimage), path(colorizedimage), path(alignment), path(slidefile)
+    tuple val(meta), path(reads), path(image), val(slide), val(area), path(cytaimage), path(darkimage), path(colorizedimage), path(alignment), path(slidefile), path(segmentation)
     path(reference)
     path(probeset)
 
@@ -27,6 +27,7 @@ process SPACERANGER_COUNT {
     def probeset_opt = probeset ? "--probe-set=\"${probeset}\"" : ""
     def alignment_opt = alignment ? "--loupe-alignment=\"${alignment}\"" : ""
     def slidefile_opt = slidefile ? "--slidefile=\"${slidefile}\"" : ""
+    def segmentation_opt = segmentation ? "--custom-segmentation-file=\"${segmentation}\"" : ""
     def image_opt = image ? "--image=\"${image}\"" : ""
     def cytaimage_opt = cytaimage ? "--cytaimage=\"${cytaimage}\"" : ""
     def darkimage_opt = darkimage ? "--darkimage=\"${darkimage}\"" : ""
@@ -52,6 +53,7 @@ process SPACERANGER_COUNT {
         $probeset_opt \\
         $alignment_opt \\
         $slidefile_opt \\
+        $segmentation_opt \\
         $args
     mv ${prefix}/outs outs
     """

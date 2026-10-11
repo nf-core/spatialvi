@@ -1,9 +1,14 @@
 Changes in component 'nf-core/spaceranger/count'
-'modules/nf-core/spaceranger/count/meta.yml' is unchanged
 Changes in 'spaceranger/count/main.nf':
 --- modules/nf-core/spaceranger/count/main.nf
 +++ modules/nf-core/spaceranger/count/main.nf
-@@ -10,7 +10,7 @@
+@@ -5,12 +5,12 @@
+     container "quay.io/nf-core/spaceranger:9c5e7dc93c32448e"
+ 
+     input:
+-    tuple val(meta), path(reads), path(image), val(slide), val(area), path(cytaimage), path(darkimage), path(colorizedimage), path(alignment), path(slidefile)
++    tuple val(meta), path(reads), path(image), val(slide), val(area), path(cytaimage), path(darkimage), path(colorizedimage), path(alignment), path(slidefile), path(segmentation)
+     path(reference)
      path(probeset)
  
      output:
@@ -12,8 +17,81 @@ Changes in 'spaceranger/count/main.nf':
      tuple val("${task.process}"), val('spaceranger'), eval('spaceranger -V | sed "s/spaceranger spaceranger-//"'), emit: versions_spaceranger, topic: versions
  
      when:
+@@ -27,6 +27,7 @@
+     def probeset_opt = probeset ? "--probe-set=\"${probeset}\"" : ""
+     def alignment_opt = alignment ? "--loupe-alignment=\"${alignment}\"" : ""
+     def slidefile_opt = slidefile ? "--slidefile=\"${slidefile}\"" : ""
++    def segmentation_opt = segmentation ? "--custom-segmentation-file=\"${segmentation}\"" : ""
+     def image_opt = image ? "--image=\"${image}\"" : ""
+     def cytaimage_opt = cytaimage ? "--cytaimage=\"${cytaimage}\"" : ""
+     def darkimage_opt = darkimage ? "--darkimage=\"${darkimage}\"" : ""
+@@ -52,6 +53,7 @@
+         $probeset_opt \\
+         $alignment_opt \\
+         $slidefile_opt \\
++        $segmentation_opt \\
+         $args
+     mv ${prefix}/outs outs
+     """
+
+Changes in 'spaceranger/count/meta.yml':
+--- modules/nf-core/spaceranger/count/meta.yml
++++ modules/nf-core/spaceranger/count/meta.yml
+@@ -83,6 +83,13 @@
+         pattern: "*.json"
+         ontologies:
+           - edam: http://edamontology.org/format_3464 # JSON
++    - segmentation:
++        type: file
++        description: OPTIONAL - Custom cell or nucleus segmentation (GeoJSON or
++          label mask) in full-resolution image pixels, passed as
++          --custom-segmentation-file
++        pattern: "*.{geojson,tif,tiff,npy}"
++        ontologies: []
+   - reference:
+       type: directory
+       description: Folder containing all the reference indices needed by Space
+
+Changes in 'spaceranger/count/tests/main.nf.test':
+--- modules/nf-core/spaceranger/count/tests/main.nf.test
++++ modules/nf-core/spaceranger/count/tests/main.nf.test
+@@ -57,6 +57,7 @@
+                     [], // Colorizedimage
+                     [], // Manual alignment (default: automatic alignment)
+                     [], // Slide specification (default: automatic download)
++                    [], // Custom segmentation (default: none)
+                 ]
+                 input[1] = SPACERANGER_MKREF.out.reference // Reference
+                 input[2] = [] // Probeset (default: use the one included with Space Ranger)
+@@ -137,6 +138,7 @@
+                     [], // Colorizedimage
+                     [], // Manual alignment (default: automatic alignment)
+                     [], // Slide specification (default: automatic download)
++                    [], // Custom segmentation (default: none)
+                 ]
+                 input[1] = SPACERANGER_MKREF.out.reference // Reference
+                 input[2] = [] // Probeset (default: use the one included with Space Ranger)
+@@ -195,7 +197,8 @@
+                     [], // Darkimage
+                     [], // Colorizedimage
+                     [], // Manual alignment (default: automatic alignment)
+-                    file('https://s3.us-west-2.amazonaws.com/10x.spatial-slides/gpr/V52Y10/V52Y10-317.gpr') // Slide specification (default: automatic download)
++                    file('https://s3.us-west-2.amazonaws.com/10x.spatial-slides/gpr/V52Y10/V52Y10-317.gpr'), // Slide specification (default: automatic download)
++                    [] // Custom segmentation (default: none)
+                 ]
+                 input[1] = SPACERANGER_MKREF.out.reference // Reference
+                 input[2] = file(params.modules_testdata_base_path + 'genomics/homo_sapiens/10xgenomics/spaceranger/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/CytAssist_11mm_FFPE_Human_Glioblastoma_probe_set.csv', checkIfExists: true) // Probeset (default: use the one included with Space Ranger)
+@@ -274,7 +277,8 @@
+                     [], // Darkimage
+                     [], // Colorizedimage
+                     [], // Manual alignment (default: automatic alignment)
+-                    [] // Slide specification (default: automatic download)
++                    [], // Slide specification (default: automatic download)
++                    [] // Custom segmentation (default: none)
+                 ]
+                 input[1] = SPACERANGER_MKREF.out.reference // Reference
+                 input[2] = file(params.modules_testdata_base_path + 'genomics/homo_sapiens/10xgenomics/spaceranger/human-lung-cancer-post-xenium_hd_ffpe/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_probe_set.csv', checkIfExists: true) // Probeset (default: use the one included with Space Ranger)
 
 'modules/nf-core/spaceranger/count/tests/main.nf.test.snap' is unchanged
 'modules/nf-core/spaceranger/count/tests/nextflow.config' is unchanged
-'modules/nf-core/spaceranger/count/tests/main.nf.test' is unchanged
 ************************************************************

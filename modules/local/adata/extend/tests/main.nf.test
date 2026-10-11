@@ -299,8 +299,8 @@ nextflow_process {
                 script "../../../sdata/read_visium/main.nf"
                 process {
                     """
-                    input[0] = UNTAR.out.untar
-                    input[1] = 8 // hd_bin_size
+                    input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                    input[1] = 8  // hd_bin_size
                     """
                 }
             }
@@ -316,10 +316,9 @@ nextflow_process {
                 script "../../../squidpy/spatial_neighbors/main.nf"
                 process {
                     """
-                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = 'grid' // coord_type
-                    input[2] = 6      // n_neighs
-                    input[3] = true   // write_adata
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata.map { meta, adata -> [meta, adata, 'grid'] }
+                    input[1] = 6      // n_neighs
+                    input[2] = true   // write_adata
                     """
                 }
             }
@@ -379,8 +378,8 @@ nextflow_process {
                 script "../../../sdata/read_visium/main.nf"
                 process {
                     """
-                    input[0] = UNTAR.out.untar
-                    input[1] = 8 // hd_bin_size
+                    input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                    input[1] = 8  // hd_bin_size
                     """
                 }
             }
@@ -396,10 +395,9 @@ nextflow_process {
                 script "../../../squidpy/spatial_neighbors/main.nf"
                 process {
                     """
-                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
-                    input[1] = 'grid' // coord_type
-                    input[2] = 6      // n_neighs
-                    input[3] = true   // write_adata
+                    input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata.map { meta, adata -> [meta, adata, 'grid'] }
+                    input[1] = 6      // n_neighs
+                    input[2] = true   // write_adata
                     """
                 }
             }
@@ -1117,8 +1115,8 @@ nextflow_process {
                 script "../../../sdata/read_visium/main.nf"
                 process {
                     """
-                    input[0] = UNTAR.out.untar
-                    input[1] = 8 // hd_bin_size
+                    input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                    input[1] = 8  // hd_bin_size
                     """
                 }
             }
@@ -1198,8 +1196,8 @@ nextflow_process {
                 script "../../../sdata/read_visium/main.nf"
                 process {
                     """
-                    input[0] = UNTAR.out.untar
-                    input[1] = 8 // hd_bin_size
+                    input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                    input[1] = 8  // hd_bin_size
                     """
                 }
             }
@@ -1273,8 +1271,8 @@ nextflow_process {
                 script "../../../sdata/read_visium/main.nf"
                 process {
                     """
-                    input[0] = UNTAR.out.untar
-                    input[1] = 8 // hd_bin_size
+                    input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                    input[1] = 8  // hd_bin_size
                     """
                 }
             }
@@ -1328,8 +1326,8 @@ nextflow_process {
                 script "../../../sdata/read_visium/main.nf"
                 process {
                     """
-                    input[0] = UNTAR.out.untar
-                    input[1] = 8 // hd_bin_size
+                    input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                    input[1] = 8  // hd_bin_size
                     """
                 }
             }
