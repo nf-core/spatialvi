@@ -1,0 +1,62 @@
+nextflow_process {
+
+    name "Test Process SDATA_BIN_TO_CELL"
+    script "../main.nf"
+    process "SDATA_BIN_TO_CELL"
+
+    tag "modules"
+    tag "modules_local"
+    tag "sdata_bin_to_cell"
+
+    // N.B.
+    // There is no Visium HD Space Ranger output small enough for
+    // nf-core/test-datasets, so only a stub test is possible.
+
+    test("homo_sapiens - zarr - stub") {
+
+        options "-stub"
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.pipelines_testdata_base_path + 'testdata/human-brain-cancer-11-mm-capture-area-ffpe-2-standard_v2_ffpe_cytassist/outs.tar.gz', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+            run("SDATA_READ_VISIUM") {
+                script "../../read_visium/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                    input[1] = 8    // hd_bin_size
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SDATA_READ_VISIUM.out.sdata
+                    .join(UNTAR.out.untar)
+                    .map { meta, sdata, outs -> [
+                        meta, sdata, outs,
+                        file(params.pipelines_testdata_base_path + 'testdata/human-lung-cancer-post-xenium_hd_ffpe/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_image.tif', checkIfExists: true)
+                    ] }
+                input[1] = 8 // hd_bin_size
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
