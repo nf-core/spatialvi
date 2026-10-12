@@ -2,7 +2,7 @@
     "homo_sapiens - h5ad - generic": {
         "content": [
             [
-                "versions.yml:md5,1af8ea16ef6f0a48c58bca6f26a978a0"
+                "versions.yml:md5,65150940d4209522a492c8a86ca93d71"
             ],
             {
                 "n_obs": 11397,
@@ -10,18 +10,18 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "array_col",
-                        "array_row",
                         "in_tissue",
-                        "region",
-                        "spot_id"
+                        "array_row",
+                        "array_col",
+                        "spot_id",
+                        "region"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "feature_types",
                         "gene_ids",
+                        "feature_types",
                         "genome"
                     ]
                 },
@@ -58,10 +58,10 @@
                 "spatial_neighbors.pkl"
             ]
         ],
-        "timestamp": "2026-10-04T22:27:13.371062",
+        "timestamp": "2026-10-12T01:47:20.582039533",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -138,7 +138,7 @@
     "homo_sapiens - h5ad - grid - no h5ad output": {
         "content": [
             [
-                "versions.yml:md5,1af8ea16ef6f0a48c58bca6f26a978a0"
+                "versions.yml:md5,65150940d4209522a492c8a86ca93d71"
             ],
             [
                 "spatial_connectivities.pkl",
@@ -148,16 +148,16 @@
                 "spatial_neighbors.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:21:15.582661",
+        "timestamp": "2026-10-12T03:52:44.626206322",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - grid": {
         "content": [
             [
-                "versions.yml:md5,1af8ea16ef6f0a48c58bca6f26a978a0"
+                "versions.yml:md5,65150940d4209522a492c8a86ca93d71"
             ],
             {
                 "n_obs": 11397,
@@ -165,18 +165,18 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "array_col",
-                        "array_row",
                         "in_tissue",
-                        "region",
-                        "spot_id"
+                        "array_row",
+                        "array_col",
+                        "spot_id",
+                        "region"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "feature_types",
                         "gene_ids",
+                        "feature_types",
                         "genome"
                     ]
                 },
@@ -213,10 +213,10 @@
                 "spatial_neighbors.pkl"
             ]
         ],
-        "timestamp": "2026-10-04T22:25:45.913057",
+        "timestamp": "2026-10-12T01:46:41.056741186",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     }
 }

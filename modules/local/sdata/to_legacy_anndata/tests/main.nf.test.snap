@@ -2,7 +2,7 @@
     "homo_sapiens - zarr": {
         "content": [
             [
-                "versions.yml:md5,f06afd6f97a6444b6f887d36e397792b"
+                "versions.yml:md5,bf649f086c4f68367bb4da8e41601148"
             ],
             {
                 "n_obs": 11397,
@@ -10,18 +10,18 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "array_col",
-                        "array_row",
                         "in_tissue",
-                        "region",
-                        "spot_id"
+                        "array_row",
+                        "array_col",
+                        "spot_id",
+                        "region"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "feature_types",
                         "gene_ids",
+                        "feature_types",
                         "genome"
                     ]
                 },
@@ -83,10 +83,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-04T11:11:15.214247",
+        "timestamp": "2026-10-12T01:28:04.852682346",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - zarr - stub": {

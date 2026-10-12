@@ -2,7 +2,7 @@
     "homo_sapiens - h5ad - no h5ad output": {
         "content": [
             [
-                "versions.yml:md5,644846add945175d74eb0fce068a0241"
+                "versions.yml:md5,4ddc957bdbade42c2221d69c10d318f3"
             ],
             [
                 "X_umap.pkl"
@@ -11,16 +11,16 @@
                 "X_umap.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T14:26:48.447133",
+        "timestamp": "2026-10-12T01:26:34.697715121",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad": {
         "content": [
             [
-                "versions.yml:md5,644846add945175d74eb0fce068a0241"
+                "versions.yml:md5,4ddc957bdbade42c2221d69c10d318f3"
             ],
             {
                 "n_obs": 12940,
@@ -34,11 +34,11 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
+                        "symbols",
                         "highly_variable",
                         "means",
-                        "symbols"
+                        "dispersions",
+                        "dispersions_norm"
                     ]
                 },
                 "layers": [
@@ -73,10 +73,10 @@
                 "X_umap.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T23:14:55.987667",
+        "timestamp": "2026-10-12T01:25:04.927287453",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {

@@ -2,7 +2,7 @@
     "homo_sapiens - h5ad": {
         "content": [
             [
-                "versions.yml:md5,76284d81803fab43f0ae80b07e38f742"
+                "versions.yml:md5,5a94098e683e45c34680e2ad39b9dfbc"
             ],
             {
                 "n_obs": 12940,
@@ -39,10 +39,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-01T19:05:36.438111",
+        "timestamp": "2026-10-12T01:13:16.892320242",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {

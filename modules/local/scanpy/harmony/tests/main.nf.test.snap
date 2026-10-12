@@ -2,22 +2,22 @@
     "homo_sapiens - h5ad - no h5ad output": {
         "content": [
             [
-                "versions.yml:md5,03172681ef9c2e21eed9e9ed573cf597"
+                "versions.yml:md5,1a0cc1e96a8a9226ad79a52aa779d002"
             ],
             [
                 "X_harmony.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T14:29:06.427218",
+        "timestamp": "2026-10-12T01:02:02.884191085",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad": {
         "content": [
             [
-                "versions.yml:md5,03172681ef9c2e21eed9e9ed573cf597"
+                "versions.yml:md5,1a0cc1e96a8a9226ad79a52aa779d002"
             ],
             {
                 "n_obs": 20313,
@@ -25,8 +25,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "library_id",
-                        "sample"
+                        "sample",
+                        "library_id"
                     ]
                 },
                 "var": {
@@ -59,10 +59,10 @@
                 "X_harmony.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T23:01:44.415676",
+        "timestamp": "2026-10-12T00:59:16.415872338",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -117,7 +117,7 @@
     "homo_sapiens - h5ad - custom basis": {
         "content": [
             [
-                "versions.yml:md5,03172681ef9c2e21eed9e9ed573cf597"
+                "versions.yml:md5,1a0cc1e96a8a9226ad79a52aa779d002"
             ],
             {
                 "n_obs": 20313,
@@ -125,8 +125,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "library_id",
-                        "sample"
+                        "sample",
+                        "library_id"
                     ]
                 },
                 "var": {
@@ -159,10 +159,10 @@
                 "X_harmony.pkl"
             ]
         ],
-        "timestamp": "2026-10-05T14:29:32.331045",
+        "timestamp": "2026-10-12T01:00:55.342232397",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     }
 }

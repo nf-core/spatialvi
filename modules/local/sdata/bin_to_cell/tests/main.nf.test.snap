@@ -1,0 +1,39 @@
+{
+    "homo_sapiens - zarr - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        [
+                            ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "sdata": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        [
+                            ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-12T01:26:56.766707629",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

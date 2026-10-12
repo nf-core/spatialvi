@@ -2,22 +2,22 @@
     "homo_sapiens - h5ad - no h5ad output": {
         "content": [
             [
-                "versions.yml:md5,e38ec89768de8bf84a68a506577d0e4e"
+                "versions.yml:md5,44757daff0e1ec8dedc7f16ef2840999"
             ],
             [
                 "X_scanorama.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T14:34:09.345792",
+        "timestamp": "2026-10-12T01:22:56.782619556",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad": {
         "content": [
             [
-                "versions.yml:md5,e38ec89768de8bf84a68a506577d0e4e"
+                "versions.yml:md5,44757daff0e1ec8dedc7f16ef2840999"
             ],
             {
                 "n_obs": 20313,
@@ -25,8 +25,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "library_id",
-                        "sample"
+                        "sample",
+                        "library_id"
                     ]
                 },
                 "var": {
@@ -59,10 +59,10 @@
                 "X_scanorama.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T23:12:58.078708",
+        "timestamp": "2026-10-12T01:21:51.468596498",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -117,7 +117,7 @@
     "homo_sapiens - h5ad - custom basis": {
         "content": [
             [
-                "versions.yml:md5,e38ec89768de8bf84a68a506577d0e4e"
+                "versions.yml:md5,44757daff0e1ec8dedc7f16ef2840999"
             ],
             {
                 "n_obs": 20313,
@@ -125,8 +125,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "library_id",
-                        "sample"
+                        "sample",
+                        "library_id"
                     ]
                 },
                 "var": {
@@ -159,10 +159,10 @@
                 "X_scanorama.pkl"
             ]
         ],
-        "timestamp": "2026-10-05T14:31:15.226799",
+        "timestamp": "2026-10-12T01:22:23.03318494",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     }
 }

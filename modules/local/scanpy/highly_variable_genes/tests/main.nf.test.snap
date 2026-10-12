@@ -2,7 +2,7 @@
     "homo_sapiens - h5ad - seurat flavor - no h5ad output": {
         "content": [
             [
-                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+                "versions.yml:md5,4075c956526cd896fb9b53c6d3c2c90f"
             ],
             [
                 "highly_variable_genes.pkl"
@@ -11,16 +11,16 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-02T11:54:27.144755",
+        "timestamp": "2026-10-12T01:05:36.583229933",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - cell_ranger flavor": {
         "content": [
             [
-                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+                "versions.yml:md5,4075c956526cd896fb9b53c6d3c2c90f"
             ],
             {
                 "n_obs": 12940,
@@ -28,39 +28,39 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "n_counts",
-                        "n_genes",
+                        "sample",
                         "n_genes_by_counts",
-                        "pct_counts_hb",
+                        "total_counts",
+                        "pct_counts_in_top_50_genes",
                         "pct_counts_in_top_100_genes",
                         "pct_counts_in_top_200_genes",
                         "pct_counts_in_top_500_genes",
-                        "pct_counts_in_top_50_genes",
-                        "pct_counts_mt",
+                        "total_counts_ribo",
                         "pct_counts_ribo",
-                        "sample",
-                        "total_counts",
                         "total_counts_hb",
+                        "pct_counts_hb",
+                        "pct_counts_mt",
                         "total_counts_mt",
-                        "total_counts_ribo"
+                        "n_counts",
+                        "n_genes"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
-                        "hb",
-                        "highly_variable",
-                        "mean_counts",
-                        "means",
-                        "mt",
-                        "n_cells",
-                        "n_cells_by_counts",
-                        "pct_dropout_by_counts",
-                        "ribo",
                         "symbols",
-                        "total_counts"
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "pct_dropout_by_counts",
+                        "total_counts",
+                        "n_cells",
+                        "highly_variable",
+                        "means",
+                        "dispersions",
+                        "dispersions_norm"
                     ]
                 },
                 "layers": [
@@ -90,16 +90,16 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-02T11:37:06.12832",
+        "timestamp": "2026-10-12T01:06:27.98309696",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - fallback with too few genes - batch key": {
         "content": [
             [
-                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+                "versions.yml:md5,4075c956526cd896fb9b53c6d3c2c90f"
             ],
             {
                 "n_obs": 20313,
@@ -107,19 +107,19 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "library_id",
-                        "sample"
+                        "sample",
+                        "library_id"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "highly_variable",
+                        "means",
                         "dispersions",
                         "dispersions_norm",
-                        "highly_variable",
-                        "highly_variable_intersection",
                         "highly_variable_nbatches",
-                        "means"
+                        "highly_variable_intersection"
                     ]
                 },
                 "layers": [
@@ -149,10 +149,10 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-05T14:03:04.83762",
+        "timestamp": "2026-10-12T01:07:40.104981379",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -223,7 +223,7 @@
     "homo_sapiens - h5ad - seurat flavor - batch key": {
         "content": [
             [
-                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+                "versions.yml:md5,4075c956526cd896fb9b53c6d3c2c90f"
             ],
             {
                 "n_obs": 20313,
@@ -231,19 +231,19 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "library_id",
-                        "sample"
+                        "sample",
+                        "library_id"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
+                        "highly_variable",
+                        "means",
                         "dispersions",
                         "dispersions_norm",
-                        "highly_variable",
-                        "highly_variable_intersection",
                         "highly_variable_nbatches",
-                        "means"
+                        "highly_variable_intersection"
                     ]
                 },
                 "layers": [
@@ -273,16 +273,16 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-05T14:02:48.191739",
+        "timestamp": "2026-10-12T01:07:18.147411489",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - fallback with too few genes": {
         "content": [
             [
-                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+                "versions.yml:md5,4075c956526cd896fb9b53c6d3c2c90f"
             ],
             {
                 "n_obs": 12940,
@@ -296,11 +296,11 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
+                        "symbols",
                         "highly_variable",
                         "means",
-                        "symbols"
+                        "dispersions",
+                        "dispersions_norm"
                     ]
                 },
                 "layers": [
@@ -330,16 +330,16 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-02T11:18:06.439336",
+        "timestamp": "2026-10-12T01:06:45.972906019",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - seurat flavor": {
         "content": [
             [
-                "versions.yml:md5,e13181af4757604b85af5368250a94d7"
+                "versions.yml:md5,4075c956526cd896fb9b53c6d3c2c90f"
             ],
             {
                 "n_obs": 12940,
@@ -353,11 +353,11 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
+                        "symbols",
                         "highly_variable",
                         "means",
-                        "symbols"
+                        "dispersions",
+                        "dispersions_norm"
                     ]
                 },
                 "layers": [
@@ -387,10 +387,10 @@
                 "hvg.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T23:02:55.350186",
+        "timestamp": "2026-10-12T01:05:16.652597012",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     }
 }

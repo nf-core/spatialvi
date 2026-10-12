@@ -2,7 +2,7 @@
     "homo_sapiens - h5ad - wilcoxon": {
         "content": [
             [
-                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+                "versions.yml:md5,00f6eb8e04107d1fe9a35ba21fc75e70"
             ],
             {
                 "n_obs": 12940,
@@ -10,8 +10,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "clusters",
-                        "sample"
+                        "sample",
+                        "clusters"
                     ]
                 },
                 "var": {
@@ -47,16 +47,16 @@
                 "rank_genes_groups.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:24:25.835022",
+        "timestamp": "2026-10-12T01:16:11.091588252",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - logreg": {
         "content": [
             [
-                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+                "versions.yml:md5,00f6eb8e04107d1fe9a35ba21fc75e70"
             ],
             {
                 "n_obs": 12940,
@@ -64,8 +64,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "clusters",
-                        "sample"
+                        "sample",
+                        "clusters"
                     ]
                 },
                 "var": {
@@ -101,25 +101,25 @@
                 "rank_genes_groups.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:27:37.270096",
+        "timestamp": "2026-10-12T01:20:59.559521159",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - wilcoxon - no h5ad output": {
         "content": [
             [
-                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+                "versions.yml:md5,00f6eb8e04107d1fe9a35ba21fc75e70"
             ],
             [
                 "rank_genes_groups.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:25:16.709227",
+        "timestamp": "2026-10-12T01:17:31.489361505",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -174,7 +174,7 @@
     "homo_sapiens - h5ad - t-test_overstim_var": {
         "content": [
             [
-                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+                "versions.yml:md5,00f6eb8e04107d1fe9a35ba21fc75e70"
             ],
             {
                 "n_obs": 12940,
@@ -182,8 +182,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "clusters",
-                        "sample"
+                        "sample",
+                        "clusters"
                     ]
                 },
                 "var": {
@@ -219,16 +219,16 @@
                 "rank_genes_groups.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:26:50.539956",
+        "timestamp": "2026-10-12T01:19:52.863926012",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - t-test": {
         "content": [
             [
-                "versions.yml:md5,5cd8bc30e81999f69e36ed1b0d89b970"
+                "versions.yml:md5,00f6eb8e04107d1fe9a35ba21fc75e70"
             ],
             {
                 "n_obs": 12940,
@@ -236,8 +236,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "clusters",
-                        "sample"
+                        "sample",
+                        "clusters"
                     ]
                 },
                 "var": {
@@ -273,10 +273,10 @@
                 "rank_genes_groups.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T15:26:03.572618",
+        "timestamp": "2026-10-12T01:18:41.296120649",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     }
 }
