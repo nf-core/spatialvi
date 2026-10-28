@@ -1,0 +1,210 @@
+{
+    "homo_sapiens - outs - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        [
+                            ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "sdata": [
+                    [
+                        {
+                            "id": "CytAssist_11mm_FFPE_Human_Glioblastoma_2"
+                        },
+                        [
+                            ".zgroup:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-04-01T21:08:30.103249",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "homo_sapiens - outs": {
+        "content": [
+            [
+                "versions.yml:md5,a147d9821aeb6b76fb93a01c84e5bcc5"
+            ],
+            [
+                "",
+                ".zattrs",
+                ".zgroup",
+                "images",
+                "images/.zgroup",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_hires_image",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_hires_image/.zattrs",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_hires_image/.zgroup",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_hires_image/0",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_hires_image/0/.zarray",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_hires_image/0/0",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_hires_image/0/0/0",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_hires_image/0/0/0/0",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_lowres_image",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_lowres_image/.zattrs",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_lowres_image/.zgroup",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_lowres_image/0",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_lowres_image/0/.zarray",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_lowres_image/0/0",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_lowres_image/0/0/0",
+                "images/CytAssist_11mm_FFPE_Human_Glioblastoma_2_lowres_image/0/0/0/0",
+                "shapes",
+                "shapes/.zgroup",
+                "shapes/CytAssist_11mm_FFPE_Human_Glioblastoma_2",
+                "shapes/CytAssist_11mm_FFPE_Human_Glioblastoma_2/.zattrs",
+                "shapes/CytAssist_11mm_FFPE_Human_Glioblastoma_2/.zgroup",
+                "shapes/CytAssist_11mm_FFPE_Human_Glioblastoma_2/shapes.parquet",
+                "tables",
+                "tables/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/data",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/data/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/data/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/indices",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/indices/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/indices/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/indptr",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/indptr/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/X/indptr/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/layers/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/_index",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/_index/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/_index/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/_index/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/array_col",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/array_col/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/array_col/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/array_col/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/array_row",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/array_row/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/array_row/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/array_row/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/in_tissue/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/categories",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/categories/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/categories/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/categories/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/codes",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/codes/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/codes/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/region/codes/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/spot_id",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/spot_id/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/spot_id/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obs/spot_id/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsm/spatial/0/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsp",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsp/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/obsp/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/raw",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/raw/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/raw/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/raw/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/chemistry_description/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatial/CytAssist_11mm_FFPE_Human_Glioblastoma_2/metadata/software_version/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/instance_key",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/instance_key/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/instance_key/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/instance_key/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/region",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/region/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/region/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/region/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/region_key",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/region_key/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/region_key/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/uns/spatialdata_attrs/region_key/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/_index",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/_index/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/_index/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/_index/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/feature_types",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/feature_types/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/feature_types/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/feature_types/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/gene_ids",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/gene_ids/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/gene_ids/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/gene_ids/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/genome",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/genome/.zarray",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/genome/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/var/genome/0",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/varm",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/varm/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/varm/.zgroup",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/varp",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/varp/.zattrs",
+                "tables/CytAssist_11mm_FFPE_Human_Glioblastoma_2_table/varp/.zgroup",
+                "zmetadata"
+            ]
+        ],
+        "timestamp": "2026-04-01T21:08:08.273545",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

@@ -1,0 +1,85 @@
+nextflow_process {
+
+    name "Test Process SCANPY_CALCULATE_QC_METRICS"
+    script "../main.nf"
+    process "SCANPY_CALCULATE_QC_METRICS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "scanpy_calculate_qc_metrics"
+
+    test("homo_sapiens - h5ad") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = true // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obs.collect { _, path -> file(path).name }.sort(),
+                    process.out.var.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - no h5ad output") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = false // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.adata.isEmpty() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.obs.collect { _, path -> file(path).name }.sort(),
+                    process.out.var.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                ]
+                input[1] = true // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
