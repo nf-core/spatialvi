@@ -1,0 +1,268 @@
+nextflow_process {
+
+    name "Test Process ADATA_MERGE"
+    script "../main.nf"
+    process "ADATA_MERGE"
+
+    tag "modules"
+    tag "modules_local"
+    tag "adata_merge"
+
+    test("homo_sapiens - h5ad - inner") {
+
+        when {
+            process {
+                """
+                input[0] = channel.fromList([
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                ])  .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_spatial
+                input[4] = ''           // layer
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - outer") {
+
+        when {
+            process {
+                """
+                input[0] = channel.fromList([
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                ])  .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'outer'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_spatial
+                input[4] = ''           // layer
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - per-sample var columns") {
+
+        setup {
+            run("SCANPY_CALCULATE_QC_METRICS") {
+                script "../../../scanpy/calculate_qc_metrics/main.nf"
+                process {
+                    """
+                    input[0] = channel.fromList([
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                    ])
+                    input[1] = true // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_CALCULATE_QC_METRICS.out.adata
+                    .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_spatial
+                input[4] = ''           // layer
+                """
+            }
+        }
+
+        then {
+            // Gene annotations (_e.g._ `gene_ids`, `mt`) are the same in both
+            // samples and kept; per-sample QC statistics (_e.g._ `mean_counts`)
+            // differ and are dropped, as the snapshot shows
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - zarr - preserve spatial data") {
+
+        setup {
+            run("UNTAR") {
+                script "../../../../nf-core/untar/main.nf"
+                process {
+                    """
+                    input[0] = channel.fromList([
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.zarr.tar.gz", checkIfExists: true)),
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/spatial_omics/visium/homo_sapiens/CytAssist_11mm_FFPE_Human_Glioblastoma_2.2.zarr.tar.gz", checkIfExists: true)),
+                    ])
+                    """
+                }
+            }
+            run("SDATA_TO_LEGACY_ANNDATA") {
+                script "../../../sdata/to_legacy_anndata/main.nf"
+                process {
+                    """
+                    input[0] = UNTAR.out.untar
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SDATA_TO_LEGACY_ANNDATA.out.adata
+                    .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap { it }
+                    .map { _meta, zarr -> zarr }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = true         // preserve_spatial
+                input[4] = ''           // layer
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0]).yaml
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail with duplicate gene names") {
+
+        setup {
+            run("DUPLICATE_VAR_NAMES") {
+                script "../../../../../tests/helpers/duplicate_var_names.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = DUPLICATE_VAR_NAMES.out.adata
+                    .mix(channel.of(
+                        tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                    ))
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_spatial
+                input[4] = ''           // layer
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("of 'CytAssist_11mm_FFPE_Human_Glioblastoma_2_duplicated' are not unique") }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - should fail without layer") {
+
+        when {
+            process {
+                """
+                input[0] = channel.fromList([
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                ])  .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_spatial
+                input[4] = 'raw'        // layer
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains('`adata.layers["raw"]` not found in') }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = channel.fromList([
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)),
+                    tuple([ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2.2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679759_filtered_matrix.h5ad', checkIfExists: true))
+                ])  .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .flatMap()
+                    .map { _meta, h5ad -> h5ad }
+                    .collect()
+                input[1] = 'inner'      // join
+                input[2] = 'library_id' // label
+                input[3] = false        // preserve_spatial
+                input[4] = ''           // layer
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

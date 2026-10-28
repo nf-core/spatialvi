@@ -1,0 +1,176 @@
+nextflow_process {
+
+    name "Test Process SCANPY_LEIDEN"
+    script "../main.nf"
+    process "SCANPY_LEIDEN"
+
+    tag "modules"
+    tag "modules_local"
+    tag "scanpy_leiden"
+
+    test("homo_sapiens - h5ad") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_NEIGHBORS.out.adata
+                input[1] = 1.0        // resolution
+                input[2] = 'clusters' // key_added
+                input[3] = true       // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.versions,
+                    anndata(process.out.adata[0][1]).yaml,
+                    process.out.obs.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+            def adata = anndata(process.out.adata[0][1])
+            with (adata) {
+                assert obs.get("clusters").n_unique() > 1
+            }
+        }
+    }
+
+    test("homo_sapiens - no h5ad") {
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_NEIGHBORS.out.adata
+                input[1] = 1.0        // resolution
+                input[2] = 'clusters' // key_added
+                input[3] = false      // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.adata.isEmpty() },
+                { assert snapshot(
+                    process.out.versions,
+                    process.out.obs.collect { _, path -> file(path).name }.sort(),
+                    process.out.uns.collect { _, path -> file(path).name }.sort()
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - h5ad - stub") {
+
+        options "-stub"
+
+        setup {
+            run("SCANPY_PCA") {
+                script "../../pca/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'CytAssist_11mm_FFPE_Human_Glioblastoma_2' ], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/scrnaseq/h5ad/SRR28679756_filtered_matrix.h5ad', checkIfExists: true)
+                    ]
+                    input[1] = 50      // n_pcs
+                    input[2] = false   // use_highly_variable
+                    input[3] = 'X_pca' // key_added
+                    input[4] = true    // write_adata
+                    """
+                }
+            }
+            run("SCANPY_NEIGHBORS") {
+                script "../../neighbors/main.nf"
+                process {
+                    """
+                    input[0] = SCANPY_PCA.out.adata
+                    input[1] = 15      // n_neighbors
+                    input[2] = 50      // n_pcs
+                    input[3] = 'X_pca' // use_rep
+                    input[4] = true    // write_adata
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = SCANPY_NEIGHBORS.out.adata
+                input[1] = 1.0        // resolution
+                input[2] = 'clusters' // key_added
+                input[3] = true       // write_adata
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}
