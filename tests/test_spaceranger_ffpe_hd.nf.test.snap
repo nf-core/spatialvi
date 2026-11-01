@@ -2071,22 +2071,22 @@
                         "n_obs": 105978,
                         "n_vars": 18085,
                         "obs": {
+                            "index": "_index",
                             "columns": [
                                 "array_col",
                                 "array_row",
                                 "in_tissue",
                                 "location_id",
                                 "region"
-                            ],
-                            "index": "_index"
+                            ]
                         },
                         "var": {
+                            "index": "_index",
                             "columns": [
                                 "feature_types",
                                 "gene_ids",
                                 "genome"
-                            ],
-                            "index": "_index"
+                            ]
                         },
                         "layers": [],
                         "obsm": [
@@ -2110,6 +2110,7 @@
                         "n_obs": 466,
                         "n_vars": 14756,
                         "obs": {
+                            "index": "_index",
                             "columns": [
                                 "array_col",
                                 "array_row",
@@ -2131,10 +2132,10 @@
                                 "total_counts_hb",
                                 "total_counts_mt",
                                 "total_counts_ribo"
-                            ],
-                            "index": "_index"
+                            ]
                         },
                         "var": {
+                            "index": "_index",
                             "columns": [
                                 "dispersions",
                                 "dispersions_norm",
@@ -2151,8 +2152,7 @@
                                 "pct_dropout_by_counts",
                                 "ribo",
                                 "total_counts"
-                            ],
-                            "index": "_index"
+                            ]
                         },
                         "layers": [
                             "raw"
@@ -2198,6 +2198,7 @@
                         "n_obs": 466,
                         "n_vars": 14756,
                         "obs": {
+                            "index": "_index",
                             "columns": [
                                 "array_col",
                                 "array_row",
@@ -2221,10 +2222,10 @@
                                 "total_counts_hb",
                                 "total_counts_mt",
                                 "total_counts_ribo"
-                            ],
-                            "index": "_index"
+                            ]
                         },
                         "var": {
+                            "index": "_index",
                             "columns": [
                                 "dispersions",
                                 "dispersions_norm",
@@ -2243,8 +2244,7 @@
                                 "pct_dropout_by_counts",
                                 "ribo",
                                 "total_counts"
-                            ],
-                            "index": "_index"
+                            ]
                         },
                         "layers": [
                             "raw"
@@ -2281,8 +2281,8 @@
         ],
         "timestamp": "2026-10-05T18:00:46.007301547",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }

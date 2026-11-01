@@ -8,20 +8,20 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
                         "highly_variable",
                         "means",
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -52,8 +52,8 @@
         ],
         "timestamp": "2026-10-01T23:07:35.4818",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - no h5ad output": {
@@ -73,8 +73,8 @@
         ],
         "timestamp": "2026-09-30T14:58:26.136705",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad": {
@@ -86,16 +86,16 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -124,8 +124,8 @@
         ],
         "timestamp": "2026-09-30T14:58:16.320895",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -205,8 +205,8 @@
         ],
         "timestamp": "2026-09-30T14:58:42.251193",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - custom key": {
@@ -218,16 +218,16 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -256,8 +256,8 @@
         ],
         "timestamp": "2026-10-05T14:24:15.770266",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }

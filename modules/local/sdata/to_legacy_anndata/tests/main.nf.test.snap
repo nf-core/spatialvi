@@ -8,22 +8,22 @@
                 "n_obs": 11397,
                 "n_vars": 19023,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
                         "in_tissue",
                         "region",
                         "spot_id"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
                         "genome"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [],
                 "obsm": [
@@ -44,12 +44,12 @@
                 "n_obs": 11397,
                 "n_vars": 19023,
                 "obs": {
-                    "columns": [],
-                    "index": "_index"
+                    "index": "_index",
+                    "columns": []
                 },
                 "var": {
-                    "columns": [],
-                    "index": "_index"
+                    "index": "_index",
+                    "columns": []
                 },
                 "layers": [],
                 "obsm": [],
@@ -61,8 +61,8 @@
         ],
         "timestamp": "2026-10-04T11:11:15.214247",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - zarr - stub": {
@@ -110,8 +110,8 @@
         ],
         "timestamp": "2026-10-04T11:11:29.80317",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }

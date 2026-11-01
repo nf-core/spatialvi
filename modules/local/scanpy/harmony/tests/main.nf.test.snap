@@ -10,8 +10,8 @@
         ],
         "timestamp": "2026-10-01T14:29:06.427218",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad": {
@@ -23,15 +23,15 @@
                 "n_obs": 20313,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "library_id",
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
-                    "columns": [],
-                    "index": "_index"
+                    "index": "_index",
+                    "columns": []
                 },
                 "layers": [],
                 "obsm": [
@@ -49,8 +49,8 @@
         ],
         "timestamp": "2026-10-01T23:01:44.415676",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -98,8 +98,8 @@
         ],
         "timestamp": "2026-10-01T14:29:38.504245",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - custom basis": {
@@ -111,15 +111,15 @@
                 "n_obs": 20313,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "library_id",
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
-                    "columns": [],
-                    "index": "_index"
+                    "index": "_index",
+                    "columns": []
                 },
                 "layers": [],
                 "obsm": [
@@ -137,8 +137,8 @@
         ],
         "timestamp": "2026-10-05T14:29:32.331045",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }

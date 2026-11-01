@@ -337,8 +337,8 @@
         ],
         "timestamp": "2026-10-04T11:21:21.991321",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - zarr - multiple samples": {
@@ -685,8 +685,8 @@
         ],
         "timestamp": "2026-04-01T21:10:21.025954",
         "meta": {
-            "nextflow": "25.10.4",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - zarr - stub": {
@@ -722,8 +722,8 @@
         ],
         "timestamp": "2026-04-01T21:10:40.697045",
         "meta": {
-            "nextflow": "25.10.4",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
         }
     }
 }

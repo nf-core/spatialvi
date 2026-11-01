@@ -8,12 +8,13 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "hb",
                         "mean_counts",
@@ -23,8 +24,7 @@
                         "ribo",
                         "symbols",
                         "total_counts"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -38,8 +38,8 @@
         ],
         "timestamp": "2026-10-07T14:31:27.383207",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - spatial obsp and uns": {
@@ -51,22 +51,22 @@
                 "n_obs": 11397,
                 "n_vars": 19023,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
                         "in_tissue",
                         "region",
                         "spot_id"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
                         "genome"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [],
                 "obsm": [
@@ -91,8 +91,8 @@
         ],
         "timestamp": "2026-10-04T11:34:43.70328",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - layers aligned": {
@@ -104,6 +104,7 @@
                 "n_obs": 834,
                 "n_vars": 3580,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
@@ -124,10 +125,10 @@
                         "total_counts_hb",
                         "total_counts_mt",
                         "total_counts_ribo"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
@@ -140,8 +141,7 @@
                         "pct_dropout_by_counts",
                         "ribo",
                         "total_counts"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "raw"
@@ -163,8 +163,8 @@
         ],
         "timestamp": "2026-10-04T13:26:11.484443",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - obs and var": {
@@ -176,6 +176,7 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "n_genes_by_counts",
                         "pct_counts_hb",
@@ -190,10 +191,10 @@
                         "total_counts_hb",
                         "total_counts_mt",
                         "total_counts_ribo"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "hb",
                         "mean_counts",
@@ -203,8 +204,7 @@
                         "ribo",
                         "symbols",
                         "total_counts"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -218,8 +218,8 @@
         ],
         "timestamp": "2026-10-01T20:26:10.99457",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - obsp and uns": {
@@ -231,16 +231,16 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -264,8 +264,8 @@
         ],
         "timestamp": "2026-10-01T20:25:47.736926",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - key collision allowed": {
@@ -277,17 +277,17 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "clusters",
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -312,8 +312,8 @@
         ],
         "timestamp": "2026-09-30T15:35:02.65551",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - duplicate names strict": {
@@ -325,6 +325,7 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "n_genes_by_counts",
                         "pct_counts_hb",
@@ -339,10 +340,10 @@
                         "total_counts_hb",
                         "total_counts_mt",
                         "total_counts_ribo"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "hb",
                         "mean_counts",
@@ -352,8 +353,7 @@
                         "ribo",
                         "symbols",
                         "total_counts"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -367,8 +367,8 @@
         ],
         "timestamp": "2026-10-01T21:10:59.250684",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - obsm, varm and uns": {
@@ -380,16 +380,16 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -409,8 +409,8 @@
         ],
         "timestamp": "2026-10-01T07:00:54.87345",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - uns from several modules": {
@@ -422,6 +422,7 @@
                 "n_obs": 11397,
                 "n_vars": 19023,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
@@ -429,16 +430,15 @@
                         "in_tissue",
                         "region",
                         "spot_id"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
                         "genome"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [],
                 "obsm": [
@@ -473,8 +473,8 @@
         ],
         "timestamp": "2026-10-04T11:37:09.502245",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - index mismatch reindexed": {
@@ -486,20 +486,20 @@
                 "n_obs": 5756,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "clusters",
                         "n_counts",
                         "n_genes",
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "n_cells",
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -524,8 +524,8 @@
         ],
         "timestamp": "2026-10-01T20:34:17.527648",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - var and uns": {
@@ -537,20 +537,20 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
                         "highly_variable",
                         "means",
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -567,8 +567,8 @@
         ],
         "timestamp": "2026-10-01T20:26:29.110654",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - layers strict": {
@@ -580,22 +580,22 @@
                 "n_obs": 11397,
                 "n_vars": 19023,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
                         "in_tissue",
                         "region",
                         "spot_id"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
                         "genome"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "raw"
@@ -617,8 +617,8 @@
         ],
         "timestamp": "2026-10-04T11:56:58.096627",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "stub": {
@@ -650,8 +650,8 @@
         ],
         "timestamp": "2026-09-29T11:23:28.524847",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - pkl - obs and uns": {
@@ -663,17 +663,17 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "clusters",
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -698,8 +698,8 @@
         ],
         "timestamp": "2026-09-30T15:33:40.149671",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }

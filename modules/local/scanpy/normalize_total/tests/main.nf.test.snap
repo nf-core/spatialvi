@@ -8,16 +8,16 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -31,8 +31,8 @@
         ],
         "timestamp": "2026-10-01T19:05:36.438111",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -64,8 +64,8 @@
         ],
         "timestamp": "2026-04-01T21:00:51.158417",
         "meta": {
-            "nextflow": "25.10.4",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
         }
     }
 }

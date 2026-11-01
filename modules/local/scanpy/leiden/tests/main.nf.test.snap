@@ -8,17 +8,17 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "clusters",
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -49,8 +49,8 @@
         ],
         "timestamp": "2026-09-29T08:50:43.231158",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -114,8 +114,8 @@
         ],
         "timestamp": "2026-09-28T22:23:07.648927",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - no h5ad": {
@@ -132,8 +132,8 @@
         ],
         "timestamp": "2026-09-29T08:48:42.759554",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }

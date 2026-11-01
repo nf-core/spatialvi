@@ -13,8 +13,8 @@
         ],
         "timestamp": "2026-10-02T11:54:27.144755",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - cell_ranger flavor": {
@@ -26,6 +26,7 @@
                 "n_obs": 12940,
                 "n_vars": 1960,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "n_counts",
                         "n_genes",
@@ -42,10 +43,10 @@
                         "total_counts_hb",
                         "total_counts_mt",
                         "total_counts_ribo"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
@@ -60,8 +61,7 @@
                         "ribo",
                         "symbols",
                         "total_counts"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -84,8 +84,8 @@
         ],
         "timestamp": "2026-10-02T11:37:06.12832",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - fallback with too few genes - batch key": {
@@ -97,13 +97,14 @@
                 "n_obs": 20313,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "library_id",
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
@@ -111,8 +112,7 @@
                         "highly_variable_intersection",
                         "highly_variable_nbatches",
                         "means"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [],
                 "obsm": [],
@@ -133,8 +133,8 @@
         ],
         "timestamp": "2026-10-05T14:03:04.83762",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -198,8 +198,8 @@
         ],
         "timestamp": "2026-10-01T16:25:47.045368",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - seurat flavor - batch key": {
@@ -211,13 +211,14 @@
                 "n_obs": 20313,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "library_id",
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
@@ -225,8 +226,7 @@
                         "highly_variable_intersection",
                         "highly_variable_nbatches",
                         "means"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [],
                 "obsm": [],
@@ -247,8 +247,8 @@
         ],
         "timestamp": "2026-10-05T14:02:48.191739",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - fallback with too few genes": {
@@ -260,20 +260,20 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
                         "highly_variable",
                         "means",
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -296,8 +296,8 @@
         ],
         "timestamp": "2026-10-02T11:18:06.439336",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "homo_sapiens - h5ad - seurat flavor": {
@@ -309,20 +309,20 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
+                    "index": "_index",
                     "columns": [
                         "sample"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "var": {
+                    "index": "_index",
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
                         "highly_variable",
                         "means",
                         "symbols"
-                    ],
-                    "index": "_index"
+                    ]
                 },
                 "layers": [
                     "counts"
@@ -345,8 +345,8 @@
         ],
         "timestamp": "2026-10-01T23:02:55.350186",
         "meta": {
-            "nextflow": "26.04.6",
-            "nf-test": "0.9.5"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }
