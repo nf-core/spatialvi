@@ -13,8 +13,8 @@
         ],
         "timestamp": "2026-10-01T16:02:28.6669",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad": {
@@ -26,7 +26,6 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "n_genes_by_counts",
                         "pct_counts_hb",
@@ -41,10 +40,10 @@
                         "total_counts_hb",
                         "total_counts_mt",
                         "total_counts_ribo"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
                     "columns": [
                         "hb",
                         "mean_counts",
@@ -54,26 +53,17 @@
                         "ribo",
                         "symbols",
                         "total_counts"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             },
             [
                 "qc_metrics.pkl"
@@ -84,8 +74,8 @@
         ],
         "timestamp": "2026-10-01T16:02:08.757028",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -149,8 +139,8 @@
         ],
         "timestamp": "2026-10-01T16:02:35.514379",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     }
 }

@@ -14,24 +14,24 @@
                     "python": "3.12.12"
                 },
                 "REPORT": {
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5",
-                    "squidpy": "1.6.5",
-                    "spatialdata": "0.5.0",
                     "anndata": "0.12.4",
+                    "matplotlib": "3.10.7",
                     "numpy": "2.3.4",
                     "pandas": "2.3.3",
-                    "matplotlib": "3.10.7"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "spatialdata": "0.5.0",
+                    "squidpy": "1.6.5"
                 },
                 "REPORT_INTEGRATED": {
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5",
-                    "squidpy": "1.6.5",
-                    "spatialdata": "0.5.0",
                     "anndata": "0.12.4",
+                    "matplotlib": "3.10.7",
                     "numpy": "2.3.4",
                     "pandas": "2.3.3",
-                    "matplotlib": "3.10.7"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "spatialdata": "0.5.0",
+                    "squidpy": "1.6.5"
                 },
                 "SCANPY_CALCULATE_QC_METRICS": {
                     "anndata": "0.12.4",
@@ -3165,38 +3165,30 @@
                         "n_obs": 11397,
                         "n_vars": 19023,
                         "obs": {
-                            "index": "_index",
                             "columns": [
                                 "array_col",
                                 "array_row",
                                 "in_tissue",
                                 "region",
                                 "spot_id"
-                            ]
+                            ],
+                            "index": "_index"
                         },
                         "var": {
-                            "index": "_index",
                             "columns": [
                                 "feature_types",
                                 "gene_ids",
                                 "genome"
-                            ]
+                            ],
+                            "index": "_index"
                         },
-                        "layers": [
-                            
-                        ],
+                        "layers": [],
                         "obsm": [
                             "spatial"
                         ],
-                        "varm": [
-                            
-                        ],
-                        "obsp": [
-                            
-                        ],
-                        "varp": [
-                            
-                        ],
+                        "varm": [],
+                        "obsp": [],
+                        "varp": [],
                         "uns": [
                             "coordinate_system",
                             "sample_id",
@@ -3212,38 +3204,30 @@
                         "n_obs": 11397,
                         "n_vars": 19023,
                         "obs": {
-                            "index": "_index",
                             "columns": [
                                 "array_col",
                                 "array_row",
                                 "in_tissue",
                                 "region",
                                 "spot_id"
-                            ]
+                            ],
+                            "index": "_index"
                         },
                         "var": {
-                            "index": "_index",
                             "columns": [
                                 "feature_types",
                                 "gene_ids",
                                 "genome"
-                            ]
+                            ],
+                            "index": "_index"
                         },
-                        "layers": [
-                            
-                        ],
+                        "layers": [],
                         "obsm": [
                             "spatial"
                         ],
-                        "varm": [
-                            
-                        ],
-                        "obsp": [
-                            
-                        ],
-                        "varp": [
-                            
-                        ],
+                        "varm": [],
+                        "obsp": [],
+                        "varp": [],
                         "uns": [
                             "coordinate_system",
                             "sample_id",
@@ -3259,7 +3243,6 @@
                         "n_obs": 834,
                         "n_vars": 3580,
                         "obs": {
-                            "index": "_index",
                             "columns": [
                                 "array_col",
                                 "array_row",
@@ -3281,10 +3264,10 @@
                                 "total_counts_hb",
                                 "total_counts_mt",
                                 "total_counts_ribo"
-                            ]
+                            ],
+                            "index": "_index"
                         },
                         "var": {
-                            "index": "_index",
                             "columns": [
                                 "dispersions",
                                 "dispersions_norm",
@@ -3301,7 +3284,8 @@
                                 "pct_dropout_by_counts",
                                 "ribo",
                                 "total_counts"
-                            ]
+                            ],
+                            "index": "_index"
                         },
                         "layers": [
                             "raw"
@@ -3320,9 +3304,7 @@
                             "spatial_connectivities",
                             "spatial_distances"
                         ],
-                        "varp": [
-                            
-                        ],
+                        "varp": [],
                         "uns": [
                             "X_umap",
                             "clusters",
@@ -3349,7 +3331,6 @@
                         "n_obs": 834,
                         "n_vars": 3580,
                         "obs": {
-                            "index": "_index",
                             "columns": [
                                 "array_col",
                                 "array_row",
@@ -3371,10 +3352,10 @@
                                 "total_counts_hb",
                                 "total_counts_mt",
                                 "total_counts_ribo"
-                            ]
+                            ],
+                            "index": "_index"
                         },
                         "var": {
-                            "index": "_index",
                             "columns": [
                                 "dispersions",
                                 "dispersions_norm",
@@ -3391,7 +3372,8 @@
                                 "pct_dropout_by_counts",
                                 "ribo",
                                 "total_counts"
-                            ]
+                            ],
+                            "index": "_index"
                         },
                         "layers": [
                             "raw"
@@ -3410,9 +3392,7 @@
                             "spatial_connectivities",
                             "spatial_distances"
                         ],
-                        "varp": [
-                            
-                        ],
+                        "varp": [],
                         "uns": [
                             "X_umap",
                             "clusters",
@@ -3439,7 +3419,6 @@
                         "n_obs": 1668,
                         "n_vars": 3580,
                         "obs": {
-                            "index": "_index",
                             "columns": [
                                 "array_col",
                                 "array_row",
@@ -3463,10 +3442,10 @@
                                 "total_counts_hb",
                                 "total_counts_mt",
                                 "total_counts_ribo"
-                            ]
+                            ],
+                            "index": "_index"
                         },
                         "var": {
-                            "index": "_index",
                             "columns": [
                                 "dispersions",
                                 "dispersions_norm",
@@ -3485,7 +3464,8 @@
                                 "pct_dropout_by_counts",
                                 "ribo",
                                 "total_counts"
-                            ]
+                            ],
+                            "index": "_index"
                         },
                         "layers": [
                             "raw"
@@ -3506,9 +3486,7 @@
                             "connectivities",
                             "distances"
                         ],
-                        "varp": [
-                            
-                        ],
+                        "varp": [],
                         "uns": [
                             "X_pca_merged",
                             "X_umap_harmony",
@@ -3524,8 +3502,8 @@
         ],
         "timestamp": "2026-10-05T15:24:16.102537258",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     }
 }

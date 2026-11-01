@@ -10,8 +10,8 @@
         ],
         "timestamp": "2026-10-01T15:43:23.496067",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - moran": {
@@ -23,39 +23,33 @@
                 "n_obs": 11397,
                 "n_vars": 19023,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
                         "in_tissue",
                         "region",
                         "spot_id"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
                         "genome"
-                    ]
+                    ],
+                    "index": "_index"
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
+                "varm": [],
                 "obsp": [
                     "spatial_connectivities",
                     "spatial_distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "moranI",
@@ -72,8 +66,8 @@
         ],
         "timestamp": "2026-10-04T22:21:47.131605",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - geary": {
@@ -85,39 +79,33 @@
                 "n_obs": 11397,
                 "n_vars": 19023,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
                         "in_tissue",
                         "region",
                         "spot_id"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
                         "genome"
-                    ]
+                    ],
+                    "index": "_index"
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
+                "varm": [],
                 "obsp": [
                     "spatial_connectivities",
                     "spatial_distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "gearyC",
@@ -134,8 +122,8 @@
         ],
         "timestamp": "2026-10-04T22:23:44.606833",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -199,8 +187,8 @@
         ],
         "timestamp": "2026-10-01T15:44:42.284829",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     }
 }

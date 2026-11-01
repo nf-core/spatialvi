@@ -26,12 +26,8 @@
                         "params.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "3": [
-                    
-                ],
-                "4": [
-                    
-                ],
+                "3": [],
+                "4": [],
                 "5": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -49,12 +45,8 @@
                         "2.6.0"
                     ]
                 ],
-                "artifacts": [
-                    
-                ],
-                "extensions": [
-                    
-                ],
+                "artifacts": [],
+                "extensions": [],
                 "html": [
                     [
                         {
@@ -100,8 +92,8 @@
         ],
         "timestamp": "2026-08-18T09:19:47.986553",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "test notebook - [qmd:r]": {
@@ -144,8 +136,8 @@
         ],
         "timestamp": "2026-08-18T15:12:25.10271",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "test notebook - parametrized - [qmd:python]": {
@@ -188,8 +180,8 @@
         ],
         "timestamp": "2026-08-18T15:13:37.473159",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "test notebook - parametrized - [rmd]": {
@@ -232,8 +224,8 @@
         ],
         "timestamp": "2026-08-18T15:13:53.297883",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "test notebook - parametrized - [ipynb]": {
@@ -276,8 +268,8 @@
         ],
         "timestamp": "2026-08-18T15:14:10.605053",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "test notebook - [qmd:python]": {
@@ -320,8 +312,8 @@
         ],
         "timestamp": "2026-08-18T15:12:45.306028",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "test notebook - parametrized - [qmd:r]": {
@@ -364,8 +356,8 @@
         ],
         "timestamp": "2026-08-18T15:13:18.571016",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     }
 }

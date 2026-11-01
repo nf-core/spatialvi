@@ -13,8 +13,8 @@
         ],
         "timestamp": "2026-10-01T14:26:48.447133",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad": {
@@ -26,20 +26,20 @@
                 "n_obs": 12940,
                 "n_vars": 9887,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "sample"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
                     "columns": [
                         "dispersions",
                         "dispersions_norm",
                         "highly_variable",
                         "means",
                         "symbols"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "layers": [
                     "counts"
@@ -55,9 +55,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "X_umap",
                     "hvg",
@@ -75,8 +73,8 @@
         ],
         "timestamp": "2026-10-01T23:14:55.987667",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -140,8 +138,8 @@
         ],
         "timestamp": "2026-10-01T14:27:00.823022",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     }
 }

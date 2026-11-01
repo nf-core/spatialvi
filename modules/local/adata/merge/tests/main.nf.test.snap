@@ -8,42 +8,28 @@
                 "n_obs": 20313,
                 "n_vars": 9887,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "library_id",
                         "sample"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": [],
+                    "index": "_index"
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-01T20:52:45.710987",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - per-sample var columns": {
@@ -55,7 +41,6 @@
                 "n_obs": 20313,
                 "n_vars": 9887,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "library_id",
                         "n_genes_by_counts",
@@ -71,40 +56,29 @@
                         "total_counts_hb",
                         "total_counts_mt",
                         "total_counts_ribo"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
                     "columns": [
                         "hb",
                         "mt",
                         "ribo"
-                    ]
+                    ],
+                    "index": "_index"
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-05T12:43:34.384823",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -126,8 +100,8 @@
         ],
         "timestamp": "2026-04-01T18:56:30.816943",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.4",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - zarr - preserve spatial data": {
@@ -139,7 +113,6 @@
                 "n_obs": 22794,
                 "n_vars": 19023,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
@@ -147,31 +120,24 @@
                         "library_id",
                         "region",
                         "spot_id"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
                         "genome"
-                    ]
+                    ],
+                    "index": "_index"
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "spatial"
                 ]
@@ -179,8 +145,8 @@
         ],
         "timestamp": "2026-10-05T12:43:57.018024",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - outer": {
@@ -192,42 +158,30 @@
                 "n_obs": 20313,
                 "n_vars": 9887,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "library_id",
                         "sample"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": [],
+                    "index": "_index"
                 },
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-01T20:52:54.856983",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     }
 }

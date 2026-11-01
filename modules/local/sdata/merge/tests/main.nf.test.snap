@@ -313,8 +313,8 @@
         ],
         "timestamp": "2026-04-01T21:07:20.255545",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.4",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - zarr - stub": {
@@ -340,8 +340,8 @@
         ],
         "timestamp": "2026-03-31T13:08:42.980055",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.4",
+            "nf-test": "0.9.5"
         }
     }
 }

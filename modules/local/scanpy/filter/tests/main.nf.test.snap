@@ -8,7 +8,6 @@
                 "n_obs": 9,
                 "n_vars": 1015,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "n_counts",
                         "n_genes",
@@ -25,10 +24,10 @@
                         "total_counts_hb",
                         "total_counts_mt",
                         "total_counts_ribo"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
                     "columns": [
                         "hb",
                         "mean_counts",
@@ -39,26 +38,17 @@
                         "ribo",
                         "symbols",
                         "total_counts"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             },
             [
                 [
@@ -71,8 +61,8 @@
         ],
         "timestamp": "2026-10-01T16:31:33.901613",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -120,8 +110,8 @@
         ],
         "timestamp": "2026-04-15T16:43:09.140054187",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.0",
+            "nf-test": "0.9.5"
         }
     },
     "homo_sapiens - h5ad - with spatial data": {
@@ -133,7 +123,6 @@
                 "n_obs": 6583,
                 "n_vars": 19023,
                 "obs": {
-                    "index": "_index",
                     "columns": [
                         "array_col",
                         "array_row",
@@ -154,10 +143,10 @@
                         "total_counts_hb",
                         "total_counts_mt",
                         "total_counts_ribo"
-                    ]
+                    ],
+                    "index": "_index"
                 },
                 "var": {
-                    "index": "_index",
                     "columns": [
                         "feature_types",
                         "gene_ids",
@@ -170,23 +159,16 @@
                         "pct_dropout_by_counts",
                         "ribo",
                         "total_counts"
-                    ]
+                    ],
+                    "index": "_index"
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "sample_id",
@@ -206,8 +188,8 @@
         ],
         "timestamp": "2026-10-04T11:18:50.742868",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.04.6",
+            "nf-test": "0.9.5"
         }
     }
 }
