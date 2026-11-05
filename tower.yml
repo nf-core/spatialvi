@@ -1,5 +1,13 @@
 reports:
-  multiqc_report.html:
-    display: "MultiQC HTML report"
-  samplesheet.csv:
-    display: "Auto-created samplesheet with collated metadata and FASTQ paths"
+  "multiqc_report.html":
+    display: "MultiQC report with comprehensive quality control metrics and summary statistics"
+  "**/reports/quality_controls.html":
+    display: "Quality control analysis report with filtering metrics and visualizations"
+  "**/reports/clustering.html":
+    display: "Clustering analysis report with dimensionality reduction and cell type identification"
+  "**/reports/spatially_variable_genes.html":
+    display: "Spatially variable genes analysis report with spatial autocorrelation results"
+  "**/fastqc/*.html":
+    display: "FastQC quality control reports for raw sequencing data"
+  "**/spaceranger/outs/web_summary.html":
+    display: "Space Ranger web summary with count statistics and quality metrics"
