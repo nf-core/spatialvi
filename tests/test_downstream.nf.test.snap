@@ -3479,7 +3479,6 @@
                             "spatial"
                         ],
                         "varm": [
-                            "PCs",
                             "X_pca_merged"
                         ],
                         "obsp": [
