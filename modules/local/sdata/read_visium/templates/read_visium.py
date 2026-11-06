@@ -19,6 +19,7 @@ import platform
 import re
 import shutil
 
+import h5py
 import spatialdata_io
 import yaml
 from threadpoolctl import threadpool_limits
@@ -30,8 +31,9 @@ logger = logging.getLogger(__name__)
 threadpool_limits(int("${task.cpus}"))
 
 
-def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size):
-    """Read Visium HD data."""
+def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size, use_cells):
+    """Read Visium HD data. Uses the Space Ranger cell segmentation as main
+    table when cells were requested and the segmentation is present."""
     logger.info(f"Reading Visium HD data with bin size: {hd_bin_size}")
 
     # Add sample ID to feature_slice, if not present
@@ -46,12 +48,44 @@ def read_visium_hd(spaceranger_dir, sample_id_clean, hd_bin_size):
         logger.info(f"Copying {feature_slice_src} to {feature_slice_dst}")
         shutil.copyfile(feature_slice_src, feature_slice_dst)
 
+    # An empty cell matrix fails obscurely inside spatialdata_io, so say it here
+    cell_matrix = os.path.join(
+        spaceranger_dir, "segmented_outputs", "filtered_feature_cell_matrix.h5"
+    )
+    if use_cells and os.path.exists(cell_matrix):
+        with h5py.File(cell_matrix, "r") as f:
+            if f["matrix/barcodes"].shape is None or f["matrix/barcodes"].shape[0] == 0:
+                raise ValueError(
+                    f"Space Ranger produced no cells from the segmentation in "
+                    f"{spaceranger_dir}. Check that the segmentation covers the "
+                    f"tissue and is in full-resolution image pixels."
+                )
+
     sdata = spatialdata_io.visium_hd(
         spaceranger_dir,
         bin_size=[hd_bin_size],
         dataset_id=sample_id_clean,
+        load_segmentations_only=False,
     )
     table_name = f"square_{hd_bin_size:03d}um"
+
+    cell_table = "cell_segmentations"
+
+    if use_cells:
+        if cell_table not in sdata.tables:
+            raise ValueError(
+                f"Cells were requested but no cell table was found in "
+                f"{spaceranger_dir}/segmented_outputs. "
+                f"Tables present: {sorted(sdata.tables)}"
+            )
+        logger.info(f"Using cell segmentation table {cell_table!r} as main table")
+        sdata.tables[f"{sample_id_clean}_bin_table"] = sdata.tables[table_name]
+        del sdata.tables[table_name]
+        table_name = cell_table
+    elif cell_table in sdata.tables:
+        # Bins are the analysis unit, so drop the unused cell table
+        logger.info(f"Removing unused table {cell_table!r}")
+        del sdata.tables[cell_table]
 
     return sdata, table_name
 
@@ -68,7 +102,7 @@ def read_visium_standard(spaceranger_dir, sample_id_clean):
     return sdata, table_name
 
 
-def read_visium_data(spaceranger_dir, sample_id_clean, hd_bin_size):
+def read_visium_data(spaceranger_dir, sample_id_clean, hd_bin_size, use_cells):
     """Read Visium or Visium HD data from Space Ranger output."""
     logger.info(f"Reading data from: {spaceranger_dir}")
     logger.info(f"Sample ID: {sample_id_clean}")
@@ -80,7 +114,8 @@ def read_visium_data(spaceranger_dir, sample_id_clean, hd_bin_size):
         sdata, table_name = read_visium_hd(
             spaceranger_dir,
             sample_id_clean,
-            hd_bin_size
+            hd_bin_size,
+            use_cells
         )
     else:
         sdata, table_name = read_visium_standard(
@@ -151,6 +186,8 @@ def main():
     spaceranger_dir = "${spaceranger_dir}"
     sample_id = "${meta.id}"
     hd_bin_size = int("${hd_bin_size}")
+    # Read Space Ranger's cell table instead of bins
+    use_cells = "${read_cells}" == "true"
     output_sdata = "${prefix}.zarr"
     process_name = "${task.process}"
 
@@ -160,7 +197,8 @@ def main():
     sdata, table_name = read_visium_data(
         spaceranger_dir,
         sample_id_clean,
-        hd_bin_size
+        hd_bin_size,
+        use_cells
     )
 
     sdata = validate_table(sdata, table_name, sample_id_clean)

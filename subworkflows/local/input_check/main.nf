@@ -8,13 +8,15 @@ include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../../modules/nf-core/unta
 workflow INPUT_CHECK {
 
     take:
-    samplesheet // file:    samplesheet read in from --input
-    hd_bin_size // integer: Bin size for Visium HD
+    samplesheet         // file:    samplesheet read in from --input
+    hd_bin_size         // integer: Bin size for Visium HD
+    segmentation_method //  string: Segmentation method, if any
 
     main:
 
     ch_st = channel.fromPath(samplesheet)
         .splitCsv ( header: true, sep: ',')
+        .map      { it -> check_segmentation(it, segmentation_method) }
         .branch   { it ->
             spaceranger: !it.containsKey("spaceranger_dir")
             downstream: it.containsKey("spaceranger_dir")
@@ -38,7 +40,7 @@ workflow INPUT_CHECK {
         .mix ( ch_spaceranger.dir.map { meta, dir -> [meta, file(dir)] } )
     // Create final meta map and check input existance
     ch_spaceranger_input = ch_spaceranger_combined
-        .map { meta, dir -> create_channel_spaceranger(meta, dir) }
+        .map { meta, dir -> create_channel_spaceranger(meta, dir, segmentation_method) }
 
     // Downstream analysis: ----------------------------------------------------
 
@@ -60,11 +62,34 @@ workflow INPUT_CHECK {
 
     // Create final meta map and check input file existence
     ch_downstream_input = ch_downstream_combined
-        .map { it -> check_downstream_dir(it, hd_bin_size) }
+        .map { it -> check_downstream_dir(it, hd_bin_size, segmentation_method) }
+
+    // Tissue images from both input modes
+    ch_image = ch_spaceranger_input
+        .map { it -> [it[0], it[2]] }
+        .mix ( ch_downstream_input.map { meta, _dir -> [meta, get_file_from_meta(meta, "image")] } )
+        .filter { _meta, image -> image as boolean }
+
+    // Segmentations supplied in the samplesheet, in full-resolution pixels
+    ch_segmentation_file = ch_spaceranger_input
+        .map { it -> it[0] }
+        .mix ( ch_downstream_input.map { meta, _dir -> meta } )
+        .map { meta -> [meta, get_file_from_meta(meta, "segmentation_file")] }
+        .filter { _meta, segmentation -> segmentation as boolean }
 
     emit:
     ch_spaceranger_input   // channel: [ val(meta), [ st data ] ]
     ch_downstream_input    // channel: [ val(meta), [ st data ] ]
+    ch_image               // channel: [ val(meta), image ]
+    ch_segmentation_file   // channel: [ val(meta), segmentation ]
+}
+
+// Function: `segmentation_file` and `--segmentation_method` are mutually exclusive
+def check_segmentation(meta, segmentation_method) {
+    if (segmentation_method && meta.get('segmentation_file')) {
+        error "Sample '${meta.sample}' has a `segmentation_file`, which cannot be combined with `--segmentation_method`."
+    }
+    return meta
 }
 
 // Function: normalize meta only (no filesystem checks)
@@ -75,8 +100,17 @@ def create_channel_downstream(meta) {
 }
 
 // Function: validate that required files exist in the dir
-def check_downstream_dir(input, hd_bin_size) {
+def check_downstream_dir(input, hd_bin_size, segmentation_method) {
     def (meta, spaceranger_dir) = input
+
+    // Check for existence of optional files
+    def image = get_file_from_meta(meta, "image")
+    def segmentation_file = get_file_from_meta(meta, "segmentation_file")
+    ['image': image, 'segmentation_file': segmentation_file].each { k, f ->
+        if (f && !f.exists()) {
+            error "File for `${k}` is specified, but does not exist: ${f}."
+        }
+    }
 
     // Non-HD SpaceRanger output required files
     def classic_required_files = [
@@ -106,7 +140,34 @@ def check_downstream_dir(input, hd_bin_size) {
         error "The specified spaceranger output directory for sample '${meta.id}' does not contain all required files for either classic Visium: ${classic_required_files.join(', ')} or Visium HD bin size ${hd_bin_size}: ${hd_required_files.join(', ')}."
     }
 
+    // Route flags: bin2cell groups the bins of processed data into cells
+    meta.hd          = hd_files_present
+    meta.cells       = (segmentation_file || segmentation_method) as boolean
+    meta.bin_to_cell = (segmentation_file || segmentation_method in ['cellpose', 'stardist']) as boolean
+
+    // Cell segmentation is Visium HD only
+    if (meta.cells && !hd_files_present) {
+        error "Sample '${meta.id}': cell segmentation was requested but '${spaceranger_dir}' is classic Visium output. Segmentation is only supported for Visium HD."
+    }
+    check_segmentation_image(meta, image, segmentation_method)
+    if (meta.bin_to_cell) {
+        def bins_2um = "binned_outputs/square_002um/filtered_feature_bc_matrix.h5"
+        if (!file("${spaceranger_dir}/${bins_2um}").exists()) {
+            error "Sample '${meta.id}': grouping bins into cells needs the 2 µm bins, but '${spaceranger_dir}/${bins_2um}' is missing."
+        }
+    }
+    if (segmentation_method == 'spaceranger' && !file("${spaceranger_dir}/segmented_outputs").isDirectory()) {
+        error "Sample '${meta.id}': --segmentation_method spaceranger needs '${spaceranger_dir}/segmented_outputs', which is missing. Space Ranger 4.0 or later produces it for Visium HD."
+    }
+
     return [meta, spaceranger_dir]
+}
+
+// Function: cellpose and stardist segment the samplesheet `image`
+def check_segmentation_image(meta, image, segmentation_method) {
+    if (segmentation_method in ['cellpose', 'stardist'] && !image) {
+        error "Sample '${meta.id}': `--segmentation_method ${segmentation_method}` needs an `image` in the samplesheet."
+    }
 }
 
 // Function to convert a path in `meta` to a file object and return it. If key
@@ -118,7 +179,7 @@ def get_file_from_meta(meta, k) {
 }
 
 // Function to get [ meta, [fastq_dir, tissue_hires_image, slide, area] ] list
-def create_channel_spaceranger(meta, fastq_dir) {
+def create_channel_spaceranger(meta, fastq_dir, segmentation_method) {
     meta["id"] = meta.get("sample")
     def slide = meta.get("slide")
     def area = meta.get("area")
@@ -139,6 +200,7 @@ def create_channel_spaceranger(meta, fastq_dir) {
     def cytaimage = get_file_from_meta(meta, "cytaimage")
     def colorizedimage = get_file_from_meta(meta, "colorizedimage")
     def darkimage = get_file_from_meta(meta, "darkimage")
+    def segmentation_file = get_file_from_meta(meta, "segmentation_file")
 
     if(!fastq_files.size()) {
         error "No `fastq_dir` specified or no samples found in folder."
@@ -151,7 +213,8 @@ def create_channel_spaceranger(meta, fastq_dir) {
         'image': image,
         'cytaimage': cytaimage,
         'colorizedimage': colorizedimage,
-        'darkimage': darkimage
+        'darkimage': darkimage,
+        'segmentation_file': segmentation_file
     ]
     optional_files.each { k, f ->
         if(f && !f.exists()) {
@@ -164,5 +227,17 @@ def create_channel_spaceranger(meta, fastq_dir) {
         error "Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet"
     }
 
+    // Route flags: Space Ranger segments raw data itself, so never bin2cell
+    meta.hd          = (slide?.startsWith('H1-') || (slidefile && slidefile.name.startsWith('H1-'))) as boolean
+    meta.cells       = (segmentation_file || segmentation_method) as boolean
+    meta.bin_to_cell = false
+
+    // Cell segmentation is Visium HD only; allowed when HD is undetectable
+    if (meta.cells && slide && !slide.startsWith('H1-')) {
+        error "Sample '${meta.id}': cell segmentation was requested but slide '${slide}' is classic Visium. Segmentation is only supported for Visium HD."
+    }
+    check_segmentation_image(meta, image, segmentation_method)
+
+    // `segmentation_file` is emitted on its own channel, not in this tuple
     return [meta, fastq_files, image, slide, area, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
 }

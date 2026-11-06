@@ -80,7 +80,8 @@ def load_layer(path):
         if slot in ("obs", "var"):
             n_entries = len(content.columns)
         else:
-            n_entries = len(content)
+            # anndata >= 0.13 reports an empty `layers` group as one `None` key
+            n_entries = len([k for k in content if k is not None])
         if n_entries > 0:
             non_empty.append(f"`{slot}`")
     if non_empty:

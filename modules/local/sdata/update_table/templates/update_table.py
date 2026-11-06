@@ -255,12 +255,8 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
         new_cols = set(adata_subset.obs.columns) - set(table.obs.columns) - skip
 
         for col in new_cols:
-            table.obs[col] = np.nan
-            for i, new_idx in enumerate(adata_subset.obs_names):
-                orig_idx = index_map[new_idx]
-                if orig_idx in table.obs_names:
-                    table.obs.loc[orig_idx, col] = adata_subset.obs.iloc[i][col]
-
+            values = adata_subset.obs[col].rename(index=index_map)
+            table.obs[col] = values.reindex(table.obs_names)
             logger.info(f"  Added obs['{col}']")
 
 # -----------------------------------------------------------------------------

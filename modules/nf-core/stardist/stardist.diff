@@ -1,0 +1,108 @@
+Changes in component 'nf-core/stardist'
+Changes in 'stardist/main.nf':
+--- modules/nf-core/stardist/main.nf
++++ modules/nf-core/stardist/main.nf
+@@ -22,15 +22,50 @@
+     when:
+     task.ext.when == null || task.ext.when
+ 
++    // The `stardist-predict2d` script declares `--n_tiles` with `nargs=2`, so it
++    // cannot tile RGB input, which needs one tile count per axis. Untiled, a
++    // full-size H&E allocates its ray array whole and is OOM-killed.
+     script:
+-    def args = task.ext.args ?: ''
+-    def model_command = model_path ? "-m ${model_path}" : model_name ? "-m ${model_name}" : ""
++    // Extra keyword arguments to `predict_instances`, e.g. 'prob_thresh=0.6, nms_thresh=0.3'
++    def args      = task.ext.args ? ", ${task.ext.args}" : ''
++    def prefix    = task.ext.prefix ?: "${meta.id}"
++    def model_ref = model_path ? "${model_path}" : "${model_name}"
+     """
+-    stardist-predict2d \\
+-        -i $image \\
+-        -o . \\
+-        $model_command \\
+-        $args
++    python <<'PY'
++    import logging
++    import pathlib
++
++    import numpy as np
++    from csbdeep.utils import normalize
++    from imageio import imread
++    from stardist.models import StarDist2D
++    from tifffile import imwrite
++
++    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
++    logger = logging.getLogger(__name__)
++
++    img = imread("${image}")
++    if img.ndim not in (2, 3):
++        raise ValueError("only 2d and 3d images are supported, got %dd" % img.ndim)
++
++    # Roughly 2000 px per tile
++    n_tiles = max(1, int(np.ceil(max(img.shape[:2]) / 2000)))
++    # One tile count per axis; never tile the channel axis of YXC input.
++    tiles = (n_tiles, n_tiles) if img.ndim == 2 else (n_tiles, n_tiles, 1)
++    logger.info(f"Image {img.shape[1]} x {img.shape[0]}, n_tiles={tiles}")
++
++    model_ref = "${model_ref}"
++    if pathlib.Path(model_ref).is_dir():
++        model = StarDist2D(None, name=model_ref)
++    else:
++        model = StarDist2D.from_pretrained(model_ref)
++    if model is None:
++        raise ValueError("unknown model: %s" % model_ref)
++
++    img = normalize(img, 1, 99.8)
++    labels, _ = model.predict_instances(img, n_tiles=tiles${args})
++    imwrite("${prefix}.stardist.tif", labels, compression="zlib")
++    PY
+     """
+ 
+     stub:
+
+Changes in 'stardist/meta.yml':
+--- modules/nf-core/stardist/meta.yml
++++ modules/nf-core/stardist/meta.yml
+@@ -25,7 +25,7 @@
+           e.g. `[ id:'sample1' ]`
+     - image:
+         type: file
+-        description: Single channel nuclear image
++        description: Single-channel (YX) or RGB (YXC, e.g. H&E) image
+         pattern: "*.{tiff,tif}"
+         ontologies: []
+   - - model_name:
+@@ -33,8 +33,7 @@
+         description: |
+           Name of a pretrained StarDist model (e.g. '2D_versatile_fluo',
+           '2D_versatile_he'). Used when model_path is not provided.
+-          Pass '' (empty string) if providing a custom model path or
+-          passing -m via ext.args.
++          Pass '' (empty string) if providing a custom model path.
+     - model_path:
+         type: file
+         description: |
+@@ -148,10 +147,12 @@
+   Model selection via the model input channel [model_name, model_path]:
+     - Pretrained model:        [ '2D_versatile_fluo', [] ]
+     - Custom model directory:  [ '', file("/path/to/model") ]
+-    - Via ext.args only:       [ '', [] ]  (then set ext.args = '-m ...')
+ 
+-  Additional stardist CLI arguments can be passed via `task.ext.args`:
+-    ext.args = '--n_tiles 4,4 --prob_thresh 0.5 --nms_thresh 0.3'
++  The image is normalised to the 1-99.8 percentile range and predicted in tiles
++  of roughly 2000 px per side (the channel axis of RGB input is never tiled).
++  `task.ext.args` is passed as extra keyword arguments to
++  `StarDist2D.predict_instances`, for example:
++    ext.args = 'prob_thresh=0.6, nms_thresh=0.3'
+ 
+   Model weights are not bundled in the container. StarDist downloads pretrained
+   models on first use to ~/.keras/models/.
+
+'modules/nf-core/stardist/environment.yml' is unchanged
+'modules/nf-core/stardist/tests/gpu.nf.test' is unchanged
+'modules/nf-core/stardist/tests/main.nf.test' is unchanged
+'modules/nf-core/stardist/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/stardist/tests/nextflow.config' is unchanged
+************************************************************

@@ -14,6 +14,16 @@
 
   > Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: https://doi.org/10.1101/2021.12.16.473007
 
+- [bin2cell](https://github.com/Teichlab/bin2cell)
+
+  > Polański K, Bartolomé-Casado R, Sarropoulos I, Xu C, England N, Jahnsen FL, Teichmann SA, Yayon N. Bin2cell reconstructs cells from high resolution Visium HD data. Bioinformatics. 2024;40(9):btae546. doi: 10.1093/bioinformatics/btae546
+
+- [Cellpose](https://github.com/MouseLand/cellpose)
+
+  > Stringer C, Wang T, Michaelos M, Pachitariu M. Cellpose: a generalist algorithm for cellular segmentation. Nat Methods 18, 100–106 (2021). doi: 10.1038/s41592-020-01018-x
+
+  > Pachitariu M, Rariden M, Stringer C. Cellpose-SAM: superhuman generalization for cellular segmentation. bioRxiv 2025.04.28.651001; doi: https://doi.org/10.1101/2025.04.28.651001
+
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
 > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
@@ -41,6 +51,12 @@
 - [Squipy](https://www.nature.com/articles/s41592-021-01358-2)
 
   > Palla G, Spitzer H, Klein M et al. Squidpy: a scalable framework for spatial omics analysis. Nat Methods 19, 171–178 (2022). doi: https://doi.org/10.1038/s41592-021-01358-2
+
+- [StarDist](https://github.com/stardist/stardist)
+
+  > Schmidt U, Weigert M, Broaddus C, Myers G. Cell Detection with Star-Convex Polygons. MICCAI 2018. doi: 10.1007/978-3-030-00934-2_30
+
+  > Weigert M, Schmidt U, Haase R, Sugawara K, Myers G. Star-convex Polyhedra for 3D Object Detection and Segmentation in Microscopy. WACV 2020. doi: 10.1109/WACV45572.2020.9093435
 
 ## Software packaging/containerisation tools
 

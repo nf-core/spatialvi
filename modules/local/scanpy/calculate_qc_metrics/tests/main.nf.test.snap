@@ -2,7 +2,7 @@
     "homo_sapiens - h5ad - no h5ad output": {
         "content": [
             [
-                "versions.yml:md5,6f4b87dd8d7574d03eb384519a2f6283"
+                "versions.yml:md5,ae0dfc6de67e20dbfeacd9348d091fa0"
             ],
             [
                 "qc_metrics.pkl"
@@ -11,16 +11,16 @@
                 "qc_metrics.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T16:02:28.6669",
+        "timestamp": "2026-10-12T00:56:26.512106877",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad": {
         "content": [
             [
-                "versions.yml:md5,6f4b87dd8d7574d03eb384519a2f6283"
+                "versions.yml:md5,ae0dfc6de67e20dbfeacd9348d091fa0"
             ],
             {
                 "n_obs": 12940,
@@ -28,31 +28,31 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
+                        "sample",
                         "n_genes_by_counts",
-                        "pct_counts_hb",
+                        "total_counts",
+                        "pct_counts_in_top_50_genes",
                         "pct_counts_in_top_100_genes",
                         "pct_counts_in_top_200_genes",
                         "pct_counts_in_top_500_genes",
-                        "pct_counts_in_top_50_genes",
-                        "pct_counts_mt",
+                        "total_counts_ribo",
                         "pct_counts_ribo",
-                        "sample",
-                        "total_counts",
                         "total_counts_hb",
-                        "total_counts_mt",
-                        "total_counts_ribo"
+                        "pct_counts_hb",
+                        "pct_counts_mt",
+                        "total_counts_mt"
                     ]
                 },
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "hb",
-                        "mean_counts",
-                        "mt",
-                        "n_cells_by_counts",
-                        "pct_dropout_by_counts",
-                        "ribo",
                         "symbols",
+                        "mt",
+                        "ribo",
+                        "hb",
+                        "n_cells_by_counts",
+                        "mean_counts",
+                        "pct_dropout_by_counts",
                         "total_counts"
                     ]
                 },
@@ -82,10 +82,10 @@
                 "qc_metrics.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T16:02:08.757028",
+        "timestamp": "2026-10-12T00:56:03.06505058",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {

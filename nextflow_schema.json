@@ -87,6 +87,38 @@
             }
         },
 
+        "segmentation_options": {
+            "title": "Segmentation options",
+            "type": "object",
+            "fa_icon": "fas fa-draw-polygon",
+            "description": "Options for cell segmentation of Visium HD data.",
+            "properties": {
+                "segmentation_method": {
+                    "type": "string",
+                    "enum": ["spaceranger", "cellpose", "stardist"],
+                    "description": "Cell segmentation method for Visium HD: Space Ranger's own nucleus segmentation (`spaceranger`), or `cellpose` or `stardist` on the tissue image. Cannot be combined with a `segmentation_file` in the samplesheet.",
+                    "help_text": "When set, cells replace bins as the analysis unit. `cellpose` and `stardist` segment the samplesheet `image`; for raw data the result is passed to Space Ranger, for processed data the 2 µm bins are grouped into cells with bin2cell. `cellpose` needs a GPU (`-profile gpu`) on full-size Visium HD images.",
+                    "fa_icon": "fas fa-draw-polygon"
+                },
+                "segmentation_downscale": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 1,
+                    "description": "Downscale factor of the tissue image before running cellpose or stardist. The default of 1 segments at full resolution; larger values are faster but detect far fewer nuclei.",
+                    "help_text": "The segmentation is scaled back to full-resolution pixels afterwards. Use values above 1 only for quick tests.",
+                    "fa_icon": "fas fa-compress"
+                },
+                "segmentation_expansion_distance": {
+                    "type": "number",
+                    "default": 5,
+                    "minimum": 0,
+                    "description": "Distance in microns by which Space Ranger expands nuclei into cells, for `stardist` or a nucleus `segmentation_file`. Not applied to `cellpose`, which segments whole cells. On the bin2cell path nuclei are expanded with bin2cell defaults.",
+                    "help_text": "Only used when Space Ranger runs on raw data. Set to 0 to use the nuclei as they are.",
+                    "fa_icon": "fas fa-arrows-alt"
+                }
+            }
+        },
+
         "filtering_options": {
             "title": "Filtering options",
             "type": "object",
@@ -516,6 +548,9 @@
         },
         {
             "$ref": "#/$defs/visium_hd_options"
+        },
+        {
+            "$ref": "#/$defs/segmentation_options"
         },
         {
             "$ref": "#/$defs/filtering_options"

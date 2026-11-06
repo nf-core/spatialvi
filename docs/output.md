@@ -16,6 +16,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes
 data using the following steps:
 
 - [Space Ranger](#space-ranger)
+- [Cell segmentation](#cell-segmentation)
 - [FastQC](#fastqc)
 - [Per-sample data](#per-sample-data)
 - [Per-sample reports](#per-sample-reports)
@@ -46,6 +47,27 @@ data using the following steps:
 All files produced by Space Ranger are currently published as output of this
 pipeline, regardless if they're being used downstream or not; you can find more
 information about these files at the [10X website](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/overview).
+
+## Cell segmentation
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `<SAMPLE>/segmentation/`
+  - `*_cp_masks.tif` or `*.stardist.tif`: Label mask from cellpose or stardist,
+    on the (optionally downscaled) image.
+  - `*_segmentation.geojson`: Cell polygons in full-resolution image pixels.
+
+</details>
+
+Only produced with `--segmentation_method cellpose` or `stardist`. Space Ranger
+segmentation results are in `<SAMPLE>/spaceranger/outs/segmented_outputs/`.
+
+When a segmentation is used, cells replace bins as the analysis unit. The
+SpatialData objects (see [Integration](#integration)) then also contain the
+bin table as `<SAMPLE>_bin_table`, and the cell polygons as `<SAMPLE>_cells`
+shapes when bins were grouped with bin2cell (otherwise as read from Space
+Ranger's `segmented_outputs/`).
 
 ## FastQC
 
@@ -123,6 +145,8 @@ selected per sample and ranked by in how many samples they are highly variable.
   - `merged.zarr`: Merged SpatialData object containing all samples (before
     integration).
   - `<METHOD>.zarr`: Integrated SpatialData object with batch-corrected results.
+    With cell segmentation, both `.zarr` objects also hold each sample's cell
+    shapes and `<SAMPLE>_bin_table` table (see [Cell segmentation](#cell-segmentation)).
   - `<METHOD>.h5ad`: Integrated AnnData object with batch-corrected embeddings
     and clustering. The PCA of the merged data is in `obsm["X_pca_merged"]`,
     while `obsm["X_pca"]` holds each spot's coordinates in the PCA of its own

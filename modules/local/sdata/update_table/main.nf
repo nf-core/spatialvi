@@ -2,7 +2,7 @@ process SDATA_UPDATE_TABLE {
     tag "${meta.id}"
     label 'process_single'
 
-    container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
+    container "community.wave.seqera.io/library/bin2cell_harmonypy_scanorama_imagecodecs_pruned:d457f4c6ebb7b325"
 
     input:
     tuple val(meta), path(sdata, stageAs: "input.zarr", arity: '1'), path(adata, arity: '1')

@@ -1,7 +1,7 @@
 process SDATA_MERGE {
     label 'process_low'
 
-    container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
+    container "community.wave.seqera.io/library/bin2cell_harmonypy_scanorama_imagecodecs_pruned:d457f4c6ebb7b325"
 
     input:
     path(sdata, stageAs: "?/*", arity: '1..*')

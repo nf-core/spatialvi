@@ -2,7 +2,7 @@
     "homo_sapiens - h5ad - with highly variable genes": {
         "content": [
             [
-                "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
+                "versions.yml:md5,dcf3576afc6638b4e8f70208d428940b"
             ],
             {
                 "n_obs": 12940,
@@ -16,11 +16,11 @@
                 "var": {
                     "index": "_index",
                     "columns": [
-                        "dispersions",
-                        "dispersions_norm",
+                        "symbols",
                         "highly_variable",
                         "means",
-                        "symbols"
+                        "dispersions",
+                        "dispersions_norm"
                     ]
                 },
                 "layers": [
@@ -54,16 +54,16 @@
                 "pca.pkl"
             ]
         ],
-        "timestamp": "2026-10-01T23:07:35.4818",
+        "timestamp": "2026-10-12T01:13:49.788069575",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - no h5ad output": {
         "content": [
             [
-                "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
+                "versions.yml:md5,dcf3576afc6638b4e8f70208d428940b"
             ],
             [
                 "X_pca.pkl"
@@ -75,16 +75,16 @@
                 "pca.pkl"
             ]
         ],
-        "timestamp": "2026-09-30T14:58:26.136705",
+        "timestamp": "2026-10-12T01:14:29.348481016",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad": {
         "content": [
             [
-                "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
+                "versions.yml:md5,dcf3576afc6638b4e8f70208d428940b"
             ],
             {
                 "n_obs": 12940,
@@ -130,10 +130,10 @@
                 "pca.pkl"
             ]
         ],
-        "timestamp": "2026-09-30T14:58:16.320895",
+        "timestamp": "2026-10-12T01:14:03.643829975",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -220,7 +220,7 @@
     "homo_sapiens - h5ad - custom key": {
         "content": [
             [
-                "versions.yml:md5,72a45b1aedaf9f2f5dcedffc73b2a79b"
+                "versions.yml:md5,dcf3576afc6638b4e8f70208d428940b"
             ],
             {
                 "n_obs": 12940,
@@ -266,10 +266,10 @@
                 "X_pca_merged.pkl"
             ]
         ],
-        "timestamp": "2026-10-05T14:24:15.770266",
+        "timestamp": "2026-10-12T01:14:16.928495752",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     }
 }
