@@ -22,21 +22,11 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-01T19:05:36.438111",

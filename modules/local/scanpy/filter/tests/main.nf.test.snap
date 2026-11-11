@@ -44,21 +44,11 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             },
             [
                 [
@@ -172,21 +162,13 @@
                         "total_counts"
                     ]
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "sample_id",

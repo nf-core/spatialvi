@@ -41,9 +41,7 @@
                         "genome"
                     ]
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "X_pca",
                     "spatial"
@@ -57,9 +55,7 @@
                     "spatial_connectivities",
                     "spatial_distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "clusters_interactions",

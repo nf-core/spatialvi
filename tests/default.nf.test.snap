@@ -17,24 +17,24 @@
                     "fastqc": "0.12.1"
                 },
                 "REPORT": {
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5",
-                    "squidpy": "1.6.5",
-                    "spatialdata": "0.5.0",
                     "anndata": "0.12.4",
+                    "matplotlib": "3.10.7",
                     "numpy": "2.3.4",
                     "pandas": "2.3.3",
-                    "matplotlib": "3.10.7"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "spatialdata": "0.5.0",
+                    "squidpy": "1.6.5"
                 },
                 "REPORT_INTEGRATED": {
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5",
-                    "squidpy": "1.6.5",
-                    "spatialdata": "0.5.0",
                     "anndata": "0.12.4",
+                    "matplotlib": "3.10.7",
                     "numpy": "2.3.4",
                     "pandas": "2.3.3",
-                    "matplotlib": "3.10.7"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "spatialdata": "0.5.0",
+                    "squidpy": "1.6.5"
                 },
                 "SCANPY_CALCULATE_QC_METRICS": {
                     "anndata": "0.12.4",
@@ -1426,21 +1426,13 @@
                                 "genome"
                             ]
                         },
-                        "layers": [
-                            
-                        ],
+                        "layers": [],
                         "obsm": [
                             "spatial"
                         ],
-                        "varm": [
-                            
-                        ],
-                        "obsp": [
-                            
-                        ],
-                        "varp": [
-                            
-                        ],
+                        "varm": [],
+                        "obsp": [],
+                        "varp": [],
                         "uns": [
                             "coordinate_system",
                             "sample_id",
@@ -1517,9 +1509,7 @@
                             "spatial_connectivities",
                             "spatial_distances"
                         ],
-                        "varp": [
-                            
-                        ],
+                        "varp": [],
                         "uns": [
                             "X_umap",
                             "clusters",
@@ -1613,9 +1603,7 @@
                             "connectivities",
                             "distances"
                         ],
-                        "varp": [
-                            
-                        ],
+                        "varp": [],
                         "uns": [
                             "X_pca_merged",
                             "X_umap_harmony",

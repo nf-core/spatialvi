@@ -3,9 +3,7 @@
         "content": [
             [
                 [
-                    [
-                        
-                    ],
+                    [],
                     [
                         "hello.txt:md5,e59ff97941044f85df5297e1c302d260"
                     ]
@@ -31,9 +29,7 @@
         "content": [
             [
                 [
-                    [
-                        
-                    ],
+                    [],
                     [
                         "hello.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
@@ -59,9 +55,7 @@
         "content": [
             [
                 [
-                    [
-                        
-                    ],
+                    [],
                     [
                         "hash.k2d:md5,d41d8cd98f00b204e9800998ecf8427e",
                         "opts.k2d:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -89,9 +83,7 @@
         "content": [
             [
                 [
-                    [
-                        
-                    ],
+                    [],
                     [
                         "hash.k2d:md5,8b8598468f54a7087c203ad0190555d9",
                         "opts.k2d:md5,a033d00cf6759407010b21700938f543",

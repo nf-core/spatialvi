@@ -16,28 +16,14 @@
                 },
                 "var": {
                     "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": []
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-01T20:52:45.710987",
@@ -81,24 +67,12 @@
                         "ribo"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-05T12:43:34.384823",
@@ -157,21 +131,13 @@
                         "genome"
                     ]
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "spatial"
                 ]
@@ -200,28 +166,16 @@
                 },
                 "var": {
                     "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": []
                 },
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-01T20:52:54.856983",

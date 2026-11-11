@@ -32,12 +32,8 @@
                 "varm": [
                     "PCs"
                 ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p",
@@ -110,12 +106,8 @@
                 "varm": [
                     "PCs"
                 ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "pca"
                 ]
@@ -246,12 +238,8 @@
                 "varm": [
                     "X_pca_merged"
                 ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "X_pca_merged"
                 ]

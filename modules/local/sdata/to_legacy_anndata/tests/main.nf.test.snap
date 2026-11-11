@@ -25,21 +25,13 @@
                         "genome"
                     ]
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "sample_id",
@@ -53,34 +45,18 @@
                 "n_vars": 19023,
                 "obs": {
                     "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": []
                 },
                 "var": {
                     "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": []
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-04T11:11:15.214247",

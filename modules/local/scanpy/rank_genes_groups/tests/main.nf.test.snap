@@ -33,9 +33,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "neighbors",
@@ -87,9 +85,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "neighbors",
@@ -205,9 +201,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "neighbors",
@@ -259,9 +253,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "neighbors",

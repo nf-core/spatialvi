@@ -26,12 +26,8 @@
                         "params.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "3": [
-                    
-                ],
-                "4": [
-                    
-                ],
+                "3": [],
+                "4": [],
                 "5": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -49,12 +45,8 @@
                         "2.6.0"
                     ]
                 ],
-                "artifacts": [
-                    
-                ],
-                "extensions": [
-                    
-                ],
+                "artifacts": [],
+                "extensions": [],
                 "html": [
                     [
                         {

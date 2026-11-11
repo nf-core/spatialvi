@@ -122,9 +122,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "neighbors",
                     "pca"

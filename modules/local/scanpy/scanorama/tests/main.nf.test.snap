@@ -31,29 +31,17 @@
                 },
                 "var": {
                     "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": []
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "X_pca",
                     "X_scanorama"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             },
             [
                 "X_scanorama.pkl"
@@ -131,29 +119,17 @@
                 },
                 "var": {
                     "index": "_index",
-                    "columns": [
-                        
-                    ]
+                    "columns": []
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "X_pca_merged",
                     "X_scanorama"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             },
             [
                 "X_scanorama.pkl"

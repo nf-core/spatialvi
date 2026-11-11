@@ -40,22 +40,16 @@
                         "genome"
                     ]
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
+                "varm": [],
                 "obsp": [
                     "spatial_connectivities",
                     "spatial_distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "moranI",
@@ -102,22 +96,16 @@
                         "genome"
                     ]
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
+                "varm": [],
                 "obsp": [
                     "spatial_connectivities",
                     "spatial_distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "gearyC",

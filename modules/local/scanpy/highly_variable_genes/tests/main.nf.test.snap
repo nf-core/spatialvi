@@ -66,18 +66,10 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
@@ -122,21 +114,11 @@
                         "means"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
@@ -246,21 +228,11 @@
                         "means"
                     ]
                 },
-                "layers": [
-                    
-                ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "layers": [],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
@@ -306,18 +278,10 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
@@ -363,18 +327,10 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"

@@ -22,18 +22,10 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "log1p"
                 ]

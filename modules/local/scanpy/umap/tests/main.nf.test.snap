@@ -55,9 +55,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "X_umap",
                     "hvg",

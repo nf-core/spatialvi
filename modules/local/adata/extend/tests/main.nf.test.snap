@@ -29,21 +29,11 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-07T14:31:27.383207",
@@ -78,22 +68,16 @@
                         "genome"
                     ]
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
+                "varm": [],
                 "obsp": [
                     "spatial_connectivities",
                     "spatial_distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "moranI",
@@ -165,15 +149,9 @@
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "sample_id",
@@ -231,21 +209,11 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-01T20:26:10.99457",
@@ -287,9 +255,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "neighbors",
                     "pca"
@@ -336,9 +302,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "neighbors",
@@ -394,21 +358,11 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
-                "uns": [
-                    
-                ]
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
+                "uns": []
             }
         ],
         "timestamp": "2026-10-01T21:10:59.250684",
@@ -446,12 +400,8 @@
                 "varm": [
                     "PCs"
                 ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "pca"
                 ]
@@ -490,9 +440,7 @@
                         "genome"
                     ]
                 },
-                "layers": [
-                    
-                ],
+                "layers": [],
                 "obsm": [
                     "X_pca",
                     "spatial"
@@ -506,9 +454,7 @@
                     "spatial_connectivities",
                     "spatial_distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "clusters_interactions",
@@ -568,9 +514,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "neighbors",
@@ -611,18 +555,10 @@
                 "layers": [
                     "counts"
                 ],
-                "obsm": [
-                    
-                ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "obsm": [],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "hvg",
                     "log1p"
@@ -667,15 +603,9 @@
                 "obsm": [
                     "spatial"
                 ],
-                "varm": [
-                    
-                ],
-                "obsp": [
-                    
-                ],
-                "varp": [
-                    
-                ],
+                "varm": [],
+                "obsp": [],
+                "varp": [],
                 "uns": [
                     "coordinate_system",
                     "sample_id",
@@ -758,9 +688,7 @@
                     "connectivities",
                     "distances"
                 ],
-                "varp": [
-                    
-                ],
+                "varp": [],
                 "uns": [
                     "clusters",
                     "neighbors",
