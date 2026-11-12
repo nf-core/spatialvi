@@ -150,6 +150,11 @@ kept in the SpatialData object. Without a segmentation, Space Ranger's nucleus
 segmentation is turned off for Visium HD, so `segmented_outputs/` is not
 produced.
 
+> [!NOTE]
+> The filtering thresholds (`--qc_min_counts`, `--qc_min_genes` _etc._) are
+> applied to cells in the same way as to spots and bins, and their defaults were
+> chosen for spots.
+
 ## Space Ranger
 
 The pipeline exposes several of Space Ranger's parameters when executing with
