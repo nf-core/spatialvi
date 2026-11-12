@@ -10,6 +10,7 @@ Supports:
 
 # Disable OpenMP CPU topology detection for macOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 # Keep caches in the task's work directory, which is always writable and
@@ -61,7 +62,7 @@ def find_table_name(sdata, adata, sample_id):
     elif f"{sample_id}_table" in sdata.tables:
         return f"{sample_id}_table"
     elif len(sdata.tables) > 0:
-        return list(sdata.tables.keys())[0]
+        return next(iter(sdata.tables))
     else:
         raise ValueError("No tables found in SpatialData object")
 
@@ -235,7 +236,7 @@ def update_tables_from_concat(sdata, adata_concat, library_key):
         index_map = {idx: idx.rsplit("-", 1)[0] for idx in adata_subset.obs_names}
 
         # Add obsm fields
-        for key in adata_subset.obsm.keys():
+        for key in adata_subset.obsm:
             n_features = adata_subset.obsm[key].shape[1]
             if key not in table.obsm:
                 table.obsm[key] = np.full(

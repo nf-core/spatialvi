@@ -1,0 +1,11 @@
+# `EXE001`:  The shebang selects the interpreter Nextflow runs a template with.
+# `PLR0133`: Nextflow substitutes `${...}` before a template is run, so
+#            comparisons such as `"${flag}" == "true"` are not constant.
+# `SIM905`:  Nextflow substitutes `${...}` before a template is run, so a
+#            whitespace-separated list of files must be split with `.split()`
+#            rather than wrapped in a list.
+# `BLE001`:  `replace_table()` in `update_table.py` catches `Exception` as a
+#            best-effort fallback when updating the table and its shapes.
+[lint.per-file-ignores]
+"**/templates/*.py" = ["EXE001", "PLR0133", "SIM905"]
+"modules/local/sdata/update_table/templates/update_table.py" = ["BLE001"]

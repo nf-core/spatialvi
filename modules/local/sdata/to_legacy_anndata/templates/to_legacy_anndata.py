@@ -6,6 +6,7 @@ includes spatial coordinates and images compatible with scanpy.
 
 # Disable OpenMP CPU topology detection for macOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 # Keep caches in the task's work directory, which is always writable and
@@ -73,9 +74,7 @@ def extract_to_legacy_anndata(sdata, table_name, coord_system):
 
 def ensure_sparse_csc(adata):
     """Convert `.X` matrix to CSC sparse format for compatibility."""
-    if not scipy.sparse.issparse(adata.X):
-        adata.X = scipy.sparse.csc_matrix(adata.X)
-    elif not scipy.sparse.isspmatrix_csc(adata.X):
+    if not scipy.sparse.issparse(adata.X) or not scipy.sparse.isspmatrix_csc(adata.X):
         adata.X = scipy.sparse.csc_matrix(adata.X)
     return adata
 
