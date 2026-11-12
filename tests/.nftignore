@@ -14,6 +14,7 @@ pipeline_info/*.{html,json,txt,yml}
 
 **/*.{png,html,zip,h5ad,cloupe,parquet,geojson,qmd}
 **/*.zarr/**
+**/*.stardist.tif
 **/_extensions/**
 **/*_svg.csv
 **/{components,projection,variance,}.csv
