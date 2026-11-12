@@ -5,6 +5,7 @@ Read Visium or Visium HD data from Space Ranger output into SpatialData format.
 
 # Disable OpenMP CPU topology detection for macOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 # Keep caches in the task's work directory, which is always writable and
@@ -111,7 +112,7 @@ def validate_table(sdata, table_name, sample_id_clean):
     logger.info(f"Number of observations: {adata.n_obs}")
 
     # Remove `sample_id` metadata from table uns, if present
-    if sample_id_clean in adata.uns.keys():
+    if sample_id_clean in adata.uns:
         logger.info(f"Removing '{sample_id_clean}' from table uns")
         del adata.uns[sample_id_clean]
 

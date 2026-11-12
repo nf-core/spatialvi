@@ -8,6 +8,7 @@ batches by identifying and merging shared cell types across datasets.
 
 # Disable OpenMP CPU topology detection for macOS compatibility
 import os
+
 os.environ["KMP_AFFINITY"] = "disabled"
 
 # Keep caches in the task's work directory, which is always writable and

@@ -14,24 +14,24 @@
                     "python": "3.12.12"
                 },
                 "REPORT": {
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5",
-                    "squidpy": "1.6.5",
-                    "spatialdata": "0.5.0",
                     "anndata": "0.12.4",
+                    "matplotlib": "3.10.7",
                     "numpy": "2.3.4",
                     "pandas": "2.3.3",
-                    "matplotlib": "3.10.7"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "spatialdata": "0.5.0",
+                    "squidpy": "1.6.5"
                 },
                 "REPORT_INTEGRATED": {
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5",
-                    "squidpy": "1.6.5",
-                    "spatialdata": "0.5.0",
                     "anndata": "0.12.4",
+                    "matplotlib": "3.10.7",
                     "numpy": "2.3.4",
                     "pandas": "2.3.3",
-                    "matplotlib": "3.10.7"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "spatialdata": "0.5.0",
+                    "squidpy": "1.6.5"
                 },
                 "SCANPY_CALCULATE_QC_METRICS": {
                     "anndata": "0.12.4",
@@ -3183,19 +3183,19 @@
                             ]
                         },
                         "layers": [
-                            
+
                         ],
                         "obsm": [
                             "spatial"
                         ],
                         "varm": [
-                            
+
                         ],
                         "obsp": [
-                            
+
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "coordinate_system",
@@ -3230,19 +3230,19 @@
                             ]
                         },
                         "layers": [
-                            
+
                         ],
                         "obsm": [
                             "spatial"
                         ],
                         "varm": [
-                            
+
                         ],
                         "obsp": [
-                            
+
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "coordinate_system",
@@ -3321,7 +3321,7 @@
                             "spatial_distances"
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "X_umap",
@@ -3411,7 +3411,7 @@
                             "spatial_distances"
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "X_umap",
@@ -3499,7 +3499,6 @@
                             "spatial"
                         ],
                         "varm": [
-                            "PCs",
                             "X_pca_merged"
                         ],
                         "obsp": [
@@ -3507,7 +3506,7 @@
                             "distances"
                         ],
                         "varp": [
-                            
+
                         ],
                         "uns": [
                             "X_pca_merged",
@@ -3522,10 +3521,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-05T15:24:16.102537258",
+        "timestamp": "2026-11-12T13:47:22.320987315",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.10.5"
         }
     }
 }
