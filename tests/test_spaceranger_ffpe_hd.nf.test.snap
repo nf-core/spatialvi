@@ -14,27 +14,27 @@
                     "python": "3.12.12"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "REPORT": {
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5",
-                    "squidpy": "1.6.5",
-                    "spatialdata": "0.5.0",
                     "anndata": "0.12.4",
+                    "matplotlib": "3.10.7",
                     "numpy": "2.3.4",
                     "pandas": "2.3.3",
-                    "matplotlib": "3.10.7"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "spatialdata": "0.5.0",
+                    "squidpy": "1.6.5"
                 },
                 "REPORT_INTEGRATED": {
-                    "python": "3.12.12",
-                    "scanpy": "1.11.5",
-                    "squidpy": "1.6.5",
-                    "spatialdata": "0.5.0",
                     "anndata": "0.12.4",
+                    "matplotlib": "3.10.7",
                     "numpy": "2.3.4",
                     "pandas": "2.3.3",
-                    "matplotlib": "3.10.7"
+                    "python": "3.12.12",
+                    "scanpy": "1.11.5",
+                    "spatialdata": "0.5.0",
+                    "squidpy": "1.6.5"
                 },
                 "SCANPY_CALCULATE_QC_METRICS": {
                     "anndata": "0.12.4",
@@ -2291,10 +2291,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-10-05T18:00:46.007301547",
+        "timestamp": "2026-11-12T15:55:26.217598218",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.10.5"
         }
     }
 }
