@@ -95,7 +95,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "versions.yml:md5,58959fdcbaf8a3f6b76b193c4e47995d"
                 ],
                 "adata": [
                     [
@@ -114,14 +114,14 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "versions.yml:md5,58959fdcbaf8a3f6b76b193c4e47995d"
                 ]
             }
         ],
-        "timestamp": "2026-04-15T16:43:09.140054187",
+        "timestamp": "2026-11-13T11:31:00.669821726",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "26.10.5"
         }
     },
     "homo_sapiens - h5ad - with spatial data": {

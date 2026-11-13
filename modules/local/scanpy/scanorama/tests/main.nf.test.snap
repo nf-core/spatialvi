@@ -85,7 +85,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "versions.yml:md5,8ea7b6e2e903bf4a3fbf43c8e02e33ab"
                 ],
                 "adata": [
                     [
@@ -104,14 +104,14 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "versions.yml:md5,8ea7b6e2e903bf4a3fbf43c8e02e33ab"
                 ]
             }
         ],
-        "timestamp": "2026-10-01T14:34:42.005774",
+        "timestamp": "2026-11-13T11:32:37.341867104",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.10.5"
         }
     },
     "homo_sapiens - h5ad - custom basis": {

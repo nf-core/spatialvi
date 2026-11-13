@@ -25,6 +25,8 @@ process SDATA_TO_LEGACY_ANNDATA {
     touch ${prefix}.h5ad
     mkdir layers
     touch layers/raw.h5ad
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

@@ -142,7 +142,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "versions.yml:md5,7faf09c87d0f6a54a70c1bf1ec716ed7"
                 ],
                 "adata": [
                     [
@@ -161,14 +161,14 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "versions.yml:md5,7faf09c87d0f6a54a70c1bf1ec716ed7"
                 ]
             }
         ],
-        "timestamp": "2026-10-01T15:27:57.038888",
+        "timestamp": "2026-11-13T11:36:41.786101182",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.10.5"
         }
     },
     "homo_sapiens - h5ad - t-test_overstim_var": {

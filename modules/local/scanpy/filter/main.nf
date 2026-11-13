@@ -30,6 +30,8 @@ process SCANPY_FILTER {
     """
     touch ${prefix}.h5ad
     echo 'Sample' > mqc_quality_controls_${prefix}.csv
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

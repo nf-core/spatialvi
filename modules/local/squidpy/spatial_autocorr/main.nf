@@ -31,6 +31,8 @@ process SQUIDPY_SPATIAL_AUTOCORR {
     touch ${prefix}_svg.csv
     mkdir -p uns
     touch uns/${uns_key}.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

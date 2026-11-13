@@ -22,6 +22,8 @@ process SCANPY_LOG1P {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }
