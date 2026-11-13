@@ -25,6 +25,8 @@ process ADATA_MERGE {
     prefix = task.ext.prefix ?: "merged"
     """
     touch ${prefix}.h5ad
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

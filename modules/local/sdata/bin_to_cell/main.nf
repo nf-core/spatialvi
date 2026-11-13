@@ -24,6 +24,8 @@ process SDATA_BIN_TO_CELL {
     """
     mkdir -p ${prefix}.zarr
     touch ${prefix}.zarr/.zgroup
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }
