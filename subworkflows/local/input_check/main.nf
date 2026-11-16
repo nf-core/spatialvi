@@ -143,7 +143,7 @@ def check_downstream_dir(input, hd_bin_size, segmentation_method) {
     // Route flags: bin2cell groups the bins of processed data into cells
     meta.hd          = hd_files_present
     meta.cells       = (segmentation_file || segmentation_method) as boolean
-    meta.bin_to_cell = (segmentation_file || segmentation_method in ['cellpose', 'stardist']) as boolean
+    meta.bin_to_cell = (segmentation_file || segmentation_method == 'cellpose') as boolean
 
     // Cell segmentation is Visium HD only
     if (meta.cells && !hd_files_present) {
@@ -163,9 +163,9 @@ def check_downstream_dir(input, hd_bin_size, segmentation_method) {
     return [meta, spaceranger_dir]
 }
 
-// Function: cellpose and stardist segment the samplesheet `image`
+// Function: cellpose segments the samplesheet `image`
 def check_segmentation_image(meta, image, segmentation_method) {
-    if (segmentation_method in ['cellpose', 'stardist'] && !image) {
+    if (segmentation_method == 'cellpose' && !image) {
         error "Sample '${meta.id}': `--segmentation_method ${segmentation_method}` needs an `image` in the samplesheet."
     }
 }
