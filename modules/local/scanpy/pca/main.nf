@@ -36,6 +36,8 @@ process SCANPY_PCA {
     touch obsm/${key_added}.pkl
     touch varm/${varm_key}.pkl
     touch uns/${uns_key}.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

@@ -30,6 +30,8 @@ process SCANPY_SCANORAMA {
     ${touch_adata}
     mkdir -p obsm
     touch obsm/${embedding_added}.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

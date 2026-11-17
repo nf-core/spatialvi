@@ -99,7 +99,7 @@ workflow SPATIALVI {
     //
     // Samplesheet and computed segmentations are both files in full-resolution pixels
     ch_segmentation = INPUT_CHECK.out.ch_segmentation_file
-    if (segmentation_method in ['cellpose', 'stardist']) {
+    if (segmentation_method == 'cellpose') {
         SEGMENTATION (
             INPUT_CHECK.out.ch_image,
             segmentation_method,
@@ -148,7 +148,7 @@ workflow SPATIALVI {
 
     //
     // MODULE: Group Visium HD bins into cells for processed data with a
-    // segmentation from cellpose, stardist or the samplesheet
+    // segmentation from cellpose or the samplesheet
     //
     ch_sdata = SDATA_READ_VISIUM.out.sdata
         .branch { meta, _zarr ->

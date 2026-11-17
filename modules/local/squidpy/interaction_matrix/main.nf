@@ -28,6 +28,8 @@ process SQUIDPY_INTERACTION_MATRIX {
     ${touch_adata}
     mkdir -p uns
     touch uns/${cluster_key}_interactions.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

@@ -32,6 +32,8 @@ process SCANPY_UMAP {
     mkdir -p obsm uns
     touch obsm/${key_added}.pkl
     touch uns/${key_added}.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

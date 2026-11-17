@@ -54,13 +54,13 @@ information about these files at the [10X website](https://support.10xgenomics.c
 <summary>Output files</summary>
 
 - `<SAMPLE>/segmentation/`
-  - `*_cp_masks.tif` or `*.stardist.tif`: Label mask from cellpose or stardist,
-    on the (optionally downscaled) image.
+  - `*_cp_masks.tif`: Label mask from cellpose, on the (optionally downscaled)
+    image.
   - `*_segmentation.geojson`: Cell polygons in full-resolution image pixels.
 
 </details>
 
-Only produced with `--segmentation_method cellpose` or `stardist`. Space Ranger
+Only produced with `--segmentation_method cellpose`. Space Ranger
 segmentation results are in `<SAMPLE>/spaceranger/outs/segmented_outputs/`.
 
 When a segmentation is used, cells replace bins as the analysis unit. The

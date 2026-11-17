@@ -29,6 +29,8 @@ process SCANPY_CALCULATE_QC_METRICS {
     mkdir -p obs var
     touch obs/qc_metrics.pkl
     touch var/qc_metrics.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

@@ -31,6 +31,8 @@ process SCANPY_LEIDEN {
     mkdir -p obs uns
     touch obs/${key_added}.pkl
     touch uns/${key_added}.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

@@ -28,6 +28,8 @@ process SQUIDPY_NHOOD_ENRICHMENT {
     ${touch_adata}
     mkdir -p uns
     touch uns/${cluster_key}_nhood_enrichment.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }
