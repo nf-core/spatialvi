@@ -19,6 +19,7 @@ compatible with further downstream analyses and/or exploration in _e.g._
 ### `Added`
 
 - Add pickled slot data outputs and `adata/extend`; don't output "raw" layer in raw data [[#153](https://github.com/nf-core/spatialvi/pull/153/)]
+- Add optional Visium HD cell segmentation with Space Ranger, Cellpose or a samplesheet `segmentation_file`, using cells instead of bins for the analysis [[#145](https://github.com/nf-core/spatialvi/issues/145) and [#161](https://github.com/nf-core/spatialvi/pull/161)]
 - Deprecate `quartonotebook` module in favour of `quarto/notebook` [[#148](https://github.com/nf-core/spatialvi/pull/148)]
 - Separate reports into separate scripts [[#137](https://github.com/nf-core/spatialvi/pull/137)]
 - Use topic channels for software versions [[#133](https://github.com/nf-core/spatialvi/pull/133)]

@@ -5,6 +5,11 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "cellpose": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
                     "fastqc": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
@@ -17,7 +22,7 @@
                     },
                     "quarto/notebook": {
                         "branch": "master",
-                        "git_sha": "b0c002b4eeaae7b0fa0181b098bb318269b11cf5",
+                        "git_sha": "3689538423807d90a454c87b24a55f6df17f1f9b",
                         "installed_by": ["modules"]
                     },
                     "spaceranger/count": {

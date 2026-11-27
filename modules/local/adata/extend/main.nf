@@ -2,7 +2,7 @@ process ADATA_EXTEND {
     tag "${meta.id}"
     label 'process_medium'
 
-    container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
+    container "community.wave.seqera.io/library/bin2cell_harmonypy_scanorama_imagecodecs_pruned:d457f4c6ebb7b325"
 
     input:
     tuple (
@@ -34,6 +34,8 @@ process ADATA_EXTEND {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.h5ad
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

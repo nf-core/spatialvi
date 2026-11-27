@@ -129,9 +129,18 @@ def display_table(table, hide_index=True, format_dict=None):
 # Load SpatialData
 sdata = spatialdata.read_zarr(input_sdata)
 
-# Get the table (assuming single sample, take first table)
-table_names = list(sdata.tables.keys())
-table_name = table_names[0]
+# Get the main table (assuming single sample; skip the Visium HD bin table,
+# which only exists next to a "<sample>_table" of cells)
+table_name = next(
+    (
+        t for t in sdata.tables
+        if t.endswith("_table")
+        and not (t.endswith("_bin_table") and t[: -len("_bin_table")] + "_table" in sdata.tables)
+    ),
+    None,
+)
+if table_name is None:
+    raise ValueError(f"No main table in SpatialData object; tables present: {list(sdata.tables)}")
 adata = sdata.tables[table_name]
 
 # Extract sample ID from table name

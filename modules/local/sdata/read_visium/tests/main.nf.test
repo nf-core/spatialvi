@@ -27,8 +27,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = UNTAR.out.untar
-                input[1] = 8 // hd_bin_size
+                input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                input[1] = 8    // hd_bin_size
                 """
             }
         }
@@ -77,8 +77,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = UNTAR.out.untar
-                input[1] = 8 // hd_bin_size
+                input[0] = UNTAR.out.untar.map { meta, dir -> [meta, dir, false] }
+                input[1] = 8    // hd_bin_size
                 """
             }
         }

@@ -2,7 +2,7 @@
     "homo_sapiens - h5ad": {
         "content": [
             [
-                "versions.yml:md5,310276833f0e291b5c85bb9b866b80bd"
+                "versions.yml:md5,6624dea8daa1fefbf2c7ed2da603f826"
             ],
             {
                 "n_obs": 12940,
@@ -10,8 +10,8 @@
                 "obs": {
                     "index": "_index",
                     "columns": [
-                        "clusters",
-                        "sample"
+                        "sample",
+                        "clusters"
                     ]
                 },
                 "var": {
@@ -49,10 +49,10 @@
                 "clusters.pkl"
             ]
         ],
-        "timestamp": "2026-09-29T08:50:43.231158",
+        "timestamp": "2026-10-12T01:09:09.38601527",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     },
     "homo_sapiens - h5ad - stub": {
@@ -83,7 +83,7 @@
                     ]
                 ],
                 "3": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "versions.yml:md5,575d2f5de219c9db28a26ead9f5af49a"
                 ],
                 "adata": [
                     [
@@ -110,20 +110,20 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "versions.yml:md5,575d2f5de219c9db28a26ead9f5af49a"
                 ]
             }
         ],
-        "timestamp": "2026-09-28T22:23:07.648927",
+        "timestamp": "2026-11-16T15:04:27.975335072",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.10.5"
         }
     },
     "homo_sapiens - no h5ad": {
         "content": [
             [
-                "versions.yml:md5,310276833f0e291b5c85bb9b866b80bd"
+                "versions.yml:md5,6624dea8daa1fefbf2c7ed2da603f826"
             ],
             [
                 "clusters.pkl"
@@ -132,10 +132,10 @@
                 "clusters.pkl"
             ]
         ],
-        "timestamp": "2026-09-29T08:48:42.759554",
+        "timestamp": "2026-10-12T01:10:10.89421561",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
         }
     }
 }

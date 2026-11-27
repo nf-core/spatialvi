@@ -16,9 +16,9 @@ workflow SPATIAL {
     //
     // Spatial neighbors
     //
+    // Cells are irregular, so they always use generic coordinates
     SQUIDPY_SPATIAL_NEIGHBORS (
-        ch_adata,
-        spatial_coord_type,
+        ch_adata.map { meta, h5ad -> [meta, h5ad, meta.cells ? 'generic' : spatial_coord_type] },
         spatial_n_neighbors,
         true // write_adata
     )

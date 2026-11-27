@@ -1,7 +1,7 @@
 process ADATA_MERGE {
     label 'process_low'
 
-    container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
+    container "community.wave.seqera.io/library/bin2cell_harmonypy_scanorama_imagecodecs_pruned:d457f4c6ebb7b325"
 
     input:
     path(h5ad, arity: '1..*')
@@ -25,6 +25,8 @@ process ADATA_MERGE {
     prefix = task.ext.prefix ?: "merged"
     """
     touch ${prefix}.h5ad
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

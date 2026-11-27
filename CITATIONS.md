@@ -14,6 +14,16 @@
 
   > Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: https://doi.org/10.1101/2021.12.16.473007
 
+- [bin2cell](https://github.com/Teichlab/bin2cell)
+
+  > Polański K, Bartolomé-Casado R, Sarropoulos I, Xu C, England N, Jahnsen FL, Teichmann SA, Yayon N. Bin2cell reconstructs cells from high resolution Visium HD data. Bioinformatics. 2024;40(9):btae546. doi: 10.1093/bioinformatics/btae546
+
+- [Cellpose](https://github.com/MouseLand/cellpose)
+
+  > Stringer C, Wang T, Michaelos M, Pachitariu M. Cellpose: a generalist algorithm for cellular segmentation. Nat Methods 18, 100–106 (2021). doi: 10.1038/s41592-020-01018-x
+
+  > Pachitariu M, Rariden M, Stringer C. Cellpose-SAM: superhuman generalization for cellular segmentation. bioRxiv 2025.04.28.651001; doi: https://doi.org/10.1101/2025.04.28.651001
+
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
 > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].

@@ -2,7 +2,7 @@ process SCANPY_NEIGHBORS {
     tag "${meta.id}"
     label 'process_medium'
 
-    container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
+    container "community.wave.seqera.io/library/bin2cell_harmonypy_scanorama_imagecodecs_pruned:d457f4c6ebb7b325"
 
     input:
     tuple val(meta), path(adata, stageAs: "input.h5ad", arity: '1')
@@ -33,6 +33,8 @@ process SCANPY_NEIGHBORS {
     touch obsp/connectivities.pkl
     touch obsp/distances.pkl
     touch uns/neighbors.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

@@ -2,7 +2,7 @@ process SQUIDPY_SPATIAL_AUTOCORR {
     tag "${meta.id}"
     label 'process_high'
 
-    container "community.wave.seqera.io/library/harmonypy_scanorama_gcc_gxx_pruned:95f731fde0b9ddef"
+    container "community.wave.seqera.io/library/bin2cell_harmonypy_scanorama_imagecodecs_pruned:d457f4c6ebb7b325"
 
     input:
     tuple val(meta), path(adata, stageAs: "input.h5ad", arity: '1')
@@ -31,6 +31,8 @@ process SQUIDPY_SPATIAL_AUTOCORR {
     touch ${prefix}_svg.csv
     mkdir -p uns
     touch uns/${uns_key}.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }
