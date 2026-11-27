@@ -1,4 +1,37 @@
 {
+    "homo_sapiens - tif": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_segmentation.geojson:md5,90d084b6263597725e02f7687ba90f15"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,3556a6892f740c312ed2a3a4c6a17f3f"
+                ],
+                "geojson": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_segmentation.geojson:md5,90d084b6263597725e02f7687ba90f15"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,3556a6892f740c312ed2a3a4c6a17f3f"
+                ]
+            }
+        ],
+        "timestamp": "2026-11-27T11:13:36.399595788",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
     "homo_sapiens - tif - stub": {
         "content": [
             {

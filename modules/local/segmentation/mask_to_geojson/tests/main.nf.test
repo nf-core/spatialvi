@@ -8,6 +8,30 @@ nextflow_process {
     tag "modules_local"
     tag "mask_to_geojson"
 
+    test("homo_sapiens - tif") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id: 'test' ], file(params.modules_testdata_base_path + 'imaging/hne_multiplexed/hne_segmentation_mask.ome.tif', checkIfExists: true)
+                ]
+                input[1] = 2         // scale
+                input[2] = 'cell'    // object_class
+                """
+            }
+        }
+
+        then {
+            def geojson = new groovy.json.JsonSlurper().parse(file(process.out.geojson[0][1]))
+            assertAll(
+                { assert process.success },
+                { assert geojson.features.size() == 29 },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
     test("homo_sapiens - tif - stub") {
 
         options "-stub"
@@ -19,7 +43,7 @@ nextflow_process {
                     [ id: 'Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2' ], file(params.pipelines_testdata_base_path + 'testdata/human-lung-cancer-post-xenium_hd_ffpe/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_image.tif', checkIfExists: true)
                 ]
                 input[1] = 2         // scale
-                input[2] = 'nucleus' // object_class
+                input[2] = 'cell'    // object_class
                 """
             }
         }
