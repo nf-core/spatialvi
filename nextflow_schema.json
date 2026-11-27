@@ -104,7 +104,7 @@
                     "type": "integer",
                     "default": 1,
                     "minimum": 1,
-                    "description": "Downscale factor of the tissue image before running cellpose. The default of 1 segments at full resolution; larger values are faster but detect far fewer nuclei.",
+                    "description": "Downscale factor of the tissue image before running cellpose. The default of 1 segments at full resolution; larger values are faster but detect far fewer cells.",
                     "help_text": "The segmentation is scaled back to full-resolution pixels afterwards. Use values above 1 only for quick tests.",
                     "fa_icon": "fas fa-compress"
                 },

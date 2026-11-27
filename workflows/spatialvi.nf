@@ -102,7 +102,6 @@ workflow SPATIALVI {
     if (segmentation_method == 'cellpose') {
         SEGMENTATION (
             INPUT_CHECK.out.ch_image,
-            segmentation_method,
             segmentation_downscale
         )
         ch_segmentation = ch_segmentation.mix ( SEGMENTATION.out.geojson )

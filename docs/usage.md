@@ -130,14 +130,17 @@ combined:
   and the result is passed to Space Ranger.
 - `segmentation_file` in the samplesheet: a segmentation you computed yourself,
   either as GeoJSON (`.geojson` or `.json`) or as a label mask (TIFF or NPY), in
-  full-resolution image pixels. Space Ranger expands nuclei in such a file by
-  `--segmentation_expansion_distance` microns.
+  full-resolution image pixels. Nuclei in such a file are expanded into cells:
+  by `--segmentation_expansion_distance` microns in Space Ranger for FASTQ
+  input, and with bin2cell defaults for processed data.
 
 Before `cellpose`, the image is converted to an RGB TIFF and, with
 `--segmentation_downscale` above 1, downscaled. Downscaling is faster but
 detects far fewer cells, so the default is full resolution. `cellpose` uses
 Cellpose-SAM, which needs a GPU on full-size Visium HD images; use
-`-profile gpu`.
+`-profile gpu`. Without a GPU, use `spaceranger`, or run a nucleus segmentation
+tool such as [StarDist](https://github.com/stardist/stardist) yourself and give
+the result as `segmentation_file`.
 
 For processed data (`spaceranger_dir`), `spaceranger` reads the segmentation
 from the Space Ranger output. The other options group the 2 µm bins with

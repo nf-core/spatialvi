@@ -9,8 +9,7 @@ include { MASK_TO_GEOJSON } from "../../../modules/local/segmentation/mask_to_ge
 workflow SEGMENTATION {
 
     take:
-    ch_image              // channel: [ meta, image ]
-    segmentation_method   //  string: cellpose
+    ch_image               // channel: [ meta, image ]
     segmentation_downscale // integer: Downscale factor for the image
 
     main:
@@ -19,10 +18,6 @@ workflow SEGMENTATION {
         ch_image,
         segmentation_downscale
     )
-
-    if (segmentation_method != 'cellpose') {
-        error("Unsupported segmentation_method '${segmentation_method}': expected 'cellpose'")
-    }
 
     CELLPOSE (
         IMAGE_DOWNSCALE.out.image,
