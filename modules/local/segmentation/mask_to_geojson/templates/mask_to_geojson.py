@@ -63,7 +63,6 @@ def main():
 
     # Template variables
     mask_file = "${mask}"
-    # Factor the image was shrunk by before segmentation; polygons are scaled back up
     scale = float("${downscale}")
     object_class = "${object_class}"
     output_geojson = "${prefix}_segmentation.geojson"

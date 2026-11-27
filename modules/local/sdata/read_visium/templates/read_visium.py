@@ -186,7 +186,6 @@ def main():
     spaceranger_dir = "${spaceranger_dir}"
     sample_id = "${meta.id}"
     hd_bin_size = int("${hd_bin_size}")
-    # Read Space Ranger's cell table instead of bins
     use_cells = "${read_cells}" == "true"
     output_sdata = "${prefix}.zarr"
     process_name = "${task.process}"

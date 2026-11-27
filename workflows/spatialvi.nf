@@ -97,7 +97,6 @@ workflow SPATIALVI {
     //
     // SUBWORKFLOW: Cell segmentation of the tissue image (Visium HD)
     //
-    // Samplesheet and computed segmentations are both files in full-resolution pixels
     ch_segmentation = INPUT_CHECK.out.ch_segmentation_file
     if (segmentation_method == 'cellpose') {
         SEGMENTATION (
@@ -116,7 +115,6 @@ workflow SPATIALVI {
     //
     // MODULE: FastQC
     //
-    // Read from INPUT_CHECK so FastQC does not wait for segmentation
     FASTQC(
         INPUT_CHECK.out.ch_spaceranger_input
             .map { it -> [it[0], it[1]] } // [ meta, reads ]

@@ -8,7 +8,7 @@ include { UNTAR as UNTAR_DOWNSTREAM_INPUT  } from "../../../modules/nf-core/unta
 workflow INPUT_CHECK {
 
     take:
-    samplesheet         // file:    samplesheet read in from --input
+    samplesheet         //    file: samplesheet read in from --input
     hd_bin_size         // integer: Bin size for Visium HD
     segmentation_method //  string: Segmentation method, if any
 
