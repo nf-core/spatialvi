@@ -29,6 +29,8 @@ process SCANPY_RANK_GENES_GROUPS {
     ${touch_adata}
     mkdir -p uns
     touch uns/rank_genes_groups.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

@@ -31,6 +31,8 @@ process SQUIDPY_SPATIAL_NEIGHBORS {
     touch obsp/spatial_connectivities.pkl
     touch obsp/spatial_distances.pkl
     touch uns/spatial_neighbors.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

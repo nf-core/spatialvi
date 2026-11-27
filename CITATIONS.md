@@ -52,10 +52,6 @@
 
   > Palla G, Spitzer H, Klein M et al. Squidpy: a scalable framework for spatial omics analysis. Nat Methods 19, 171–178 (2022). doi: https://doi.org/10.1038/s41592-021-01358-2
 
-- [StarDist](https://github.com/stardist/stardist)
-
-  > Schmidt U, Weigert M, Broaddus C, Myers G. Cell Detection with Star-Convex Polygons. MICCAI 2018. doi: 10.1007/978-3-030-00934-2_30
-
   > Weigert M, Schmidt U, Haase R, Sugawara K, Myers G. Star-convex Polyhedra for 3D Object Detection and Segmentation in Microscopy. WACV 2020. doi: 10.1109/WACV45572.2020.9093435
 
 ## Software packaging/containerisation tools

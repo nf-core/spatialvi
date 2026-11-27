@@ -32,6 +32,8 @@ process SCANPY_HIGHLY_VARIABLE_GENES {
     mkdir -p var uns
     touch var/highly_variable_genes.pkl
     touch uns/hvg.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }

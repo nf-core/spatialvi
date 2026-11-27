@@ -32,10 +32,9 @@ the following steps:
 </p>
 
 For Visium HD data, cells can optionally replace bins as the analysis unit,
-using a cell segmentation from Space Ranger, [Cellpose](https://github.com/MouseLand/cellpose),
-[StarDist](https://github.com/stardist/stardist) or a user-supplied file. For
-data already processed by Space Ranger, the last three are applied with
-[bin2cell](https://github.com/Teichlab/bin2cell).
+using a cell segmentation from Space Ranger, [Cellpose](https://github.com/MouseLand/cellpose)
+or a user-supplied file. For data already processed by Space Ranger, the last
+two are applied with [bin2cell](https://github.com/Teichlab/bin2cell).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 to run tasks across multiple compute infrastructures in a very portable manner.

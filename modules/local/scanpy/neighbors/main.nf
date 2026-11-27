@@ -33,6 +33,8 @@ process SCANPY_NEIGHBORS {
     touch obsp/connectivities.pkl
     touch obsp/distances.pkl
     touch uns/neighbors.pkl
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}": stub
+    END_VERSIONS
     """
 }
